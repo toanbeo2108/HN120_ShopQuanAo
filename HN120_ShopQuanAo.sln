@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HN120_ShopQuanAo.Data", "HN120_ShopQuanAo\HN120_ShopQuanAo.Data.csproj", "{EC372D43-96E7-4BE2-A419-12B6FE6362E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HN120_ShopQuanAo.API", "HN120_ShopQuanAo.API\HN120_ShopQuanAo.API.csproj", "{ED62B49D-F56D-4B72-B1A5-65258A6D8F8A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC372D43-96E7-4BE2-A419-12B6FE6362E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC372D43-96E7-4BE2-A419-12B6FE6362E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC372D43-96E7-4BE2-A419-12B6FE6362E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC372D43-96E7-4BE2-A419-12B6FE6362E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED62B49D-F56D-4B72-B1A5-65258A6D8F8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED62B49D-F56D-4B72-B1A5-65258A6D8F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED62B49D-F56D-4B72-B1A5-65258A6D8F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED62B49D-F56D-4B72-B1A5-65258A6D8F8A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {986241B6-AAB6-43FA-B5DC-DCDBA7260E3B}
+	EndGlobalSection
+EndGlobal
