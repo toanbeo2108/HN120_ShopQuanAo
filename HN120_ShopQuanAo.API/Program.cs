@@ -1,9 +1,9 @@
- using HN120_ShopQuanAo.API.Data;
-using HN120_ShopQuanAo.API.IResponsitories;
-using HN120_ShopQuanAo.API.Responsitories;
-using HN120_ShopQuanAo.Data.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
+
+using HN120_ShopQuanAo.API.Data;
+using HN120_ShopQuanAo.API.Repository.IRepositories;
+using HN120_ShopQuanAo.API.Repository.Repositories;
+using HN120_ShopQuanAo.API.Service.IServices;
+using HN120_ShopQuanAo.API.Service.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -18,7 +18,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
 	options.UseSqlServer(builder.Configuration.GetConnectionString("MyCS"));
 });
-
 // Add DI
 builder.Services.AddScoped<ILoginServices, LoginServices>();
 builder.Services.AddScoped<IRegisterServices, RegisterServices>();
@@ -75,6 +74,7 @@ builder.Services.AddSwaggerGen(c =>
 				});
 });
 builder.Services.AddHttpClient();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
