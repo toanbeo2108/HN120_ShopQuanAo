@@ -1,6 +1,8 @@
 using HN120_ShopQuanAo.API.Data;
 using HN120_ShopQuanAo.API.IResponsitories;
 using HN120_ShopQuanAo.API.Responsitories;
+using HN120_ShopQuanAo.API.Service.IServices;
+using HN120_ShopQuanAo.API.Service.Services;
 using HN120_ShopQuanAo.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +21,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add DI
 builder.Services.AddScoped<ILoginServices, LoginServices>();
 builder.Services.AddScoped<IRegisterServices, RegisterServices>();
+builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
+builder.Services.AddScoped<IChiTietHoaDonRepository, ChiTietHoaDonRepository>();
+builder.Services.AddScoped<IChiTietHoaDonService, ChiTietHoaDonService>();
+builder.Services.AddScoped<IHoaDonService, HoaDonService>();
 
 // Add Identity
 builder.Services.AddIdentity<User, IdentityRole>()
