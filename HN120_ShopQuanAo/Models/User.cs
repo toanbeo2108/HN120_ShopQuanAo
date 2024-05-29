@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,5 +16,6 @@ namespace HN120_ShopQuanAo.Data.Models
 
 		public virtual List<HoaDon>? HoaDons { get; set; }
 		public virtual List<GioHang>? GioHangs { get; set; }
+		public virtual List<DeliveryAddress>? DeliveryAddress { get; set; }
 	}
 }

@@ -1,4 +1,4 @@
-﻿using HN120_ShopQuanAo.API.Repository.IRepositories;
+﻿using HN120_ShopQuanAo.API.IResponsitories;
 using HN120_ShopQuanAo.API.Service.IServices;
 using HN120_ShopQuanAo.Data.Models;
 
