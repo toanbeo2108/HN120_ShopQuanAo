@@ -1,6 +1,6 @@
 ﻿using HN120_ShopQuanAo.API.Data;
-using HN120_ShopQuanAo.API.Ireponsitory;
-using HN120_ShopQuanAo.API.Repository;
+using HN120_ShopQuanAo.API.IResponsitories;
+using HN120_ShopQuanAo.API.Responsitories;
 using HN120_ShopQuanAo.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

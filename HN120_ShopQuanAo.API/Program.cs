@@ -1,14 +1,12 @@
-
 using HN120_ShopQuanAo.API.Data;
-using HN120_ShopQuanAo.API.Repository.IRepositories;
-using HN120_ShopQuanAo.API.Repository.Repositories;
-using HN120_ShopQuanAo.API.Service.IServices;
-using HN120_ShopQuanAo.API.Service.Services;
+using HN120_ShopQuanAo.API.IResponsitories;
+using HN120_ShopQuanAo.API.Responsitories;
+using HN120_ShopQuanAo.Data.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
 using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
