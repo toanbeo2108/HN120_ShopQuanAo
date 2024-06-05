@@ -17,5 +17,6 @@ namespace HN120_ShopQuanAo.Data.Models
 		public virtual List<HoaDon>? HoaDons { get; set; }
 		public virtual List<GioHang>? GioHangs { get; set; }
 		public virtual List<DeliveryAddress>? DeliveryAddress { get; set; }
+		public virtual List<User_Voucher>? User_Vouchers { get; set; }
 	}
 }

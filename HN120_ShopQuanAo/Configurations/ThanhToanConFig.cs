@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace HN120_ShopQuanAo.Data.Configurations
 {
-	internal class VoucherConfig : IEntityTypeConfiguration<Voucher>
+	public class ThanhToanConFig : IEntityTypeConfiguration<ThanhToan>
 	{
-		public void Configure(EntityTypeBuilder<Voucher> builder)
+		public void Configure(EntityTypeBuilder<ThanhToan> builder)
 		{
-			builder.HasKey(p => p.MaVoucher);
-			builder.HasMany(p => p.VoucherHistorys).WithOne(p => p.Voucher).HasForeignKey(p => p.MaVoucher);
+			builder.HasKey(p => p.MaPhuongThuc); // Set khóa chính
+			builder.HasOne(p => p.ThanhToan_HoaDon).WithMany(p => p.ThanhToans).HasForeignKey(p => p.MaPhuongThuc);
 		}
 	}
 }
