@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HN120_ShopQuanAo.Data.Configurations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,7 +24,9 @@ namespace HN120_ShopQuanAo.Data.Models
 
 		public virtual User? User { get; set; }
 		public virtual Voucher? Voucher { get; set; }
+		public virtual ThanhToan_HoaDon? ThanhToan_HoaDon { get; set; }
 		public virtual List<HoaDonChiTiet>? HoaDonChiTiets { get; set; }
-		
+		public virtual List<HoaDon_History>? HoaDon_History { get; set; }
+
 	}
 }

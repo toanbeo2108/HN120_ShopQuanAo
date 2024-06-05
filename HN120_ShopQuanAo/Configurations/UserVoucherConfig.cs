@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 
 namespace HN120_ShopQuanAo.Data.Configurations
 {
-	internal class VoucherConfig : IEntityTypeConfiguration<Voucher>
+	internal class UserVoucherConfig : IEntityTypeConfiguration<User_Voucher>
 	{
-		public void Configure(EntityTypeBuilder<Voucher> builder)
+		public void Configure(EntityTypeBuilder<User_Voucher> builder)
 		{
 			builder.HasKey(p => p.MaVoucher);
-			builder.HasMany(p => p.VoucherHistorys).WithOne(p => p.Voucher).HasForeignKey(p => p.MaVoucher);
+			builder.HasOne(p => p.User).WithMany(p => p.User_Vouchers).HasForeignKey(p => p.UserID);
+			builder.HasOne(p => p.Voucher).WithMany(p => p.User_Vouchers).HasForeignKey(p => p.MaVoucher);
 		}
 	}
 }

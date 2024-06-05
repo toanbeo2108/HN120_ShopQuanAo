@@ -11,12 +11,18 @@ namespace HN120_ShopQuanAo.Data.Models
 	{
 		[Key]
 		public string MaVoucher { get; set; }
-		public string? TenVoucher { get; set; }
-		public decimal? DieuKien { get; set; }
-		public decimal? GiamTien { get; set; }
-		public float? ChietKhau { get; set; }
+		public decimal? DieuKienGiam { get; set; }
+		public decimal? GiaGiamToiThieu { get; set; }
+		public decimal? GiaGiamToiDa { get; set; }
+		public DateTime? NgayBatDau { get; set; }
+		public DateTime? NgayKetThuc { get; set; }
+		public int? KieuGiamGia { get; set; }
+		public decimal? GiaTriGiam { get; set; }
+		public int? SoLuong { get; set; }
 		public int? TrangThai { get; set; }
 
 		public virtual List<HoaDon>? HoaDons { get; set; }
+		public virtual List<User_Voucher>? User_Vouchers { get; set; }
+		public virtual List<VoucherHistory>? VoucherHistorys { get; set; }
 	}
 }
