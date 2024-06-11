@@ -26,6 +26,15 @@ namespace HN120_ShopQuanAo.API.Data
 		public virtual DbSet<Size> Size { get; set; }
 		public virtual DbSet<TheLoai> TheLoai { get; set; }
 		public virtual DbSet<Voucher> Voucher { get; set; }
+		public virtual DbSet<AnhSanPham> AnhSanPham { get; set; }
+		public virtual DbSet<ChatLieu> ChatLieu { get; set; }
+		public virtual DbSet<DeliveryAddress> DeliveryAddress { get; set; }
+		public virtual DbSet<KhuyenMai> KhuyenMai { get; set; }
+		public virtual DbSet<ThanhToan> ThanhToan { get; set; }
+		public virtual DbSet<ThanhToan_HoaDon> ThanhToan_HoaDon { get; set; }
+		public virtual DbSet<ThuongHieu> ThuongHieu { get; set; }
+		public virtual DbSet<User_Voucher> User_Voucher { get; set; }
+		public virtual DbSet<VoucherHistory> VoucherHistory { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{

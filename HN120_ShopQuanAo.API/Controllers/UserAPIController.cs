@@ -22,7 +22,7 @@ namespace HN120_ShopQuanAo.API.Controllers
 
 		[HttpGet]
 		[Route("GetAllUser")]
-		//[Authorize]
+		[Authorize]
 		public async Task<IEnumerable<User>> GetAllUser()
 		{
 			return await _userManager.Users.ToListAsync();

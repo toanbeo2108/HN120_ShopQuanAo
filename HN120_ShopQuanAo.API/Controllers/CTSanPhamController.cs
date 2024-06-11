@@ -34,15 +34,13 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _iresponCTSP.GetByID(id);
         }
         [HttpPost("add-CTSP")]
-        public async Task<bool> AddCTSP(string sKU, string? MaSp, string? MaSize, string? MaMau, string? MaTheLoai, decimal? GiaNhap, decimal? GiaBan, int? SoLuongTon, int? TrangThai)
+        public async Task<bool> AddCTSP(string sKU, string? MaSp, string? MaSize, string? MaMau, decimal? GiaBan, int? SoLuongTon, int? TrangThai)
         {
             ChiTietSp b = new ChiTietSp();
             b.SKU = sKU;
             b.MaSp = MaSp;
             b.MaMau = MaMau;
             b.MaSize = MaSize;
-            b.MaTheLoai = MaTheLoai;
-            b.GiaNhap = GiaNhap;
             b.GiaBan = GiaBan;
             b.SoLuongTon = SoLuongTon;
             b.TrangThai = TrangThai;
@@ -60,10 +58,8 @@ namespace HN120_ShopQuanAo.API.Controllers
 
                 b.MaSp = _ctsp.MaSp;
                 b.MaMau = _ctsp.MaMau;
-                b.MaTheLoai = _ctsp.MaTheLoai;
                 b.MaSize = _ctsp.MaSize;
                 b.GiaBan = _ctsp.GiaBan;
-                b.GiaNhap = _ctsp.GiaNhap;
                 b.SoLuongTon = _ctsp.SoLuongTon;
                 b.TrangThai = _ctsp.TrangThai;
                 return await _iresponCTSP.UpdateItem(b);

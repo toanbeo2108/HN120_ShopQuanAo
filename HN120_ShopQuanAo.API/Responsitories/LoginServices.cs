@@ -32,6 +32,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
 				var claims = new List<Claim>()
 				{
 					new Claim(ClaimTypes.Name, user.UserName),
+					new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
 					new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
 				};
 				foreach (var userrole in roles)

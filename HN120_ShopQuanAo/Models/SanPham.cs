@@ -12,6 +12,7 @@ namespace HN120_ShopQuanAo.Data.Models
 		[Key]
 		public string MaSp { get; set; }
 		public string? MaThuongHieu { get; set; }
+		public string? MaTheLoai { get; set; }
 		public string? UrlAvatar { get; set; }
 		public string? TenSP { get; set; }
         public string? Mota { get; set; }
@@ -20,5 +21,7 @@ namespace HN120_ShopQuanAo.Data.Models
 
         public virtual List<ChiTietSp>? ChiTietSps { get; set; }
         public virtual ThuongHieu? ThuongHieu { get; set; }
+		public virtual TheLoai? TheLoai { get; set; }
+
 	}
 }

@@ -12,12 +12,12 @@ namespace HN120_ShopQuanAo.API.Controllers
     public class TheLoaiController : Controller
     {
         private readonly IAllResponsitories<TheLoai> _irespon;
-        private readonly IAllResponsitories<ChiTietSp> _iresponCTSP;
+        private readonly IAllResponsitories<SanPham> _iresponSP;
         AppDbContext _context = new AppDbContext();
         public TheLoaiController()
         {
             _irespon = new AllResponsitories<TheLoai>(_context, _context.TheLoai);
-            _iresponCTSP = new AllResponsitories<ChiTietSp>(_context, _context.ChiTietSp);
+            _iresponSP = new AllResponsitories<SanPham>(_context, _context.SanPham);
 
         }
         [HttpGet("[Action]")]
@@ -67,11 +67,11 @@ namespace HN120_ShopQuanAo.API.Controllers
 
             if (ms != null)
             {
-                var lstspct = await _iresponCTSP.GetAll();
+                var lstspct = await _iresponSP.GetAll();
                 var dsspct = lstspct.Where(pd => pd.MaTheLoai == ms.MaTheLoai).ToList();
                 foreach (var t in dsspct)
                 {
-                    await _iresponCTSP.DeleteItem(t);
+                    await _iresponSP.DeleteItem(t);
                 }
                 return await _irespon.DeleteItem(ms);
             }
