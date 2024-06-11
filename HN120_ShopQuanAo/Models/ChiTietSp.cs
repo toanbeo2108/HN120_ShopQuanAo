@@ -14,10 +14,8 @@ namespace HN120_ShopQuanAo.Data.Models
 		public string? MaSp { get; set; }
 		public string? MaSize { get; set; }
 		public string? MaMau { get; set; }
-		public string? MaTheLoai { get; set; }
 		public string? MaKhuyenMai { get; set; }
 		public string? MaChatLieu { get; set; }
-		public decimal? GiaNhap { get; set; }
 		public decimal? GiaBan { get; set; }
 		public int? SoLuongTon { get; set; }
 		public int? TrangThai { get; set; }
@@ -25,7 +23,6 @@ namespace HN120_ShopQuanAo.Data.Models
 		public virtual SanPham? SanPham { get; set; }
 		public virtual Size? Size { get; set; }
 		public virtual MauSac? MauSac { get; set; }
-		public virtual TheLoai? TheLoai { get; set; }
 		public virtual KhuyenMai? KhuyenMai { get; set; }
 		public virtual ChatLieu? ChatLieu { get; set; }
 

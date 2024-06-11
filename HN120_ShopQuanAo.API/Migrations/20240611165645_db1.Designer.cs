@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HN120_ShopQuanAo.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240426154554_tesst")]
-    partial class tesst
+    [Migration("20240611165645_db1")]
+    partial class db1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,16 +24,105 @@ namespace HN120_ShopQuanAo.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Configurations.HoaDon_History", b =>
+                {
+                    b.Property<string>("LichSuHoaDonID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ChiTiet")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HinhThucThanhToan")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoaDonMaHoaDon")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaHoaDon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("NgayTaoDon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayThayDoi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("TongGiaTri")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("TrangThai")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LichSuHoaDonID");
+
+                    b.HasIndex("HoaDonMaHoaDon");
+
+                    b.ToTable("HoaDon_History");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.AnhSanPham", b =>
+                {
+                    b.Property<string>("MaAnh")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaSP_MaSPCT")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TenAnh")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TrangThai")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MaAnh");
+
+                    b.ToTable("AnhSanPham");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ChatLieu", b =>
+                {
+                    b.Property<string>("MaChatLieu")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MoTa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TenChatLieu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TrangThai")
+                        .HasColumnType("int");
+
+                    b.HasKey("MaChatLieu");
+
+                    b.ToTable("ChatLieu");
+                });
+
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ChiTietSp", b =>
                 {
                     b.Property<string>("SKU")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ChatLieuMaChatLieu")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal?>("GiaBan")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("GiaNhap")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("KhuyenMaiMaKhuyenMai")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaChatLieu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaKhuyenMai")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaMau")
                         .HasColumnType("nvarchar(max)");
@@ -42,9 +131,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaSp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaTheLoai")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MauSacMaMau")
@@ -59,13 +145,14 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<int?>("SoLuongTon")
                         .HasColumnType("int");
 
-                    b.Property<string>("TheLoaiMaTheLoai")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
 
                     b.HasKey("SKU");
+
+                    b.HasIndex("ChatLieuMaChatLieu");
+
+                    b.HasIndex("KhuyenMaiMaKhuyenMai");
 
                     b.HasIndex("MauSacMaMau");
 
@@ -73,9 +160,40 @@ namespace HN120_ShopQuanAo.API.Migrations
 
                     b.HasIndex("SizeMaSize");
 
-                    b.HasIndex("TheLoaiMaTheLoai");
-
                     b.ToTable("ChiTietSp");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.DeliveryAddress", b =>
+                {
+                    b.Property<string>("DeliveryAddressID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AddressLine")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("DeliveryAddressID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("DeliveryAddress");
                 });
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.GioHang", b =>
@@ -166,6 +284,9 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("TenKhachHang")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ThanhToan_HoaDonMaPhuongThuc_HoaDon")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal?>("TongGiaTriHangHoa")
                         .HasColumnType("decimal(18,2)");
 
@@ -179,6 +300,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("MaHoaDon");
+
+                    b.HasIndex("ThanhToan_HoaDonMaPhuongThuc_HoaDon");
 
                     b.HasIndex("UserID");
 
@@ -225,6 +348,25 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.ToTable("HoaDonChiTiet");
                 });
 
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.KhuyenMai", b =>
+                {
+                    b.Property<string>("MaKhuyenMai")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<float?>("PhanTramGiam")
+                        .HasColumnType("real");
+
+                    b.Property<string>("TenKhuyenMai")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TrangThai")
+                        .HasColumnType("int");
+
+                    b.HasKey("MaKhuyenMai");
+
+                    b.ToTable("KhuyenMai");
+                });
+
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.MauSac", b =>
                 {
                     b.Property<string>("MaMau")
@@ -249,11 +391,23 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("MaSp")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("MaTheLoai")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaThuongHieu")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Mota")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenSP")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TheLoaiMaTheLoai")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ThuongHieuMaThuongHieu")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("TongSoLuong")
                         .HasColumnType("int");
@@ -261,7 +415,14 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
 
+                    b.Property<string>("UrlAvatar")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("MaSp");
+
+                    b.HasIndex("TheLoaiMaTheLoai");
+
+                    b.HasIndex("ThuongHieuMaThuongHieu");
 
                     b.ToTable("SanPham");
                 });
@@ -285,6 +446,64 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.ToTable("Size");
                 });
 
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThanhToan", b =>
+                {
+                    b.Property<string>("MaPhuongThuc")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MoTa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("NgayTao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayThayDoi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TenPhuongThuc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ThanhToan_HoaDonMaPhuongThuc_HoaDon")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("TrangThai")
+                        .HasColumnType("int");
+
+                    b.HasKey("MaPhuongThuc");
+
+                    b.HasIndex("ThanhToan_HoaDonMaPhuongThuc_HoaDon");
+
+                    b.ToTable("ThanhToan");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThanhToan_HoaDon", b =>
+                {
+                    b.Property<string>("MaPhuongThuc_HoaDon")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaHoaDon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaPhuongThuc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MoTa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("NgayTao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayThayDoi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("TrangThai")
+                        .HasColumnType("int");
+
+                    b.HasKey("MaPhuongThuc_HoaDon");
+
+                    b.ToTable("ThanhToan_HoaDon");
+                });
+
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.TheLoai", b =>
                 {
                     b.Property<string>("MaTheLoai")
@@ -304,22 +523,79 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.ToTable("TheLoai");
                 });
 
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThuongHieu", b =>
+                {
+                    b.Property<string>("MaThuongHieu")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MoTa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TenThuongHieu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TrangThai")
+                        .HasColumnType("int");
+
+                    b.HasKey("MaThuongHieu");
+
+                    b.ToTable("ThuongHieu");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.User_Voucher", b =>
+                {
+                    b.Property<string>("UserVoucherID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaVoucher")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TrangThai")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("VoucherMaVoucher")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserVoucherID");
+
+                    b.HasIndex("UserID");
+
+                    b.HasIndex("VoucherMaVoucher");
+
+                    b.ToTable("User_Voucher");
+                });
+
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.Voucher", b =>
                 {
                     b.Property<string>("MaVoucher")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<float?>("ChietKhau")
-                        .HasColumnType("real");
-
-                    b.Property<decimal?>("DieuKien")
+                    b.Property<decimal?>("DieuKienGiam")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("GiamTien")
+                    b.Property<decimal?>("GiaGiamToiDa")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("TenVoucher")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("GiaGiamToiThieu")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("GiaTriGiam")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("KieuGiamGia")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("NgayBatDau")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayKetThuc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SoLuong")
+                        .HasColumnType("int");
 
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
@@ -327,6 +603,51 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasKey("MaVoucher");
 
                     b.ToTable("Voucher");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.VoucherHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal?>("GiaGiamToiThieu")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("GiaTriGiam")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("KieuGiamGia")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MaVoucher")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("NgayBatDau")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayKetThuc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayTao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayThayDoi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("TrangThai")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VoucherMaVoucher")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VoucherMaVoucher");
+
+                    b.ToTable("VoucherHistory");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -358,22 +679,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1d30179b-b5ae-4057-bbdf-bcb46943dc31",
-                            ConcurrencyStamp = "d6e34489-dec5-4d74-bd3e-eb82949c0d82",
+                            Id = "d4bda03d-1521-4152-a813-3f1bd02f7c3e",
+                            ConcurrencyStamp = "0de6124b-7733-46d9-9a25-85d0cb898b59",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "28d4376e-4e9c-49d5-8c83-e1453b2c818a",
-                            ConcurrencyStamp = "8d6a522b-b58f-41ec-9d24-05624d9c28fc",
+                            Id = "63efd9d6-34c8-4bff-a069-7e168c69245e",
+                            ConcurrencyStamp = "873fdbcd-4e0b-4fa5-a5de-a1831587d18d",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "2e2a6036-066f-450b-867a-31070808f9e6",
-                            ConcurrencyStamp = "92c413e0-4236-447f-a610-37b4210ef358",
+                            Id = "800a9542-f3ac-4a94-92c3-3445f1990568",
+                            ConcurrencyStamp = "e5934d85-88fb-4feb-8f69-babf4ad3d70e",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -564,7 +885,10 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Point")
+                    b.Property<DateTime?>("Birthday")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Gender")
                         .HasColumnType("int");
 
                     b.Property<int?>("Status")
@@ -573,8 +897,25 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasDiscriminator().HasValue("User");
                 });
 
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Configurations.HoaDon_History", b =>
+                {
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.HoaDon", "HoaDon")
+                        .WithMany("HoaDon_History")
+                        .HasForeignKey("HoaDonMaHoaDon");
+
+                    b.Navigation("HoaDon");
+                });
+
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ChiTietSp", b =>
                 {
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.ChatLieu", "ChatLieu")
+                        .WithMany("ChiTietSps")
+                        .HasForeignKey("ChatLieuMaChatLieu");
+
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.KhuyenMai", "KhuyenMai")
+                        .WithMany("ChiTietSps")
+                        .HasForeignKey("KhuyenMaiMaKhuyenMai");
+
                     b.HasOne("HN120_ShopQuanAo.Data.Models.MauSac", "MauSac")
                         .WithMany("ChiTietSps")
                         .HasForeignKey("MauSacMaMau");
@@ -587,17 +928,24 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .WithMany("ChiTietSps")
                         .HasForeignKey("SizeMaSize");
 
-                    b.HasOne("HN120_ShopQuanAo.Data.Models.TheLoai", "TheLoai")
-                        .WithMany("ChiTietSps")
-                        .HasForeignKey("TheLoaiMaTheLoai");
+                    b.Navigation("ChatLieu");
+
+                    b.Navigation("KhuyenMai");
 
                     b.Navigation("MauSac");
 
                     b.Navigation("SanPham");
 
                     b.Navigation("Size");
+                });
 
-                    b.Navigation("TheLoai");
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.DeliveryAddress", b =>
+                {
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.User", "User")
+                        .WithMany("DeliveryAddress")
+                        .HasForeignKey("UserID");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.GioHang", b =>
@@ -626,6 +974,10 @@ namespace HN120_ShopQuanAo.API.Migrations
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.HoaDon", b =>
                 {
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.ThanhToan_HoaDon", "ThanhToan_HoaDon")
+                        .WithMany("HoaDonss")
+                        .HasForeignKey("ThanhToan_HoaDonMaPhuongThuc_HoaDon");
+
                     b.HasOne("HN120_ShopQuanAo.Data.Models.User", "User")
                         .WithMany("HoaDons")
                         .HasForeignKey("UserID");
@@ -633,6 +985,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasOne("HN120_ShopQuanAo.Data.Models.Voucher", "Voucher")
                         .WithMany("HoaDons")
                         .HasForeignKey("VoucherMaVoucher");
+
+                    b.Navigation("ThanhToan_HoaDon");
 
                     b.Navigation("User");
 
@@ -652,6 +1006,54 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Navigation("ChiTietSps");
 
                     b.Navigation("HoaDon");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.SanPham", b =>
+                {
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.TheLoai", "TheLoai")
+                        .WithMany("SanPhams")
+                        .HasForeignKey("TheLoaiMaTheLoai");
+
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.ThuongHieu", "ThuongHieu")
+                        .WithMany("SanPhams")
+                        .HasForeignKey("ThuongHieuMaThuongHieu");
+
+                    b.Navigation("TheLoai");
+
+                    b.Navigation("ThuongHieu");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThanhToan", b =>
+                {
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.ThanhToan_HoaDon", "ThanhToan_HoaDon")
+                        .WithMany("ThanhToanss")
+                        .HasForeignKey("ThanhToan_HoaDonMaPhuongThuc_HoaDon");
+
+                    b.Navigation("ThanhToan_HoaDon");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.User_Voucher", b =>
+                {
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.User", "User")
+                        .WithMany("User_Vouchers")
+                        .HasForeignKey("UserID");
+
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.Voucher", "Voucher")
+                        .WithMany("User_Vouchers")
+                        .HasForeignKey("VoucherMaVoucher");
+
+                    b.Navigation("User");
+
+                    b.Navigation("Voucher");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.VoucherHistory", b =>
+                {
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.Voucher", "Voucher")
+                        .WithMany("VoucherHistorys")
+                        .HasForeignKey("VoucherMaVoucher");
+
+                    b.Navigation("Voucher");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -705,6 +1107,11 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ChatLieu", b =>
+                {
+                    b.Navigation("ChiTietSps");
+                });
+
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ChiTietSp", b =>
                 {
                     b.Navigation("GioHangChiTiet");
@@ -720,6 +1127,13 @@ namespace HN120_ShopQuanAo.API.Migrations
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.HoaDon", b =>
                 {
                     b.Navigation("HoaDonChiTiets");
+
+                    b.Navigation("HoaDon_History");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.KhuyenMai", b =>
+                {
+                    b.Navigation("ChiTietSps");
                 });
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.MauSac", b =>
@@ -737,21 +1151,41 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Navigation("ChiTietSps");
                 });
 
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThanhToan_HoaDon", b =>
+                {
+                    b.Navigation("HoaDonss");
+
+                    b.Navigation("ThanhToanss");
+                });
+
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.TheLoai", b =>
                 {
-                    b.Navigation("ChiTietSps");
+                    b.Navigation("SanPhams");
+                });
+
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThuongHieu", b =>
+                {
+                    b.Navigation("SanPhams");
                 });
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.Voucher", b =>
                 {
                     b.Navigation("HoaDons");
+
+                    b.Navigation("User_Vouchers");
+
+                    b.Navigation("VoucherHistorys");
                 });
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.User", b =>
                 {
+                    b.Navigation("DeliveryAddress");
+
                     b.Navigation("GioHangs");
 
                     b.Navigation("HoaDons");
+
+                    b.Navigation("User_Vouchers");
                 });
 #pragma warning restore 612, 618
         }

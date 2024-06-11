@@ -15,7 +15,7 @@ namespace HN120_ShopQuanAo.Data.Models
 		public string? MoTa { get; set; }
 		public int? TrangThai { get; set; }
 
-		public virtual List<ChiTietSp>? ChiTietSps { get; set; }
+		public virtual List<SanPham>? SanPhams { get; set; }
 
 	}
 }

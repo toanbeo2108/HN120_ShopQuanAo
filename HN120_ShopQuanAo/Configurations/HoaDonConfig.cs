@@ -16,8 +16,8 @@ namespace HN120_ShopQuanAo.Data.Configurations
 			builder.HasKey(p => p.MaHoaDon); // Set khóa chính
 			builder.HasOne(p => p.User).WithMany(p => p.HoaDons).HasForeignKey(p => p.UserID);
 			builder.HasOne(p => p.Voucher).WithMany(p => p.HoaDons).HasForeignKey(p => p.MaVoucher);
-			builder.HasOne(p => p.ThanhToan_HoaDon).WithMany(p => p.HoaDons).HasForeignKey(p => p.MaHoaDon);
 			builder.HasMany(p => p.HoaDon_History).WithOne(p => p.HoaDon).HasForeignKey(p => p.MaHoaDon);
+			//builder.HasOne(x => x.ThanhToan_HoaDon).WithMany(x => x.HoaDonss).HasForeignKey(x => x.MaHoaDon);
 		}
 	}
 }

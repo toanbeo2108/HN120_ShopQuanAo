@@ -53,7 +53,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
 			{
 				UserName = registerUser.Username,
 				Email = registerUser.Email,
-				Point = 0,
+				Status = 1,
 				PhoneNumber = registerUser.PhoneNumber
 			};
 

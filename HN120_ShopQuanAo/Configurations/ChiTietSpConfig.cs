@@ -15,7 +15,6 @@ namespace HN120_ShopQuanAo.Data.Configurations
 		{
 			builder.HasKey(p => p.SKU); // Set khóa chính
 			builder.HasOne(p => p.SanPham).WithMany(p => p.ChiTietSps).HasForeignKey(p => p.MaSp);
-			builder.HasOne(p => p.TheLoai).WithMany(p => p.ChiTietSps).HasForeignKey(p => p.MaTheLoai);
 			builder.HasOne(p => p.Size).WithMany(p => p.ChiTietSps).HasForeignKey(p => p.MaSize);
 			builder.HasOne(p => p.MauSac).WithMany(p => p.ChiTietSps).HasForeignKey(p => p.MaMau);
 			builder.HasOne(p => p.KhuyenMai).WithMany(p => p.ChiTietSps).HasForeignKey(p => p.MaKhuyenMai);

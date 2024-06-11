@@ -9,7 +9,8 @@ namespace HN120_ShopQuanAo.Data.Models
 {
 	public class ThanhToan
 	{
-		[Key] public string MaPhuongThuc { get; set; }
+		[Key] 
+		public string MaPhuongThuc { get; set; }
 		public string? TenPhuongThuc { get; set;}
 		public string? MoTa { get; set;}
 		public DateTime? NgayTao { get; set;}
