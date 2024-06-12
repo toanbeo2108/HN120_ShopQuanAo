@@ -14,8 +14,8 @@ namespace HN120_ShopQuanAo.Data.Configurations
 		public void Configure(EntityTypeBuilder<ThanhToan_HoaDon> builder)
 		{
 			builder.HasKey(p => p.MaPhuongThuc_HoaDon);
-			builder.HasMany(x => x.ThanhToanss).WithOne(x => x.ThanhToan_HoaDon).HasForeignKey(x => x.MaPhuongThuc);
-			builder.HasMany(x => x.HoaDonss).WithOne(x => x.ThanhToan_HoaDon).HasForeignKey(x => x.MaHoaDon);
+			builder.HasOne(p => p.ThanhToan).WithMany(x => x.ThanhToan_HoaDon).HasForeignKey(x => x.MaPhuongThuc);
+			builder.HasOne(p => p.HoaDon).WithMany(x => x.ThanhToan_HoaDons).HasForeignKey(x => x.MaHoaDon);
 		}
 	}
 }
