@@ -17,6 +17,6 @@ namespace HN120_ShopQuanAo.Data.Models
 		public DateTime? NgayThayDoi { get; set;}
 		public int? TrangThai { get; set;}
 
-		public virtual ThanhToan_HoaDon? ThanhToan_HoaDon { get; set; }
+		public virtual List<ThanhToan_HoaDon>? ThanhToan_HoaDon { get; set; }
 	}
 }

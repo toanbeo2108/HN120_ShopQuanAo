@@ -282,9 +282,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("TenKhachHang")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ThanhToan_HoaDonMaPhuongThuc_HoaDon")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<decimal?>("TongGiaTriHangHoa")
                         .HasColumnType("decimal(18,2)");
 
@@ -298,8 +295,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("MaHoaDon");
-
-                    b.HasIndex("ThanhToan_HoaDonMaPhuongThuc_HoaDon");
 
                     b.HasIndex("UserID");
 
@@ -461,15 +456,10 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("TenPhuongThuc")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ThanhToan_HoaDonMaPhuongThuc_HoaDon")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
 
                     b.HasKey("MaPhuongThuc");
-
-                    b.HasIndex("ThanhToan_HoaDonMaPhuongThuc_HoaDon");
 
                     b.ToTable("ThanhToan");
                 });
@@ -477,6 +467,9 @@ namespace HN120_ShopQuanAo.API.Migrations
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThanhToan_HoaDon", b =>
                 {
                     b.Property<string>("MaPhuongThuc_HoaDon")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("HoaDonMaHoaDon")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaHoaDon")
@@ -494,10 +487,17 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<DateTime?>("NgayThayDoi")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ThanhToanMaPhuongThuc")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
 
                     b.HasKey("MaPhuongThuc_HoaDon");
+
+                    b.HasIndex("HoaDonMaHoaDon");
+
+                    b.HasIndex("ThanhToanMaPhuongThuc");
 
                     b.ToTable("ThanhToan_HoaDon");
                 });
@@ -677,22 +677,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d4bda03d-1521-4152-a813-3f1bd02f7c3e",
-                            ConcurrencyStamp = "0de6124b-7733-46d9-9a25-85d0cb898b59",
+                            Id = "f6fb98c5-0523-4e3d-8078-a961996b1af2",
+                            ConcurrencyStamp = "58b0beca-727f-45b5-bd84-350826c77fa4",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "63efd9d6-34c8-4bff-a069-7e168c69245e",
-                            ConcurrencyStamp = "873fdbcd-4e0b-4fa5-a5de-a1831587d18d",
+                            Id = "7eefb2d4-87bd-49fa-9780-ed2847642b50",
+                            ConcurrencyStamp = "91874859-4808-4d81-ac61-795aa86795ca",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "800a9542-f3ac-4a94-92c3-3445f1990568",
-                            ConcurrencyStamp = "e5934d85-88fb-4feb-8f69-babf4ad3d70e",
+                            Id = "bc642f12-74d8-4984-8526-03d24b5ce910",
+                            ConcurrencyStamp = "7519cfc7-cf6f-4ffd-941b-815cb2866fd2",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -972,10 +972,6 @@ namespace HN120_ShopQuanAo.API.Migrations
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.HoaDon", b =>
                 {
-                    b.HasOne("HN120_ShopQuanAo.Data.Models.ThanhToan_HoaDon", "ThanhToan_HoaDon")
-                        .WithMany("HoaDonss")
-                        .HasForeignKey("ThanhToan_HoaDonMaPhuongThuc_HoaDon");
-
                     b.HasOne("HN120_ShopQuanAo.Data.Models.User", "User")
                         .WithMany("HoaDons")
                         .HasForeignKey("UserID");
@@ -983,8 +979,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasOne("HN120_ShopQuanAo.Data.Models.Voucher", "Voucher")
                         .WithMany("HoaDons")
                         .HasForeignKey("VoucherMaVoucher");
-
-                    b.Navigation("ThanhToan_HoaDon");
 
                     b.Navigation("User");
 
@@ -1021,13 +1015,19 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Navigation("ThuongHieu");
                 });
 
-            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThanhToan", b =>
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThanhToan_HoaDon", b =>
                 {
-                    b.HasOne("HN120_ShopQuanAo.Data.Models.ThanhToan_HoaDon", "ThanhToan_HoaDon")
-                        .WithMany("ThanhToanss")
-                        .HasForeignKey("ThanhToan_HoaDonMaPhuongThuc_HoaDon");
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.HoaDon", "HoaDon")
+                        .WithMany("ThanhToan_HoaDons")
+                        .HasForeignKey("HoaDonMaHoaDon");
 
-                    b.Navigation("ThanhToan_HoaDon");
+                    b.HasOne("HN120_ShopQuanAo.Data.Models.ThanhToan", "ThanhToan")
+                        .WithMany("ThanhToan_HoaDon")
+                        .HasForeignKey("ThanhToanMaPhuongThuc");
+
+                    b.Navigation("HoaDon");
+
+                    b.Navigation("ThanhToan");
                 });
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.User_Voucher", b =>
@@ -1127,6 +1127,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Navigation("HoaDonChiTiets");
 
                     b.Navigation("HoaDon_History");
+
+                    b.Navigation("ThanhToan_HoaDons");
                 });
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.KhuyenMai", b =>
@@ -1149,11 +1151,9 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Navigation("ChiTietSps");
                 });
 
-            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThanhToan_HoaDon", b =>
+            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ThanhToan", b =>
                 {
-                    b.Navigation("HoaDonss");
-
-                    b.Navigation("ThanhToanss");
+                    b.Navigation("ThanhToan_HoaDon");
                 });
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.TheLoai", b =>

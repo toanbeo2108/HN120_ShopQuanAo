@@ -11,13 +11,13 @@ namespace HN120_ShopQuanAo.Data.Models
 	public class ThanhToan_HoaDon
 	{
 		[Key] public string MaPhuongThuc_HoaDon { get; set; }
-        [ForeignKey("HoaDon")]public string? MaHoaDon { get; set; }
-		[ForeignKey("ThanhToan")] public string? MaPhuongThuc { get; set; }
+        public string? MaHoaDon { get; set; }
+		public string? MaPhuongThuc { get; set; }
         public string? MoTa { get; set; }
         public DateTime? NgayTao { get; set; }
         public DateTime? NgayThayDoi { get; set; }
         public int? TrangThai { get; set; }
-        public virtual List<ThanhToan>? ThanhToanss { get; set; }
-        public virtual List<HoaDon>? HoaDonss { get; set; }
+        public virtual ThanhToan? ThanhToan { get; set; }
+        public virtual HoaDon? HoaDon { get; set; }
 	}
 }

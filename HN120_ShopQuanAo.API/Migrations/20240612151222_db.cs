@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HN120_ShopQuanAo.API.Migrations
 {
-    public partial class db1 : Migration
+    public partial class db : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -125,12 +125,11 @@ namespace HN120_ShopQuanAo.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ThanhToan_HoaDon",
+                name: "ThanhToan",
                 columns: table => new
                 {
-                    MaPhuongThuc_HoaDon = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MaHoaDon = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MaPhuongThuc = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaPhuongThuc = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TenPhuongThuc = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NgayTao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     NgayThayDoi = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -138,7 +137,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ThanhToan_HoaDon", x => x.MaPhuongThuc_HoaDon);
+                    table.PrimaryKey("PK_ThanhToan", x => x.MaPhuongThuc);
                 });
 
             migrationBuilder.CreateTable(
@@ -339,28 +338,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ThanhToan",
-                columns: table => new
-                {
-                    MaPhuongThuc = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenPhuongThuc = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    NgayThayDoi = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    TrangThai = table.Column<int>(type: "int", nullable: true),
-                    ThanhToan_HoaDonMaPhuongThuc_HoaDon = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ThanhToan", x => x.MaPhuongThuc);
-                    table.ForeignKey(
-                        name: "FK_ThanhToan_ThanhToan_HoaDon_ThanhToan_HoaDonMaPhuongThuc_HoaDon",
-                        column: x => x.ThanhToan_HoaDonMaPhuongThuc_HoaDon,
-                        principalTable: "ThanhToan_HoaDon",
-                        principalColumn: "MaPhuongThuc_HoaDon");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SanPham",
                 columns: table => new
                 {
@@ -404,8 +381,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                     TongGiaTriHangHoa = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     PhuongThucThanhToan = table.Column<int>(type: "int", nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true),
-                    VoucherMaVoucher = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ThanhToan_HoaDonMaPhuongThuc_HoaDon = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    VoucherMaVoucher = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -415,11 +391,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                         column: x => x.UserID,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_HoaDon_ThanhToan_HoaDon_ThanhToan_HoaDonMaPhuongThuc_HoaDon",
-                        column: x => x.ThanhToan_HoaDonMaPhuongThuc_HoaDon,
-                        principalTable: "ThanhToan_HoaDon",
-                        principalColumn: "MaPhuongThuc_HoaDon");
                     table.ForeignKey(
                         name: "FK_HoaDon_Voucher_VoucherMaVoucher",
                         column: x => x.VoucherMaVoucher,
@@ -554,6 +525,35 @@ namespace HN120_ShopQuanAo.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ThanhToan_HoaDon",
+                columns: table => new
+                {
+                    MaPhuongThuc_HoaDon = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MaHoaDon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaPhuongThuc = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    NgayThayDoi = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TrangThai = table.Column<int>(type: "int", nullable: true),
+                    ThanhToanMaPhuongThuc = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    HoaDonMaHoaDon = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ThanhToan_HoaDon", x => x.MaPhuongThuc_HoaDon);
+                    table.ForeignKey(
+                        name: "FK_ThanhToan_HoaDon_HoaDon_HoaDonMaHoaDon",
+                        column: x => x.HoaDonMaHoaDon,
+                        principalTable: "HoaDon",
+                        principalColumn: "MaHoaDon");
+                    table.ForeignKey(
+                        name: "FK_ThanhToan_HoaDon_ThanhToan_ThanhToanMaPhuongThuc",
+                        column: x => x.ThanhToanMaPhuongThuc,
+                        principalTable: "ThanhToan",
+                        principalColumn: "MaPhuongThuc");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GioHangChiTiet",
                 columns: table => new
                 {
@@ -615,17 +615,17 @@ namespace HN120_ShopQuanAo.API.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "63efd9d6-34c8-4bff-a069-7e168c69245e", "873fdbcd-4e0b-4fa5-a5de-a1831587d18d", "User", "USER" });
+                values: new object[] { "7eefb2d4-87bd-49fa-9780-ed2847642b50", "91874859-4808-4d81-ac61-795aa86795ca", "User", "USER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "800a9542-f3ac-4a94-92c3-3445f1990568", "e5934d85-88fb-4feb-8f69-babf4ad3d70e", "Employee", "EMPLOYEE" });
+                values: new object[] { "bc642f12-74d8-4984-8526-03d24b5ce910", "7519cfc7-cf6f-4ffd-941b-815cb2866fd2", "Employee", "EMPLOYEE" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "d4bda03d-1521-4152-a813-3f1bd02f7c3e", "0de6124b-7733-46d9-9a25-85d0cb898b59", "Admin", "ADMIN" });
+                values: new object[] { "f6fb98c5-0523-4e3d-8078-a961996b1af2", "58b0beca-727f-45b5-bd84-350826c77fa4", "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -712,11 +712,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                 column: "GioHangMaGioHang");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HoaDon_ThanhToan_HoaDonMaPhuongThuc_HoaDon",
-                table: "HoaDon",
-                column: "ThanhToan_HoaDonMaPhuongThuc_HoaDon");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_HoaDon_UserID",
                 table: "HoaDon",
                 column: "UserID");
@@ -752,9 +747,14 @@ namespace HN120_ShopQuanAo.API.Migrations
                 column: "ThuongHieuMaThuongHieu");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ThanhToan_ThanhToan_HoaDonMaPhuongThuc_HoaDon",
-                table: "ThanhToan",
-                column: "ThanhToan_HoaDonMaPhuongThuc_HoaDon");
+                name: "IX_ThanhToan_HoaDon_HoaDonMaHoaDon",
+                table: "ThanhToan_HoaDon",
+                column: "HoaDonMaHoaDon");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ThanhToan_HoaDon_ThanhToanMaPhuongThuc",
+                table: "ThanhToan_HoaDon",
+                column: "ThanhToanMaPhuongThuc");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Voucher_UserID",
@@ -805,7 +805,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                 name: "HoaDonChiTiet");
 
             migrationBuilder.DropTable(
-                name: "ThanhToan");
+                name: "ThanhToan_HoaDon");
 
             migrationBuilder.DropTable(
                 name: "User_Voucher");
@@ -826,6 +826,9 @@ namespace HN120_ShopQuanAo.API.Migrations
                 name: "HoaDon");
 
             migrationBuilder.DropTable(
+                name: "ThanhToan");
+
+            migrationBuilder.DropTable(
                 name: "ChatLieu");
 
             migrationBuilder.DropTable(
@@ -842,9 +845,6 @@ namespace HN120_ShopQuanAo.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "ThanhToan_HoaDon");
 
             migrationBuilder.DropTable(
                 name: "Voucher");
