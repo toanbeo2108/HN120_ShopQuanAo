@@ -1,0 +1,52 @@
+﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.MauSac>
+
+@{
+    ViewData["Title"] = "AllMauSacManager";
+}
+
+<h1>AllMauSacManager</h1>
+
+<p>
+    <a asp-action="CreateMauSac" class="btn btn-primary">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MaMau)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TenMau)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MoTa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrangThai)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaMau)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenMau)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MoTa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrangThai)
+            </td>
+            <td>
+                            <a asp-action="UpdateMauSac" asp-route-id="@item.MaMau" class="btn status delivered">Update</a>
+                            <a asp-action="MauSacDetail" asp-route-id="@item.MaMau" class="btn status tamkhoa"> Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

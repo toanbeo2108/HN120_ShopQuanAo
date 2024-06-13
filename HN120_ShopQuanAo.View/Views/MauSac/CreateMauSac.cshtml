@@ -1,0 +1,48 @@
+﻿@model HN120_ShopQuanAo.Data.Models.MauSac
+
+@{
+    ViewData["Title"] = "CreateMauSac";
+}
+
+<h1>CreateMauSac</h1>
+
+<h4>MauSac</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateMauSac">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MaMau" class="control-label"></label>
+                <input asp-for="MaMau" class="form-control" />
+                <span asp-validation-for="MaMau" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TenMau" class="control-label"></label>
+                <input asp-for="TenMau" class="form-control" />
+                <span asp-validation-for="TenMau" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MoTa" class="control-label"></label>
+                <input asp-for="MoTa" class="form-control" />
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TrangThai" class="control-label"></label>
+                <input asp-for="TrangThai" class="form-control" />
+                <span asp-validation-for="TrangThai" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

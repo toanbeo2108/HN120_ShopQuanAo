@@ -32,10 +32,12 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.GetByID(id);
         }
         [HttpPost("add-TL")]
-        public async Task<bool> AddTL(string Matl, string? Tentl, string? MoTa, int? TrangThai)
+        public async Task<bool> AddTL( string? Tentl, string? MoTa, int? TrangThai)
         {
+            var theloais = await GetAllTheLoai();
+            int tlCount = theloais.Count() + 1;
             TheLoai b = new TheLoai();
-            b.MaTheLoai = Matl;
+            b.MaTheLoai = "TH" + tlCount.ToString();
             b.TenTheLoai = Tentl;
             b.MoTa = MoTa;
             b.TrangThai = TrangThai;

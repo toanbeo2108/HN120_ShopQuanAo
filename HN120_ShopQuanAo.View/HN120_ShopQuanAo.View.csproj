@@ -21,4 +21,8 @@
     <Folder Include="Areas\Customer\Views\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HN120_ShopQuanAo\HN120_ShopQuanAo.Data.csproj" />
+  </ItemGroup>
+
 </Project>
