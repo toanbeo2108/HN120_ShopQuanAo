@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
+
 namespace HN120_ShopQuanAo.View.Controllers
 {
 	public class HomeController : Controller
