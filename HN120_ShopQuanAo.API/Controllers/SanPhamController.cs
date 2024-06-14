@@ -33,14 +33,19 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.GetByID(id);
         }
         [HttpPost("add-TL")]
-        public async Task<bool> AddSP(string Masp, string? Tensp, string? MoTa, int? TongSoLuong, int? TrangThai)
+        public async Task<bool> AddSP( string? Tensp,string? MaThuongHieu,string? MaTheLoai, string? MoTa, int? TongSoLuong, int? TrangThai, string? UrlAvatar)
         {
+            var sizes = await GetAllSanPham();
+            int szCount = sizes.Count() + 1;
             SanPham b = new SanPham();
-            b.MaSp = Masp;
+            b.MaSp = "SP" + szCount.ToString();
             b.TenSP = Tensp;
+            b.MaThuongHieu = MaThuongHieu;
+            b.MaTheLoai = MaTheLoai;
             b.TongSoLuong = TongSoLuong;
             b.Mota = MoTa;
             b.TrangThai = TrangThai;
+            b.UrlAvatar = UrlAvatar;
             return await _irespon.CreateItem(b);
         }
         [HttpPut("update-SP/{id}")]

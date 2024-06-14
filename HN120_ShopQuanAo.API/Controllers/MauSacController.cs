@@ -32,10 +32,12 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.GetByID(id);
         }
         [HttpPost("add-MS")]
-        public async Task<bool> AddMS(string MaMau, string? TenMau, string? MoTa, int? TrangThai)
+        public async Task<bool> AddMS(string? TenMau, string? MoTa, int? TrangThai)
         {
+            var mausacs = await GetAllMauSac();
+            int msCount = mausacs.Count() + 1;
             MauSac b = new MauSac();
-            b.MaMau = MaMau;
+            b.MaMau = "TH" + msCount.ToString();
             b.TenMau = TenMau;
             b.MoTa = MoTa;
             b.TrangThai = TrangThai;

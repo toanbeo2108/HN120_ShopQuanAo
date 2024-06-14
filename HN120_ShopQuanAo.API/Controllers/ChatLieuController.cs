@@ -7,50 +7,51 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HN120_ShopQuanAo.API.Controllers
 {
-    [Route("api/Size")]
+    [Route("api/ChatLieu")]
     [ApiController]
-    public class SizeController : Controller
+    public class ChatLieuController : ControllerBase
     {
+        private readonly IAllResponsitories<ChatLieu> _irespon;
         private readonly IAllResponsitories<ChiTietSp> _iresponCTSP;
-        private readonly IAllResponsitories<Size> _irespon;
         AppDbContext _context = new AppDbContext();
-        public SizeController()
+        public ChatLieuController()
         {
+            _irespon = new AllResponsitories<ChatLieu>(_context, _context.ChatLieu);
             _iresponCTSP = new AllResponsitories<ChiTietSp>(_context, _context.ChiTietSp);
-            _irespon = new AllResponsitories<Size>(_context, _context.Size);
-
         }
+      
+        // GET: api/<MauSacController>
         [HttpGet("[Action]")]
-        public async Task<IEnumerable<Size>> GetAllSize()
+        public async Task<IEnumerable<ChatLieu>> GetAllChatLieu()
         {
             return await _irespon.GetAll();
         }
-        [HttpGet("GetSZByID/{id}")]
-        public async Task<Size> GetMSById(string id)
+        [HttpGet("GetMSByID/{id}")]
+        public async Task<ChatLieu> GetCLById(string id)
         {
             return await _irespon.GetByID(id);
         }
-        [HttpPost("add-SZ")]
-        public async Task<bool> AddSZ( string? Tensz, string? MoTa, int? TrangThai)
+        [HttpPost("add-TH")]
+        public async Task<bool> AddChatLieu(string? TenChatLieu, string? MoTa, int? TrangThai)
         {
-            var sizes = await GetAllSize();
-            int szCount = sizes.Count() + 1;
-            Size b = new Size();
-            b.MaSize = "TH" + szCount.ToString();
-            b.TenSize = Tensz;
+            var chatlieus = await GetAllChatLieu();
+            int clCount = chatlieus.Count() + 1;
+            ChatLieu b = new ChatLieu();
+            b.MaChatLieu = "TH" + clCount.ToString();
+            b.TenChatLieu = TenChatLieu;
             b.MoTa = MoTa;
             b.TrangThai = TrangThai;
             return await _irespon.CreateItem(b);
         }
-        [HttpPut("update-SZ/{id}")]
-        public async Task<bool> UpdateSZ(string id, [FromBody] Size _ctsp)
+        [HttpPut("update-TH/{id}")]
+        public async Task<bool> UpdateMS(string id, [FromBody] ChatLieu _ctsp)
         {
             var ctsp = await _irespon.GetAll();
-            var b = ctsp.FirstOrDefault(c => c.MaSize == id);
+            var b = ctsp.FirstOrDefault(c => c.MaChatLieu == id);
             if (b != null)
             {
 
-                b.TenSize = _ctsp.TenSize;
+                b.TenChatLieu = _ctsp.TenChatLieu;
                 b.MoTa = _ctsp.MoTa;
                 b.TrangThai = _ctsp.TrangThai;
                 return await _irespon.UpdateItem(b);
@@ -60,16 +61,17 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return false;
             }
         }
-        [HttpDelete("delete-sz/{id}")]
-        public async Task<bool> deleteSZ(string id)
+
+        [HttpDelete("delete-TH/{id}")]
+        public async Task<bool> deleteMS(string id)
         {
             var lstsp = await _irespon.GetAll();
-            var ms = lstsp.FirstOrDefault(c => c.MaSize == id);
+            var ms = lstsp.FirstOrDefault(c => c.MaChatLieu == id);
 
             if (ms != null)
             {
                 var lstspct = await _iresponCTSP.GetAll();
-                var dsspct = lstspct.Where(pd => pd.MaSize == ms.MaSize).ToList();
+                var dsspct = lstspct.Where(pd => pd.MaChatLieu == ms.MaChatLieu).ToList();
                 foreach (var t in dsspct)
                 {
                     await _iresponCTSP.DeleteItem(t);

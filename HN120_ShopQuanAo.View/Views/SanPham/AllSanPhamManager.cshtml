@@ -1,0 +1,76 @@
+﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.SanPham>
+
+@{
+    ViewData["Title"] = "AllSanPhamManager";
+}
+
+<h1>AllSanPhamManager</h1>
+
+<p>
+    <a asp-action="CreateSanPham" class="btn btn-primary">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MaSp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaThuongHieu)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaTheLoai)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UrlAvatar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TenSP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Mota)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TongSoLuong)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrangThai)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaSp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaThuongHieu)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaTheLoai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UrlAvatar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenSP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mota)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TongSoLuong)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrangThai)
+            </td>
+            <td>
+                            <a asp-action="SanPhamDetail" asp-route-id="@item.MaSp" class="btn status delivered">Update</a>
+                            <a asp-action="UpdateSanPham" asp-route-id="@item.MaSp" class="btn status tamkhoa"> Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

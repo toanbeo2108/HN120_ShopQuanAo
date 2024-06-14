@@ -1,0 +1,52 @@
+﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.KhuyenMai>
+
+@{
+    ViewData["Title"] = "AllKhuyenMaiManager";
+}
+
+<h1>AllKhuyenMaiManager</h1>
+
+<p>
+    <a asp-action="CreateKhuyenMai" class="btn btn-primary">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MaKhuyenMai)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TenKhuyenMai)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhanTramGiam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrangThai)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaKhuyenMai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenKhuyenMai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhanTramGiam)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrangThai)
+            </td>
+            <td>
+                           <a asp-action="KhuyenMaiDetail" asp-route-id="@item.MaKhuyenMai" class="btn status delivered">Update</a>
+                           <a asp-action="UpdateKhuyenMai" asp-route-id="@item.MaKhuyenMai" class="btn status tamkhoa"> Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
