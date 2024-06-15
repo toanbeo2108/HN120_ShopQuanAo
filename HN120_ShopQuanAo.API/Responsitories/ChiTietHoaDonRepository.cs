@@ -1,6 +1,7 @@
 ﻿using HN120_ShopQuanAo.API.Data;
 using HN120_ShopQuanAo.API.IResponsitories;
 using HN120_ShopQuanAo.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HN120_ShopQuanAo.API.Responsitories
 {
@@ -13,6 +14,8 @@ namespace HN120_ShopQuanAo.API.Responsitories
         }
         public void CreateCTHD(HoaDonChiTiet hdct)
         {
+            var totalHoaDonCT = _appDbContext.HoaDonChiTiet.Count();
+            hdct.MaHoaDonChiTiet = "HDCT" + (totalHoaDonCT + 1);
             var hoaDonExists = _appDbContext.HoaDon.FirstOrDefault(c => c.MaHoaDon == hdct.MaHoaDon);
             if (hoaDonExists == null)
             {
