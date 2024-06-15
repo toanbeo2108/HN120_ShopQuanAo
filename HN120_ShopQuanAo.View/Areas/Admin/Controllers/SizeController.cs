@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace HN120_ShopQuanAo.View.Controllers
+namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 {
     public class SizeController : Controller
     {
@@ -43,13 +43,13 @@ namespace HN120_ShopQuanAo.View.Controllers
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //bk.CreateDate = DateTime.Now;
-            var urlBook = $"https://localhost:7197/api/Size/add-SZ?Tensz={bk.TenSize}&MoTa={bk.MoTa}&TrangThai={bk.TrangThai}";
+            var urlBook = $"https://localhost:7197/api/Size/add-SZ?Tensz={bk.TenSize}&MoTa={bk.MoTa}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await httpClient.PostAsync(urlBook, content);
             if (respon.IsSuccessStatusCode)
             {
-                return RedirectToAction("AllSizeManager", "Size");
+                return RedirectToAction("AllSizeManager", "Size", new { area = "Admin" });
             }
             TempData["erro message"] = "thêm thất bại";
             return View();
@@ -104,7 +104,7 @@ namespace HN120_ShopQuanAo.View.Controllers
             }
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            return RedirectToAction("AllSizeManager", "Size");
+            return RedirectToAction("AllSizeManager", "Size", new { area = "Admin" });
 
         }
     }

@@ -27,13 +27,13 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             return await _irespon.GetAll();
         }
-        [HttpGet("GetSPByID/{id}")]
+        [HttpGet("[Action]/{id}")]
         public async Task<SanPham> GetSPById(string id)
         {
             return await _irespon.GetByID(id);
         }
-        [HttpPost("add-TL")]
-        public async Task<bool> AddSP( string? Tensp,string? MaThuongHieu,string? MaTheLoai, string? MoTa, int? TongSoLuong, int? TrangThai, string? UrlAvatar)
+        [HttpPost("[Action]")]
+        public async Task<bool> AddSP(string? Tensp, string? MaThuongHieu, string? MaTheLoai, string? MoTa, string? UrlAvatar)
         {
             var sizes = await GetAllSanPham();
             int szCount = sizes.Count() + 1;
@@ -42,24 +42,26 @@ namespace HN120_ShopQuanAo.API.Controllers
             b.TenSP = Tensp;
             b.MaThuongHieu = MaThuongHieu;
             b.MaTheLoai = MaTheLoai;
-            b.TongSoLuong = TongSoLuong;
+            b.TongSoLuong = 0;
             b.Mota = MoTa;
-            b.TrangThai = TrangThai;
+            b.TrangThai = 1;
             b.UrlAvatar = UrlAvatar;
             return await _irespon.CreateItem(b);
         }
-        [HttpPut("update-SP/{id}")]
-        public async Task<bool> UpdateSP(string id, [FromBody] SanPham _ctsp)
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateSP(string id, [FromBody] SanPham _sp)
         {
-            var ctsp = await _irespon.GetAll();
-            var b = ctsp.FirstOrDefault(c => c.MaSp == id);
+
+            var sp = await _irespon.GetAll();
+            var b = sp.FirstOrDefault(c => c.MaSp == id);
             if (b != null)
             {
 
-                b.TenSP = _ctsp.TenSP;
-                b.TongSoLuong = _ctsp.TongSoLuong;
-                b.Mota = _ctsp.Mota;
-                b.TrangThai = _ctsp.TrangThai;
+                b.TenSP = _sp.TenSP;
+                b.MaTheLoai = _sp.MaTheLoai;
+                b.MaThuongHieu = _sp.MaThuongHieu;
+                b.Mota = _sp.Mota;
+                b.TrangThai = _sp.TrangThai;
                 return await _irespon.UpdateItem(b);
             }
             else
@@ -67,7 +69,56 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return false;
             }
         }
-        [HttpDelete("delete-sp/{id}")]
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateQuantitySanPham(string id)
+        {
+
+            var sp = await _irespon.GetAll();
+            var b = sp.FirstOrDefault(c => c.MaSp == id);
+            var ctsp = await _iresponCTSP.GetAll();
+            var sp_ctsp = ctsp.Where(c => c.MaSp == id);
+            if (b != null)
+            {
+                b.TongSoLuong = sp_ctsp.Sum(p => p.SoLuongTon);
+                return await _irespon.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpPut("[Action]")]
+        public async Task<bool> UpdateQuantityAllSanPham()
+        {
+            var allsp = await _irespon.GetAll();
+            var ctsp = await _iresponCTSP.GetAll();
+            foreach (var item in allsp)
+            {
+                var masp = item.MaSp;
+
+                var sp_ctsp = ctsp.Where(c => c.MaSp == masp);
+                item.TongSoLuong = sp_ctsp.Sum(p => p.SoLuongTon);
+                await _irespon.UpdateItem(item);
+            }
+            return true;
+        }
+
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateStatusSanPham(string id, int? _ctsp)
+        {
+            var ctsp = await _irespon.GetAll();
+            var b = ctsp.FirstOrDefault(c => c.MaSp == id);
+            if (b != null)
+            {
+                b.TrangThai = _ctsp;
+                return await _irespon.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpDelete("[Action]/{id}")]
         public async Task<bool> deleteSP(string id)
         {
             var lstsp = await _irespon.GetAll();

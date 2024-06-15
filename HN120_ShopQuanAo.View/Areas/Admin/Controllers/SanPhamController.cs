@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace HN120_ShopQuanAo.View.Controllers
+namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 {
-    public class ChiTietSPController : Controller
+    public class SanPhamController : Controller
     {
         private HttpClient _httpClient;
-        public ChiTietSPController()
+        public SanPhamController()
         {
             _httpClient = new HttpClient();
         }
@@ -16,54 +16,61 @@ namespace HN120_ShopQuanAo.View.Controllers
         {
             return View();
         }
-        //https://localhost:7197/api/ChatLieu/GetAllChatLieu
-       
-        //https://localhost:7197/api/ChatLieu/update-TH/TH1
+        //https://localhost:7197/api/Size/GetAllSize
+        //https://localhost:7197/api/Size/add-SZ?Tensz=1&MoTa=1&TrangThai=1
+        //    https://localhost:7197/api/Size/update-SZ
         [HttpGet]
-        public async Task<IActionResult> AllChiTietSpManager()
+        public async Task<IActionResult> AllSanPhamManager()
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var urlBook = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+            var urlBook = $"https://localhost:7197/api/SanPham/GetAllSanPham";
             //var httpClient = new HttpClient();
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstBook = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDataBook);
+            var lstBook = JsonConvert.DeserializeObject<List<SanPham>>(apiDataBook);
             return View(lstBook);
         }
         [HttpGet]
-        public IActionResult CreateChiTietSp()
+        public IActionResult CreateSanPham()
         {
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateChiTietSp(ChiTietSp bk)
+        public async Task<IActionResult> CreateSanPham(SanPham bk, IFormFile imageFile)
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //bk.CreateDate = DateTime.Now;
-            var urlBook = $"https://localhost:7197/api/CTSanPham/add-CTSP?MaSp={bk.MaSp}&MaSize={bk.MaSize}&MaMau={bk.MaMau}&MaKhuyenMai={bk.MaKhuyenMai}&MaChatLieu={bk.MaChatLieu}&GiaBan={bk.GiaBan}&SoLuongTon={bk.SoLuongTon}&TrangThai={bk.TrangThai}";
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photoBooks", imageFile.FileName);
+                var stream = new FileStream(path, FileMode.Create);
+                imageFile.CopyTo(stream);
+                bk.UrlAvatar = imageFile.FileName;
+            }
+            var urlBook = $"https://localhost:7197/api/SanPham/add-TL?Tensp={bk.TenSP}&MaThuongHieu={bk.MaThuongHieu}&MaTheLoai={bk.MaTheLoai}&MoTa={bk.Mota}&UrlAvatar={bk.UrlAvatar}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await httpClient.PostAsync(urlBook, content);
             if (respon.IsSuccessStatusCode)
             {
-                return RedirectToAction("AllChiTietSpManager", "ChiTietSp");
+                return RedirectToAction("AllSanPhamManager", "SanPham", new { area = "Admin" });
             }
             TempData["erro message"] = "thêm thất bại";
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> ChiTietSpDetail(string id)
+        public async Task<IActionResult> SanPhamDetail(string id)
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var urlBook = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+            var urlBook = $"https://localhost:7197/api/SanPham/GetAllSanPham";
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstBook = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDataBook);
-            var Book = lstBook.FirstOrDefault(x => x.SKU == id);
+            var lstBook = JsonConvert.DeserializeObject<List<SanPham>>(apiDataBook);
+            var Book = lstBook.FirstOrDefault(x => x.MaSp == id);
             if (Book == null)
             {
                 return BadRequest();
@@ -74,15 +81,15 @@ namespace HN120_ShopQuanAo.View.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> UpdateChiTietSp(string id)
+        public async Task<IActionResult> UpdateSanPham(string id)
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var urlBook = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+            var urlBook = $"https://localhost:7197/api/SanPham/GetAllSanPham";
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstBook = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDataBook);
-            var Book = lstBook.FirstOrDefault(x => x.SKU == id);
+            var lstBook = JsonConvert.DeserializeObject<List<SanPham>>(apiDataBook);
+            var Book = lstBook.FirstOrDefault(x => x.MaSp == id);
             if (Book == null)
             {
                 return BadRequest();
@@ -93,9 +100,16 @@ namespace HN120_ShopQuanAo.View.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateChiTietSp(string id, ChiTietSp vc)
+        public async Task<IActionResult> UpdateSanPham(string id, SanPham vc, IFormFile imageFile)
         {
-            var urlBook = $"https://localhost:7197/api/CTSanPham/update-CTSP/{id}";
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photoBooks", imageFile.FileName);
+                var stream = new FileStream(path, FileMode.Create);
+                imageFile.CopyTo(stream);
+                vc.UrlAvatar = imageFile.FileName;
+            }
+            var urlBook = $"https://localhost:7197/api/SanPham/update-SP/{id}";
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)
@@ -104,7 +118,7 @@ namespace HN120_ShopQuanAo.View.Controllers
             }
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            return RedirectToAction("AllChiTietSpManager", "ChiTietSp");
+            return RedirectToAction("AllSanPhamManager", "SanPham", new { area = "Admin" });
 
         }
     }

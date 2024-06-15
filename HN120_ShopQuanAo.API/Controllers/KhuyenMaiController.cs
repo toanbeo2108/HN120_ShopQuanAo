@@ -27,13 +27,13 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.GetAll();
         }
         // GET: TheLoaiController
-        [HttpGet("GetTHByID/{id}")]
+        [HttpGet("[Action]/{id}")]
         public async Task<KhuyenMai> GetKMById(string id)
         {
             return await _irespon.GetByID(id);
         }
-        [HttpPost("add-TL")]
-        public async Task<bool> AddKM(string? TenKhuyenMai, float? PhanTramGiam, int? TrangThai)
+        [HttpPost("[Action]")]
+        public async Task<bool> AddKM(string? TenKhuyenMai, float? PhanTramGiam)
         {
             var khuyenmais = await GetAllKhuyenMai();
             int kmCount = khuyenmais.Count() + 1;
@@ -41,10 +41,10 @@ namespace HN120_ShopQuanAo.API.Controllers
             b.MaKhuyenMai = "KM" + kmCount.ToString();
             b.TenKhuyenMai = TenKhuyenMai;
             b.PhanTramGiam = PhanTramGiam;
-            b.TrangThai = TrangThai;
+            b.TrangThai = 1;
             return await _irespon.CreateItem(b);
         }
-        [HttpPut("update-TL/{id}")]
+        [HttpPut("[Action]/{id}")]
         public async Task<bool> UpdateTL(string id, [FromBody] KhuyenMai _ctsp)
         {
             var ctsp = await _irespon.GetAll();
@@ -56,6 +56,42 @@ namespace HN120_ShopQuanAo.API.Controllers
                 b.PhanTramGiam = _ctsp.PhanTramGiam;
                 b.TrangThai = _ctsp.TrangThai;
                 return await _irespon.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateStatusKhuyenMai(string id, int? _ctsp)
+        {
+            var ctsp = await _irespon.GetAll();
+            var b = ctsp.FirstOrDefault(c => c.MaKhuyenMai == id);
+            if (b != null)
+            {
+                b.TrangThai = _ctsp;
+                return await _irespon.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpDelete("[Action]/{id}")]
+        public async Task<bool> deleteKM(string id)
+        {
+            var lstsp = await _irespon.GetAll();
+            var ms = lstsp.FirstOrDefault(c => c.MaKhuyenMai == id);
+
+            if (ms != null)
+            {
+                var lstspct = await _iresponCTSP.GetAll();
+                var dsspct = lstspct.Where(pd => pd.MaMau == ms.MaKhuyenMai).ToList();
+                foreach (var t in dsspct)
+                {
+                    await _iresponCTSP.DeleteItem(t);
+                }
+                return await _irespon.DeleteItem(ms);
             }
             else
             {
