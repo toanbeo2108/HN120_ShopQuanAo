@@ -43,7 +43,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //bk.CreateDate = DateTime.Now;
-            var urlBook = $"https://localhost:7197/api/KhuyenMai/add-TL?TenKhuyenMai={bk.TenKhuyenMai}&PhanTramGiam={bk.PhanTramGiam}";
+            var urlBook = $"https://localhost:7197/api/KhuyenMai/AddKM?TenKhuyenMai={bk.TenKhuyenMai}&PhanTramGiam={bk.PhanTramGiam}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await httpClient.PostAsync(urlBook, content);
@@ -95,7 +95,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateKhuyenMai(string id, KhuyenMai vc)
         {
-            var urlBook = $"https://localhost:7197/api/KhuyenMai/update-TL/{id}";
+            var urlBook = $"https://localhost:7197/api/KhuyenMai/UpdateKM/{id}";
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)
