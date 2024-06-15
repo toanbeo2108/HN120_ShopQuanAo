@@ -1,0 +1,155 @@
+﻿@using HN120_ShopQuanAo.Data.Models
+@model IEnumerable<HN120_ShopQuanAo.Data.Models.HoaDon>
+
+@{
+    ViewData["Title"] = "Index";
+    // Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    IEnumerable<Voucher> lstvc = ViewBag.lstvc as IEnumerable<Voucher>;
+    IEnumerable<User> lstus = ViewBag.lstus  as IEnumerable<User>;
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="~/js/HoaDon.js"></script>
+<h1>Hóa Đơn</h1>
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+
+            <div class="card-header">              
+                <button class="btn btn-primary" type="button" id="btn_add">Thêm mới</button>
+            </div>
+            <div class="card-body">               
+            @if (Model.Any())
+            {
+                
+           
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã Voucher</th>
+                            <th>Ngày tạo</th>
+                            <th>Tên khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Phí ship</th>
+                            <th>Tổng giá trị</th>
+                            <th>phương thức thanh toán</th>
+                            <th>trạng thái</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 1;
+
+                        }
+                        @foreach (var item in Model)
+                        {
+
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.MaVoucher</td>
+                                <td>@item.NgayTaoDon</td>
+                                <td>@item.TenKhachHang</td>
+                                <td>@item.SoDienThoai</td>
+                                <td>@item.PhiShip</td>
+                                <td>@item.TongGiaTriHangHoa</td>
+                                <td>@item.PhuongThucThanhToan</td>
+                                @if (item.TrangThai == 1)
+                                {
+                                    <td>Đang Hoạt Động</td>
+                                }
+                                @if (item.TrangThai != 1)
+                                {
+                                    <td>Ngưng Hoạt Động</td>
+                                }
+                                <td>
+                                    <button class="btn btn-primary" type="button" id="btn_chitiet" data-id="@item.MaHoaDon">Xem Chi tiết</button>
+                                </td>
+
+                            </tr>
+                            i++;
+                        }
+                    </tbody>
+
+                </table>
+            }
+            else
+            {
+                <p>Không có dữ liệu.</p>
+            }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" id="pop">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <input id="btn_ma" style="display:none" class="form-control" type="text" />
+                </div>
+
+                <div class="col-md-12">
+                    <label for="btn_UserID">User Name</label>
+                    <input id="btn_UserID" class="form-control" type="text" />
+                </div>
+                <div class="col-md-12">
+                    <label for="btn_MaVoucher">Mã Voucher</label>
+                    <select id="btn_MaVoucher" class="form-select">
+
+                        @foreach (var item in lstvc)
+                        {
+
+                            <option value="@item.MaVoucher">@item.MaVoucher</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label for="btn_NgayTaoDon">Ngày tạo</label>
+                    <input id="btn_NgayTaoDon" class="form-control" type="text" />
+                </div>
+                <div class="col-md-12">
+                    <label for="btn_TenKhachHang">Tên khách hàng</label>
+                    <input id="btn_TenKhachHang" class="form-control" type="text" />
+                </div>  
+                <div class="col-md-12">
+                    <label for="btn_SoDienThoai">Số điện thoại</label>
+                    <input id="btn_SoDienThoai" class="form-control" type="text" />
+                </div>
+                <div class="col-md-12">
+                    <label for="btn_PhiShip">Phí ship</label>
+                    <input id="btn_PhiShip" class="form-control" type="text" />
+                </div>
+                <div class="col-md-12">
+                    <label for="btn_TongGiaTriHangHoa">Tổng tiền</label>
+                    <input id="btn_TongGiaTriHangHoa" class="form-control" type="text" />
+                </div>
+                <div class="col-md-12">
+                    <label for="btn_PhuongTTT">Phương thức thanh toán</label>
+                    <input id="btn_PhuongTTT" class="form-control" type="text" />
+                </div>
+                <div class="col-md-12">
+                    <label for="btn_Status">Trạng thái</label>
+                    <input id="btn_Status" class="form-control" type="text" />
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn_save">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
