@@ -7,7 +7,7 @@
 <h1>AllThuongHieuManager</h1>
 
 <p>
-    <a asp-action="CreateThuongHieu" class="btn btn-primary">Create New</a>
+    <a asp-action="CreateThuongHieu">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -42,10 +42,11 @@
             <td>
                 @Html.DisplayFor(modelItem => item.TrangThai)
             </td>
-            <td>
-                           <a asp-action="UpdateThuongHieu" asp-route-id="@item.MaThuongHieu" class="btn status delivered">Update</a>
-                           <a asp-action="ThuongHieuDetail" asp-route-id="@item.MaThuongHieu" class="btn status tamkhoa"> Details</a>
-            </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                <a asp-action="ThuongHieuDetail" asp-controller="ThuongHieu" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaThuongHieu">Chi Tiết</a>
+                <a asp-action="UpdateThuongHieu" asp-controller="ThuongHieu" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaThuongHieu">Sửa</a>    
+
+                </td>
         </tr>
 }
     </tbody>

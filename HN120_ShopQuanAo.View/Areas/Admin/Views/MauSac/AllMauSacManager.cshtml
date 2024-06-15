@@ -7,7 +7,7 @@
 <h1>AllMauSacManager</h1>
 
 <p>
-    <a asp-action="CreateMauSac" class="btn btn-primary">Create New</a>
+    <a asp-action="CreateMauSac">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -42,10 +42,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.TrangThai)
             </td>
-            <td>
-                            <a asp-action="UpdateMauSac" asp-route-id="@item.MaMau" class="btn status delivered">Update</a>
-                            <a asp-action="MauSacDetail" asp-route-id="@item.MaMau" class="btn status tamkhoa"> Details</a>
+            <td style="text-align : center; margin-bottom : 20px">
+                <a asp-action="MauSacDetail" asp-controller="MauSac" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaMau">Chi Tiết</a>
+                <a asp-action="UpdateMauSac" asp-controller="MauSac" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaMau">Sửa</a>    
+
             </td>
+            
         </tr>
 }
     </tbody>

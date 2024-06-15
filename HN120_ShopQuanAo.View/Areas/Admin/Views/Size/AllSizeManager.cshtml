@@ -7,7 +7,7 @@
 <h1>AllSizeManager</h1>
 
 <p>
-    <a asp-action="CreateSize" class="btn btn-primary">Create New</a>
+    <a asp-action="CreateSize">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -42,10 +42,11 @@
             <td>
                 @Html.DisplayFor(modelItem => item.TrangThai)
             </td>
-            <td>
-                           <a asp-action="UpdateSize" asp-route-id="@item.MaSize" class="btn status delivered">Update</a>
-                           <a asp-action="SizeDetail" asp-route-id="@item.MaSize" class="btn status tamkhoa"> Details</a>
-            </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                         <a asp-action="SizeDetail" asp-controller="Size" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaSize">Chi Tiết</a>
+                            <a asp-action="UpdateSize" asp-controller="Size" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaSize">Sửa</a>    
+
+                    </td>
         </tr>
 }
     </tbody>

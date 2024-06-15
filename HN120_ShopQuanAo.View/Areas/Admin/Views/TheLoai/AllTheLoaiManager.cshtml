@@ -7,7 +7,7 @@
 <h1>AllTheLoaiManager</h1>
 
 <p>
-    <a asp-action="CreateTheLoai" class="btn btn-primary">Create New</a>
+    <a asp-action="CreateTheLoai">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -42,10 +42,11 @@
             <td>
                 @Html.DisplayFor(modelItem => item.TrangThai)
             </td>
-            <td>
-                            <a asp-action="UpdateTheLoai" asp-route-id="@item.MaTheLoai" class="btn status delivered">Update</a>
-                            <a asp-action="TheLoaiDetail" asp-route-id="@item.MaTheLoai" class="btn status tamkhoa"> Details</a>
-            </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                <a asp-action="TheLoaiDetail" asp-controller="TheLoai" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaTheLoai">Chi Tiết</a>
+                <a asp-action="UpdateTheLoai" asp-controller="TheLoai" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaTheLoai">Sửa</a>    
+
+                </td>
         </tr>
 }
     </tbody>

@@ -43,7 +43,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //bk.CreateDate = DateTime.Now;
-            var urlBook = $"https://localhost:7197/api/CTSanPham/add-CTSP?MaSp={bk.MaSp}&MaSize={bk.MaSize}&MaMau={bk.MaMau}&MaKhuyenMai={bk.MaKhuyenMai}&MaChatLieu={bk.MaChatLieu}&GiaBan={bk.GiaBan}&SoLuongTon={bk.SoLuongTon}";
+            var urlBook = $"https://localhost:7197/api/CTSanPham/AddCTSP?MaSp={bk.MaSp}&MaSize={bk.MaSize}&MaMau={bk.MaMau}&MaKhuyenMai={bk.MaKhuyenMai}&MaChatLieu={bk.MaChatLieu}&GiaBan={bk.GiaBan}&SoLuongTon={bk.SoLuongTon}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await httpClient.PostAsync(urlBook, content);
@@ -95,7 +95,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateChiTietSp(string id, ChiTietSp vc)
         {
-            var urlBook = $"https://localhost:7197/api/CTSanPham/update-CTSP/{id}";
+            var urlBook = $"https://localhost:7197/api/CTSanPham/UpdateCTSP/{id}";
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)

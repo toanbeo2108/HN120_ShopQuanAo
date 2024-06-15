@@ -1,0 +1,60 @@
+﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.ChatLieu>
+
+@{
+    ViewData["Title"] = "AllChatLieuManager";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Quản Lý Chất Liệu</h1>
+
+<p>
+    <a asp-action="CreateChatLieu">Thêm Mới</a>
+</p>
+    <table class="table" id="page">
+            <thead>
+                <tr>
+
+                    <th style="text-align : center;">
+                        Tên Chất Liệu
+                    </th>
+
+                    <th style="text-align : center;">
+                        Mô tả
+                    </th>
+                    <th style="text-align : center;">
+                        Trạng Thái
+                    </th>
+                    <th></th>
+
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var item in Model)
+        {
+                        <tr>
+
+                            
+                            <td style="text-align : center; margin-bottom : 20px">
+                    @Html.DisplayFor(modelItem => item.TenChatLieu)
+                            </td>
+                            <td style="text-align : center; margin-bottom : 20px" class="tienv">
+                    @Html.DisplayFor(modelItem => item.MoTa)
+                            </td>
+                            
+                           <td style="text-align : center; margin-bottom : 20px">
+                    @Html.DisplayFor(modelItem => item.TrangThai )
+                            @*<div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="statusToggle_@item.MaChatLieu" @(item.TrangThai == 1 ? "checked" : "") onchange="toggleStatus('@item.MaChatLieu')">
+                                    <label class="form-check-label" for="statusToggle_@item.MaChatLieu">
+                                </label>
+                            </div>*@
+                        </td>
+                            <td style="text-align : center; margin-bottom : 20px">
+                                                <a asp-action="ChatLieuDetail" asp-controller="ChatLieu" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaChatLieu">Chi Tiết</a>
+                                                    <a asp-action="UpdateChatLieu" asp-controller="ChatLieu" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaChatLieu">Sửa</a>    
+                                    
+                            </td>
+                        </tr>
+        }
+            </tbody>
+        

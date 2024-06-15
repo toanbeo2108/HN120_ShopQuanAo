@@ -1,22 +1,20 @@
 ﻿@model HN120_ShopQuanAo.Data.Models.ChatLieu
 
 @{
-    ViewData["Title"] = "UpdateChatLieu";
+    ViewData["Title"] = "CreateChatLieu";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>UpdateChatLieu</h1>
+<h1>CreateChatLieu</h1>
 
 <h4>ChatLieu</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="UpdateChatLieu">
+        <form asp-action="CreateChatLieu">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="MaChatLieu" class="control-label"></label>
-                <input asp-for="MaChatLieu" class="form-control" />
-                <span asp-validation-for="MaChatLieu" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="TenChatLieu" class="control-label"></label>
                 <input asp-for="TenChatLieu" class="form-control" />
@@ -33,7 +31,7 @@
                 <span asp-validation-for="TrangThai" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
