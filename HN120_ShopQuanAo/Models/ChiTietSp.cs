@@ -16,7 +16,8 @@ namespace HN120_ShopQuanAo.Data.Models
 		public string? MaMau { get; set; }
 		public string? MaKhuyenMai { get; set; }
 		public string? MaChatLieu { get; set; }
-		public decimal? GiaBan { get; set; }
+		public string? UrlAnhSpct { get; set; }
+        public decimal? GiaBan { get; set; }
 		public int? SoLuongTon { get; set; }
 		public int? TrangThai { get; set; }
 
