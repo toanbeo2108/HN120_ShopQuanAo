@@ -25,24 +25,24 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             return await _irespon.GetAll();
         }
-        [HttpGet("GetSZByID/{id}")]
+        [HttpGet("[Action]/{id}")]
         public async Task<Size> GetMSById(string id)
         {
             return await _irespon.GetByID(id);
         }
-        [HttpPost("add-SZ")]
-        public async Task<bool> AddSZ( string? Tensz, string? MoTa, int? TrangThai)
+        [HttpPost("[Action]")]
+        public async Task<bool> AddSZ(string? Tensz, string? MoTa)
         {
             var sizes = await GetAllSize();
             int szCount = sizes.Count() + 1;
             Size b = new Size();
-            b.MaSize = "TH" + szCount.ToString();
+            b.MaSize = "SZ" + szCount.ToString();
             b.TenSize = Tensz;
             b.MoTa = MoTa;
-            b.TrangThai = TrangThai;
+            b.TrangThai = 1;
             return await _irespon.CreateItem(b);
         }
-        [HttpPut("update-SZ/{id}")]
+        [HttpPut("[Action]/{id}")]
         public async Task<bool> UpdateSZ(string id, [FromBody] Size _ctsp)
         {
             var ctsp = await _irespon.GetAll();
@@ -60,7 +60,22 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return false;
             }
         }
-        [HttpDelete("delete-sz/{id}")]
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateStatusSize(string id, int? _ctsp)
+        {
+            var ctsp = await _irespon.GetAll();
+            var b = ctsp.FirstOrDefault(c => c.MaSize == id);
+            if (b != null)
+            {
+                b.TrangThai = _ctsp;
+                return await _irespon.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpDelete("[Action]/{id}")]
         public async Task<bool> deleteSZ(string id)
         {
             var lstsp = await _irespon.GetAll();

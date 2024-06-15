@@ -26,24 +26,24 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             return await _irespon.GetAll();
         }
-        [HttpGet("GetMSByID/{id}")]
+        [HttpGet("[Action]/{id}")]
         public async Task<MauSac> GetMSById(string id)
         {
             return await _irespon.GetByID(id);
         }
-        [HttpPost("add-MS")]
-        public async Task<bool> AddMS(string? TenMau, string? MoTa, int? TrangThai)
+        [HttpPost("[Action]")]
+        public async Task<bool> AddMS(string? TenMau, string? MoTa)
         {
             var mausacs = await GetAllMauSac();
             int msCount = mausacs.Count() + 1;
             MauSac b = new MauSac();
-            b.MaMau = "TH" + msCount.ToString();
+            b.MaMau = "MS" + msCount.ToString();
             b.TenMau = TenMau;
             b.MoTa = MoTa;
-            b.TrangThai = TrangThai;
+            b.TrangThai = 1;
             return await _irespon.CreateItem(b);
         }
-        [HttpPut("update-MS/{id}")]
+        [HttpPut("[Action]/{id}")]
         public async Task<bool> UpdateMS(string id, [FromBody] MauSac _ctsp)
         {
             var ctsp = await _irespon.GetAll();
@@ -61,8 +61,22 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return false;
             }
         }
-
-        [HttpDelete("delete-ms/{id}")]
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateStatusMauSac(string id, int? _ctsp)
+        {
+            var ctsp = await _irespon.GetAll();
+            var b = ctsp.FirstOrDefault(c => c.MaMau == id);
+            if (b != null)
+            {
+                b.TrangThai = _ctsp;
+                return await _irespon.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpDelete("[Action]/{id}")]
         public async Task<bool> deleteMS(string id)
         {
             var lstsp = await _irespon.GetAll();

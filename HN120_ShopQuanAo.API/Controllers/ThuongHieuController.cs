@@ -12,11 +12,13 @@ namespace HN120_ShopQuanAo.API.Controllers
     public class ThuongHieuController : ControllerBase
     {
         private readonly IAllResponsitories<ThuongHieu> _irespon;
+        private readonly IAllResponsitories<SanPham> _iresponSP;
+
         AppDbContext _context = new AppDbContext();
         public ThuongHieuController()
         {
             _irespon = new AllResponsitories<ThuongHieu>(_context, _context.ThuongHieu);
-
+            _iresponSP = new AllResponsitories<SanPham>(_context, _context.SanPham);
         }
         [HttpGet("[Action]")]
         public async Task<IEnumerable<ThuongHieu>> GetAllThuongHieu()
@@ -24,13 +26,13 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.GetAll();
         }
         // GET: TheLoaiController
-        [HttpGet("GetTHByID/{id}")]
+        [HttpGet("[Action]/{id}")]
         public async Task<ThuongHieu> GetTHById(string id)
         {
             return await _irespon.GetByID(id);
         }
-        [HttpPost("add-TL")]
-        public async Task<bool> AddTH(string? Tenth, string? MoTa, int? TrangThai)
+        [HttpPost("[Action]")]
+        public async Task<bool> AddThuongHieu(string? Tenth, string? MoTa)
         {
             var thuonghieus = await GetAllThuongHieu();
             int thCount = thuonghieus.Count() + 1;
@@ -38,11 +40,11 @@ namespace HN120_ShopQuanAo.API.Controllers
             b.MaThuongHieu = "TH" + thCount.ToString();
             b.TenThuongHieu = Tenth;
             b.MoTa = MoTa;
-            b.TrangThai = TrangThai;
+            b.TrangThai = 1;
             return await _irespon.CreateItem(b);
         }
-        [HttpPut("update-TL/{id}")]
-        public async Task<bool> UpdateTL(string id, [FromBody] ThuongHieu _ctsp)
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateThuongHieu(string id, [FromBody] ThuongHieu _ctsp)
         {
             var ctsp = await _irespon.GetAll();
             var b = ctsp.FirstOrDefault(c => c.MaThuongHieu == id);
@@ -53,6 +55,42 @@ namespace HN120_ShopQuanAo.API.Controllers
                 b.MoTa = _ctsp.MoTa;
                 b.TrangThai = _ctsp.TrangThai;
                 return await _irespon.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateStatusThuongHieu(string id, int? _ctsp)
+        {
+            var ctsp = await _irespon.GetAll();
+            var b = ctsp.FirstOrDefault(c => c.MaThuongHieu == id);
+            if (b != null)
+            {
+                b.TrangThai = _ctsp;
+                return await _irespon.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpDelete("[Action]/{id}")]
+        public async Task<bool> deleteThuongHieu(string id)
+        {
+            var lstsp = await _irespon.GetAll();
+            var ms = lstsp.FirstOrDefault(c => c.MaThuongHieu == id);
+
+            if (ms != null)
+            {
+                var lstspct = await _iresponSP.GetAll();
+                var dsspct = lstspct.Where(pd => pd.MaThuongHieu == ms.MaThuongHieu).ToList();
+                foreach (var t in dsspct)
+                {
+                    await _iresponSP.DeleteItem(t);
+                }
+                return await _irespon.DeleteItem(ms);
             }
             else
             {

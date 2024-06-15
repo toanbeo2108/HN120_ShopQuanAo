@@ -1,15 +1,16 @@
-﻿using HN120_ShopQuanAo.Data.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Net.Http;
+using HN120_ShopQuanAo.Data.Models;
 using System.Text;
 
-namespace HN120_ShopQuanAo.View.Controllers
+namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 {
-    public class MauSacController : Controller
+    public class ChatLieuController : Controller
     {
         private HttpClient _httpClient;
-        public MauSacController()
+        public ChatLieuController()
         {
             _httpClient = new HttpClient();
         }
@@ -17,54 +18,54 @@ namespace HN120_ShopQuanAo.View.Controllers
         {
             return View();
         }
-        //https://localhost:7197/api/MauSac/GetAllMauSac
-        //https://localhost:7197/api/MauSac/add-MS?TenMau=1&MoTa=1&TrangThai=1
-        //    https://localhost:7197/api/MauSac/update-MS
+        //https://localhost:7197/api/ChatLieu/GetAllChatLieu
+        //https://localhost:7197/api/ChatLieu/add-TH?TenChatLieu=vai&MoTa=1&TrangThai=1
+        //https://localhost:7197/api/ChatLieu/update-TH/TH1
         [HttpGet]
-        public async Task<IActionResult> AllMauSacManager()
+        public async Task<IActionResult> AllChatLieuManager()
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var urlBook = $"https://localhost:7197/api/MauSac/GetAllMauSac";
+            var urlBook = $"https://localhost:7197/api/ChatLieu/GetAllChatLieu";
             //var httpClient = new HttpClient();
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstBook = JsonConvert.DeserializeObject<List<MauSac>>(apiDataBook);
+            var lstBook = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataBook);
             return View(lstBook);
         }
         [HttpGet]
-        public IActionResult CreateMauSac()
+        public IActionResult CreateChatLieu()
         {
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateMauSac(MauSac bk)
+        public async Task<IActionResult> CreateChatLieu(ChatLieu bk)
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //bk.CreateDate = DateTime.Now;
-            var urlBook = $"https://localhost:7197/api/MauSac/add-MS?TenMau={bk.TenMau}&MoTa={bk.MoTa}&TrangThai={bk.TrangThai}";
+            var urlBook = $"https://localhost:7197/api/ChatLieu/add-TH?TenChatLieu={bk.TenChatLieu}&MoTa={bk.MoTa}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await httpClient.PostAsync(urlBook, content);
             if (respon.IsSuccessStatusCode)
             {
-                return RedirectToAction("AllMauSacManager", "MauSac");
+                return RedirectToAction("AllChatLieuManager", "ChatLieu", new { area = "Admin" });
             }
             TempData["erro message"] = "thêm thất bại";
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> MauSacDetail(string id)
+        public async Task<IActionResult> ChatLieuDetail(string id)
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var urlBook = $"https://localhost:7197/api/MauSac/GetAllMauSac";
+            var urlBook = $"https://localhost:7197/api/ChatLieu/GetAllChatLieu";
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstBook = JsonConvert.DeserializeObject<List<MauSac>>(apiDataBook);
-            var Book = lstBook.FirstOrDefault(x => x.MaMau == id);
+            var lstBook = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataBook);
+            var Book = lstBook.FirstOrDefault(x => x.MaChatLieu == id);
             if (Book == null)
             {
                 return BadRequest();
@@ -75,15 +76,15 @@ namespace HN120_ShopQuanAo.View.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> UpdateMauSac(string id)
+        public async Task<IActionResult> UpdateChatLieu(string id)
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var urlBook = $"https://localhost:7197/api/MauSac/GetAllMauSac";
+            var urlBook = $"https://localhost:7197/api/ChatLieu/GetAllChatLieu";
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstBook = JsonConvert.DeserializeObject<List<MauSac>>(apiDataBook);
-            var Book = lstBook.FirstOrDefault(x => x.MaMau == id);
+            var lstBook = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataBook);
+            var Book = lstBook.FirstOrDefault(x => x.MaChatLieu == id);
             if (Book == null)
             {
                 return BadRequest();
@@ -94,9 +95,9 @@ namespace HN120_ShopQuanAo.View.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateMauSac(string id, MauSac vc)
+        public async Task<IActionResult> UpdateChatLieu(string id, ChatLieu vc)
         {
-            var urlBook = $"https://localhost:7197/api/MauSac/update-MS/{id}";
+            var urlBook = $"https://localhost:7197/api/ChatLieu/update-TH/{id}";
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)
@@ -105,7 +106,7 @@ namespace HN120_ShopQuanAo.View.Controllers
             }
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            return RedirectToAction("AllMauSacManager", "MauSac");
+            return RedirectToAction("AllChatLieuManager", "ChatLieu", new { area = "Admin" });
 
         }
     }
