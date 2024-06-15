@@ -1,45 +1,42 @@
 ﻿using HN120_ShopQuanAo.API.Service.IServices;
 using HN120_ShopQuanAo.Data.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HN120_ShopQuanAo.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ChiTietHoaDonController : ControllerBase
+    public class VoucherController : Controller
     {
-        private readonly IChiTietHoaDonService _sv;
-        public ChiTietHoaDonController(IChiTietHoaDonService sv)
+        private readonly IVoucherServices _sv;
+        public VoucherController(IVoucherServices svi)
         {
-            _sv = sv;
+            _sv = svi;
         }
         [HttpGet("[Action]")]
-        public IActionResult GetAll()
+        public IActionResult GetAllVoucher()
         {
-            var hdct = _sv.GetAllHoaDonChiTiet();
-            return Ok(hdct);
+            var vc = _sv.GetAllVoucher();
+            return Ok(vc);
         }
+
         [HttpGet("[Action]/{ma}")]
-        public IActionResult GetByMa(string ma)
+        public IActionResult GetByVCMa(string ma)
         {
             try
             {
-                var hdct = _sv.GetHoaDonChiTietByMa(ma);
-                return Ok(hdct);
+                var vc = _sv.GetVoucherByMa(ma);
+                return Ok(vc);
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
         }
         [HttpPost("[Action]")]
-        public IActionResult CreateHDCT(HoaDonChiTiet hoaDonCT)
+        public IActionResult CreateVCher(Voucher vc)
         {
             try
             {
-                _sv.CreateCTHD(hoaDonCT);
+                _sv.CreateVoucher(vc);
                 return Ok();
             }
             catch (Exception ex)
@@ -48,12 +45,13 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPut("[Action]")]
-        public IActionResult Update(HoaDonChiTiet hdct)
+        public IActionResult UpdateVCher(Voucher vc)
         {
             try
             {
-                _sv.UpdateCTHD(hdct);
+                _sv.UpdateVoucher(vc);
                 return Ok();
             }
             catch (Exception ex)
@@ -63,11 +61,11 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
         }
         [HttpDelete("[Action]/{ma}")]
-        public IActionResult Delete(string ma)
+        public IActionResult DeleteVcher(string ma)
         {
             try
             {
-                _sv.DeleteCTHD(ma);
+                _sv.DeleteVoucher(ma);
                 return Ok();
             }
             catch (Exception ex)
@@ -76,6 +74,5 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

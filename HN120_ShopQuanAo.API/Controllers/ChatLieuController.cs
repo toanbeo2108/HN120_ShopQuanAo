@@ -19,32 +19,32 @@ namespace HN120_ShopQuanAo.API.Controllers
             _irespon = new AllResponsitories<ChatLieu>(_context, _context.ChatLieu);
             _iresponCTSP = new AllResponsitories<ChiTietSp>(_context, _context.ChiTietSp);
         }
-      
+
         // GET: api/<MauSacController>
         [HttpGet("[Action]")]
         public async Task<IEnumerable<ChatLieu>> GetAllChatLieu()
         {
             return await _irespon.GetAll();
         }
-        [HttpGet("GetMSByID/{id}")]
+        [HttpGet("[Action]/{id}")]
         public async Task<ChatLieu> GetCLById(string id)
         {
             return await _irespon.GetByID(id);
         }
-        [HttpPost("add-TH")]
-        public async Task<bool> AddChatLieu(string? TenChatLieu, string? MoTa, int? TrangThai)
+        [HttpPost("[Action]")]
+        public async Task<bool> AddChatLieu(string? TenChatLieu, string? MoTa)
         {
             var chatlieus = await GetAllChatLieu();
             int clCount = chatlieus.Count() + 1;
             ChatLieu b = new ChatLieu();
-            b.MaChatLieu = "TH" + clCount.ToString();
+            b.MaChatLieu = "CL" + clCount.ToString();
             b.TenChatLieu = TenChatLieu;
             b.MoTa = MoTa;
-            b.TrangThai = TrangThai;
+            b.TrangThai = 1;
             return await _irespon.CreateItem(b);
         }
-        [HttpPut("update-TH/{id}")]
-        public async Task<bool> UpdateMS(string id, [FromBody] ChatLieu _ctsp)
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateChatLieu(string id, [FromBody] ChatLieu _ctsp)
         {
             var ctsp = await _irespon.GetAll();
             var b = ctsp.FirstOrDefault(c => c.MaChatLieu == id);
@@ -61,9 +61,23 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return false;
             }
         }
-
-        [HttpDelete("delete-TH/{id}")]
-        public async Task<bool> deleteMS(string id)
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateStatusChatLieu(string id, int? _ctsp)
+        {
+            var ctsp = await _irespon.GetAll();
+            var b = ctsp.FirstOrDefault(c => c.MaChatLieu == id);
+            if (b != null)
+            {
+                b.TrangThai = _ctsp;
+                return await _irespon.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpDelete("[Action]/{id}")]
+        public async Task<bool> deleteChatLieu(string id)
         {
             var lstsp = await _irespon.GetAll();
             var ms = lstsp.FirstOrDefault(c => c.MaChatLieu == id);

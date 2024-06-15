@@ -16,14 +16,14 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             _sv = sv;
         }
-        [HttpGet]
-        public IActionResult GetAllHoDon()
+        [HttpGet("[Action]")]
+        public IActionResult GetAllHoaDon()
         {
             var hoadon = _sv.GetAllHoaDon();
             return Ok(hoadon);
         }
-        [HttpGet("ma:string")]
-        public IActionResult GetAllHoDonMa(string ma)
+        [HttpGet("[Action]/{ma}")]
+        public IActionResult GetAllHoaDonMa(string ma)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace HN120_ShopQuanAo.API.Controllers
 
 
         }
-        [HttpPost]
+        [HttpPost("[Action]")]
         public IActionResult CreateHoaDon(HoaDon hoaDon)
         {
             try
@@ -53,7 +53,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
 
         }
-        [HttpPut]
+        [HttpPut("[Action]")]
         public IActionResult UpdateHoaDon(HoaDon hoaDon)
         {
             try
@@ -69,7 +69,7 @@ namespace HN120_ShopQuanAo.API.Controllers
 
 
         }
-        [HttpDelete("ma:string")]
+        [HttpDelete("[Action]/{ma}")]
         public IActionResult DeleteHoaDon(string ma)
         {
             try

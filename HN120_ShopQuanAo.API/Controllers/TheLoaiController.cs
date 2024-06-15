@@ -26,24 +26,24 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.GetAll();
         }
         // GET: TheLoaiController
-        [HttpGet("GetTLByID/{id}")]
+        [HttpGet("[Action]/{id}")]
         public async Task<TheLoai> GetTLById(string id)
         {
             return await _irespon.GetByID(id);
         }
-        [HttpPost("add-TL")]
-        public async Task<bool> AddTL( string? Tentl, string? MoTa, int? TrangThai)
+        [HttpPost("[Action]")]
+        public async Task<bool> AddTL(string? Tentl, string? MoTa)
         {
             var theloais = await GetAllTheLoai();
             int tlCount = theloais.Count() + 1;
             TheLoai b = new TheLoai();
-            b.MaTheLoai = "TH" + tlCount.ToString();
+            b.MaTheLoai = "TL" + tlCount.ToString();
             b.TenTheLoai = Tentl;
             b.MoTa = MoTa;
-            b.TrangThai = TrangThai;
+            b.TrangThai = 1;
             return await _irespon.CreateItem(b);
         }
-        [HttpPut("update-TL/{id}")]
+        [HttpPut("[Action]/{id}")]
         public async Task<bool> UpdateTL(string id, [FromBody] TheLoai _ctsp)
         {
             var ctsp = await _irespon.GetAll();
@@ -61,7 +61,22 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return false;
             }
         }
-        [HttpDelete("delete-tl/{id}")]
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateStatusTheLoai(string id, int? _ctsp)
+        {
+            var ctsp = await _irespon.GetAll();
+            var b = ctsp.FirstOrDefault(c => c.MaTheLoai == id);
+            if (b != null)
+            {
+                b.TrangThai = _ctsp;
+                return await _irespon.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpDelete("[Action]/{id}")]
         public async Task<bool> deleteTL(string id)
         {
             var lstsp = await _irespon.GetAll();

@@ -28,28 +28,35 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             return await _iresponCTSP.GetAll();
         }
-        [HttpGet("GetCTSPByID/{id}")]
+        [HttpGet("[Action]/{id}")]
         public async Task<ChiTietSp> GetCTSPById(string id)
         {
             return await _iresponCTSP.GetByID(id);
         }
-        [HttpPost("add-CTSP")]
-        public async Task<bool> AddCTSP( string? MaSp, string? MaSize, string? MaMau,string? MaKhuyenMai,string? MaChatLieu, decimal? GiaBan, int? SoLuongTon, int? TrangThai)
+        [HttpPost("[Action]")]
+        public async Task<bool> AddCTSP(string? MaSp, string? MaSize, string? MaMau, string? MaKhuyenMai, string? MaChatLieu, decimal? GiaBan, int? SoLuongTon)
         {
             ChiTietSp b = new ChiTietSp();
-            
+
             b.MaSp = MaSp;
             b.MaMau = MaMau;
             b.MaSize = MaSize;
             b.MaKhuyenMai = MaKhuyenMai;
             b.MaChatLieu = MaChatLieu;
-            b.SKU = MaSp+MaMau+MaSize+MaKhuyenMai+MaChatLieu;
+            b.SKU = MaSp + MaMau + MaSize + MaKhuyenMai + MaChatLieu;
             b.GiaBan = GiaBan;
             b.SoLuongTon = SoLuongTon;
-            b.TrangThai = TrangThai;
+            if (b.SoLuongTon == 0)
+            {
+                b.TrangThai = 0;
+            }
+            if (b.SoLuongTon > 0)
+            {
+                b.TrangThai = 1;
+            }
             return await _iresponCTSP.CreateItem(b);
         }
-        [HttpPut("update-CTSP/{id}")]
+        [HttpPut("[Action]/{id}")]
         public async Task<bool> UpdateCTSP(string id, [FromBody] ChiTietSp _ctsp)
         {
             var ctsp = await _iresponCTSP.GetAll();
@@ -57,14 +64,20 @@ namespace HN120_ShopQuanAo.API.Controllers
             if (b != null)
             {
 
-                b.MaSp = _ctsp.MaSp;
-                b.MaMau = _ctsp.MaMau;
-                b.MaSize = _ctsp.MaSize;
+
                 b.MaKhuyenMai = _ctsp.MaKhuyenMai;
-                b.MaChatLieu= _ctsp.MaChatLieu;
+                b.MaChatLieu = _ctsp.MaChatLieu;
                 b.GiaBan = _ctsp.GiaBan;
                 b.SoLuongTon = _ctsp.SoLuongTon;
-                b.TrangThai = _ctsp.TrangThai;
+                if (b.SoLuongTon == 0)
+                {
+                    b.TrangThai = 0;
+                }
+                if (b.SoLuongTon > 0)
+                {
+                    b.TrangThai = 1;
+                }
+
                 return await _iresponCTSP.UpdateItem(b);
             }
             else
@@ -72,8 +85,23 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return false;
             }
         }
-        [HttpDelete("delete-CTSP/{id}")]
-        public async Task<bool> deleteBook(string id)
+        [HttpPut("[Action]/{id}")]
+        public async Task<bool> UpdateStatusCTSanPham(string id, int? _ctsp)
+        {
+            var ctsp = await _iresponCTSP.GetAll();
+            var b = ctsp.FirstOrDefault(c => c.SKU == id);
+            if (b != null)
+            {
+                b.TrangThai = _ctsp;
+                return await _iresponCTSP.UpdateItem(b);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        [HttpDelete("[Action]/{id}")]
+        public async Task<bool> deleteCTSP(string id)
         {
             var listBook = await _iresponCTSP.GetAll();
             var re = listBook.FirstOrDefault(c => c.SKU == id);
