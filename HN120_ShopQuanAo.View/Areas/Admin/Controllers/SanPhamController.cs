@@ -22,18 +22,47 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> AllSanPhamManager()
         {
+            var urlTL = $"https://localhost:7197/api/TheLoai/GetAllTheLoai";
+            //var httpClient = new HttpClient();
+            var responTL = await _httpClient.GetAsync(urlTL);
+            string apiDataTL = await responTL.Content.ReadAsStringAsync();
+            var lstTL = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataTL);
+            ViewBag.lstTL = lstTL;
+
+            var urlTH = $"https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
+            //var httpClient = new HttpClient();
+            var responTH = await _httpClient.GetAsync(urlTH);
+            string apiDataTH = await responTH.Content.ReadAsStringAsync();
+            var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
+            ViewBag.lstTH = lstTH;
+
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var urlBook = $"https://localhost:7197/api/SanPham/GetAllSanPham";
             //var httpClient = new HttpClient();
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstBook = JsonConvert.DeserializeObject<List<SanPham>>(apiDataBook);
-            return View(lstBook);
+            var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apiDataBook);
+            ViewBag.lstSP = lstSP;
+            return View(lstSP);
         }
         [HttpGet]
-        public IActionResult CreateSanPham()
+        public async Task<IActionResult> CreateSanPham()
         {
+            var urlTL = $"https://localhost:7197/api/TheLoai/GetAllTheLoai";
+            //var httpClient = new HttpClient();
+            var responTL = await _httpClient.GetAsync(urlTL);
+            string apiDataTL = await responTL.Content.ReadAsStringAsync();
+            var lstTL = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataTL);
+            ViewBag.lstTL = lstTL;
+
+            var urlTH = $"https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
+            //var httpClient = new HttpClient();
+            var responTH = await _httpClient.GetAsync(urlTH);
+            string apiDataTH = await responTH.Content.ReadAsStringAsync();
+            var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
+            ViewBag.lstTH = lstTH;
+
             return View();
         }
         [HttpPost]
@@ -50,7 +79,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 imageFile.CopyTo(stream);
                 bk.UrlAvatar = imageFile.FileName;
             }
-            var urlBook = $"https://localhost:7197/api/SanPham/add-TL?Tensp={bk.TenSP}&MaThuongHieu={bk.MaThuongHieu}&MaTheLoai={bk.MaTheLoai}&MoTa={bk.Mota}&UrlAvatar={bk.UrlAvatar}";
+            var urlBook = $"https://localhost:7197/api/SanPham/AddSP?Tensp={bk.TenSP}&MaThuongHieu={bk.MaThuongHieu}&MaTheLoai={bk.MaTheLoai}&MoTa={bk.Mota}&UrlAvatar={bk.UrlAvatar}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await httpClient.PostAsync(urlBook, content);
@@ -104,12 +133,12 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         {
             if (imageFile != null && imageFile.Length > 0)
             {
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photoBooks", imageFile.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photoSanPham", imageFile.FileName);
                 var stream = new FileStream(path, FileMode.Create);
                 imageFile.CopyTo(stream);
                 vc.UrlAvatar = imageFile.FileName;
             }
-            var urlBook = $"https://localhost:7197/api/SanPham/update-SP/{id}";
+            var urlBook = $"https://localhost:7197/api/SanPham/UpdateSP/{id}";
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)
