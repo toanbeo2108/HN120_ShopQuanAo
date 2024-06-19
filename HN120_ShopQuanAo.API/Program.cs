@@ -25,6 +25,8 @@ builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
 builder.Services.AddScoped<IChiTietHoaDonRepository, ChiTietHoaDonRepository>();
 builder.Services.AddScoped<IChiTietHoaDonService, ChiTietHoaDonService>();
 builder.Services.AddScoped<IHoaDonService, HoaDonService>();
+builder.Services.AddScoped<IVoucherServices, VoucherServices>();
+builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 
 // Add Identity
 builder.Services.AddIdentity<User, IdentityRole>()

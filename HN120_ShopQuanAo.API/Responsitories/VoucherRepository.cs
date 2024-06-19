@@ -18,7 +18,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
             var voucher = _context.Voucher.FirstOrDefault(c => c.MaVoucher == vc.MaVoucher);
             if (voucher != null)
             {
-                throw new Exception("Hóa đơn đã tồn tại");
+                throw new Exception("VC đã tồn tại");
             }
             _context.Voucher.Add(vc);
             _context.SaveChanges();

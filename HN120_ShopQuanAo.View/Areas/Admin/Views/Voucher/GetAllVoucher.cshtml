@@ -1,0 +1,118 @@
+﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.Voucher>
+
+@{
+    ViewData["Title"] = "GetAllVoucher";
+}
+
+<h1>GetAllVoucher</h1>
+
+<p>
+    <a asp-action="CreateVC">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MaVoucher)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DieuKienGiam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GiaGiamToiThieu)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GiaGiamToiDa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NgayBatDau)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NgayKetThuc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.KieuGiamGia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GiaTriGiam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SoLuong)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrangThai)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaVoucher)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DieuKienGiam)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GiaGiamToiThieu)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GiaGiamToiDa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayBatDau)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayKetThuc)
+            </td>
+                <td>
+                    @if (item.KieuGiamGia == 0)
+                    {
+                        <div style="color:red">Giảm Theo Tiền Mặt</div>
+                    }
+                    else
+                    {
+                        <div style="color:green">Giảm Theo Phần Trăm</div>
+                    }
+
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GiaTriGiam)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SoLuong)
+            </td>
+                <td>
+                    @{
+                        if (item.TrangThai == 1)
+                        {
+                            <div style="color:green"> Sử dụng </div>
+                        }
+                        else
+                        {
+                            <div style="color:red">Không sử dụng</div>
+                        }
+                    }
+                </td>
+            <td>
+                    @Html.ActionLink("Sửa", "UpdateVC", new { id = item.MaVoucher })
+@*                 @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) *@
+                    @if (item.TrangThai == 1)
+                    {
+                        <button class="btn btn-danger">
+                            @Html.ActionLink("Không sử dụng", "KoSuDung", new { ma = item.MaVoucher }, new { @style = "color:blue;" })
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-success">
+                            @Html.ActionLink("Sử dụng", "SuDung", new { ma = item.MaVoucher }, new { @style = "color:blue;" })
+                        </button>
+                    }
+            </td>
+
+        </tr>
+}
+    </tbody>
+</table>
