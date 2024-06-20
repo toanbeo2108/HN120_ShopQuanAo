@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HN120_ShopQuanAo.API.Migrations
 {
-    public partial class db : Migration
+    public partial class ok : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -73,8 +73,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                 columns: table => new
                 {
                     MaChatLieu = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenChatLieu = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenChatLieu = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -87,8 +87,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                 columns: table => new
                 {
                     MaKhuyenMai = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenKhuyenMai = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhanTramGiam = table.Column<float>(type: "real", nullable: true),
+                    TenKhuyenMai = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PhanTramGiam = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TrangThai = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -101,8 +101,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                 columns: table => new
                 {
                     MaMau = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenMau = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenMau = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -115,8 +115,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                 columns: table => new
                 {
                     MaSize = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenSize = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenSize = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -145,8 +145,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                 columns: table => new
                 {
                     MaTheLoai = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenTheLoai = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenTheLoai = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -159,8 +159,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                 columns: table => new
                 {
                     MaThuongHieu = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenThuongHieu = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenThuongHieu = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -344,17 +344,25 @@ namespace HN120_ShopQuanAo.API.Migrations
                     MaSp = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     MaThuongHieu = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MaTheLoai = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UrlAvatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenSP = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Mota = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaChatLieu = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UrlAvatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TenSP = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Mota = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    NgayNhap = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TongSoLuong = table.Column<int>(type: "int", nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true),
                     ThuongHieuMaThuongHieu = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    TheLoaiMaTheLoai = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    TheLoaiMaTheLoai = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ChatLieuMaChatLieu = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SanPham", x => x.MaSp);
+                    table.ForeignKey(
+                        name: "FK_SanPham_ChatLieu_ChatLieuMaChatLieu",
+                        column: x => x.ChatLieuMaChatLieu,
+                        principalTable: "ChatLieu",
+                        principalColumn: "MaChatLieu");
                     table.ForeignKey(
                         name: "FK_SanPham_TheLoai_TheLoaiMaTheLoai",
                         column: x => x.TheLoaiMaTheLoai,
@@ -455,28 +463,23 @@ namespace HN120_ShopQuanAo.API.Migrations
                 columns: table => new
                 {
                     SKU = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MaSp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MaSize = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MaMau = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MaKhuyenMai = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MaChatLieu = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaSp = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaSize = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaMau = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaKhuyenMai = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UrlAnhSpct = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DonGia = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     GiaBan = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     SoLuongTon = table.Column<int>(type: "int", nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true),
                     SanPhamMaSp = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     SizeMaSize = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     MauSacMaMau = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    KhuyenMaiMaKhuyenMai = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ChatLieuMaChatLieu = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    KhuyenMaiMaKhuyenMai = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ChiTietSp", x => x.SKU);
-                    table.ForeignKey(
-                        name: "FK_ChiTietSp_ChatLieu_ChatLieuMaChatLieu",
-                        column: x => x.ChatLieuMaChatLieu,
-                        principalTable: "ChatLieu",
-                        principalColumn: "MaChatLieu");
                     table.ForeignKey(
                         name: "FK_ChiTietSp_KhuyenMai_KhuyenMaiMaKhuyenMai",
                         column: x => x.KhuyenMaiMaKhuyenMai,
@@ -615,17 +618,17 @@ namespace HN120_ShopQuanAo.API.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "7eefb2d4-87bd-49fa-9780-ed2847642b50", "91874859-4808-4d81-ac61-795aa86795ca", "User", "USER" });
+                values: new object[] { "552b2ba4-adc4-45a6-b696-ea41ab55c5c8", "003230d8-5c84-4807-aa31-5559d64096d0", "Employee", "EMPLOYEE" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "bc642f12-74d8-4984-8526-03d24b5ce910", "7519cfc7-cf6f-4ffd-941b-815cb2866fd2", "Employee", "EMPLOYEE" });
+                values: new object[] { "6292639f-0d0c-4059-b906-38a0c0b1a10e", "c3fc5d9e-b913-40e5-bd94-707eb81ffa24", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "f6fb98c5-0523-4e3d-8078-a961996b1af2", "58b0beca-727f-45b5-bd84-350826c77fa4", "Admin", "ADMIN" });
+                values: new object[] { "ba61c5ce-de49-4d57-9c6a-527f54e43b60", "d98094b3-d1a3-45c5-b060-6d1134330208", "User", "USER" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -665,11 +668,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ChiTietSp_ChatLieuMaChatLieu",
-                table: "ChiTietSp",
-                column: "ChatLieuMaChatLieu");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChiTietSp_KhuyenMaiMaKhuyenMai",
@@ -735,6 +733,11 @@ namespace HN120_ShopQuanAo.API.Migrations
                 name: "IX_HoaDonChiTiet_HoaDonMaHoaDon",
                 table: "HoaDonChiTiet",
                 column: "HoaDonMaHoaDon");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SanPham_ChatLieuMaChatLieu",
+                table: "SanPham",
+                column: "ChatLieuMaChatLieu");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SanPham_TheLoaiMaTheLoai",
@@ -829,9 +832,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                 name: "ThanhToan");
 
             migrationBuilder.DropTable(
-                name: "ChatLieu");
-
-            migrationBuilder.DropTable(
                 name: "KhuyenMai");
 
             migrationBuilder.DropTable(
@@ -848,6 +848,9 @@ namespace HN120_ShopQuanAo.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Voucher");
+
+            migrationBuilder.DropTable(
+                name: "ChatLieu");
 
             migrationBuilder.DropTable(
                 name: "TheLoai");

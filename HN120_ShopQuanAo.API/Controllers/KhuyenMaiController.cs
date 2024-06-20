@@ -33,7 +33,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.GetByID(id);
         }
         [HttpPost("[Action]")]
-        public async Task<bool> AddKM(string? TenKhuyenMai, float? PhanTramGiam)
+        public async Task<bool> AddKM(string? TenKhuyenMai, decimal PhanTramGiam)
         {
             var khuyenmais = await GetAllKhuyenMai();
             int kmCount = khuyenmais.Count() + 1;

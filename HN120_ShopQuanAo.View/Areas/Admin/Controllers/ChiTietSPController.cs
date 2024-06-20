@@ -22,6 +22,17 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> AllChiTietSpManager(string id)
         {
+            var urlSize = $"https://localhost:7197/api/Size/GetAllSize";
+            var responSize = await _httpClient.GetAsync(urlSize);
+            string apiDatasz = await responSize.Content.ReadAsStringAsync();
+            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
+
+            var urlcl = $"https://localhost:7197/api/ChatLieu/GetAllChatLieu";
+            var responcl = await _httpClient.GetAsync(urlcl);
+            string apiDatacl = await responcl.Content.ReadAsStringAsync();
+            var lstcl = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDatacl);
+
+
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var urlBook = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
@@ -51,7 +62,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //bk.MaSp = DateTime.Now;
-            var urlBook = $"https://localhost:7197/api/CTSanPham/AddCTSP?MaSp={bk.MaSp}&MaSize={bk.MaSize}&MaMau={bk.MaMau}&MaKhuyenMai={bk.MaKhuyenMai}&MaChatLieu={bk.MaChatLieu}&UrlAnhSpct={bk.UrlAnhSpct}&GiaBan={bk.GiaBan}&SoLuongTon={bk.SoLuongTon}";
+            var urlBook = $"https://localhost:7197/api/CTSanPham/AddCTSP?MaSp={bk.MaSp}&MaSize={bk.MaSize}&MaMau={bk.MaMau}&MaKhuyenMai={bk.MaKhuyenMai}&UrlAnhSpct={bk.UrlAnhSpct}&GiaBan={bk.GiaBan}&SoLuongTon={bk.SoLuongTon}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await httpClient.PostAsync(urlBook, content);
