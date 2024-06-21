@@ -75,155 +75,128 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var respon = await httpClient.PostAsync(urlBook, content);
             if (respon.IsSuccessStatusCode)
             {
-                return RedirectToAction("GetAllVoucher", "Voucher", new { area = "Admin" });
+                return RedirectToAction("GetAllVoucher", "Voucher", new { areas = "Admin" });
             }
             TempData["error message"] = "thêm thất bại";
             return View();
         }
         //[HttpPost]
-        //public async Task<IActionResult> CreateVC(VoucherView voucher)
+        //public async Task<IActionResult> CreateVC(Voucher bk)
         //{
         //    try
         //    {
         //        string apiURL = $"https://localhost:7197/CreateVCher";
         //        var response1 = await _httpClient.GetAsync(apiURL);
         //        var apiData = await response1.Content.ReadAsStringAsync();
-        //        var roles = JsonConvert.DeserializeObject<List<VoucherView>>(apiData);
+        //        var vouchers = JsonConvert.DeserializeObject<List<Voucher>>(apiData);
 
-        //        if (voucher.dieuKienGiam != null || voucher.MaVoucher != null || voucher.giaTriGiam != null || voucher.KieuGiamGia != null || voucher.TrangThai != null || voucher.NgayBatDau != null || voucher.NgayKetThuc != null)
+        //        // Validate fields
+        //        if (bk.MaVoucher != null || bk.DieuKienGiam != null || bk.GiaGiamToiThieu != null || bk.GiaGiamToiDa != null || bk.NgayBatDau != null || bk.NgayKetThuc != null || bk.KieuGiamGia != null || bk.GiaTriGiam != null || bk.SoLuong != null || bk.TrangThai != null)
         //        {
-        //            if (voucher.dieuKienGiam < 0)
+        //            if (bk.DieuKienGiam < 0)
         //            {
         //                ViewData["DieuKienGiam"] = "Điều kiện giảm không được âm";
         //            }
-        //            if (voucher.giaTriGiam <= 0)
+        //            if (bk.GiaTriGiam <= 0)
         //            {
         //                ViewData["GiaTriGiam"] = "Mời bạn nhập giá trị giảm lớn hơn 0";
         //            }
-        //            if (voucher.giaGiamToiThieu <= 0)
-        //            {
-        //                ViewData["GiaGiamToiThieu"] = "Mời bạn nhập giá giảm tối thiểu lớn hơn 0";
-        //            }
-        //            if (voucher.giaGiamToiDa <= 0)
-        //            {
-        //                ViewData["GiaGiamToiDa"] = "Mời bạn nhập giá giảm tối đa lớn hơn 0";
-        //            }
-        //            if (voucher.SoLuong <= 0)
+        //            if (bk.SoLuong <= 0)
         //            {
         //                ViewData["SoLuong"] = "Mời bạn nhập số lượng lớn hơn 0";
         //            }
-        //            if (voucher.NgayKetThuc < voucher.NgayBatDau)
+        //            if (bk.NgayKetThuc < bk.NgayBatDau)
         //            {
-        //                ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn ngày bắt đầu";
+        //                ViewData["NgayKetThuc"] = "Ngày kết thúc phải lớn hơn ngày bắt đầu";
         //            }
-        //            var timkiem = roles.FirstOrDefault(x => x.MaVoucher == voucher.MaVoucher.Trim());
+        //            var timkiem = vouchers.FirstOrDefault(x => x.MaVoucher == bk.MaVoucher.Trim());
         //            if (timkiem != null)
         //            {
-        //                ViewData["Ma"] = "Mã này đã tồn tại";
+        //                ViewData["MaVoucher"] = "Mã này đã tồn tại";
         //            }
-        //            if (voucher.KieuGiamGia == 1)
+        //            if (bk.GiaGiamToiThieu < 0)
         //            {
-        //                if (voucher.dieuKienGiam == 0)
-        //                {
-        //                    if (voucher.giaTriGiam > 100 || voucher.giaTriGiam <= 0)
-        //                    {
-        //                        ViewData["GiaTriGiam"] = "Giá trị từ 1 đến 100";
-        //                        return View();
-        //                    }
-        //                    if (voucher.giaTriGiam <= 100 && voucher.giaTriGiam > 0)
-        //                    {
-        //                        if (voucher.dieuKienGiam >= 0 && voucher.giaTriGiam > 0 && voucher.giaGiamToiThieu > 0 && voucher.giaGiamToiDa > 0 && voucher.SoLuong > 0 && voucher.NgayKetThuc >= voucher.NgayBatDau && timkiem == null)
-        //                        {
-        //                            var response = await _httpClient.PostAsJsonAsync($"https://localhost:7197/CreateVCher", voucher);
-        //                            if (response.IsSuccessStatusCode)
-        //                            {
-        //                                return RedirectToAction("GetAllVoucher");
-        //                            }
-        //                            return View();
-        //                        }
-        //                    }
-        //                }
-        //                if (voucher.dieuKienGiam > 0)
-        //                {
-        //                    if (voucher.giaTriGiam <= voucher.dieuKienGiam)
-        //                    {
-        //                        if (voucher.giaTriGiam <= 100 && voucher.giaTriGiam > 0)
-        //                        {
-        //                            if (voucher.dieuKienGiam >= 0 && voucher.giaTriGiam > 0 && voucher.giaGiamToiThieu > 0 && voucher.giaGiamToiDa > 0 && voucher.SoLuong > 0 && voucher.NgayKetThuc >= voucher.NgayBatDau && timkiem == null)
-        //                            {
-        //                                var response = await _httpClient.PostAsJsonAsync($"https://localhost:7197/CreateVCher", voucher);
-        //                                if (response.IsSuccessStatusCode)
-        //                                {
-        //                                    return RedirectToAction("GetAllVoucher");
-        //                                }
-        //                                return View();
-        //                            }
-        //                        }
-        //                        if (voucher.giaTriGiam > 100 || voucher.giaTriGiam <= 0)
-        //                        {
-        //                            ViewData["GiaTriGiam"] = "Giá trị từ 1 đến 100";
-        //                            return View();
-        //                        }
-        //                    }
-        //                    if (voucher.giaTriGiam > voucher.dieuKienGiam)
-        //                    {
-        //                        ViewData["GiaTriGiam"] = "Giá trị phải nhỏ hơn hoặc bằng điều kiện giảm";
-        //                        return View();
-        //                    }
-        //                }
+        //                ViewData["GiaGiamToiThieu"] = "Giá giảm tối thiểu không được âm";
         //            }
-        //            if (voucher.KieuGiamGia == 0)
+        //            if (bk.GiaGiamToiDa < 0)
         //            {
-        //                if (voucher.dieuKienGiam == 0)
+        //                ViewData["GiaGiamToiDa"] = "Giá giảm tối đa không được âm";
+        //            }
+        //            if (bk.GiaGiamToiThieu > bk.GiaGiamToiDa)
+        //            {
+        //                ViewData["GiaGiamToiThieu"] = "Giá giảm tối thiểu không được lớn hơn giá giảm tối đa";
+        //            }
+
+        //            if (bk.KieuGiamGia == 1) // Percentage discount
+        //            {
+        //                if (bk.DieuKienGiam == 0)
         //                {
-        //                    if (voucher.giaTriGiam <= 0)
+        //                    if (bk.GiaTriGiam > 100 || bk.GiaTriGiam <= 0)
         //                    {
-        //                        ViewData["GiaTriGiam"] = "Giá trị phải lớn hơn 0";
+        //                        ViewData["GiaTriGiam"] = "Giá trị giảm phải từ 1 đến 100";
         //                        return View();
         //                    }
-        //                    if (voucher.giaTriGiam > 0)
-        //                    {
-        //                        if (voucher.dieuKienGiam >= 0 && voucher.giaTriGiam > 0 && voucher.giaGiamToiThieu > 0 && voucher.giaGiamToiDa > 0 && voucher.SoLuong > 0 && voucher.NgayKetThuc >= voucher.NgayBatDau && timkiem == null)
-        //                        {
-        //                            var response = await _httpClient.PostAsJsonAsync($"https://localhost:7197/CreateVCher", voucher);
-        //                            if (response.IsSuccessStatusCode)
-        //                            {
-        //                                return RedirectToAction("GetAllVoucher");
-        //                            }
-        //                            return View();
-        //                        }
-        //                    }
         //                }
-        //                if (voucher.dieuKienGiam > 0)
+        //                else
         //                {
-        //                    if (voucher.giaTriGiam <= voucher.dieuKienGiam)
+        //                    if (bk.GiaTriGiam <= bk.DieuKienGiam)
         //                    {
-        //                        if (voucher.giaTriGiam <= 0)
+        //                        if (bk.GiaTriGiam > 100 || bk.GiaTriGiam <= 0)
         //                        {
-        //                            ViewData["GiaTriGiam"] = "Giá trị phải lớn hơn 0";
+        //                            ViewData["GiaTriGiam"] = "Giá trị giảm phải từ 1 đến 100";
         //                            return View();
         //                        }
-        //                        if (voucher.giaTriGiam > 0)
-        //                        {
-        //                            if (voucher.dieuKienGiam >= 0 && voucher.giaTriGiam > 0 && voucher.giaGiamToiThieu > 0 && voucher.giaGiamToiDa > 0 && voucher.SoLuong > 0 && voucher.NgayKetThuc >= voucher.NgayBatDau && timkiem == null)
-        //                            {
-        //                                var response = await _httpClient.PostAsJsonAsync($"https://localhost:7197/CreateVCher", voucher);
-        //                                if (response.IsSuccessStatusCode)
-        //                                {
-        //                                    return RedirectToAction("GetAllVoucher");
-        //                                }
-        //                                return View();
-        //                            }
-        //                        }
         //                    }
-        //                    if (voucher.giaTriGiam > voucher.dieuKienGiam)
+        //                    else
         //                    {
-        //                        ViewData["GiaTriGiam"] = "Giá trị phải nhỏ hơn hoặc bằng điều kiện giảm";
+        //                        ViewData["GiaTriGiam"] = "Giá trị giảm phải nhỏ hơn hoặc bằng điều kiện giảm";
         //                        return View();
         //                    }
         //                }
         //            }
+        //            if (bk.KieuGiamGia == 0) // Fixed amount discount
+        //            {
+        //                if (bk.DieuKienGiam == 0)
+        //                {
+        //                    if (bk.GiaTriGiam <= 0)
+        //                    {
+        //                        ViewData["GiaTriGiam"] = "Giá trị giảm phải lớn hơn 0";
+        //                        return View();
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (bk.GiaTriGiam <= bk.DieuKienGiam)
+        //                    {
+        //                        if (bk.GiaTriGiam <= 0)
+        //                        {
+        //                            ViewData["GiaTriGiam"] = "Giá trị giảm phải lớn hơn 0";
+        //                            return View();
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        ViewData["GiaTriGiam"] = "Giá trị giảm phải nhỏ hơn hoặc bằng điều kiện giảm";
+        //                        return View();
+        //                    }
+        //                }
+        //            }
+
+        //            //if (bk.DieuKienGiam >= 0 && bk.GiaTriGiam > 0 && bk.GiaGiamToiThieu >= 0 && bk.GiaGiamToiDa >= 0 && bk.GiaGiamToiThieu <= bk.GiaGiamToiDa && bk.SoLuong > 0 && bk.NgayKetThuc >= bk.NgayBatDau && timkiem == null)
+        //            //{
+        //            //    var urlBook = $"https://localhost:7197/CreateVCher?MaVoucher={bk.MaVoucher}&DieuKienGiam={bk.DieuKienGiam}&GiaGiamToiThieu={bk.GiaGiamToiThieu}&GiaGiamToiDa={bk.GiaGiamToiDa}&NgayBatDau={bk.NgayBatDau}&NgayKetThuc={bk.NgayKetThuc}&KieuGiamGia={bk.KieuGiamGia}&GiaTriGiam={bk.GiaTriGiam}&SoLuong={bk.SoLuong}&TrangThai={bk.TrangThai}";
+        //            //    var httpClient = new HttpClient();
+        //            //    var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
+        //            //    var response = await httpClient.PostAsync(urlBook, content);
+        //            //    if (response.IsSuccessStatusCode)
+        //            //    {
+        //            //        return RedirectToAction("GetAllVoucher", "Voucher", new { areas = "Admin" });
+        //            //    }
+        //            //    TempData["error message"] = "Thêm thất bại";
+        //            //    return View(bk);
+        //            //}
         //        }
+
         //        return View();
         //    }
         //    catch
@@ -231,6 +204,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         //        return View();
         //    }
         //}
+
 
         // update
         [HttpGet]
