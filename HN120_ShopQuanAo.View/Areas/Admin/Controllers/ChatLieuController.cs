@@ -125,7 +125,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateStatusSanPhamKD(string id)
+        public async Task<IActionResult> UpdateStatusChatLieuKD(string id)
         {
             var urlBook = $"https://localhost:7197/api/ChatLieu/UpdateStatusChatLieu/{id}?_ctsp=1";
             var response = await _httpClient.PutAsync(urlBook, null);
@@ -139,7 +139,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateStatusSanPhamKKD(string id)
+        public async Task<IActionResult> UpdateStatusChatLieuKKD(string id)
         {
             var urlBook = $"https://localhost:7197/api/ChatLieu/UpdateStatusChatLieu/{id}?_ctsp=0";
             var response = await _httpClient.PutAsync(urlBook, null);

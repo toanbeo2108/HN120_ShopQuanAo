@@ -11,8 +11,11 @@ namespace HN120_ShopQuanAo.Data.Models
 	{
 		[Key]
 		public string MaSp { get; set; }
-		public string? MaThuongHieu { get; set; }
-		public string? MaTheLoai { get; set; }
+        [Required(ErrorMessage = "Mã Thương Hiệu là bắt buộc")]
+        public string? MaThuongHieu { get; set; }
+        [Required(ErrorMessage = "Mã Thể Loại là bắt buộc")]
+        public string? MaTheLoai { get; set; }
+        [Required(ErrorMessage = "Mã Chất Liệu là bắt buộc")]
         public string? MaChatLieu { get; set; }
         [Required(ErrorMessage = "URL Avatar là bắt buộc")]
         public string? UrlAvatar { get; set; }

@@ -160,7 +160,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         public async Task<IActionResult> UpdateStatusSanPhamKD(string id)
         {
 
-            var urlBook = $"https://localhost:7197/api/SanPham/UpdateSP/{id}?TrangThai=1";
+            var urlBook = $"https://localhost:7197/api/SanPham/UpdateStatusSanPham/{id}?_sp=1";
             var respon = await _httpClient.PutAsync(urlBook, null);
             if (!respon.IsSuccessStatusCode)
             {
@@ -172,7 +172,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateStatusSanPhamKKD(string id)
         {
-            var urlBook = $"https://localhost:7197/api/SanPham/UpdateSP/{id}?TrangThai={0}";
+            var urlBook = $"https://localhost:7197/api/SanPham/UpdateStatusSanPham/{id}?_sp=0";
             var respon = await _httpClient.PutAsync(urlBook, null);
             if (!respon.IsSuccessStatusCode)
             {

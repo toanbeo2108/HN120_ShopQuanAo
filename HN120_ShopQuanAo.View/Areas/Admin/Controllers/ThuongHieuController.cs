@@ -22,19 +22,19 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AllThuongHieuManager(string searchTerm)
+        public async Task<IActionResult> AllThuongHieuManager(string searchString)
         {
             var urlBook = $"https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
             var lstBook = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataBook);
 
-            if (!string.IsNullOrEmpty(searchTerm))
+            if (!string.IsNullOrEmpty(searchString))
             {
-                lstBook = lstBook.Where(x => x.TenThuongHieu.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+                lstBook = lstBook.Where(x => x.TenThuongHieu.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            ViewData["searchTerm"] = searchTerm;
+            ViewData["CurrentFilter"] = searchString;
             return View(lstBook);
         }
 

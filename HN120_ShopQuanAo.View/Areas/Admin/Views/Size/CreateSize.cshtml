@@ -8,6 +8,12 @@
 <h1>CreateSize</h1>
 
 <h4>Size</h4>
+@if (TempData["errorMessage"] != null)
+{
+                        <div class="alert alert-danger">
+        @TempData["errorMessage"]
+                        </div>
+}
 <hr />
 <div class="row">
     <div class="col-md-4">
