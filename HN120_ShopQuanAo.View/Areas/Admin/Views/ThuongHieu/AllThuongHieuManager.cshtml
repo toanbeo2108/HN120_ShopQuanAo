@@ -7,10 +7,16 @@
 }
 
 <h1>Quản lý Thương Hiệu</h1>
+<div class="form-group">
+    <form method="get" asp-action="AllThuongHieuManager" asp-controller="ThuongHieu" asp-area="Admin">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Tìm kiếm tên " value="@ViewData["CurrentFilter"]" onchange="this.form.submit()" />
+            </div>
 
-<form method="get" asp-action="AllThuongHieuManager" id="searchForm">
-    <input type="text" id="searchTerm" name="searchTerm" placeholder="Tìm kiếm thương hiệu..." onchange="submitSearchForm()" value="@ViewData["searchTerm"]" />
-</form>
+        </div>
+    </form>
+</div>
 <div>
     <a asp-action="CreateThuongHieu" class="btn btn-primary">Thêm Thương Hiệu</a>
 </div>
@@ -38,8 +44,9 @@
                         @if (item.TrangThai == 1)
                         {
                                             <form asp-action="UpdateStatusThuongHieuKKD" method="post" style="display:inline;">
-                                                    <input type="hidden" name="id" value="@item.MaThuongHieu" />
-                                                    <button type="submit">Không Kinh Doanh</button>
+                                                <input type="hidden" name="id" value="@item.MaThuongHieu" />
+                                                <button type="submit" class="btn btn-success">Bật</button>
+
                                                 </form>
 
                         }
@@ -48,7 +55,7 @@
 
                                                  <form asp-action="UpdateStatusThuongHieuKD" method="post" style="display:inline;">
                                                     <input type="hidden" name="id" value="@item.MaThuongHieu" />
-                                                    <button type="submit">Kinh Doanh</button>
+                                                    <button type="submit" class="btn btn-success">Bật</button>
                                                 </form>       
                         }
 
@@ -61,10 +68,3 @@
     </table>
 </div>
 
-@section Scripts {
-            <script>
-                function submitSearchForm() {
-                    document.getElementById("searchForm").submit();
-                }
-            </script>
-}

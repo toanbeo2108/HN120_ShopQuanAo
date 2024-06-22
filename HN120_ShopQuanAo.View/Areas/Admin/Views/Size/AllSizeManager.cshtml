@@ -6,49 +6,56 @@
 }
 
 <h1>AllSizeManager</h1>
+<div class="form-group">
+    <form method="get" asp-action="AllSizeManager" asp-controller="Size" asp-area="Admin">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Tìm kiếm tên chất liệu" value="@ViewData["CurrentFilter"]" onchange="this.form.submit()" />
+            </div>
 
-<p>
-    <a asp-action="CreateSize">Create New</a>
-</p>
+        </div>
+    </form>
+</div>
+<div>
+    <a asp-action="CreateSize" class="btn btn-primary">Thêm Size</a>
+</div>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MaSize)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TenSize)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MoTa)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TrangThai)
-            </th>
-            <th></th>
+            <th>Mã </th>
+            <th>Tên </th>
+            <th>Mo ta</th>
+            <th>Trạng Thái</th>
+            <th>Hành Động</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaSize)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TenSize)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MoTa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TrangThai)
-            </td>
-                <td style="text-align : center; margin-bottom : 20px">
-                         <a asp-action="SizeDetail" asp-controller="Size" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaSize">Chi Tiết</a>
-                            <a asp-action="UpdateSize" asp-controller="Size" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaSize">Sửa</a>    
-
-                    </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+                                <tr>
+                                                <td>@item.MaSize</td>
+                                                <td>@item.TenSize</td>
+                                            <td>@item.MoTa</td>
+                                        <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
+                                    <td>
+                                                                <a asp-action="SizeDetail" asp-route-id="@item.MaSize" class="btn btn-info">Chi Tiết</a>
+                                                                <a asp-action="UpdateSize" asp-route-id="@item.MaSize" class="btn btn-warning">Cập Nhật</a>
+                    @if (item.TrangThai == 1)
+                    {
+                                                                                        <form asp-action="UpdateStatusSizeKKD" method="post" style="display:inline;">
+                                                                                            <input type="hidden" name="id" value="@item.MaSize" />
+                                                                    <button type="submit" class="btn btn-secondary">Tăt</button>
+                                                                </form>
+                    }
+                    else
+                    {
+                                                                                        <form asp-action="UpdateStatusSizeKD" method="post" style="display:inline;">
+                                                                                            <input type="hidden" name="id" value="@item.MaSize" />
+                                                                    <button type="submit" class="btn btn-success">Bật</button>
+                                                                </form>
+                    }
+                                    </td>
+                                </tr>
+        }
     </tbody>
 </table>

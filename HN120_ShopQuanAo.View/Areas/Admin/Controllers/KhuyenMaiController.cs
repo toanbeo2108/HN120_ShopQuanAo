@@ -67,7 +67,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View();
             }
 
-            var urlBook = $"https://localhost:7197/api/KhuyenMai/AddKM";
+            var urlBook = $"https://localhost:7197/api/KhuyenMai/AddKM?TenKhuyenMai={bk.TenKhuyenMai}&PhanTramGiam={bk.PhanTramGiam}";
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PostAsync(urlBook, content);
             if (respon.IsSuccessStatusCode)
@@ -117,7 +117,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateKhuyenMai(string id, KhuyenMai bk)
         {
-            if (await IsDuplicateKhuyenMai(bk.TenKhuyenMai))
+            if (await IsDuplicateKhuyenMai(bk.TenKhuyenMai,id))
             {
                 TempData["errorMessage"] = "Tên đã tồn tại.";
                 return View();

@@ -24,7 +24,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         //https://localhost:7197/api/Size/add-SZ?Tensz=1&MoTa=1&TrangThai=1
         //    https://localhost:7197/api/Size/update-SZ
         [HttpGet]
-        public async Task<IActionResult> AllSizeManager()
+        public async Task<IActionResult> AllSizeManager(string searchString)
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -33,6 +33,12 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
             var lstBook = JsonConvert.DeserializeObject<List<Size>>(apiDataBook);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                lstBook = lstBook.Where(x => x.TenSize.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            ViewData["CurrentFilter"] = searchString;
             return View(lstBook);
         }
         [HttpGet]
@@ -47,6 +53,11 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //bk.CreateDate = DateTime.Now;
+            if (await IsDuplicateSize(bk.TenSize))
+            {
+                TempData["errorMessage"] = "Tên đã tồn tại.";
+                return View();
+            }
             var urlBook = $"https://localhost:7197/api/Size/AddSZ?Tensz={bk.TenSize}&MoTa={bk.MoTa}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
@@ -99,6 +110,11 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateSize(string id, Size vc)
         {
+            if (await IsDuplicateSize(vc.TenSize, id))
+            {
+                TempData["errorMessage"] = "Tên đã tồn tại.";
+                return View();
+            }
             var urlBook = $"https://localhost:7197/api/Size/UpdateSZ/{id}";
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);

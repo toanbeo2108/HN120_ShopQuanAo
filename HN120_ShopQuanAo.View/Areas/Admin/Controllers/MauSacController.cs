@@ -24,7 +24,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         //https://localhost:7197/api/MauSac/add-MS?TenMau=1&MoTa=1&TrangThai=1
         //    https://localhost:7197/api/MauSac/update-MS
         [HttpGet]
-        public async Task<IActionResult> AllMauSacManager()
+        public async Task<IActionResult> AllMauSacManager(string searchString)
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -33,7 +33,12 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
             var lstMauSac = JsonConvert.DeserializeObject<List<MauSac>>(apiDataBook);
-            ViewBag.lstMauSac = lstMauSac;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                lstMauSac = lstMauSac.Where(x => x.TenMau.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            
+            ViewData["CurrentFilter"] = searchString;
             return View(lstMauSac);
         }
         [HttpGet]
@@ -44,7 +49,11 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMauSac(MauSac bk)
         {
-
+            if (await IsDuplicateMauSac(bk.TenMau))
+            {
+                TempData["errorMessage"] = "Tên đã tồn tại.";
+                return View();
+            }
             var urlBook = $"https://localhost:7197/api/MauSac/AddMS?TenMau={bk.TenMau}&MoTa={bk.MoTa}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
@@ -97,6 +106,11 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateMauSac(string id, MauSac vc)
         {
+            if (await IsDuplicateMauSac(vc.TenMau,id))
+            {
+                TempData["errorMessage"] = "Tên đã tồn tại.";
+                return View();
+            }
             var urlBook = $"https://localhost:7197/api/MauSac/UpdateMS/{id}";
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);

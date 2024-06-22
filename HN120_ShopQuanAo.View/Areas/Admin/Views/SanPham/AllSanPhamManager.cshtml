@@ -25,6 +25,9 @@
                 STT
             </th>
             <th>
+               Mã SP 
+            </th>
+            <th>
                Tên 
             </th>
             <th>
@@ -62,6 +65,9 @@
                         <td>
                             @i
                         </td>
+                            <td>
+                            @item.MaSp
+                            </td>
                             <td>
                             @item.TenSP
                         </td>
@@ -101,7 +107,7 @@
                             @if (item.TrangThai == 0)
                             {
                                                         <form asp-action="UpdateStatusSanPhamKKD" method="post" style="display:inline;">
-                                                    <input type="hidden" name="id" value="@item.MaChatLieu" />
+                                                            <input type="hidden" name="id" value="@item.MaSp" />
                                                             <button type="submit" class="btn btn-secondary">Bật</button>
                                                 </form>
                             }

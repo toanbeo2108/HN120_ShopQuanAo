@@ -15,11 +15,8 @@
 }
 
 <form asp-action="UpdateChatLieu" method="post">
-    <div class="form-group">
-        <label asp-for="MaChatLieu" class="control-label"></label>
-        <input asp-for="MaChatLieu" class="form-control" readonly />
-        <span asp-validation-for="MaChatLieu" class="text-danger"></span>
-    </div>
+    <input type="hidden" asp-for="MaChatLieu" />
+    
     <div class="form-group">
         <label asp-for="TenChatLieu" class="control-label"></label>
         <input asp-for="TenChatLieu" class="form-control" />

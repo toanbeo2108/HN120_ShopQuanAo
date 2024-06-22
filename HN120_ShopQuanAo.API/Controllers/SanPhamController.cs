@@ -106,13 +106,13 @@ namespace HN120_ShopQuanAo.API.Controllers
         }
 
         [HttpPut("[Action]/{id}")]
-        public async Task<bool> UpdateStatusSanPhamKD(string id)
+        public async Task<bool> UpdateStatusSanPham(string id,int _sp)
         {
             var ctsp = await _irespon.GetAll();
             var b = ctsp.FirstOrDefault(c => c.MaSp == id);
             if (b != null)
             {
-                b.TrangThai = 1;
+                b.TrangThai = _sp;
                 return await _irespon.UpdateItem(b);
             }
             else
@@ -120,21 +120,7 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return false;
             }
         }
-        [HttpPut("[Action]/{id}")]
-        public async Task<bool> UpdateStatusSanPhamKKD(string id)
-        {
-            var ctsp = await _irespon.GetAll();
-            var b = ctsp.FirstOrDefault(c => c.MaSp == id);
-            if (b != null)
-            {
-                b.TrangThai = 0;
-                return await _irespon.UpdateItem(b);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        
         [HttpDelete("[Action]/{id}")]
         public async Task<bool> deleteSP(string id)
         {
