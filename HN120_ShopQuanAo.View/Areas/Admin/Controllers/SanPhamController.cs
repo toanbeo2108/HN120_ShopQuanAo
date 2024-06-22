@@ -36,6 +36,12 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
             ViewBag.lstTH = lstTH;
 
+            var urlCL = $"https://localhost:7197/api/ChatLieu/GetAllChatLieu";
+            var responCL = await _httpClient.GetAsync(urlCL);
+            string apiDataCL = await responCL.Content.ReadAsStringAsync();
+            var lstCL = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataCL);
+            ViewBag.lstCL = lstCL;
+
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var urlBook = $"https://localhost:7197/api/SanPham/GetAllSanPham";

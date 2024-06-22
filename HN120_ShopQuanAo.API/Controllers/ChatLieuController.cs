@@ -36,7 +36,7 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             var lstchatlieu = await _irespon.GetAll();
             var cl = lstchatlieu.FirstOrDefault(x => x.TenChatLieu == TenChatLieu);
-            
+
             int clCount = lstchatlieu.Count() + 1;
             if (cl != null)
             {
@@ -60,7 +60,6 @@ namespace HN120_ShopQuanAo.API.Controllers
 
                 b.TenChatLieu = _ctsp.TenChatLieu;
                 b.MoTa = _ctsp.MoTa;
-                b.TrangThai = _ctsp.TrangThai;
                 return await _irespon.UpdateItem(b);
             }
             else

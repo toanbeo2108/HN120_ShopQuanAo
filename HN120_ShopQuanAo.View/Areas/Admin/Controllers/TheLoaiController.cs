@@ -8,9 +8,12 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
     public class TheLoaiController : Controller
     {
         private HttpClient _httpClient;
-        public TheLoaiController()
+        private readonly ILogger<TheLoaiController> _logger;
+
+        public TheLoaiController(ILogger<TheLoaiController> logger)
         {
             _httpClient = new HttpClient();
+            _logger = logger;
         }
         public IActionResult Index()
         {
@@ -106,6 +109,49 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             return RedirectToAction("AllTheLoaiManager", "TheLoai", new { area = "Admin" });
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatusTheLoaiKD(string id)
+        {
+            var urlBook = $"https://localhost:7197/api/TheLoai/UpdateStatusTheLoai/{id}?_ctsp=1";
+            var response = await _httpClient.PutAsync(urlBook, null);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to update status to Kinh Doanh: {Error}", errorMessage);
+                return BadRequest($"Failed to update status to Kinh Doanh. Error: {errorMessage}");
+            }
+            return RedirectToAction("AllTheLoaiManager");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatusTheLoaiKKD(string id)
+        {
+            var urlBook = $"https://localhost:7197/api/TheLoai/UpdateStatusTheLoai/{id}?_ctsp=0";
+            var response = await _httpClient.PutAsync(urlBook, null);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to update status to Không Kinh Doanh: {Error}", errorMessage);
+                return BadRequest($"Failed to update status to Không Kinh Doanh. Error: {errorMessage}");
+            }
+            return RedirectToAction("AllTheLoaiManager");
+        }
+        private async Task<bool> IsDuplicateTheLoai(string tenMauSac, string id = null)
+        {
+            var urlBook = $"https://localhost:7197/api/TheLoai/GetAllTheLoai";
+            var responBook = await _httpClient.GetAsync(urlBook);
+            string apiDataBook = await responBook.Content.ReadAsStringAsync();
+            var lstBook = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataBook);
+
+            if (id == null)
+            {
+                return lstBook.Any(x => x.TenTheLoai == tenMauSac);
+            }
+            else
+            {
+                return lstBook.Any(x => x.TenTheLoai == tenMauSac && x.MaTheLoai != id);
+            }
         }
     }
 }
