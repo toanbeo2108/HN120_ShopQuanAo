@@ -1,60 +1,65 @@
 ﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.ChatLieu>
 
 @{
-    ViewData["Title"] = "AllChatLieuManager";
+    ViewData["Title"] = "All ChatLieu Manager";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Quản Lý Chất Liệu</h1>
+<h1>All ChatLieu Manager</h1>
+<div class="form-group">
+    <form method="get" asp-action="AllChatLieuManager" asp-controller="ChatLieu" asp-area="Admin">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Tìm kiếm tên chất liệu" value="@ViewData["CurrentFilter"]" onchange="this.form.submit()" />
+            </div>
 
-<p>
-    <a asp-action="CreateChatLieu">Thêm Mới</a>
-</p>
-    <table class="table" id="page">
-            <thead>
-                <tr>
-
-                    <th style="text-align : center;">
-                        Tên Chất Liệu
-                    </th>
-
-                    <th style="text-align : center;">
-                        Mô tả
-                    </th>
-                    <th style="text-align : center;">
-                        Trạng Thái
-                    </th>
-                    <th></th>
-
-                </tr>
-            </thead>
-            <tbody>
+        </div>
+    </form>
+</div>
+<div>
+    <a asp-action="CreateChatLieu" class="btn btn-primary">Thêm Chất Liệu</a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã Chất Liệu</th>
+            <th>Tên Chất Liệu</th>
+            <th>Mô Tả</th>
+            <th>Trạng Thái</th>
+            <th>Hành Động</th>
+        </tr>
+    </thead>
+    <tbody>
         @foreach (var item in Model)
         {
-                        <tr>
-
-                            
-                            <td style="text-align : center; margin-bottom : 20px">
-                    @Html.DisplayFor(modelItem => item.TenChatLieu)
-                            </td>
-                            <td style="text-align : center; margin-bottom : 20px" class="tienv">
-                    @Html.DisplayFor(modelItem => item.MoTa)
-                            </td>
-                            
-                           <td style="text-align : center; margin-bottom : 20px">
-                    @Html.DisplayFor(modelItem => item.TrangThai )
-                            @*<div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="statusToggle_@item.MaChatLieu" @(item.TrangThai == 1 ? "checked" : "") onchange="toggleStatus('@item.MaChatLieu')">
-                                    <label class="form-check-label" for="statusToggle_@item.MaChatLieu">
-                                </label>
-                            </div>*@
+                    <tr>
+                        <td>@item.MaChatLieu</td>
+                        <td>@item.TenChatLieu</td>
+                        <td>@item.MoTa</td>
+                            <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
+                        <td>
+                            <a asp-action="ChatLieuDetail" asp-route-id="@item.MaChatLieu" class="btn btn-info">Chi Tiết</a>
+                            <a asp-action="UpdateChatLieu" asp-route-id="@item.MaChatLieu" class="btn btn-warning">Cập Nhật</a>
+                    @if (item.TrangThai == 1)
+                    {
+                                        <form asp-action="UpdateStatusSanPhamKKD" method="post" style="display:inline;">
+                                            <input type="hidden" name="id" value="@item.MaChatLieu" />
+                                            <button type="submit" class="btn btn-secondary">Tăt</button>
+                                        </form>
+                    }
+                    else
+                    {
+                                        <form asp-action="UpdateStatusSanPhamKD" method="post" style="display:inline;">
+                                            <input type="hidden" name="id" value="@item.MaChatLieu" />
+                                            <button type="submit" class="btn btn-success">Bật</button>
+                                        </form>
+                    }
                         </td>
-                            <td style="text-align : center; margin-bottom : 20px">
-                                                <a asp-action="ChatLieuDetail" asp-controller="ChatLieu" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaChatLieu">Chi Tiết</a>
-                                                    <a asp-action="UpdateChatLieu" asp-controller="ChatLieu" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaChatLieu">Sửa</a>    
-                                    
-                            </td>
-                        </tr>
+                    </tr>
         }
-            </tbody>
-        
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="CreateChatLieu" class="btn btn-primary">Thêm Chất Liệu</a>
+</div>

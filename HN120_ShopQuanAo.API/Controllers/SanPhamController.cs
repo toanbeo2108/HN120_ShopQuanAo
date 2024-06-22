@@ -64,7 +64,6 @@ namespace HN120_ShopQuanAo.API.Controllers
                 b.MaTheLoai = _sp.MaTheLoai;
                 b.MaThuongHieu = _sp.MaThuongHieu;
                 b.Mota = _sp.Mota;
-                b.TrangThai = _sp.TrangThai;
                 return await _irespon.UpdateItem(b);
             }
             else

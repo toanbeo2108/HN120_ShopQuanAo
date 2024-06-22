@@ -1,54 +1,70 @@
-﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.ThuongHieu>
+﻿@model List<HN120_ShopQuanAo.Data.Models.ThuongHieu>
 
 @{
-    ViewData["Title"] = "AllThuongHieuManager";
+    ViewData["Title"] = "Quản lý Thương Hiệu";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
-<h1>AllThuongHieuManager</h1>
+<h1>Quản lý Thương Hiệu</h1>
 
-<p>
-    <a asp-action="CreateThuongHieu">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MaThuongHieu)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TenThuongHieu)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MoTa)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TrangThai)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaThuongHieu)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TenThuongHieu)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MoTa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TrangThai)
-            </td>
-                <td style="text-align : center; margin-bottom : 20px">
-                <a asp-action="ThuongHieuDetail" asp-controller="ThuongHieu" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaThuongHieu">Chi Tiết</a>
-                <a asp-action="UpdateThuongHieu" asp-controller="ThuongHieu" asp-area="Admin" class="btn btn-primary" asp-route-idbookrt="@item.MaThuongHieu">Sửa</a>    
+<form method="get" asp-action="AllThuongHieuManager" id="searchForm">
+    <input type="text" id="searchTerm" name="searchTerm" placeholder="Tìm kiếm thương hiệu..." onchange="submitSearchForm()" value="@ViewData["searchTerm"]" />
+</form>
+<div>
+    <a asp-action="CreateThuongHieu" class="btn btn-primary">Thêm Thương Hiệu</a>
+</div>
+<div id="thuongHieuList">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tên Thương Hiệu</th>
+                <th>Mô Tả</th>
+                <th>Trạng Thái</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>@item.TenThuongHieu</td>
+                        <td>@item.MoTa</td>
+                        <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
+                        <td>
+                                <a asp-action="ThuongHieuDetail" asp-route-id="@item.MaThuongHieu" class="btn btn-info">Chi tiết</a> |
+                                <a asp-action="UpdateThuongHieu" asp-route-id="@item.MaThuongHieu" class="btn btn-warning">Sửa</a> |
 
-                </td>
-        </tr>
+                        @if (item.TrangThai == 1)
+                        {
+                                            <form asp-action="UpdateStatusThuongHieuKKD" method="post" style="display:inline;">
+                                                    <input type="hidden" name="id" value="@item.MaThuongHieu" />
+                                                    <button type="submit">Không Kinh Doanh</button>
+                                                </form>
+
+                        }
+                        else
+                        {
+
+                                                 <form asp-action="UpdateStatusThuongHieuKD" method="post" style="display:inline;">
+                                                    <input type="hidden" name="id" value="@item.MaThuongHieu" />
+                                                    <button type="submit">Kinh Doanh</button>
+                                                </form>       
+                        }
+
+                             |
+
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+            <script>
+                function submitSearchForm() {
+                    document.getElementById("searchForm").submit();
+                }
+            </script>
 }
-    </tbody>
-</table>
