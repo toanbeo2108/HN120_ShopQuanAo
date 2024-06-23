@@ -5,25 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HN120_ShopQuanAo.API.Migrations
 {
-    public partial class db : Migration
+    public partial class fixAddressUser : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "AnhSanPham",
-                columns: table => new
-                {
-                    MaAnh = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MaSP_MaSPCT = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenAnh = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TrangThai = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AnhSanPham", x => x.MaAnh);
-                });
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -300,11 +285,12 @@ namespace HN120_ShopQuanAo.API.Migrations
                 {
                     DeliveryAddressID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Consignee = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AddressLine = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ward = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -460,6 +446,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                     MaMau = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MaKhuyenMai = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MaChatLieu = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UrlAnhSpct = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GiaBan = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     SoLuongTon = table.Column<int>(type: "int", nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true),
@@ -615,17 +602,17 @@ namespace HN120_ShopQuanAo.API.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "7eefb2d4-87bd-49fa-9780-ed2847642b50", "91874859-4808-4d81-ac61-795aa86795ca", "User", "USER" });
+                values: new object[] { "346c98a5-40a9-4c09-a4a0-2522ac7d0464", "8a4d40ad-63ec-4c1d-ad44-be1eefe5a29d", "Employee", "EMPLOYEE" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "bc642f12-74d8-4984-8526-03d24b5ce910", "7519cfc7-cf6f-4ffd-941b-815cb2866fd2", "Employee", "EMPLOYEE" });
+                values: new object[] { "479285a7-5a58-4782-8ca9-233f63ee1e5a", "32debd2a-9133-4e91-880e-f791100b3c11", "User", "USER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "f6fb98c5-0523-4e3d-8078-a961996b1af2", "58b0beca-727f-45b5-bd84-350826c77fa4", "Admin", "ADMIN" });
+                values: new object[] { "8175ab3a-2e02-49d2-93e7-117747733257", "68443cbf-f1cf-49f6-ac2b-5a3be7918446", "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -774,9 +761,6 @@ namespace HN120_ShopQuanAo.API.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AnhSanPham");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
     IEnumerable<HoaDon> lsthd = ViewBag.lsthd as IEnumerable<HoaDon>;
     IEnumerable<ChiTietSp> lstsku = ViewBag.lstsku as IEnumerable<ChiTietSp>;
 }

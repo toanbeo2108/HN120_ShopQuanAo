@@ -11,9 +11,12 @@ namespace HN120_ShopQuanAo.Data.Models
 	public class User : IdentityUser
 	{
 		public string Avatar { get; set; } // Link ảnh đại diện
+		public string? FirstName { get; set; }
+		public string? LastName { get; set; }
 		public int? Gender { get; set; }// Giới tính
-		public DateTime? Birthday { get; set; }//Điểm tích lũy
-		public int? Status { get; set; } // trạng thái : 0 == Ko còn hoạt động, ẩn nick ,....
+        public DateTime? Birthday { get; set; }
+        public string? CardNumber { get; set; }
+        public int? Status { get; set; } // trạng thái : 0 == Ko còn hoạt động, ẩn nick ,....
 
 		public virtual List<HoaDon>? HoaDons { get; set; }
 		public virtual List<GioHang>? GioHangs { get; set; }

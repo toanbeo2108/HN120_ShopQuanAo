@@ -4,6 +4,7 @@ using HN120_ShopQuanAo.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HN120_ShopQuanAo.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240620145844_toan")]
+    partial class toan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -661,22 +663,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1316b6fa-0ad2-4c7b-8ee1-b09662d488ec",
-                            ConcurrencyStamp = "f35369df-6b02-4a77-ad28-0ba31497eb0d",
+                            Id = "030a3804-122b-42b9-900f-809f49be059f",
+                            ConcurrencyStamp = "8eea4e57-03c2-47e3-9dc2-f40bb59edfe0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "70b06318-8a14-4332-9bf0-e30a94358ed0",
-                            ConcurrencyStamp = "3e9b18cf-83c5-42c1-8062-c842ff9d52e2",
+                            Id = "8b327fad-c3d2-4984-9962-14527d22f86d",
+                            ConcurrencyStamp = "834943f2-391f-4dfe-a77d-3e231a1c3796",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "2d2ab5c3-9c58-4e50-b7d2-002dfbbf5095",
-                            ConcurrencyStamp = "d4817391-6a8a-4a06-b8a6-1f8e5428e357",
+                            Id = "4c6ecd1c-ca3a-4596-9d06-36312030ed0a",
+                            ConcurrencyStamp = "5dc0c606-20cb-46e3-97c7-712e8c63c7c6",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -870,17 +872,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CardNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("Gender")
                         .HasColumnType("int");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
