@@ -14,6 +14,7 @@ namespace HN120_ShopQuanAo.API.Controllers
 
         private readonly IAllResponsitories<ChiTietSp> _iresponCTSP;
         private readonly IAllResponsitories<SanPham> _iresponSP;
+        private readonly IAllResponsitories<KhuyenMai> _iresponKM;
 
         //private readonly IAllResponsitories<Size> _iresponSZ;
 
@@ -22,6 +23,7 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             _iresponCTSP = new AllResponsitories<ChiTietSp>(_context, _context.ChiTietSp);
             _iresponSP = new AllResponsitories<SanPham>(_context, _context.SanPham);
+            _iresponKM = new AllResponsitories<KhuyenMai>(_context, _context.KhuyenMai);
 
             //_iresponSZ = new AllResponsitories<Size>(_context, _context.Size);
 
@@ -37,22 +39,32 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _iresponCTSP.GetByID(id);
         }
         [HttpPost("[Action]")]
-        public async Task<bool> AddCTSP(string? MaSp, string? MaSize, string? MaMau, string? MaKhuyenMai, string? MaChatLieu,string? UrlAnhSpct, decimal? GiaBan, int? SoLuongTon)
+        public async Task<bool> AddCTSP(string? MaSp, string? MaSize, string? MaMau, string? MaKhuyenMai, string? UrlAnhSpct, decimal? DonGia, int? SoLuongTon)
         {
             var lstsp = await _iresponSP.GetAll();
             var sp = lstsp.FirstOrDefault(c => c.MaSp == MaSp);
+            var lstkm = await _iresponKM.GetAll();
+            var km = lstkm.FirstOrDefault(c => c.MaKhuyenMai == MaKhuyenMai);
+            decimal? ptkm = km.PhanTramGiam;
             var ctsp = await _iresponCTSP.GetAll();
-            var lstspct = ctsp.Where(c => c.MaSp == sp.MaSp);
+            var lstspct = ctsp.Where(c => c.MaSp == sp.MaSp && c.TrangThai == 1);
             ChiTietSp b = new ChiTietSp();
-            b.SKU = MaSp + MaMau + MaSize + MaKhuyenMai + MaChatLieu;
+            b.SKU = MaSp + MaMau + MaSize;
             b.MaSp = MaSp;
             b.MaMau = MaMau;
             b.MaSize = MaSize;
             b.MaKhuyenMai = MaKhuyenMai;
-            b.MaChatLieu = MaChatLieu;
             b.UrlAnhSpct = UrlAnhSpct;
-            
-            b.GiaBan = GiaBan;
+            b.DonGia = DonGia;
+            if (b.MaKhuyenMai == null || ptkm == 0)
+            {
+                b.GiaBan = DonGia;
+            }
+            else
+            {
+                b.GiaBan = DonGia - (DonGia * ptkm / 100);
+            }
+
             b.SoLuongTon = SoLuongTon;
             if (SoLuongTon == 0)
             {
@@ -70,17 +82,27 @@ namespace HN120_ShopQuanAo.API.Controllers
         [HttpPut("[Action]/{id}")]
         public async Task<bool> UpdateCTSP(string id, [FromBody] ChiTietSp _ctsp)
         {
-            
+
             var ctsp = await _iresponCTSP.GetAll();
             var b = ctsp.FirstOrDefault(c => c.SKU == id);
-            
-            
+            var lstkm = await _iresponKM.GetAll();
+            var km = lstkm.FirstOrDefault(c => c.MaKhuyenMai == _ctsp.MaKhuyenMai);
+            decimal? ptkm = km.PhanTramGiam;
+
             if (b != null)
             {
 
 
-                
-                b.GiaBan = _ctsp.GiaBan;
+                b.MaKhuyenMai = _ctsp.MaKhuyenMai;
+                b.DonGia = _ctsp.DonGia;
+                if (b.MaKhuyenMai == null || ptkm == 0)
+                {
+                    b.GiaBan = _ctsp.DonGia;
+                }
+                else
+                {
+                    b.GiaBan = _ctsp.DonGia - (_ctsp.DonGia * ptkm / 100);
+                }
                 b.SoLuongTon = _ctsp.SoLuongTon;
                 if (b.SoLuongTon == 0)
                 {
@@ -90,11 +112,11 @@ namespace HN120_ShopQuanAo.API.Controllers
                 {
                     b.TrangThai = 1;
                 }
-                
+
                 await _iresponCTSP.UpdateItem(b);
                 var lstsp = await _iresponSP.GetAll();
                 var sp = lstsp.FirstOrDefault(c => c.MaSp == _ctsp.MaSp);
-                var lstspct = ctsp.Where(c => c.MaSp == sp.MaSp);
+                var lstspct = ctsp.Where(c => c.MaSp == sp.MaSp && c.TrangThai == 1);
                 sp.TongSoLuong = lstspct.Sum(c => c.SoLuongTon);
                 return await _iresponSP.UpdateItem(sp);
             }

@@ -52,7 +52,6 @@ namespace HN120_ShopQuanAo.API.Controllers
 
                 b.TenSize = _ctsp.TenSize;
                 b.MoTa = _ctsp.MoTa;
-                b.TrangThai = _ctsp.TrangThai;
                 return await _irespon.UpdateItem(b);
             }
             else

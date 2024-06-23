@@ -36,6 +36,12 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
             ViewBag.lstTH = lstTH;
 
+            var urlCL = $"https://localhost:7197/api/ChatLieu/GetAllChatLieu";
+            var responCL = await _httpClient.GetAsync(urlCL);
+            string apiDataCL = await responCL.Content.ReadAsStringAsync();
+            var lstCL = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataCL);
+            ViewBag.lstCL = lstCL;
+
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var urlBook = $"https://localhost:7197/api/SanPham/GetAllSanPham";
@@ -79,7 +85,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 imageFile.CopyTo(stream);
                 bk.UrlAvatar = imageFile.FileName;
             }
-            var urlBook = $"https://localhost:7197/api/SanPham/AddSP?Tensp={bk.TenSP}&MaThuongHieu={bk.MaThuongHieu}&MaTheLoai={bk.MaTheLoai}&MoTa={bk.Mota}&UrlAvatar={bk.UrlAvatar}";
+            var urlBook = $"https://localhost:7197/api/SanPham/AddSP?Tensp={bk.TenSP}&MaThuongHieu={bk.MaThuongHieu}&MaTheLoai={bk.MaTheLoai}&MaChatLieu={bk.MaChatLieu}&MoTa={bk.Mota}&UrlAvatar={bk.UrlAvatar}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await httpClient.PostAsync(urlBook, content);
@@ -149,6 +155,41 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             return RedirectToAction("AllSanPhamManager", "SanPham", new { area = "Admin" });
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatusSanPhamKD(string id)
+        {
+
+            var urlBook = $"https://localhost:7197/api/SanPham/UpdateStatusSanPham/{id}?_sp=1";
+            var respon = await _httpClient.PutAsync(urlBook, null);
+            if (!respon.IsSuccessStatusCode)
+            {
+                return BadRequest();
+            }
+            return RedirectToAction("AllSanPhamManager", "SanPham", new { area = "Admin" });
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatusSanPhamKKD(string id)
+        {
+            var urlBook = $"https://localhost:7197/api/SanPham/UpdateStatusSanPham/{id}?_sp=0";
+            var respon = await _httpClient.PutAsync(urlBook, null);
+            if (!respon.IsSuccessStatusCode)
+            {
+                return BadRequest();
+            }
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> delete(string id)
+        {
+            var urlBook = $"https://localhost:7197/api/SanPham/deleteSP/{id}";
+            var respon = await _httpClient.DeleteAsync(urlBook);
+            if (!respon.IsSuccessStatusCode)
+            {
+                return BadRequest();
+            }
+            return RedirectToAction("AllSanPhamManager", "SanPham", new { area = "Admin" });
         }
     }
 }

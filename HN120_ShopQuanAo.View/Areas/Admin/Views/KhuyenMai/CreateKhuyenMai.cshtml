@@ -6,18 +6,19 @@
 }
 
 <h1>CreateKhuyenMai</h1>
-
+@if (TempData["errorMessage"] != null)
+{
+                <div class="alert alert-danger">
+        @TempData["errorMessage"]
+                </div>
+}
 <h4>KhuyenMai</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="CreateKhuyenMai">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="MaKhuyenMai" class="control-label"></label>
-                <input asp-for="MaKhuyenMai" class="form-control" />
-                <span asp-validation-for="MaKhuyenMai" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <label asp-for="TenKhuyenMai" class="control-label"></label>
                 <input asp-for="TenKhuyenMai" class="form-control" />
@@ -28,11 +29,7 @@
                 <input asp-for="PhanTramGiam" class="form-control" />
                 <span asp-validation-for="PhanTramGiam" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="TrangThai" class="control-label"></label>
-                <input asp-for="TrangThai" class="form-control" />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

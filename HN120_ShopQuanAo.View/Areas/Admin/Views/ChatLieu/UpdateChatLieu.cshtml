@@ -1,11 +1,11 @@
 ﻿@model HN120_ShopQuanAo.Data.Models.ChatLieu
 
 @{
-    ViewData["Title"] = "CreateChatLieu";
+    ViewData["Title"] = "UpdateChatLieu";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Create ChatLieu</h1>
+<h1>Update ChatLieu</h1>
 
 @if (TempData["errorMessage"] != null)
 {
@@ -14,7 +14,9 @@
             </div>
 }
 
-<form asp-action="CreateChatLieu" method="post">
+<form asp-action="UpdateChatLieu" method="post">
+    <input type="hidden" asp-for="MaChatLieu" />
+    
     <div class="form-group">
         <label asp-for="TenChatLieu" class="control-label"></label>
         <input asp-for="TenChatLieu" class="form-control" />
@@ -26,7 +28,7 @@
         <span asp-validation-for="MoTa" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+        <input type="submit" value="Update" class="btn btn-primary" />
     </div>
 </form>
 
