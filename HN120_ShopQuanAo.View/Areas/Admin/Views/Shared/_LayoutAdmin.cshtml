@@ -18,7 +18,7 @@
             <!-- Sidebar scroll-->
             <div>
                 <div class="brand-logo d-flex align-items-center justify-content-between">
-                    <a href="./index.html" class="text-nowrap logo-img">
+                    <a asp-area="Admin" asp-controller="AdminHome" asp-action="Index" class="text-nowrap logo-img">
                         <img src="~/src/assets/images/logos/dark-logo.svg" width="180" alt="" />
                     </a>
                     <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
@@ -41,9 +41,9 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./index.html" aria-expanded="false">
+                            <a class="sidebar-link" aria-expanded="false" asp-area="Admin" asp-controller="UserManager" asp-action="GetAllAccount">
                                 <span>
-                                    <i class="ti ti-layout-dashboard"></i>
+                                    <i class="bi bi-person-gear"></i>
                                 </span>
                                 <span class="hide-menu">Quản lý tài khoản</span>
                             </a>
@@ -188,7 +188,7 @@
                                             <i class="ti ti-list-check fs-6"></i>
                                             <p class="mb-0 fs-3">My Task</p>
                                         </a>
-                                        <a href="~/src/authentication-login.html" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                                        <a asp-action="Logout" asp-controller="AdminHome" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                                     </div>
                                 </div>
                             </li>
