@@ -64,7 +64,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 throw new Exception("Mã hóa đơn chi tiết không tồn tại");
 
             }
-            mvc.DieuKienGiam = vc.DieuKienGiam;
+            mvc.Ten = vc.Ten;
             mvc.GiaGiamToiThieu = vc.GiaGiamToiThieu;
             mvc.GiaGiamToiDa = vc.GiaGiamToiDa;
             mvc.NgayBatDau = vc.NgayBatDau;
@@ -72,6 +72,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
             mvc.KieuGiamGia = vc.KieuGiamGia;
             mvc.GiaTriGiam = vc.GiaTriGiam;
             mvc.SoLuong = vc.SoLuong;
+            mvc.MoTa = vc.MoTa;
             mvc.TrangThai = vc.TrangThai;
             _context.SaveChanges();
         }

@@ -295,7 +295,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("VoucherMaVoucher")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(40)");
 
                     b.HasKey("MaHoaDon");
 
@@ -558,7 +558,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("VoucherMaVoucher")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(40)");
 
                     b.HasKey("UserVoucherID");
 
@@ -572,33 +572,46 @@ namespace HN120_ShopQuanAo.API.Migrations
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.Voucher", b =>
                 {
                     b.Property<string>("MaVoucher")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal?>("DieuKienGiam")
-                        .HasColumnType("decimal(18,2)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
                     b.Property<decimal?>("GiaGiamToiDa")
+                        .IsRequired()
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("GiaGiamToiThieu")
+                        .IsRequired()
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("GiaTriGiam")
+                        .IsRequired()
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("KieuGiamGia")
+                        .IsRequired()
                         .HasColumnType("int");
+
+                    b.Property<string>("MoTa")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayBatDau")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("NgayKetThuc")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("SoLuong")
+                        .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<string>("Ten")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
                     b.Property<int?>("TrangThai")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("MaVoucher");
@@ -642,7 +655,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("VoucherMaVoucher")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(40)");
 
                     b.HasKey("Id");
 
@@ -680,22 +693,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d95c107a-0011-4855-ab6c-6d413877ac7d",
-                            ConcurrencyStamp = "29b28ae1-591e-4c6e-a4f4-16521b02c10a",
+                            Id = "7e5fc741-f87a-415b-af2e-3d26160421c8",
+                            ConcurrencyStamp = "97ec55a1-49dc-40ce-97de-57b2d8be0010",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0ae23175-11cd-4dee-964a-d15324a6eaa8",
-                            ConcurrencyStamp = "ea21fd78-d866-4947-9cf3-d485c35021fb",
+                            Id = "a0a40c72-e131-40e1-9526-ffb3897e922c",
+                            ConcurrencyStamp = "8b774a5b-74cd-4cf7-8c02-46f6acdaa27c",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "c9e31a2e-ad6c-444a-9fca-8841f79cecc2",
-                            ConcurrencyStamp = "671657eb-50c6-47ff-b607-199c2ec3acc2",
+                            Id = "c77f7658-4793-4e73-873c-1585ad20f76c",
+                            ConcurrencyStamp = "fe2f8dc8-7e85-4e3d-b00b-b23e876264a9",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });

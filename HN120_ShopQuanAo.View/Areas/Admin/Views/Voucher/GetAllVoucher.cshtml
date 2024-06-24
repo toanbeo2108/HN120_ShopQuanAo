@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Quản lý Voucher";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <!DOCTYPE html>
@@ -123,6 +124,7 @@
                 background-color: #6c757d;
                 border-color: #6c757d;
             }
+
     </style>
 </head>
 <body>
@@ -131,6 +133,30 @@
     <p>
         <a asp-action="CreateVC" class="btn btn-primary">Thêm mới</a>
     </p>
+    <!-- Bộ lọc tìm trạng thái -->
+    <div class="input-group mb-3">
+        <select class="form-control" id="statusFilter">
+            <option value="">Tất cả trạng thái</option>
+            <option value="1">Đang sử dụng</option>
+            <option value="0">Không sử dụng</option>
+        </select>
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" onclick="filterByStatus()">
+                <i class="fa fa-filter"></i> Lọc
+            </button>
+        </div>
+    </div>
+
+    <!-- Bộ lọc tìm voucher từ ngày 12/6/2024 đến ngày 26/6/2024 -->
+    <div class="input-group mb-3">
+        <input type="date" class="form-control" id="startDateFilter">
+        <input type="date" class="form-control" id="endDateFilter">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" onclick="filterByDateRange()">
+                <i class="fa fa-calendar"></i> Lọc theo ngày
+            </button>
+        </div>
+    </div>
 
     <div class="input-group mb-3">
         <input type="text" class="form-control" placeholder="Tìm kiếm Voucher theo mã" aria-label="Tìm kiếm Voucher theo mã" aria-describedby="button-addon2" id="searchBox">
@@ -144,18 +170,18 @@
             <tr>
                 <th>STT</th>
                 <th>Mã Voucher</th>
+                <th>Tên Voucher</th>
                 <th>kiểu giảm giá</th>
                 <th>Gía giảm tối thiểu</th>
                 <th>Gía giảm tối đa</th>
-                <th>Số tiền cần</th>
-                <th>Giá trị</th>
-                <th>Ngày áp dụng</th>
+                <th>Gia trị giảm</th>
+                <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
                 <th>Số lượng</th>
+                <th>Mô tả</th>
                 <th>Tình trạng</th>
                 <th>Trạng thái</th>
-                <th>Hành động 1</th>
-                <th>Hành động 2</th>
+                <th>Hành động Chung</th>
             </tr>
         </thead>
         <tbody id="voucherTableBody">
@@ -166,32 +192,64 @@
                     <tr>
                         <td>@index</td>
                         <td>@Html.DisplayFor(modelItem => item.MaVoucher)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Ten)</td>
                         <td>
                             @if (item.KieuGiamGia == 0)
                             {
-                                <span class="text-danger">Giảm Theo Tiền Mặt</span>
+                                <div style="color:red">Giảm Theo Tiền Mặt</div>
                             }
                             else
                             {
-                                <span class="text-success">Giảm Theo Phần Trăm</span>
+                                <div style="color:green">Giảm Theo Phần Trăm</div>
                             }
                         </td>
-                        <td>@Html.DisplayFor(modelItem => item.GiaGiamToiThieu) VND</td>
-                        <td>@Html.DisplayFor(modelItem => item.GiaGiamToiDa) VND</td>
-                        <td>@Html.DisplayFor(modelItem => item.GiaTriGiam) VND</td>
-                        <td>@Html.DisplayFor(modelItem => item.NgayBatDau)</td>
-                        <td>@Html.DisplayFor(modelItem => item.NgayKetThuc)</td>
-                        <td>@Html.DisplayFor(modelItem => item.SoLuong)</td>
-                        <td>@Html.DisplayFor(modelItem => item.DieuKienGiam)</td>
+                        <td>
+                            <div style="color:green">@($"{item.GiaGiamToiThieu:n0} VND")</div>
+                        </td>
+                        <td>
+                            <div style="color:green">@($"{item.GiaGiamToiDa:n0} VND")</div>
+                        </td>
+                        <td>
+                            @if (item.KieuGiamGia == 0)
+                            {
+                                <div style="color:red">@($"{item.GiaTriGiam:n0} VND")</div>
+
+                            }
+                            else
+                            {
+                                <div style="color:red">@($"{item.GiaTriGiam:n0} %")</div>
+
+                            }
+                        </td>
+                        <td>
+                            <div style="color:green">@item.NgayBatDau</div>
+                        </td>
+                        <td>
+                            @if (item.NgayKetThuc >= DateTime.Now)
+                            {
+                                <div style="color:green">@item.NgayKetThuc</div>
+                            }
+                            else
+                            {
+                                <div style="color:red">@item.NgayKetThuc</div>
+                            }
+
+                        </td>
+                        <td>
+                            <div style="color:red">@item.SoLuong</div>
+                        </td>
+                        <td>
+                            <div style="color:black">@item.MoTa</div>
+                        </td>
                         <td>
                             @{
-                                if (item.TrangThai == 1)
+                                if (item.NgayKetThuc >= DateTime.Now && item.SoLuong > 0)
                                 {
-                                    <span class="text-success">Còn khuyến mãi</span>
+                                    <div style="color:green">Còn khuyến mãi</div>
                                 }
                                 else
                                 {
-                                    <span class="text-danger">Hết khuyến mãi</span>
+                                    <div style="color:red">Hết Khuyến mãi</div>
                                 }
                             }
                         </td>
@@ -208,17 +266,17 @@
                             }
                         </td>
                         <td>
-                            
+                            @Html.ActionLink("Sửa", "UpdateVC", new { id = item.MaVoucher }, new { @class = "btn btn-success btn-sm" })
                             @if (item.TrangThai == 1)
                             {
-                                @Html.ActionLink("OFF", "KoSuDung", new { ma = item.MaVoucher }, new { @class = "btn btn-danger btn-sm text-white" })
+                                @Html.ActionLink("Không Sử Dụng", "KoSuDung", new { MaVoucher = item.MaVoucher }, new { @class = "btn btn-danger btn-sm text-white" })
                             }
                             else
                             {
-                                @Html.ActionLink("ON", "SuDung", new { ma = item.MaVoucher }, new { @class = "btn btn-success btn-sm text-white" })
+                                @Html.ActionLink("sử dụng", "SuDung", new { MaVoucher = item.MaVoucher }, new { @class = "btn btn-success btn-sm text-white" })
                             }
                         </td>
-                        <td>@Html.ActionLink("Sửa", "UpdateVC", new { id = item.MaVoucher }, new { @class = "btn btn-success btn-sm" })</td>
+                        
                     </tr>
                     index++;
                 }
@@ -230,7 +288,7 @@
         function searchVoucher() {
             var input, filter, table, tr, td, i, txtValue;
             input = document.getElementById("searchBox");
-            filter = input.value.toUpperCase();
+            filter = input.value.toUpperCase().replace(/\s+/g, ' ').trim();
             table = document.getElementById("voucherTableBody");
             tr = table.getElementsByTagName("tr");
 
@@ -238,7 +296,8 @@
                 td = tr[i].getElementsByTagName("td")[1];
                 if (td) {
                     txtValue = td.textContent || td.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    txtValue = txtValue.toUpperCase().replace(/\s+/g, ' ').trim();
+                    if (txtValue.indexOf(filter) > -1) {
                         tr[i].style.display = "";
                     } else {
                         tr[i].style.display = "none";
@@ -246,6 +305,78 @@
                 }
             }
         }
+
+
+        // JavaScript function for filtering vouchers by status
+        function filterByStatus() {
+            var status = document.getElementById("statusFilter").value;
+            var table = document.getElementById("voucherTableBody");
+            var tr = table.getElementsByTagName("tr");
+
+            for (var i = 0; i < tr.length; i++) {
+                var td = tr[i].getElementsByTagName("td")[12]; // Cột index 12 là trạng thái
+                if (td) {
+                    if (status == "" || td.textContent.trim() == (status == "1" ? "Sử dụng" : "Không sử dụng")) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        function filterByDateRange() {
+            var status = document.getElementById("statusFilter").value;
+            var startDate = document.getElementById("startDateFilter").value;
+            var endDate = document.getElementById("endDateFilter").value;
+
+            // Chuyển đổi ngày thành đối tượng Date để so sánh
+            var startDateObj = startDate ? new Date(startDate) : null;
+            var endDateObj = endDate ? new Date(endDate) : null;
+
+            // Nếu endDateObj tồn tại, set giờ, phút, giây về cuối ngày (23:59:59)
+            if (endDateObj) {
+                endDateObj.setHours(23);
+                endDateObj.setMinutes(59);
+                endDateObj.setSeconds(59);
+            }
+
+            // Lấy danh sách các dòng trong bảng
+            var table = document.getElementById("voucherTableBody");
+            var rows = table.getElementsByTagName("tr");
+
+            // Duyệt qua từng dòng trong bảng
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+
+                // Lấy ngày bắt đầu và ngày kết thúc từ từng dòng
+                var startDateCell = new Date(row.getElementsByTagName("td")[7].textContent);
+                var endDateCell = new Date(row.getElementsByTagName("td")[8].textContent);
+                var statusCell = row.getElementsByTagName("td")[11].textContent;
+
+                // Nếu endDateCell tồn tại, set giờ, phút, giây về cuối ngày (23:59:59)
+                if (endDateCell) {
+                    endDateCell.setHours(23);
+                    endDateCell.setMinutes(59);
+                    endDateCell.setSeconds(59);
+                }
+
+                // Kiểm tra điều kiện về trạng thái và ngày tháng
+                var meetsStatusCriteria = (status === "" || status === statusCell);
+                var meetsDateCriteria = (startDateObj === null || endDateObj === null ||
+                    (startDateCell >= startDateObj && endDateCell <= endDateObj));
+
+                // Hiển thị hoặc ẩn dòng dựa trên kết quả của điều kiện
+                if (meetsStatusCriteria && meetsDateCriteria) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        }
+
+
     </script>
+
 </body>
 </html>
+

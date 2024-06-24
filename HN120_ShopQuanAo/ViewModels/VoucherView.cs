@@ -14,26 +14,24 @@ namespace HN120_ShopQuanAo.Data.ViewModels
         [Required(ErrorMessage = "mời bạn nhập Mã")]
         [StringLength(40, ErrorMessage = "Mã không được quá 40 kí tự")]
         public string MaVoucher { get; set; }
-        [Required(ErrorMessage = "mời bạn chọn hình thức giảm giá ")]
-        public int KieuGiamGia { get; set; }//0 là giảm theo %, 1 là giảm thẳng giá tiền
+        [Required(ErrorMessage = "mời bạn nhập Tên")]
+        [StringLength(40, ErrorMessage = "Tên không được quá 40 kí tự")]
+        public string Ten { get; set; }
+        [Required(ErrorMessage = "mời bạn chọn kiểu giảm giá ")]
+        public int? KieuGiamGia { get; set; } //1 là giảm theo %, 0 là giảm thẳng giá tiền
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
-        
-        public int dieuKienGiam { get; set; }
+        public decimal? GiaGiamToiThieu { get; set; }
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
-       
-        public int giaGiamToiThieu { get; set; }
+        public decimal? GiaGiamToiDa { get; set; }
+        public DateTime? NgayBatDau { get; set; }
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
-        public int giaGiamToiDa { get; set; }
+        public DateTime? NgayKetThuc { get; set; }
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
-        public int giaTriGiam { get; set; }
+        public decimal? GiaTriGiam { get; set; }
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
-        public DateTime NgayBatDau { get; set; }
+        public int? SoLuong { get; set; }
+        public string? MoTa { get; set; }
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
-        public DateTime NgayKetThuc { get; set; }
-        [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
-        
-        public int SoLuong { get; set; }
-        
-        public int TrangThai { get; set; }
+        public int? TrangThai { get; set; }
     }
 }
