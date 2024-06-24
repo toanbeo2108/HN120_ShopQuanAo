@@ -1,15 +1,16 @@
 ﻿using HN120_ShopQuanAo.API.IResponsitories;
+using HN120_ShopQuanAo.API.Responsitories;
 using HN120_ShopQuanAo.API.Service.IServices;
 using HN120_ShopQuanAo.Data.Models;
 
 namespace HN120_ShopQuanAo.API.Service.Services
 {
-    public class HoaDonService : IHoaDonService
+    public class HoaDon_Service : IHoaDon_Service
     {
-        private readonly IHoaDonRepository _repo;
-        public HoaDonService(IHoaDonRepository repo)
+        private readonly IHoaDon_Respository _repo;
+        public HoaDon_Service(IHoaDon_Respository repo)
         {
-                _repo = repo;
+            _repo = repo;   
         }
         public void CreateHoaDon(HoaDon hoaDon)
         {
@@ -24,14 +25,14 @@ namespace HN120_ShopQuanAo.API.Service.Services
             }
             catch (Exception ex)
             {
-              
-                throw ex; 
+
+                throw ex;
             }
         }
 
         public IEnumerable<HoaDon> GetAllHoaDon()
         {
-           return _repo.GetAllHoaDon();
+            return _repo.GetAllHoaDon();
         }
 
         public HoaDon GetHoaDonByMa(string ma)
@@ -45,7 +46,24 @@ namespace HN120_ShopQuanAo.API.Service.Services
 
                 throw ex;
             }
-            
+        }
+
+        public IEnumerable<HoaDon> GetHoaDonByTrangthai(int stt)
+        {
+            try
+            {
+                return _repo.GetHoaDonByTrangthai(stt);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public IEnumerable<dynamic> GetHoaDonWithDetails(string ma)
+        {
+            return _repo.GetHoaDonWithDetails(ma);
         }
 
         public void UpdateHoaDon(HoaDon hoaDon)
@@ -59,7 +77,6 @@ namespace HN120_ShopQuanAo.API.Service.Services
 
                 throw ex;
             }
-            
         }
     }
 }

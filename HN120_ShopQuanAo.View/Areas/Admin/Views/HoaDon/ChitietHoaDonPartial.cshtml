@@ -1,0 +1,74 @@
+﻿@* 
+@using HN120_ShopQuanAo.Data.Models
+@using HN120_ShopQuanAo.View.Areas.Admin.Data
+@{
+    
+    IEnumerable<HoaDonWithDetailsViewModel> hoaDonWithDetails = ViewBag.hoaDonWithDetails as IEnumerable<HoaDonWithDetailsViewModel>;
+}
+
+<table class="table" id="page">
+    <thead>
+        <tr>
+
+            <th style="text-align : center;">
+                Mã hóa đơn chi tiết
+            </th>
+
+            <th style="text-align : center;">
+                SKU
+            </th>
+            <th style="text-align : center;">
+                Mã hóa đơn
+            </th>
+            <th style="text-align : center;">
+                Tên sản phẩm
+            </th>
+            <th style="text-align : center;">
+                Số lượng mua
+            </th>
+            <th style="text-align : center;">
+                Đơn giá
+            </th>
+            
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var hdct in hoaDonWithDetails)
+        {
+            @foreach (var item in hdct.HoaDonChiTiets)
+            {
+                
+           
+            <tr>
+
+                <td style="text-align : center; margin-bottom : 20px">
+                    @item.MaHoaDonChiTiet
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @item.SKU
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                        @item.MaHoaDon
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                        @item.TenSp
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                        @item.SoLuongMua
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                        @item.DonGia
+                    </td>
+                
+                <td>
+                    <button type="button" class="btn btn-danger" id="btn_chitiet" data-id="@item.MaHoaDon">
+                        Xem chi tiết<button>
+                            <button type="button" class="btn btn-danger" id="btn_update" data-id="@item.MaHoaDon">Chỉnh sửa<button>
+                </td>
+
+            </tr>
+            }
+        }
+    </tbody>
+</table> *@

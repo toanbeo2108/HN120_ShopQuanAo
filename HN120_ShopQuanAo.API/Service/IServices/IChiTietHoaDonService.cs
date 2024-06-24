@@ -6,7 +6,7 @@ namespace HN120_ShopQuanAo.API.Service.IServices
     {
         IEnumerable<HoaDonChiTiet> GetAllHoaDonChiTiet();
         HoaDonChiTiet GetHoaDonChiTietByMa(string ma);
-        void CreateCTHD(HoaDonChiTiet hdct);
+        void CreateCTHD(List<HoaDonChiTiet> hdct);
         void UpdateCTHD(HoaDonChiTiet hdct);
         void DeleteCTHD(string ma);
     }

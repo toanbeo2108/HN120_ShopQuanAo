@@ -12,16 +12,46 @@ namespace HN120_ShopQuanAo.API.Responsitories
         {
             _appDbContext = db;
         }
-        public void CreateCTHD(HoaDonChiTiet hdct)
+        public void CreateCTHD(List<HoaDonChiTiet> hdct)
         {
+            DateTime now = DateTime.Now;
+            string formattedTime = now.ToString("yyyyMMddHHmmss");
             var totalHoaDonCT = _appDbContext.HoaDonChiTiet.Count();
-            hdct.MaHoaDonChiTiet = "HDCT" + (totalHoaDonCT + 1);
-            var hoaDonExists = _appDbContext.HoaDon.FirstOrDefault(c => c.MaHoaDon == hdct.MaHoaDon);
+            foreach (var item in hdct)
+            {
+                item.MaHoaDonChiTiet = ("HDCT" + formattedTime + (totalHoaDonCT +1)).ToString();
+                totalHoaDonCT++;
+            }
+            var hoaDonExists = _appDbContext.HoaDon.FirstOrDefault(c => c.MaHoaDon == hdct[0].MaHoaDon);
             if (hoaDonExists == null)
             {
                 throw new Exception("Mã hóa đơn không tồn tại");
             }
-            _appDbContext.HoaDonChiTiet.Add(hdct);
+
+            foreach (var hd in hdct)
+            {
+                var ctsanpham = _appDbContext.ChiTietSp.FirstOrDefault(c => c.SKU == hd.SKU);
+                var sanpham = _appDbContext.SanPham.FirstOrDefault(c => c.MaSp == ctsanpham.MaSp);
+                if (ctsanpham != null)
+                {
+                    if (ctsanpham.SoLuongTon < hd.SoLuongMua)
+                    {
+                        throw new Exception("Số lượng sản phẩm còn lại khồn đủ đáp ứng");
+                    }
+                    else if (ctsanpham.SoLuongTon <= 0)
+                    {
+                        throw new Exception("Sản phẩm này đã hết");
+                    }
+                    else
+                    {
+                        ctsanpham.SoLuongTon -= hd.SoLuongMua;
+                        sanpham.TongSoLuong -= hd.SoLuongMua;
+                        _appDbContext.HoaDonChiTiet.Add(hd);
+                    }
+                }
+                
+            }
+
             _appDbContext.SaveChanges();
         }
 
