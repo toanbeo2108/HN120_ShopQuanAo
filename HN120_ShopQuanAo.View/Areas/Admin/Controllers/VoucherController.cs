@@ -15,8 +15,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 {
     public class VoucherController : Controller
     {
-        private  HttpClient _httpClient;
-        private  AppDbContext _context;
+        private HttpClient _httpClient;
+        private AppDbContext _context;
         public VoucherController()
         {
             _httpClient = new HttpClient();
@@ -94,14 +94,14 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     ModelState.AddModelError("NgayKetThuc", "Ngày kết thúc phải lớn hơn ngày bắt đầu");
                 }
 
-                if (bk.KieuGiamGia == 1) 
+                if (bk.KieuGiamGia == 1)
                 {
                     if (bk.GiaTriGiam > 100 || bk.GiaTriGiam <= 0)
                     {
                         ModelState.AddModelError("GiaTriGiam", "Giá trị giảm phải từ 1 đến 100");
                     }
                 }
-                else if (bk.KieuGiamGia == 0) 
+                else if (bk.KieuGiamGia == 0)
                 {
                     if (bk.GiaTriGiam <= 0)
                     {
@@ -134,7 +134,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 var response = await _httpClient.PostAsync(urlBook, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("GetAllVoucher", "Voucher", new { areas = "Admin" });
+                    return RedirectToAction("GetAllVoucher", "Voucher", new { area = "Admin" });
                 }
 
                 TempData["error message"] = "Thêm thất bại";
@@ -164,69 +164,141 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             {
                 return View(Book);
             }
-
         }
+
         [HttpPost]
         public async Task<IActionResult> UpdateVC(string id, Voucher vc)
         {
-            var urlBook = $"https://localhost:7197/UpdateVCher?MaVoucher={vc.MaVoucher}&Ten={vc.Ten}&GiaGiamToiThieu={vc.GiaGiamToiThieu}&GiaGiamToiDa={vc.GiaGiamToiDa}&NgayBatDau={vc.NgayBatDau}&NgayKetThuc={vc.NgayKetThuc}&KieuGiamGia={vc.KieuGiamGia}&GiaTriGiam={vc.GiaTriGiam}&SoLuong={vc.SoLuong}&MoTa={vc.MoTa}&TrangThai={vc.TrangThai}";
-            var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
-            var respon = await _httpClient.PutAsync(urlBook, content);
-            if (!respon.IsSuccessStatusCode)
-            {
-                return BadRequest();
-            }
-            return RedirectToAction("GetAllVoucher", "Voucher", new { area = "Admin" });
-
-        }
-
-        public async Task<IActionResult> SuDung(string MaVoucher)
-        {
             try
             {
-                var timkiem = _context.Voucher.FirstOrDefault(x => x.MaVoucher == MaVoucher);
-                if (timkiem != null)
+                // Kiểm tra các điều kiện nhập dữ liệu từ người dùng (trừ MaVoucher)
+                if (string.IsNullOrEmpty(vc.Ten) || vc.KieuGiamGia == null ||
+                    vc.GiaGiamToiThieu == null || vc.GiaGiamToiDa == null ||
+                    vc.NgayBatDau == null || vc.NgayKetThuc == null ||
+                    vc.GiaTriGiam == null || vc.SoLuong == null || vc.TrangThai == null)
                 {
-                    timkiem.TrangThai = 0;
-                    _context.Voucher.Update(timkiem);
-                    await _context.SaveChangesAsync(); 
-                    return RedirectToAction("GetAllVoucher");
+                    TempData["error message"] = "Vui lòng nhập đầy đủ thông tin.";
+                    return View(vc);
                 }
-                else
+
+                // Kiểm tra các điều kiện cụ thể
+                if (vc.GiaGiamToiThieu < 0)
                 {
-                    return View();
+                    ModelState.AddModelError("GiaGiamToiThieu", "Giá giảm tối thiểu không được âm");
                 }
+                if (vc.GiaGiamToiDa < 0)
+                {
+                    ModelState.AddModelError("GiaGiamToiDa", "Giá giảm tối đa không được âm");
+                }
+                if (vc.GiaGiamToiThieu > vc.GiaGiamToiDa)
+                {
+                    ModelState.AddModelError("GiaGiamToiThieu", "Giá giảm tối thiểu không được lớn hơn giá giảm tối đa");
+                }
+                if (vc.GiaTriGiam <= 0)
+                {
+                    ModelState.AddModelError("GiaTriGiam", "Mời bạn nhập giá trị giảm lớn hơn 0");
+                }
+                if (vc.SoLuong <= 0)
+                {
+                    ModelState.AddModelError("SoLuong", "Mời bạn nhập số lượng lớn hơn 0");
+                }
+                if (vc.NgayKetThuc < vc.NgayBatDau)
+                {
+                    ModelState.AddModelError("NgayKetThuc", "Ngày kết thúc phải lớn hơn ngày bắt đầu");
+                }
+
+                // Kiểm tra điều kiện giảm giá và giá trị giảm
+                if (vc.KieuGiamGia == 1) // Percentage discount
+                {
+                    if (vc.GiaTriGiam > 100 || vc.GiaTriGiam <= 0)
+                    {
+                        ModelState.AddModelError("GiaTriGiam", "Giá trị giảm phải từ 1 đến 100");
+                    }
+                }
+                else if (vc.KieuGiamGia == 0) // Fixed amount discount
+                {
+                    if (vc.GiaTriGiam <= 0)
+                    {
+                        ModelState.AddModelError("GiaTriGiam", "Giá trị giảm phải lớn hơn 0");
+                    }
+                    if (vc.GiaTriGiam < vc.GiaGiamToiThieu || vc.GiaTriGiam > vc.GiaGiamToiDa)
+                    {
+                        ModelState.AddModelError("GiaTriGiam", "Giá trị giảm phải nằm trong khoảng giá giảm tối thiểu và tối đa");
+                    }
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return View(vc);
+                }
+
+                // Nếu các điều kiện hợp lệ, tiến hành cập nhật voucher
+                var urlBook = $"https://localhost:7197/UpdateVCher?MaVoucher={vc.MaVoucher}&Ten={vc.Ten}&GiaGiamToiThieu={vc.GiaGiamToiThieu}&GiaGiamToiDa={vc.GiaGiamToiDa}&NgayBatDau={vc.NgayBatDau}&NgayKetThuc={vc.NgayKetThuc}&KieuGiamGia={vc.KieuGiamGia}&GiaTriGiam={vc.GiaTriGiam}&SoLuong={vc.SoLuong}&MoTa={vc.MoTa}&TrangThai={vc.TrangThai}";
+                var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
+                var respon = await _httpClient.PutAsync(urlBook, content);
+                if (!respon.IsSuccessStatusCode)
+                {
+                    TempData["error message"] = "Cập nhật thất bại";
+                    return View(vc);
+                }
+
+                return RedirectToAction("GetAllVoucher", "Voucher", new { area = "Admin" });
             }
             catch (Exception ex)
             {
-                // Logging lỗi nếu cần
-                return View();
+                TempData["error message"] = "Có lỗi xảy ra: " + ex.Message;
+                return View(vc);
             }
         }
 
-        public async Task<IActionResult> KoSuDung(string MaVoucher)
-        {
-            try
-            {
-                var timkiem = _context.Voucher.FirstOrDefault(x => x.MaVoucher == MaVoucher);
-                if (timkiem != null)
-                {
-                    timkiem.TrangThai = 1;
-                    _context.Voucher.Update(timkiem);
-                    await _context.SaveChangesAsync(); // Sử dụng SaveChangesAsync thay cho SaveChanges
-                    return RedirectToAction("GetAllVoucher"); // Điều hướng về action GetAllVoucher sau khi cập nhật thành công
-                }
-                else
-                {
-                    return View(); // Trả về view mặc định nếu không tìm thấy voucher
-                }
-            }
-            catch (Exception ex)
-            {
-                // Logging lỗi nếu cần
-                return View(); // Xử lý lỗi và trả về view mặc định
-            }
-        }
+
+
+        //public async Task<IActionResult> SuDung(Guid id)
+        //{
+        //    try
+        //    {
+        //        var timkiem = _context.Voucher.FirstOrDefault(x => x.Id == id);
+        //        if (timkiem != null)
+        //        {
+        //            timkiem.TrangThai = 1;
+        //            _context.Voucher.Update(timkiem);
+        //            _context.SaveChanges();
+        //            return RedirectToAction("GetAllVoucher");
+        //        }
+        //        else
+        //        {
+        //            return View();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+
+        //}
+        //public async Task<IActionResult> KoSuDung(string id)
+        //{
+        //    try
+        //    {
+        //        var timkiem = _context.Voucher.FirstOrDefault(x => x.Id == id);
+        //        if (timkiem != null)
+        //        {
+        //            timkiem.TrangThai = 0;
+        //            _context.Voucher.Update(timkiem);
+        //            _context.SaveChanges();
+        //            return RedirectToAction("GetAllVoucher");
+        //        }
+        //        else
+        //        {
+        //            return View();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+
+        //}
 
 
     }

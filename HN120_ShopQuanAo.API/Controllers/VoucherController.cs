@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HN120_ShopQuanAo.API.Controllers
 {
-
     public class VoucherController : Controller
     {
         private readonly IVoucherServices _sv;
