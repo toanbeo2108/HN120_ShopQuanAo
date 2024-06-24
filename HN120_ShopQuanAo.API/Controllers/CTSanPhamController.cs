@@ -28,6 +28,31 @@ namespace HN120_ShopQuanAo.API.Controllers
             //_iresponSZ = new AllResponsitories<Size>(_context, _context.Size);
 
         }
+        [HttpPost("[Action]")]
+        public async Task<bool> AddLstCTSP([FromBody] List<ChiTietSp> lstctsp)
+        {
+            try
+            {
+
+                foreach (var item in lstctsp)
+                {
+                    item.SKU = item.MaSp + item.MaSize + item.MaMau;
+                    item.TrangThai = 1;
+
+                    await _iresponCTSP.CreateItem(item);
+
+                }
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+
+        }
         [HttpGet("[Action]")]
         public async Task<IEnumerable<ChiTietSp>> GetAllCTSanPham()
         {
