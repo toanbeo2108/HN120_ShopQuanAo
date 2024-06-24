@@ -1,3 +1,7 @@
+using HN120_ShopQuanAo.API.IResponsitories;
+using HN120_ShopQuanAo.API.Responsitories;
+using HN120_ShopQuanAo.API.Service.IServices;
+using HN120_ShopQuanAo.API.Service.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
+
 
 builder.Services.AddSession(options =>
 {

@@ -49,6 +49,7 @@
 <script src="~/src/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
 
 <hr />
+
 <div class="customer_login container">
     <div class="row">
         <!--login area start-->
@@ -69,8 +70,69 @@
                         <a href="#">Lost your password?</a>
                     </div>
                 </form>
+
             </div>
+            <!--login area end-->
         </div>
-        <!--login area end-->
     </div>
 </div>
+
+<style>
+    body {
+        background: url('path_to_your_background_image.jpg') no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .customer_login_wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start; /* Align to the top */
+        min-height: calc(50vh - 90px); /* Chiều cao 100% của viewport trừ đi chiều cao của thanh điều hướng */
+        padding: 20px;
+        padding-top: 20px; /* Khoảng cách từ trên xuống */
+    }
+
+    .customer_login {
+        width: 100%;
+        max-width: 800px; /* Đặt chiều rộng tối đa lớn hơn cho form */
+        padding: 40px; /* Thêm padding lớn hơn */
+        box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Thêm bóng đổ để làm nổi bật form */
+        background: rgba(255, 255, 255, 0.9); /* Đặt nền trắng và thêm độ trong suốt cho form */
+        border-radius: 10px; /* Bo tròn góc cho form */
+    }
+
+    .account_form {
+        width: 100%;
+    }
+
+        .account_form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .account_form form p {
+            margin-bottom: 20px;
+        }
+
+    .login_submit {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .login_submit button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .login_submit a {
+            color: #007bff;
+            text-decoration: none;
+        }
+</style>

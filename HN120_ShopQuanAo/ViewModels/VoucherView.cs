@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HN120_ShopQuanAo.Data.Models
+namespace HN120_ShopQuanAo.Data.ViewModels
 {
-	public class Voucher
-	{
+    public  class VoucherView
+    {
         [Key]
+        public Guid Id { get; set; }
         [Required(ErrorMessage = "mời bạn nhập Mã")]
         [StringLength(40, ErrorMessage = "Mã không được quá 40 kí tự")]
         public string MaVoucher { get; set; }
@@ -22,7 +23,6 @@ namespace HN120_ShopQuanAo.Data.Models
         public decimal? GiaGiamToiThieu { get; set; }
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public decimal? GiaGiamToiDa { get; set; }
-        [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public DateTime? NgayBatDau { get; set; }
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public DateTime? NgayKetThuc { get; set; }
@@ -33,9 +33,5 @@ namespace HN120_ShopQuanAo.Data.Models
         public string? MoTa { get; set; }
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public int? TrangThai { get; set; }
-
-        public virtual List<HoaDon>? HoaDons { get; set; }
-		public virtual List<User_Voucher>? User_Vouchers { get; set; }
-		public virtual List<VoucherHistory>? VoucherHistorys { get; set; }
-	}
+    }
 }
