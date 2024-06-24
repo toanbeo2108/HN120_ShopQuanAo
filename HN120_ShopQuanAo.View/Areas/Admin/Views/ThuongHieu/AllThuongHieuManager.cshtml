@@ -1,0 +1,70 @@
+﻿@model List<HN120_ShopQuanAo.Data.Models.ThuongHieu>
+
+@{
+    ViewData["Title"] = "Quản lý Thương Hiệu";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+
+}
+
+<h1>Quản lý Thương Hiệu</h1>
+<div class="form-group">
+    <form method="get" asp-action="AllThuongHieuManager" asp-controller="ThuongHieu" asp-area="Admin">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Tìm kiếm tên " value="@ViewData["CurrentFilter"]" onchange="this.form.submit()" />
+            </div>
+
+        </div>
+    </form>
+</div>
+<div>
+    <a asp-action="CreateThuongHieu" class="btn btn-primary">Thêm Thương Hiệu</a>
+</div>
+<div id="thuongHieuList">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tên Thương Hiệu</th>
+                <th>Mô Tả</th>
+                <th>Trạng Thái</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>@item.TenThuongHieu</td>
+                        <td>@item.MoTa</td>
+                        <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
+                        <td>
+                                <a asp-action="ThuongHieuDetail" asp-route-id="@item.MaThuongHieu" class="btn btn-info">Chi tiết</a> |
+                                <a asp-action="UpdateThuongHieu" asp-route-id="@item.MaThuongHieu" class="btn btn-warning">Sửa</a> |
+
+                        @if (item.TrangThai == 1)
+                        {
+                                            <form asp-action="UpdateStatusThuongHieuKKD" method="post" style="display:inline;">
+                                                <input type="hidden" name="id" value="@item.MaThuongHieu" />
+                                                <button type="submit" class="btn btn-success">Bật</button>
+
+                                                </form>
+
+                        }
+                        else
+                        {
+
+                                                 <form asp-action="UpdateStatusThuongHieuKD" method="post" style="display:inline;">
+                                                    <input type="hidden" name="id" value="@item.MaThuongHieu" />
+                                                    <button type="submit" class="btn btn-success">Bật</button>
+                                                </form>       
+                        }
+
+                             |
+
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

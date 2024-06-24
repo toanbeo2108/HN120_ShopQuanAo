@@ -8,5 +8,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         {
             return View();
         }
+        public IActionResult Logout()
+        {
+            return RedirectToAction("Index", "Home", new { area = "" });
+        }
     }
 }

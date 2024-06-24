@@ -26,7 +26,6 @@ namespace HN120_ShopQuanAo.API.Data
 		public virtual DbSet<Size> Size { get; set; }
 		public virtual DbSet<TheLoai> TheLoai { get; set; }
 		public virtual DbSet<Voucher> Voucher { get; set; }
-		public virtual DbSet<AnhSanPham> AnhSanPham { get; set; }
 		public virtual DbSet<ChatLieu> ChatLieu { get; set; }
 		public virtual DbSet<DeliveryAddress> DeliveryAddress { get; set; }
 		public virtual DbSet<KhuyenMai> KhuyenMai { get; set; }
@@ -53,7 +52,11 @@ namespace HN120_ShopQuanAo.API.Data
 		{
 			if (!optionsBuilder.IsConfigured)
 			{
-				optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-4QC868L\SQLEXPRESS;Initial Catalog=ShopQuanAoOnline;Integrated Security=True;");
+
+
+				optionsBuilder.UseSqlServer("Data Source=DESKTOP-3A6J796\\SQLEXPRESS;Initial Catalog=ShopQuanAoOnline;Integrated Security=True;");
+
+
 			}
 		}
 
