@@ -1,0 +1,150 @@
+﻿@using HN120_ShopQuanAo.Data.Models
+@using HN120_ShopQuanAo.View.Areas.Admin.Data
+@model IEnumerable<HN120_ShopQuanAo.Data.Models.HoaDon>
+@{
+    ViewData["Title"] = "GetAllHoaDon";
+    IEnumerable<ThanhToan> lstt = ViewBag.lstt as IEnumerable<ThanhToan>;
+}
+<table class="table" id="page">
+    <thead>
+        <tr>
+
+            <th style="text-align : center;">
+                Mã hóa đơn
+            </th>
+
+            <th style="text-align : center;">
+                Người tạo
+            </th>
+            <th style="text-align : center;">
+                Mã Voucher
+            </th>
+            <th style="text-align : center;">
+                Ngày tạo
+            </th>
+            <th style="text-align : center;">
+                Tên khách hàng
+            </th>
+            <th style="text-align : center;">
+                Số điện thoại
+            </th>
+            <th style="text-align : center;">
+                Phí ship
+            </th>
+            <th style="text-align : center;">
+                Tổng giá trị
+            </th>
+            <th style="text-align : center;">
+                Phương thức thanh toán
+            </th>
+            <th style="text-align : center;">
+                Trạng thái
+            </th>
+            <th>Hành động</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td style="text-align : center; margin-bottom : 20px">
+                    @item.MaHoaDon
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @item.UserID
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @item.MaVoucher
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @item.NgayTaoDon
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @item.TenKhachHang
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @item.SoDienThoai
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @item.PhiShip
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @item.TongGiaTriHangHoa
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @if (item.PhuongThucThanhToan == 1)
+                    {
+                        <p>Nợ</p>
+                    }
+                    @if (item.PhuongThucThanhToan == 2)
+                    {
+                        <p>Quỵt</p>
+
+                    }
+                    @if (item.PhuongThucThanhToan == 3)
+                    {
+                        <p>Tiền tươi</p>
+                    }
+                    @if (item.PhuongThucThanhToan == 4)
+                    {
+                        <p>Chuyển khoản</p>
+                    }
+                </td>
+
+                @if (item.TrangThai == 1)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Chờ xác nhận
+                    </td>
+                }
+                @if (item.TrangThai == 2)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Đã xác nhận
+                    </td>
+                }
+                @if (item.TrangThai == 3)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Chờ giao hàng
+                    </td>
+                }
+                @if (item.TrangThai == 4)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Đang giao
+                    </td>
+                }
+                @if (item.TrangThai == 5)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Hoàn thành
+                    </td>
+                }
+                @if (item.TrangThai == 6)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Hủy
+                    </td>
+                }
+                @if (item.TrangThai == 7)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Đã thanh toán
+                    </td>
+                }
+                <td>                  
+                    <button type="button" class="btn btn-danger" id="btn_updatehd" data-id="@item.MaHoaDon">Chỉnh sửa<button>
+                            <a href="@Url.Action("DetailHoaDon", "HoaDon", new { ma = item.MaHoaDon })" class="btn btn-primary">Chi tiết</a>
+                            @* <button class="btn btn-primary btn-detail-hoadon" id="btn_chitiet" data-id="@item.MaHoaDon">Chi tiết</button> *@
+                </td>
+                 <td>
+                    
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

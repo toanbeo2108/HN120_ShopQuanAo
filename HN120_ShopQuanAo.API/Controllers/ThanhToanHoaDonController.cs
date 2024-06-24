@@ -1,5 +1,7 @@
-﻿using HN120_ShopQuanAo.API.Service.IServices;
-using HN120_ShopQuanAo.API.Service.Services;
+﻿using HN120_ShopQuanAo.API.Data;
+using HN120_ShopQuanAo.API.IResponsitories;
+using HN120_ShopQuanAo.API.Responsitories;
+using HN120_ShopQuanAo.API.Service.IServices;
 using HN120_ShopQuanAo.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,56 +10,38 @@ namespace HN120_ShopQuanAo.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HoaDonController : ControllerBase
+    public class ThanhToanHoaDonController : ControllerBase
     {
-        private readonly IHoaDon_Service _sv;
-
-        public HoaDonController(IHoaDon_Service sv)
+        private readonly IThanhToanHoaDonService _sv;
+        public ThanhToanHoaDonController(IThanhToanHoaDonService sv)
         {
             _sv = sv;
         }
         [HttpGet("[Action]")]
-        public IActionResult GetAllHoaDon()
+        public IActionResult GetAllThanhToan_HoaDon()
         {
-            var hoadon = _sv.GetAllHoaDon();
-            return Ok(hoadon);
+            return Ok( _sv.GetAllThanhToan_HoaDon());
         }
-         [HttpGet("[Action]/{stt}")]
-        public IActionResult GetAllHoaDonBySTT(int stt)
-        {
-            var hoadon = _sv.GetHoaDonByTrangthai(stt);
-            return Ok(hoadon);
-        }
-
         [HttpGet("[Action]/{ma}")]
-        public IActionResult GetAllHoaDonMa(string ma)
+        public IActionResult GetThanhToan_HoaDonById(string ma)
         {
             try
             {
-                var hoadon = _sv.GetHoaDonByMa(ma);
-                return Ok(hoadon);
+                
+                return Ok(_sv.GetThanhToan_HoaDonByMa(ma));
 
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-
-
-        }
-        [HttpGet("[Action]/{ma}")]
-        public IActionResult GetHoaDonWithDetails(string ma)
-        {
-           
-                var hoadon = _sv.GetHoaDonWithDetails(ma);
-                return Ok(hoadon);
         }
         [HttpPost("[Action]")]
-        public IActionResult CreateHoaDon(HoaDon hoaDon)
+        public IActionResult AddThanhToanThanhToan_HoaDon(ThanhToan_HoaDon tt)
         {
             try
             {
-                _sv.CreateHoaDon(hoaDon);
+                _sv.CreateThanhToan_HoaDon(tt);
                 return StatusCode(StatusCodes.Status201Created);
 
             }
@@ -65,14 +49,13 @@ namespace HN120_ShopQuanAo.API.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-
         }
         [HttpPut("[Action]")]
-        public IActionResult UpdateHoaDon(HoaDon hoaDon)
+        public IActionResult UpdateThanhToan_HoaDon(ThanhToan_HoaDon tt)
         {
             try
             {
-                _sv.UpdateHoaDon(hoaDon);
+                _sv.UpdateThanhToan_HoaDon(tt);
                 return StatusCode(StatusCodes.Status200OK);
 
             }
@@ -80,16 +63,14 @@ namespace HN120_ShopQuanAo.API.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-
-
         }
         [HttpDelete("[Action]/{ma}")]
-        public IActionResult DeleteHoaDon(string ma)
+        public IActionResult deleteThanhToan_HoaDon(string ma)
         {
             try
             {
 
-                _sv.DeleteHoaDon(ma);
+                _sv.DeleteThanhToan_HoaDon(ma);
                 return Ok();
             }
             catch (Exception ex)
@@ -98,4 +79,6 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
         }
     }
+   
 }
+
