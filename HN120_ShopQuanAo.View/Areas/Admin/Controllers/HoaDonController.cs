@@ -96,10 +96,10 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
             var joinedData = from sp in lstsp
                              join ctsp in lstCTSP on sp.MaSp equals ctsp.MaSp
-                             join ms in lstMauSac on ctsp.MaMau equals ms.MaMau
-                             join sz in lstSize on ctsp.MaSize equals sz.MaSize
-                             where ctsp.SoLuongTon > 0
-                             select new ChiTietSPView
+                            join ms in lstMauSac on ctsp.MaMau equals ms.MaMau
+                            join sz in lstSize on ctsp.MaSize equals sz.MaSize
+                           
+            select new ChiTietSPView
                              {
                                  MaSp = sp.MaSp,
                                  MaThuongHieu = sp.MaThuongHieu,
