@@ -1,48 +1,59 @@
 ﻿$(document).ready(function () {
     filterFunction();
     addSelectButtonEventListeners();
+    $('#btn_SoDienThoai').on('change', validatePhoneNumber);
+    
     $('#sanpham_table tbody tr').each(function () {
         var giaBanCell = $(this).find('td:eq(7)');
-        var giaBan = parseFloat(giaBanCell.text().trim());
+        var giaBan = parseFloat(giaBanCell.text().trim().replace(/\./g, '').replace(',', '.'));
         if (!isNaN(giaBan)) {
             giaBanCell.text(formatMoney(giaBan));
         }
     });
     $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD'));
     $('body').on('click', '#btn_thanhtoanhoadon', function () {
-        $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD'));
         var today = new Date();
        
         var date = 'HD' + today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         $('#btn_ma').val(date.toString());
-       var hoaDonChiTiets = getdataHoaDonChiTiet();
-        $.post('/Add-hoadon', { hd: getdataHoaDon() }, function (re) {          
-            if (re.status) {
-                $.ajax({
-                    url: '/Add-hoadonct',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(hoaDonChiTiets),
-                    success: function (re) {
-                        if (re.status) {
-                            alert(re.message);
-                            window.location.reload();
-                        } else {
-                            alert(re.message);
+
+        let tt = $('#btn_tienkhachdua').val();
+        let kt = ($('#btn_tienkhachphaitra').val() === '') ? 0 : parseFloat($('#btn_PhiShip').val());
+        var hoaDonChiTiets = getdataHoaDonChiTiet();
+        if (tt < kt || tt == '' || tt =='' || tt == 0) {
+            $.post('/Add-hoadon', { hd: getdataHoaDon() }, function (re) {
+                if (re.status) {
+                    $.ajax({
+                        url: '/Add-hoadonct',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(hoaDonChiTiets),
+                        success: function (re) {
+                            if (re.status) {
+                                alert(re.message);
+                                window.location.reload();
+                            } else {
+                                alert(re.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert('Có lỗi xảy ra: ' + error);
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Có lỗi xảy ra: ' + error);
-                    }
-                });
-            }
-            else {
-                alert(re.message);
-            }
-        }).fail(function (xhr, status, error) {
-            // Xử lý lỗi khi yêu cầu /Add-hoadon thất bại
-            alert('Có lỗi xảy ra khi thêm hóa đơn: ' + error);
-        });
+                    });
+                }
+                else {
+                    alert(re.message);
+                }
+            }).fail(function (xhr, status, error) {
+                // Xử lý lỗi khi yêu cầu /Add-hoadon thất bại
+                alert('Có lỗi xảy ra khi thêm hóa đơn: ' + error);
+            });
+        }
+        else {
+            alert('Số tiền khách đưa chưa đủ ')
+        }
+      
+       
       
       
     });
@@ -90,9 +101,11 @@
 
         if (selectedOption.val() !== '') {
             giaTriGiam = parseFloat(selectedOption);
+           
         }
        
         updatePaymentDetails(giaTriGiam);
+        
     });
     $('#btn_XaPhuong').change(function () {
         getShippingFee();
@@ -107,16 +120,216 @@
 
     // Lắng nghe thay đổi số lượng sản phẩm trong bảng chi tiết hóa đơn (giả sử có input số lượng)
     $('#chitiethoadon_table').on('input', 'input[type="number"]', updatePaymentDetails);
+    //formatPriceColumn();
+    
+    $('#btn_tienkhachdua').on('input', function () {
+        updatePaymentDetails();
+    });
+    $('#btn_truvoucher').on('change', function () {
+        updatePaymentDetails();
+    });
+    $('#btn_tienkhachdua').change(function () {
+        updatePaymentDetails();
 
+    });
 });
+
+// kiểm tra số điện thoại
+function validatePhoneNumber() {
+    var phoneInput = $('#btn_SoDienThoai');
+    var phoneError = $('#phoneError');
+    var phoneNumber = phoneInput.val();
+
+    // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+    var phonePattern = /^0\d{9,10}$/;
+
+    // Kiểm tra tính hợp lệ của số điện thoại
+    if (!phonePattern.test(phoneNumber)) {
+        phoneError.show();
+    } else {
+        phoneError.hide();
+    }
+}
+
 
 // format money 
 function formatMoney(amount) {
     return amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace('.', ',').replace(/(\d+),(\d+)$/, '$1,$2').replace(/,/g, '.').replace(/(\d+)\.(\d+)$/, '$1,$2')
 }
+function filterFunction() {
+    var searchInput = document.getElementById("search-input").value.toUpperCase();
+    var selectedColor = document.getElementById("select-color").value;
+    var selectedSize = document.getElementById("select-size").value;
+
+    var table = document.getElementById("sanpham_table");
+    var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var color = row.querySelector('[data-mamau]').getAttribute('data-mamau').trim();
+        var size = row.querySelector('[data-masize]').getAttribute('data-masize').trim();
+        var tenSp = row.querySelector('[data-tensp]').getAttribute('data-tensp').toUpperCase().trim();
+
+        if ((selectedColor === "Chọn màu" || color === selectedColor) &&
+            (selectedSize === "Chọn size" || size === selectedSize) &&
+            (tenSp.includes(searchInput))) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    }
+}
 
 
-    // Lấy dữ liệu từ bảng chi tiết hóa đơn
+// Function to add event listeners to select buttons
+function addSelectButtonEventListeners() {
+    var selectButtons = document.querySelectorAll('#sanpham_table .btn_chonsp');
+
+    selectButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            var sku = button.getAttribute('data-sku');
+            var tenSp = button.getAttribute('data-tensp');
+            var giaBan = parseFloat(button.getAttribute('data-giaban'));
+            var maSize = button.getAttribute('data-masize');
+            var maMau = button.getAttribute('data-mamau');
+            var slton = parseInt(button.getAttribute('data-soluongton'));
+
+            //if (slton === 0) {
+            //    alert('Sản phẩm đã hết hàng, không thể thêm vào đơn hàng.');
+            //    return;
+            //}
+
+            addToInvoiceDetails(sku, tenSp, giaBan, maSize, maMau, slton);
+        });
+    });
+}
+
+function addToInvoiceDetails(sku, tenSp, giaBan, maSize, maMau, slton) {
+    var table = document.getElementById("chitiethoadon_table");
+    if (!table) return; // Kiểm tra table có tồn tại hay không
+
+    var tbody = table.getElementsByTagName("tbody")[0];
+    if (!tbody) return; // Kiểm tra tbody có tồn tại hay không
+
+    var rows = tbody.getElementsByTagName("tr");
+
+    // Kiểm tra nếu sản phẩm đã tồn tại trong bảng chi tiết hóa đơn
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        if (row.cells.length > 0 && row.cells[0].innerText === sku && row.cells[1].innerText === tenSp && row.cells[2].innerText === maSize && row.cells[3].innerText === maMau) {
+            // Tăng số lượng mua
+            var soLuongInput = row.cells[4].querySelector('input');
+            
+            if (soLuongInput) {
+                var soLuongMua = parseInt(soLuongInput.value);
+                if (soLuongMua + 1 > slton) {
+                    alert('Số lượng mua vượt quá số lượng tồn kho.');
+                    return;
+                }
+                soLuongInput.value = soLuongMua + 1;
+              
+                updateTotalPrice(soLuongInput, giaBan, slton);
+                    updatePaymentDetails();
+                
+            }
+            return; // Dừng lại sau khi cập nhật
+        }
+    }
+
+    // Nếu sản phẩm chưa tồn tại, thêm mới vào bảng
+    addNewRow(tbody, sku, tenSp, giaBan, maSize, maMau, slton);
+    updatePaymentDetails();
+}
+
+// Function to add a new row to invoice details table
+function addNewRow(table, sku, tenSp, giaBan, maSize, maMau, slton) {
+    var newRow = table.insertRow();
+    var skucell = newRow.insertCell(0);
+    var tenSpCell = newRow.insertCell(1);
+    var maSizeCell = newRow.insertCell(2);
+    var maMauCell = newRow.insertCell(3);
+    var soLuongCell = newRow.insertCell(4);
+    var giaBanCell = newRow.insertCell(5);
+    var actionCell = newRow.insertCell(6);
+
+    skucell.innerText = sku;
+    tenSpCell.innerText = tenSp;
+    maSizeCell.innerText = maSize;
+    maMauCell.innerText = maMau;
+    soLuongCell.innerHTML = '<input type="number" value="1" min="1" class="form-control" oninput="updateTotalPrice(this, ' + giaBan + ', ' + slton + ')">';
+
+    giaBanCell.innerText = formatMoney(giaBan);
+    actionCell.innerHTML = '<button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button>';
+    updatePaymentDetails();
+}
+// Function to update total price based on quantity change
+function updateTotalPrice(input, giaBan, slton ) {
+    var row = input.closest('tr');
+    if (!row) return; // Kiểm tra row có tồn tại hay không
+    var soLuongMua = parseInt(input.value);
+    if (soLuongMua > slton) {
+        alert('Số lượng mua vượt quá số lượng khả dụng.');
+        input.value = slton;
+        soLuongMua = slton;
+    }
+    var totalPriceCell = row.cells[5];
+    var soLuongInput = row.cells[4].querySelector('input'); // kiểm tra số lượng mua
+    if (!totalPriceCell) return; // Kiểm tra totalPriceCell có tồn tại hay không
+    totalPriceCell.innerText = formatMoney(parseFloat(input.value) * giaBan);  
+    updatePaymentDetails();
+}
+
+// Function to remove a row from invoice details table
+function removeRow(button) {
+    var row = button.closest('tr');
+    if (row) {
+        row.remove();
+        updatePaymentDetails();
+    }
+}
+// Function to update payment details (total, discount, customer payment, change)
+function updatePaymentDetails() {
+    var total = 0;
+    $('#chitiethoadon_table tbody tr').each(function () {
+        // var soLuong = parseFloat($(this).find('input[type="number"]').val());
+        //var giaBan = parseFloat($(this).find('td:eq(5)').text().replace(/\./g, '').replace(',', '.')); 
+        var giaBan = parseFloat($(this).find('td:eq(5)').text().replace(/\./g, '').replace(',', '.'));
+
+        if (!isNaN(giaBan)) {
+            total += giaBan;
+        }
+    });
+    var vat = total * 0.1;
+    var ship = ($('#btn_PhiShip').val() === '') ? 0 : parseFloat($('#btn_PhiShip').val());
+    var selectedOption = $('#btn_MaVoucher').find(':selected');
+    var giaTriGiam = selectedOption.val() !== '' ? parseFloat(selectedOption.data('giatrigiam').replace(/\./g, '').replace(',', '.')) : 0;
+    var tienkhachdua = ($('#btn_tienkhachdua').val() == '') ? 0 : parseFloat($('#btn_tienkhachdua').val());
+    var tongtienkhachphaitra = total + ship - giaTriGiam;
+    var tongtien = total;
+    if (tongtienkhachphaitra <= 0) {
+        $('#btn_tienkhachphaitra').val(0);
+    }
+    else {
+        $('#btn_tienkhachphaitra').val(formatMoney(tongtienkhachphaitra));
+    }
+    if (tienkhachdua <=0 ) {
+        $('#btn_tienthua').val(0);
+    }
+    else {
+       let t =  tienkhachdua - tongtienkhachphaitra;
+        if (t <= 0) {
+            $('#btn_tienthua').val(0);
+        }
+        else {
+            $('#btn_tienthua').val(formatMoney(t));
+        }
+    }
+    // $('#btn_tongtien').val(tongtien.toFixed(2));
+   
+    $('#btn_tongtien').val(formatMoney(tongtien));
+}
+
+  
 function getdataHoaDonChiTiet() {
     
     var hoaDonChiTiets = [];
@@ -148,152 +361,6 @@ function getdataHoaDonChiTiet() {
 
     return hoaDonChiTiets;
 }
-function filterFunction() {
-    var searchInput = document.getElementById("search-input").value.toUpperCase();
-    var selectedColor = document.getElementById("select-color").value;
-    var selectedSize = document.getElementById("select-size").value;
-
-    var table = document.getElementById("sanpham_table");
-    var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
-
-    for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        var color = row.cells[6].innerText.trim();
-        var size = row.cells[5].innerText.trim();
-        var tenSp = row.cells[4].innerText.toUpperCase().trim();
-
-        if ((selectedColor === "Chọn màu" || color === selectedColor) &&
-            (selectedSize === "Chọn size" || size === selectedSize) &&
-            (tenSp.includes(searchInput))) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
-    }
-}
-function addSelectButtonEventListeners() {
-    var selectButtons = document.querySelectorAll('#sanpham_table #btn_chonsp');
-
-    selectButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            var sku = button.getAttribute('data-SKU');
-            var tenSp = button.getAttribute('data-TenSP');
-            var giaBan = parseFloat(button.getAttribute('data-GiaBan'));
-            var gia= formatMoney(giaBan)// Chuyển đổi giaBan thành số
-            var maSize = button.getAttribute('data-MaSize');
-            var maMau = button.getAttribute('data-MaMau');
-            var maMau = button.getAttribute('data-MaMau');
-            var slton = button.getAttribute('data-SoLuongTon');
-            if (slton == 0) {
-                /*$('#btn_chonsp').prop('disabled', true);*/
-                alert('Sản phẩm đã hết không thể thêm');
-            }
-            else {
-
-                addToInvoiceDetails(sku, tenSp, giaBan, maSize, maMau);
-            }
-        });
-    });
-}
-
-function addToInvoiceDetails(sku, tenSp, giaBan, maSize, maMau) {
-    var table = document.getElementById("chitiethoadon_table").getElementsByTagName("tbody")[0];
-    var rows = table.getElementsByTagName("tr");
-
-    // Kiểm tra nếu bảng chi tiết hóa đơn chưa có dòng nào
-    if (rows.length === 0) {
-        addNewRow(table, sku, tenSp, giaBan, maSize, maMau);
-        updatePaymentDetails();
-        return;
-    }
-
-    // Kiểm tra nếu sản phẩm đã tồn tại trong bảng chi tiết hóa đơn
-    for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        if (row.cells.length > 0 && row.cells[0].innerText === sku && row.cells[1].innerText === tenSp && row.cells[2].innerText === maSize && row.cells[3].innerText === maMau) {
-            // Tăng số lượng mua
-            var soLuongInput = row.cells[4].getElementsByTagName('input')[0];
-            var soLuongMua = parseInt(soLuongInput.value);
-            soLuongInput.value = soLuongMua + 1;
-
-            // Cập nhật tổng tiền
-            updateTotalPrice(soLuongInput, giaBan);
-            updatePaymentDetails();
-            return; // Dừng lại sau khi cập nhật
-        }
-    }
-
-    // Nếu sản phẩm chưa tồn tại, thêm mới vào bảng
-    addNewRow(table, sku, tenSp, giaBan, maSize, maMau);
-    updatePaymentDetails();
-}
-
-function addNewRow(table, sku, tenSp, giaBan, maSize, maMau) {
-    var newRow = table.insertRow();
-    var skucell = newRow.insertCell(0);
-    var tenSpCell = newRow.insertCell(1);
-    var maSizeCell = newRow.insertCell(2);
-    var maMauCell = newRow.insertCell(3);
-    var soLuongCell = newRow.insertCell(4);
-    var giaBanCell = newRow.insertCell(5);
-    var actionCell = newRow.insertCell(6);
-
-    skucell.innerText = sku;
-    tenSpCell.innerText = tenSp;
-    maSizeCell.innerText = maSize;
-    maMauCell.innerText = maMau;
-    soLuongCell.innerHTML = '<input type="number" value="1" min="1"  class="form-control" oninput="updateTotalPrice(this, ' + giaBan + ')">';
-    giaBanCell.innerText = giaBan; // Hiển thị giá bán với hai chữ số thập phân
-    actionCell.innerHTML = '<button type="button" class="btn btn-danger" onclick="removeRow(this)">Xóa</button>';
-}
-
-function updateTotalPrice(input, giaBan) {
-    var row = input.closest('tr');
-    var soLuong = parseFloat(input.value);
-    var totalPriceCell = row.cells[5];
-    totalPriceCell.innerText = formatMoney(soLuong * giaBan);; // Hiển thị giá bán với hai chữ số thập phân
-    updatePaymentDetails();
-}
-
-function removeRow(button) {
-    var row = button.closest('tr');
-    row.remove();
-    updatePaymentDetails();
-}
-
-function updatePaymentDetails() {
-    var total = 0;
-    $('#chitiethoadon_table tbody tr').each(function () {
-       // var soLuong = parseFloat($(this).find('input[type="number"]').val());
-        //var giaBan = parseFloat($(this).find('td:eq(5)').text().replace(/\./g, '').replace(',', '.')); 
-        var giaBan = parseFloat($(this).find('td:eq(5)').text().replace(/\./g, '').replace(',', '.')); 
-
-        if (!isNaN(giaBan) ) {
-            total +=  giaBan ;
-        }
-    });
-    var vat = total * 0.1;
-    var ship = ($('#btn_PhiShip').val() === '') ? 0 : parseFloat($('#btn_PhiShip').val());
-    var selectedOption = $('#btn_MaVoucher').find(':selected');
-    var giaTriGiam = selectedOption.val() !== '' ? parseFloat(selectedOption.data('giatrigiam').replace(/\./g, '').replace(',', '.')) : 0;
-
-    var tongtien =  total + ship - giaTriGiam;
-
-    // $('#btn_tongtien').val(tongtien.toFixed(2));
-    $('#btn_tongtien').val(formatMoney(tongtien));
-    //if ($('#btn_PhiShip').val() == '') {
-    //    var tongtien = vat + total;
-      
-    //    $('#btn_tongtien').val((tongtien.toFixed(2)));
-    //}
-    //else {
-    //    var ship = parseFloat($('#btn_PhiShip').val());
-    //    var tongtien = vat + total + ship;
-       
-    //    $('#btn_tongtien').val((tongtien.toFixed(2)));
-    //}
-}
-
 function setdataHoaDon(data) {
     if (data == null || data == undefined || data == '') {
         $('#btn_ma').val('');
