@@ -4,59 +4,63 @@ using HN120_ShopQuanAo.Data.Models;
 
 namespace HN120_ShopQuanAo.API.Service.Services
 {
-    public class ChiTietHoaDonService : IChiTietHoaDonService
+    public class ThanhToanServices : IThanhToanServices
     {
-        private readonly IChiTietHoaDonRepository _repo;
-        public ChiTietHoaDonService(IChiTietHoaDonRepository repo)
+        private readonly IThanhToanRepository _repo;
+        public ThanhToanServices(IThanhToanRepository repo)
         {
-                _repo = repo;
+            _repo = repo;
         }
-        public void CreateCTHD(List<HoaDonChiTiet> hdct)
+        public void CreatThanhToan(ThanhToan tt)
         {
-            _repo.CreateCTHD(hdct);
+            _repo.CreatThanhToan(tt);
         }
-        public void DeleteCTHD(string ma)
+
+        public void DeleteThanhToan(string ma)
         {
             try
             {
-                _repo.DeleteCTHD(ma);
+                _repo.DeleteThanhToan(ma);
             }
             catch (Exception ex)
             {
 
                 throw ex;
             }
+           
         }
 
-        public IEnumerable<HoaDonChiTiet> GetAllHoaDonChiTiet()
+        public IEnumerable<ThanhToan> GetAllThanhtoan()
         {
-           return _repo.GetAllHoaDonChiTiet();
+           return _repo.GetAllThanhtoan();
         }
 
-        public HoaDonChiTiet GetHoaDonChiTietByMa(string ma)
+        public ThanhToan GetThanhToanByMa(string ma)
         {
             try
             {
-                return _repo.GetHoaDonChiTietByMa(ma);
+                return _repo.GetThanhToanByMa(ma);
             }
             catch (Exception ex)
             {
 
                 throw ex;
             }
+           
         }
 
-        public void UpdateCTHD(HoaDonChiTiet hdct)
+        public void UpdateThanhToan(ThanhToan tt)
         {
             try
             {
-                _repo.UpdateCTHD(hdct);
+                _repo.UpdateThanhToan(tt);
             }
             catch (Exception ex)
             {
 
                 throw ex;
             }
+          
         }
     }
 }

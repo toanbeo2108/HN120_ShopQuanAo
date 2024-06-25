@@ -21,13 +21,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add DI
 builder.Services.AddScoped<ILoginServices, LoginServices>();
 builder.Services.AddScoped<IRegisterServices, RegisterServices>();
-builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
+builder.Services.AddScoped<IHoaDon_Respository, HoaDon_Respository>();
+builder.Services.AddScoped<IHoaDon_Service, HoaDon_Service>();
 builder.Services.AddScoped<IChiTietHoaDonRepository, ChiTietHoaDonRepository>();
 builder.Services.AddScoped<IChiTietHoaDonService, ChiTietHoaDonService>();
+
 builder.Services.AddScoped<IHoaDonService, HoaDonService>();
-builder.Services.AddScoped<IVoucherServices, VoucherServices>();
-builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 builder.Services.AddScoped<IAddressUserReponse, AddressUserReponse>();
+builder.Services.AddScoped<IThanhToanHoaDonRepository, ThanhToanHoaDonRepository>();
+builder.Services.AddScoped<IThanhToanHoaDonService, ThanhToanHoaDonService>();
+builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
+builder.Services.AddScoped<IThanhToanRepository, ThanhToanRepository>();
+builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
+builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
+builder.Services.AddScoped<IVoucherServices, VoucherServices>();
+
 
 
 // Add Identity
