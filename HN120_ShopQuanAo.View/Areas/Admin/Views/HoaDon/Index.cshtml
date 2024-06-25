@@ -29,26 +29,14 @@
                         <input id="btn_ma" style="display:none" class="form-control" type="text" />
                     </div>
            <div class="row">
-              <div class="col-md-5">
+              <div class="col-md-5" style="display:none">
                   <div class="row">
                       <div class="col-md-6" style="display:none">
                           <label for="btn_UserID">User Name</label>
-                          <input id="btn_UserID" class="form-control" type="text"value="991d42f4-70e9-4f27-9dcc-33645f486764" />
+                            <input id="btn_UserID" class="form-control" type="text" value="a1fa4eb4-a57f-452a-ba47-f546c003a991" />
                       </div>
-                      <div class="col-md-6">
-                          <label for="btn_MaVoucher">Mã Voucher</label>
-                          <select id="btn_MaVoucher" class="form-select">
-                              <option value="">Chọn Voucher</option>
-                              @foreach (var item in lstvc)
-                              {
-                                    <option value="@item.MaVoucher" data-giatrigiam="@item.GiaTriGiam">@item.MaVoucher (giảm @item.GiaTriGiam )"</option>
-                              }
-                          </select>
-                      </div>
-                      <div class="col-md-6">
-                          <label for="btn_NgayTaoDon">Ngày tạo hóa đơn</label>
-                          <input id="btn_NgayTaoDon" class="form-control" type="date" />
-                      </div>
+                    
+                     
                       <div class="col-md-6" style="display:none">
                           <label for="btn_TongGiaTriHangHoa">Tổng tiền</label>
                           <input id="btn_TongGiaTriHangHoa" class="form-control" type="text" />
@@ -57,7 +45,7 @@
                           <label for="btn_Status">Trạng thái</label>
                           <input id="btn_Status" class="form-control" type="text" value="5" />
                       </div>
-                      <div class="col-md-6">
+                     @*  <div class="col-md-6">
                           <label for="btn_PhuongTTT">Phương thức thanh toán</label>
                           <select id="btn_PhuongTTT" class="form-select">
                               @foreach (var item in thanhtoanhoadon)
@@ -66,20 +54,27 @@
                               }
 
                           </select>
-                      </div>
+                      </div> *@
                   </div>
               </div>
 
-              <div class="col-md-7">
+              <div class="col-md-12">
                  <div class="row">
                       <div class="col-md-4">
                           <label for="btn_TenKhachHang">Tên khách hàng</label>
                           <input id="btn_TenKhachHang" class="form-control" type="text" />
                       </div>
-                      <div class="col-md-4">
-                          <label for="btn_SoDienThoai">Số điện thoại</label>
-                          <input id="btn_SoDienThoai" class="form-control" type="text" />
+                        <div class="col-md-4">
+                            <label for="btn_SoDienThoai">Số điện thoại</label>
+                            <input id="btn_SoDienThoai" class="form-control" type="text" />
+                            <div id="phoneError" style="color: red; display: none;">Số điện thoại không hợp lệ.</div>
+                        </div>
+
                       </div>
+                        <div class="col-md-4">
+                            <label for="btn_NgayTaoDon">Ngày tạo hóa đơn</label>
+                            <input id="btn_NgayTaoDon" class="form-control" type="date" />
+                        </div>
                       <div class="col-md-4">
                           <label for="btn_TinhThanh">Tỉnh thành</label>
                           <select id="btn_TinhThanh" class="form-control">
@@ -107,10 +102,10 @@
                               <span class="sr-only">Loading...</span>
                           </div>
                       </div>
-                      <div class="col-md-4">
+                     @*  <div class="col-md-4">
                           <label for="btn_PhiShip">Phí ship (VNĐ)</label>
-                          <input id="btn_PhiShip" class="form-control" type="number" min="0" placeholder="Nhập phí vậnchuyển" />
-                      </div>
+                          
+                      </div> *@
                  </div>
               </div>
           
@@ -118,49 +113,68 @@
         </div>
     <div class="card-body">
                <div class="row">
-                   <div class="col-md-7">
-                       <h2>Danh sách sản phẩm</h2>
-                       <div class="col-md-12">
-                          <div class="row mb-3">
-                              <div class="col-md-4">
-                                  <input type="text" id="search-input" class="form-control" onkeyup="filterFunction()"placeholder="Tìm kiếm...">
-                              </div>
-                              <div class="col-md-4">
-                                  <select id="select-color" class="form-select" aria-label="Default select example"onchange="filterFunction()">
-                                      <option selected>Chọn màu</option>
-                                      @foreach (var item in Model.Select(x => x.TenMau).Distinct())
-                                      {
-                                          <option value="@item">@item</option>
-                                      }
-                                  </select>
-                              </div>
-                              <div class="col-md-4">
-                                  <select id="select-size" class="form-select" aria-label="Default selectexample"onchange="filterFunction()">
-                                      <option selected>Chọn size</option>
-                                      @foreach (var item in Model.Select(x => x.TenSize).Distinct())
-                                      {
-                                          <option value="@item">@item</option>
-                                      }
-                                  </select>
-                              </div>
+                <div class="col-md-8">
+                    <div class="col-md-12" style="height: 300px;">
+                        
+                        <div style="height: 300px; overflow-y: auto;" class="border border-5">
+                            <table class="table table-borderless" id="chitiethoadon_table">
+                                  <thead>
+                                      <tr>
+                                          <th style="display:none">SKU</th>
+                                          <th>Tên sản phẩm</th>
+                                          <th>Size</th>
+                                          <th>Màu</th>
+                                          <th style="width:120px">Số lượng mua</th>
+                                          <th>Đơn giá</th>
+                                          <th>Hành dộng</th>
+
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr>
+                                      </tr>
+                                  </tbody>
+
+                              </table>
                           </div>
-                       <div class="col-md-12">
-                            @if (Model.Any())
-                            {
-                                <div style="height: 630px; overflow-y: auto;">
-                                        <table class="table table-bordered" id="sanpham_table">
+                      </div>
+                    <div class="col-md-12 border border-5" style="height: 350px; overflow-y: auto;">
+                        @* <h2>Danh sách sản phẩm</h2> *@
+                        <div class="col-md-12">
+                            <div class="row mb-3" style="padding-top:20px">
+                                <div class="col-md-4">
+                                    <input type="text" id="search-input" class="form-control" onkeyup="filterFunction()" placeholder="Tìm kiếm...">
+                                </div>
+                                <div class="col-md-4">
+                                    <select id="select-color" class="form-select" aria-label="Default select example" onchange="filterFunction()">
+                                        <option selected>Chọn màu</option>
+                                        @foreach (var item in Model.Select(x => x.TenMau).Distinct())
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select id="select-size" class="form-select" aria-label="Default selectexample" onchange="filterFunction()">
+                                        <option selected>Chọn size</option>
+                                        @foreach (var item in Model.Select(x => x.TenSize).Distinct())
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                @if (Model.Any())
+                                {
+                                    <div style="height: 630px; overflow-y: auto;">
+                                        <table class="table table-borderless" id="sanpham_table">
                                             <thead>
-                                                <tr>
+                                                <tr class="table-light">
                                                     <th>STT</th>
                                                     <th>Ảnh</th>
-                                                    <th>SKU</th>
-                                                    <th>Mã Sp</th>
-                                                    <th>Tên SP</th>
-                                                    <th>Size</th>
-                                                    <th>Màu</th>
-                                                
+                                                    <th>Thông tin</th>
                                                     <th>Giá bán</th>
-                                                    <th>Số lượng hiện có</th>
                                                     <th>Hành động</th>
                                                 </tr>
                                             </thead>
@@ -171,103 +185,107 @@
                                                 }
                                                 @foreach (var item in Model)
                                                 {
-
-                                                    <tr>
-                                                        <td>@i</td>
-                                                        <td>@item.UrlAnhSpct</td>
-                                                        <td>@item.SKU</td>
-                                                        <td>@item.MaSp</td>
-                                                        <td>@item.TenSP</td>
-                                                        <td>@item.TenSize</td>
-                                                        <td>@item.TenMau</td>
-                                                   
-                                                        <td>@item.GiaBan</td>
-                                                        <td>@item.SoLuongTon</td>
-
-                                                        <td>
-                                                            <button type="button"  class="btn btn-danger" id="btn_chonsp"
-                                                                    data-SKU="@item.SKU"
-                                                                    data-GiaBan="@item.GiaBan"
-                                                                    data-TenSP="@item.TenSP"
-                                                                    data-MaSize="@item.MaSize"
-                                                                    data-MaMau="@item.MaMau"
-                                                                data-SoLuongTon ="@item.SoLuongTon">
+                                                    <tr class="table-light">
+                                                        <td class="table-light">@i</td>
+                                                        <td class="table-light">@item.UrlAnhSpct</td>
+                                                        <td class="table-light">
+                                                            SKU: @item.SKU<br>
+                                                            Tên sản phẩm: @item.TenSP <br>
+                                                            Size: @item.TenSize<br>
+                                                            Màu: @item.TenMau<br>
+                                                        </td>
+                                                        <td class="table-light">
+                                                            @item.GiaBan VNĐ<br>
+                                                            Số lượng khả dụng (@item.SoLuongTon)
+                                                        </td>
+                                                        <td class="center-column">
+                                                            <button type="button" class="btn btn-danger btn_chonsp"
+                                                                    data-sku="@item.SKU"
+                                                                    data-giaban="@item.GiaBan"
+                                                                    data-tensp="@item.TenSP"
+                                                                    data-masize="@item.TenSize"
+                                                                    data-mamau="@item.TenMau"
+                                                                    data-soluongton="@item.SoLuongTon">
                                                                 Chọn
                                                             </button>
                                                         </td>
                                                     </tr>
                                                     i++;
                                                 }
+
+
                                             </tbody>
 
                                         </table>
-                                </div>
-                                
-                            }
-                            else
-                            {
-                                <p>Không có dữ liệu.</p>
-                            }
-                        </div>
-                   </div>
-                    </div>
-                   <div class="col-md-5">
-                        <div class="row" style="height: 60%;background-color:aliceblue">
-                            <div class="col-md-12">
-                                <div class="col-md-12">
-                                    @* <input id="btn_maHDCT" style="display:none" class="form-control" value="@ViewBag.lstHDCT" type="text" /> *@
-                                </div>
-                                <h2> Chi tiết hóa đơn</h2>
-                                <div style="max-height: 350px; overflow-y: auto;">
-                                    <table class="table table-bordered" id="chitiethoadon_table">
-                                        <thead>
-                                            <tr>
-                                                <th style="display:none">SKU</th>
-                                                <th>Tên sản phẩm</th>
-                                                <th>Size</th>
-                                                <th>Màu</th>
-                                                <th style="width:120px">Số lượng mua</th>
-                                                <th>Đơn giá</th>
-                                                <th>Hành dộng</th>
+                                    </div>
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                            </tr>
-                                        </tbody>
-
-                                    </table>
-                                </div>
+                                }
+                                else
+                                {
+                                    <p>Không có dữ liệu.</p>
+                                }
                             </div>
                         </div>
-                        
-                        <div class="row" style="height: 40%; overflow-y: auto;background-color:beige;">
-                            <div class="co-md-12"><h2>Chi tiết thanh toán</h2></div>
-                            <table class="info-table">
-                                <tr>
-                                    <th style="width:180px"><h3>Tổng số tiền:</h3></th>
-                                    <td><input id="btn_tongtien" style="font-size:xx-large;color:brown" class="form-control" type="text"></td>
-                                    <td><h3>VNĐ</h3></td>
-                                </tr>
-                               @*  <tr>
-                                    <th><h3>Thuế VAT:</h3></th>
-                                    <td><input id="btn_thue" style="font-size:xx-large;color:brown" class="form-control" type="text"></td>
-                                    <td><h3>VNĐ</h3></td>
-                                </tr> *@
-                            </table>
-                            <div class="col-md-12" style="display: flex; justify-content: center; align-items: center;">
-                                <button type="button" class="btn btn-danger" id="btn_thanhtoanhoadon" style="width: 100%; height: 70px;">
-                                    <h4 style="margin: 0;">Thanh toán</h4>
-                                </button>
-                            </div>
-                         </div>
                     </div>
+                    </div>
+
+                <div class="col-md-4 border border-5" style="height: 650px;">
+                    <div class="row" style="height: 60%;">
+                        <div class="co-md-12" style="height:100px"><h2>Chi tiết thanh toán</h2></div>
+                        <table class="info-table">
+                            <tr>
+                                <th style="width:130px;padding: 12px"> Tổng số tiền sản phẩm</th>
+                                <td><input id="btn_tongtien" style="color:brown;border:none" class="form-control w-100" type="text"></td>
+                                <td>VNĐ</td>
+                            </tr>
+                            <tr>
+                                <th style="width:130px;padding: 12px"> Chọn voucher</th>
+                                <td>
+                                   
+                                    <select id="btn_MaVoucher" class="form-select" style="color:brown;border:none">
+                                        <option value="">Chọn Voucher</option>
+                                        @foreach (var item in lstvc)
+                                        {
+                                            <option value="@item.MaVoucher" data-giatrigiam="@item.GiaTriGiam">@item.MaVoucher (giảm @item.GiaTriGiam VNĐ)"</option>
+                                        }
+                                    </select>
+                                </td>
+                               
+                            </tr>
+                            <tr>
+                                <th style="width:130px;padding: 12px"> Phí ship</th>
+                                <td><input id="btn_PhiShip" class="form-control" type="number" min="0" placeholder="Nhập phí vậnchuyển" style="color:brown;border:none" /></td>
+                                <td>VNĐ</td>
+                            </tr>
+                                <th style="width:130px;padding: 12px"> Tiền khách phải trả</th>
+                                <td><input id="btn_tienkhachphaitra" style="color:brown;border:none" class="form-control w-100" type="text"></td>
+                                <td>VNĐ</td>
+                            </tr>
+                            <tr>
+                                <th style="width:130px;padding: 12px"> Tiền khách đưa</th>
+                                <td><input id="btn_tienkhachdua" style="color:brown;border:none" class="form-control w-100" type="text"></td>
+                                <td>VNĐ</td>
+                            </tr>
+                            <tr>
+                                <th style="width:130px;padding: 12px"> Tiền thừa</th>
+                                <td><input id="btn_tienthua" style="color:brown;border:none" class="form-control w-100" type="text"></td>
+                                <td>VNĐ</td>
+                            </tr>
+                        </table>
+                        <div class="col-md-12" style="height: 60%;">
+                            <button type="button" class="btn btn-danger" id="btn_thanhtoanhoadon" style="width: 100%; height: 70px;">
+                                <h4 style="margin: 0;">Thanh toán</h4>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+               
                </div>
             </div>
     </div> 
 </div>
-
 
 
 
