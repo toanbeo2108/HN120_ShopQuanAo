@@ -5,7 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>CreateSize</h1>
+<h1>Thêm Size</h1>
 
 <h4>Size</h4>
 @if (TempData["errorMessage"] != null)
@@ -19,11 +19,7 @@
     <div class="col-md-4">
         <form asp-action="CreateSize">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="MaSize" class="control-label"></label>
-                <input asp-for="MaSize" class="form-control" />
-                <span asp-validation-for="MaSize" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="TenSize" class="control-label"></label>
                 <input asp-for="TenSize" class="form-control" />
@@ -34,20 +30,17 @@
                 <input asp-for="MoTa" class="form-control" />
                 <span asp-validation-for="MoTa" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="TrangThai" class="control-label"></label>
-                <input asp-for="TrangThai" class="form-control" />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+    <a asp-action="AllSizeManager" class="btn btn-warning">Hủy</a>
+
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

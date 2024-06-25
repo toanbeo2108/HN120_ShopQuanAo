@@ -44,7 +44,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.CreateItem(b);
         }
         [HttpPut("[Action]/{id}")]
-        public async Task<bool> UpdateTL(string id, [FromBody] TheLoai _ctsp)
+        public async Task<bool> EditTL(string id, [FromBody] TheLoai _ctsp)
         {
             var ctsp = await _irespon.GetAll();
             var b = ctsp.FirstOrDefault(c => c.MaTheLoai == id);

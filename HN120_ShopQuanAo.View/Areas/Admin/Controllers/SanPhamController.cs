@@ -162,46 +162,45 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveChiTietSps(List<TempChiTietSpViewModel> models, List<IFormFile> imageFiles)
+        public async Task<IActionResult> AddChiTietSp(AddChiTietSpViewModel model, IFormFile imageFile)
         {
             if (ModelState.IsValid)
             {
                 var chiTietSpList = new List<ChiTietSp>();
 
-                for (int i = 0; i < models.Count; i++)
+                foreach (var size in model.SelectedSizes)
                 {
-                    var model = models[i];
-                    var chiTietSp = new ChiTietSp
+                    foreach (var mau in model.SelectedMaus)
                     {
-                        MaSp = model.MaSp,
-                        MaSize = model.MaSize,
-                        MaMau = model.MaMau,
-                        DonGia = model.DonGia,
-                        GiaBan = model.GiaBan,
-                        SoLuongTon = model.SoLuongTon,
-                        MaKhuyenMai = model.MaKhuyenMai
-                    };
+                        var chiTietSp = new ChiTietSp
+                        {
+                            MaSp = model.MaSp,
+                            MaSize = size,
+                            MaMau = mau,
+                            //DonGia = model.DonGia,
+                            //GiaBan = model.GiaBan,
+                            //SoLuongTon = model.SoLuongTon,
+                            //MaKhuyenMai = model.MaKhuyenMai
+                        };
 
-                    if (imageFiles.Count > i && imageFiles[i] != null && imageFiles[i].Length > 0)
-                    {
-                        var imageUrl = await UploadImageAsync(imageFiles[i]);
-                        chiTietSp.UrlAnhSpct = imageUrl;
+                        if (imageFile != null && imageFile.Length > 0)
+                        {
+                            var imageUrl = await UploadImageAsync(imageFile);
+                            chiTietSp.UrlAnhSpct = imageUrl;
+                        }
+
+                        chiTietSpList.Add(chiTietSp);
                     }
-
-                    chiTietSpList.Add(chiTietSp);
                 }
 
-                var success = await AddChiTietSpToApi(chiTietSpList);
-                if (success)
-                {
-                    TempData["SuccessMessage"] = "Thêm chi tiết sản phẩm thành công.";
-                    return RedirectToAction("AllChiTietSpManager", "ChiTietSp", new { area = "Admin", id = models.FirstOrDefault()?.MaSp });
-                }
+                // Lưu danh sách chi tiết sản phẩm tạm thời vào Session
+                HttpContext.Session.SetString("TempChiTietSp", JsonConvert.SerializeObject(chiTietSpList));
 
-                TempData["ErrorMessage"] = "Thêm chi tiết sản phẩm thất bại.";
+                TempData["SuccessMessage"] = "Thêm chi tiết sản phẩm tạm thời thành công.";
+                return RedirectToAction("ShowTempChiTietSps");
             }
 
-            return View(models);
+            return View(model);
         }
 
         private async Task LoadDataForViewBag()
@@ -422,7 +421,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 imageFile.CopyTo(stream);
                 vc.UrlAvatar = imageFile.FileName;
             }
-            var urlBook = $"https://localhost:7197/api/SanPham/UpdateSP/{id}";
+            var urlBook = $"https://localhost:7197/api/SanPham/EditSP/{id}";
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)

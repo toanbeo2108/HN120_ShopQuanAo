@@ -26,6 +26,8 @@ builder.Services.AddScoped<IHoaDon_Service, HoaDon_Service>();
 builder.Services.AddScoped<IChiTietHoaDonRepository, ChiTietHoaDonRepository>();
 builder.Services.AddScoped<IChiTietHoaDonService, ChiTietHoaDonService>();
 
+builder.Services.AddScoped<IHoaDonService, HoaDonService>();
+builder.Services.AddScoped<IAddressUserReponse, AddressUserReponse>();
 builder.Services.AddScoped<IThanhToanHoaDonRepository, ThanhToanHoaDonRepository>();
 builder.Services.AddScoped<IThanhToanHoaDonService, ThanhToanHoaDonService>();
 builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
@@ -33,6 +35,7 @@ builder.Services.AddScoped<IThanhToanRepository, ThanhToanRepository>();
 builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
 builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 builder.Services.AddScoped<IVoucherServices, VoucherServices>();
+
 
 
 // Add Identity
@@ -108,7 +111,5 @@ app.UseCors(options =>
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

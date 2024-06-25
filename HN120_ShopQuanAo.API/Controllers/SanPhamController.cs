@@ -52,7 +52,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.CreateItem(b);
         }
         [HttpPut("[Action]/{id}")]
-        public async Task<bool> UpdateSP(string id, [FromBody] SanPham _sp)
+        public async Task<bool> EditSP(string id, [FromBody] SanPham _sp)
         {
 
             var sp = await _irespon.GetAll();

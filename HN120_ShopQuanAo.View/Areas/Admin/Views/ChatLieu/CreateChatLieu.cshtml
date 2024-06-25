@@ -5,7 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Create ChatLieu</h1>
+<h1>Thêm Chất Liệu</h1>
 
 @if (TempData["errorMessage"] != null)
 {
@@ -27,11 +27,12 @@
     </div>
     <div class="form-group">
         <input type="submit" value="Create" class="btn btn-primary" />
+    <a asp-action="AllChatLieuManager" class="btn btn-warning">Hủy</a>
+
     </div>
 </form>
 
 <div>
-    <a asp-action="AllChatLieuManager">Back to List</a>
 </div>
 
 @section Scripts {

@@ -124,7 +124,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 vc.UrlAnhSpct = imageFile.FileName;
             }
 
-            var urlBook = $"https://localhost:7197/api/CTSanPham/UpdateCTSP/{id}";
+            var urlBook = $"https://localhost:7197/api/CTSanPham/EditCTSP/{id}";
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)
