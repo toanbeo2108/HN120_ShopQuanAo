@@ -21,5 +21,14 @@ namespace HN120_ShopQuanAo.API.Controllers
 			var result = await _registerService.RegisterAsync(registerUser, role);
 			return StatusCode(result.StatusCode, result.Message);
 		}
-	}
+
+
+        //[HttpPost]
+        //public async Task<IActionResult> CreateAnAccount(NewAccountModel NewAccountModel, string role)
+        //{
+        //    var result = await _registerService.CreateAnAccount(NewAccountModel, role);
+        //    return StatusCode(result.StatusCode, result.Message);
+        //}
+
+    }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HN120_ShopQuanAo.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240620173108_ok")]
-    partial class ok
+    [Migration("20240625045600_25_6")]
+    partial class _25_6
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -61,28 +61,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasIndex("HoaDonMaHoaDon");
 
                     b.ToTable("HoaDon_History");
-                });
-
-            modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.AnhSanPham", b =>
-                {
-                    b.Property<string>("MaAnh")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MaSP_MaSPCT")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenAnh")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TrangThai")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MaAnh");
-
-                    b.ToTable("AnhSanPham");
                 });
 
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.ChatLieu", b =>
@@ -174,16 +152,13 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("DeliveryAddressID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AddressLine")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Country")
+                    b.Property<string>("Consignee")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("District")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -192,8 +167,14 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
+                    b.Property<string>("Street")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Ward")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("DeliveryAddressID");
 
@@ -401,12 +382,15 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaChatLieu")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaTheLoai")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaThuongHieu")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Mota")
@@ -714,22 +698,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6292639f-0d0c-4059-b906-38a0c0b1a10e",
-                            ConcurrencyStamp = "c3fc5d9e-b913-40e5-bd94-707eb81ffa24",
+                            Id = "4bf3ed4f-3bcf-4a30-a56e-88560479aae5",
+                            ConcurrencyStamp = "78028b02-763e-4101-8de4-300954002370",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ba61c5ce-de49-4d57-9c6a-527f54e43b60",
-                            ConcurrencyStamp = "d98094b3-d1a3-45c5-b060-6d1134330208",
+                            Id = "67b045a2-65fb-409e-999e-ed50f042cfff",
+                            ConcurrencyStamp = "84fa4ea7-260b-466e-b367-b81e497800bb",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "552b2ba4-adc4-45a6-b696-ea41ab55c5c8",
-                            ConcurrencyStamp = "003230d8-5c84-4807-aa31-5559d64096d0",
+                            Id = "9bb954ac-dee9-4603-8332-c246a8b2c6fc",
+                            ConcurrencyStamp = "88e7c583-e7dc-4e47-870c-75aa06c29339",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -917,11 +901,16 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
                     b.Property<string>("Avatar")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("CardNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Gender")
                         .HasColumnType("int");

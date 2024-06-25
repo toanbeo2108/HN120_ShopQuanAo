@@ -12,7 +12,9 @@ namespace HN120_ShopQuanAo.Data.ViewModels
 		[Required(ErrorMessage = "Sdt không được bỏ trống")]
 		public string PhoneNumber { get; set; }
 
+
 		[Required(ErrorMessage = "Password không được bỏ trống")]
-		public string Password { get; set; }
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$", ErrorMessage = "Mật khẩu phải có ít nhất 1 ký tự viết hoa, 1 ký tự đặc biệt, 1 số và tối thiểu 6 ký tự")]
+        public string Password { get; set; }
 	}
 }

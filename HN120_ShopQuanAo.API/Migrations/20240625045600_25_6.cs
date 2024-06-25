@@ -5,25 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HN120_ShopQuanAo.API.Migrations
 {
-    public partial class ok : Migration
+    public partial class _25_6 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "AnhSanPham",
-                columns: table => new
-                {
-                    MaAnh = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MaSP_MaSPCT = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenAnh = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TrangThai = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AnhSanPham", x => x.MaAnh);
-                });
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -45,8 +30,10 @@ namespace HN120_ShopQuanAo.API.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: true),
                     Birthday = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -300,11 +287,12 @@ namespace HN120_ShopQuanAo.API.Migrations
                 {
                     DeliveryAddressID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Consignee = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AddressLine = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ward = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -342,9 +330,9 @@ namespace HN120_ShopQuanAo.API.Migrations
                 columns: table => new
                 {
                     MaSp = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MaThuongHieu = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MaTheLoai = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MaChatLieu = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaThuongHieu = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaTheLoai = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaChatLieu = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UrlAvatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TenSP = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Mota = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
@@ -618,17 +606,17 @@ namespace HN120_ShopQuanAo.API.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "552b2ba4-adc4-45a6-b696-ea41ab55c5c8", "003230d8-5c84-4807-aa31-5559d64096d0", "Employee", "EMPLOYEE" });
+                values: new object[] { "4bf3ed4f-3bcf-4a30-a56e-88560479aae5", "78028b02-763e-4101-8de4-300954002370", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "6292639f-0d0c-4059-b906-38a0c0b1a10e", "c3fc5d9e-b913-40e5-bd94-707eb81ffa24", "Admin", "ADMIN" });
+                values: new object[] { "67b045a2-65fb-409e-999e-ed50f042cfff", "84fa4ea7-260b-466e-b367-b81e497800bb", "User", "USER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "ba61c5ce-de49-4d57-9c6a-527f54e43b60", "d98094b3-d1a3-45c5-b060-6d1134330208", "User", "USER" });
+                values: new object[] { "9bb954ac-dee9-4603-8332-c246a8b2c6fc", "88e7c583-e7dc-4e47-870c-75aa06c29339", "Employee", "EMPLOYEE" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -777,9 +765,6 @@ namespace HN120_ShopQuanAo.API.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AnhSanPham");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

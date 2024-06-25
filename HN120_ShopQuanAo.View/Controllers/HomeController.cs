@@ -90,15 +90,54 @@ namespace HN120_ShopQuanAo.View.Controllers
                     return RedirectToAction("Index", "Home", new { area = "Customer" });
                 }
 
+                TempData["SuccessMessage"] = "Đăng nhập thành công!";
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-                ViewBag.Message = await response.Content.ReadAsStringAsync();
+                var errorResponse = await response.Content.ReadAsStringAsync();
+                ViewBag.Message = $"Login failed: {errorResponse}";
                 return View();
             }
         }
-		public IActionResult Privacy()
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterUser registerUser, string role)
+        {
+            // Convert registerUser to JSON
+            var registerUserJSON = JsonConvert.SerializeObject(registerUser);
+
+            // Convert to string content
+            var stringContent = new StringContent(registerUserJSON, Encoding.UTF8, "application/json");
+
+            // Add role to queryString
+            role = "User";
+            var queryString = $"?role={role}";
+
+            // Send request POST to register API
+            var response = await _httpClient.PostAsync($"https://localhost:7197/api/Register{queryString}", stringContent);
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessageRegister"] = "Đăng ký thành công!";
+                return RedirectToAction("Index", "Home");
+            }
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            ViewBag.Message = $"Login failed: {errorResponse}";
+            return View();
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult Privacy()
 		{
 			return View();
 		}
