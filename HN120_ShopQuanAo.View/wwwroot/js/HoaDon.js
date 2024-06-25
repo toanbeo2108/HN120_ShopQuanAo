@@ -1,13 +1,18 @@
-﻿$(document).ready(function () {
+﻿
+$(document).ready(function () {
     filterFunction();
     addSelectButtonEventListeners();
     $('#btn_SoDienThoai').on('change', validatePhoneNumber);
     
     $('#sanpham_table tbody tr').each(function () {
-        var giaBanCell = $(this).find('td:eq(7)');
-        var giaBan = parseFloat(giaBanCell.text().trim().replace(/\./g, '').replace(',', '.'));
+        var giaBanCell = $(this).find('td:eq(3)');
+
+        var giaBanText = giaBanCell.html().split('<br>')[0].trim();
+        var giaBan = parseFloat(giaBanText.replace(' VNĐ', '').replace(/\./g, '').replace(',', '.'));
+      //  var giaBan = parseFloat(giaBanCell.text().trim().replace(/\./g, '').replace(',', '.'));
         if (!isNaN(giaBan)) {
-            giaBanCell.text(formatMoney(giaBan));
+            // giaBanCell.text(formatMoney(giaBan));
+            giaBanCell.html(formatMoney(giaBan) + ' VNĐ<br>' + giaBanCell.html().split('<br>')[1]);
         }
     });
     $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD'));
@@ -17,10 +22,10 @@
         var date = 'HD' + today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         $('#btn_ma').val(date.toString());
 
-        let tt = $('#btn_tienkhachdua').val();
-        let kt = ($('#btn_tienkhachphaitra').val() === '') ? 0 : parseFloat($('#btn_PhiShip').val());
+        let tt = ($('#btn_tienkhachdua').val().replace(/\./g, '').replace(',', '.'));
+        let kt = ($('#btn_tienkhachphaitra').val().replace(/\./g, '').replace(',', '.'));
         var hoaDonChiTiets = getdataHoaDonChiTiet();
-        if (tt < kt || tt == '' || tt =='' || tt == 0) {
+        if ((tt - kt >=0)|| tt == '' || tt =='' || tt == 0) {
             $.post('/Add-hoadon', { hd: getdataHoaDon() }, function (re) {
                 if (re.status) {
                     $.ajax({
@@ -96,16 +101,16 @@
         }
     }
     $('#btn_MaVoucher').change(function () {
-        var giaTriGiam = 0;
-        var selectedOption = $(this).find(':selected');
+        //var giaTriGiam = 0;
+        //var selectedOption = $(this).select('data-giatrigiam');
 
-        if (selectedOption.val() !== '') {
-            giaTriGiam = parseFloat(selectedOption);
+        //if (selectedOption.val() !== '') {
+        //    giaTriGiam = parseFloat(selectedOption);
            
-        }
+        //}
        
-        updatePaymentDetails(giaTriGiam);
-        
+        updatePaymentDetails();
+       // tienthua();
     });
     $('#btn_XaPhuong').change(function () {
         getShippingFee();
@@ -129,10 +134,34 @@
         updatePaymentDetails();
     });
     $('#btn_tienkhachdua').change(function () {
-        updatePaymentDetails();
 
+        tienthua();
+       
+      //  updatePaymentDetails();
+       
     });
+    $('#btn_tienkhachdua').on('focus', handleTienKhachDuaFocus);
 });
+function tienthua() {
+    var input = $('#btn_tienkhachdua').val();
+    var input2 = $('#btn_tienkhachphaitra').val()
+    
+    var value = formatMoney(parseFloat(input))
+    var value2 = parseFloat(input2.replace(/\./g, '').replace(',', '.'));
+
+    $('#btn_tienkhachdua').val(value);
+    let tienthua = input - value2;
+    if (input <= 0 || input < value2) {
+        $('#btn_tienthua').val(0);
+    } else {
+        $('#btn_tienthua').val(formatMoney(tienthua));
+    }
+
+}
+function handleTienKhachDuaFocus() {
+    var input = $('#btn_tienkhachdua');
+    input.val(''); // Reset giá trị của input
+}
 
 // kiểm tra số điện thoại
 function validatePhoneNumber() {
@@ -150,7 +179,6 @@ function validatePhoneNumber() {
         phoneError.hide();
     }
 }
-
 
 // format money 
 function formatMoney(amount) {
@@ -299,11 +327,11 @@ function updatePaymentDetails() {
             total += giaBan;
         }
     });
-    var vat = total * 0.1;
+    
     var ship = ($('#btn_PhiShip').val() === '') ? 0 : parseFloat($('#btn_PhiShip').val());
     var selectedOption = $('#btn_MaVoucher').find(':selected');
     var giaTriGiam = selectedOption.val() !== '' ? parseFloat(selectedOption.data('giatrigiam').replace(/\./g, '').replace(',', '.')) : 0;
-    var tienkhachdua = ($('#btn_tienkhachdua').val() == '') ? 0 : parseFloat($('#btn_tienkhachdua').val());
+   /* var tienkhachdua = ($('#btn_tienkhachdua').val() == '') ? 0 : parseFloat($('#btn_tienkhachdua').val());*/
     var tongtienkhachphaitra = total + ship - giaTriGiam;
     var tongtien = total;
     if (tongtienkhachphaitra <= 0) {
@@ -312,18 +340,20 @@ function updatePaymentDetails() {
     else {
         $('#btn_tienkhachphaitra').val(formatMoney(tongtienkhachphaitra));
     }
-    if (tienkhachdua <=0 ) {
-        $('#btn_tienthua').val(0);
-    }
-    else {
-       let t =  tienkhachdua - tongtienkhachphaitra;
-        if (t <= 0) {
-            $('#btn_tienthua').val(0);
-        }
-        else {
-            $('#btn_tienthua').val(formatMoney(t));
-        }
-    }
+    
+    //if (tienkhachdua <=0 ) {
+    //    $('#btn_tienthua').val(0);
+    //}
+    //else {
+    //   let t =  tienkhachdua - tongtienkhachphaitra;
+    //    if (t <= 0) {
+    //        $('#btn_tienthua').val(0);
+    //    }
+    //    else {
+    //        let a = parseFloat(t).toFixed(2);
+    //        $('#btn_tienthua').val(formatMoney(t));
+    //    }
+    //}
     // $('#btn_tongtien').val(tongtien.toFixed(2));
    
     $('#btn_tongtien').val(formatMoney(tongtien));
