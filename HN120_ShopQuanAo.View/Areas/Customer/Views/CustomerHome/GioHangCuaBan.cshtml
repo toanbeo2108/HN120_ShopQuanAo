@@ -1,0 +1,88 @@
+﻿@using HN120_ShopQuanAo.Data.Models;
+@model IEnumerable<HN120_ShopQuanAo.Data.Models.GioHangChiTiet>
+@{
+    Layout = "~/Areas/Customer/Views/Shared/_LayoutCartCustomer.cshtml";
+    List<GioHangChiTiet> ListGioHangChiTietCuaBan = ViewBag.GHCB as List<GioHangChiTiet>;
+}
+
+<div class="shopping_cart_area">
+    <form action="#">
+        <div class="row">
+            <div class="col-12">
+                <div class="table_desc">
+                    <div class="cart_page table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="product_remove">Xóa</th>
+                                    <th class="product_thumb">Ảnh</th>
+                                    <th class="product_name">Tên Sản Phẩm</th>
+                                    <th class="product-price">Giá Bán</th>
+                                    <th class="product_quantity">Số Lượng</th>
+                                    <th class="product_total">Thành Tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    @foreach(var item in ListGioHangChiTietCuaBan)
+                                    {
+                                        <td class="product_remove"><a href="#"><i class="fa fa-trash-o"></i></a></td>
+                                        <td class="product_thumb"><a href="#"><img src="~/img/product/@item.MaGioHangChiTiet" alt=""></a></td>
+                                        <td class="product_name"><a href="#">Handbag fringilla</a></td>
+                                        <td class="product-price">@item.DonGia</td>
+                                        <td class="product_quantity"><input min="0" max="100" value="@item.SoLuong" type="number"></td>
+                                        <td class="product_total">@item.ThanhTien</td>
+                                    }
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="cart_submit">
+                        <button type="submit">Xem Lại Giỏ Hàng Của Bạn</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--coupon code area start-->
+        <div class="coupon_area">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="coupon_code">
+                        <h3>Coupon</h3>
+                        <div class="coupon_inner">
+                            <p>Enter your coupon code if you have one.</p>
+                            <input placeholder="Coupon code" type="text">
+                            <button type="submit">Apply coupon</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="coupon_code">
+                        <h3>Cart Totals</h3>
+                        <div class="coupon_inner">
+                            <div class="cart_subtotal">
+                                <p>Subtotal</p>
+                                <p class="cart_amount">£215.00</p>
+                            </div>
+                            <div class="cart_subtotal ">
+                                <p>Shipping</p>
+                                <p class="cart_amount"><span>Flat Rate:</span> £255.00</p>
+                            </div>
+                            <a href="#">Calculate shipping</a>
+
+                            <div class="cart_subtotal">
+                                <p>Total</p>
+                                <p class="cart_amount">£215.00</p>
+                            </div>
+                            <div class="checkout_btn">
+                                <a href="#">Thêm Thông Tin Nhận Hàng</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--coupon code area end-->
+    </form>
+</div>

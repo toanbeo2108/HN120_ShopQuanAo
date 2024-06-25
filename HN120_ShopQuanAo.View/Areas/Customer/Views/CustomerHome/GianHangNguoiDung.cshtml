@@ -1,0 +1,37 @@
+﻿@using HN120_ShopQuanAo.Data.Models;
+@model IEnumerable<HN120_ShopQuanAo.Data.Models.SanPham>
+@{
+	Layout = "~/Areas/Customer/Views/Shared/_LayoutShopCustomer.cshtml";
+	List<SanPham> lstSanPham = ViewBag.ListSP as List<SanPham>;
+}
+@if(lstSanPham == null){
+	<h1>Null Rồi đại ca ơi</h1>
+}
+else{
+	foreach(var item in lstSanPham)
+	{
+        <div class="col-lg-4 col-md-6">
+            <div class="single_product">
+                <div class="product_thumb">
+                    <a href="single-product.html"><img src="~/img/product/@item.UrlAvatar" alt=""></a>
+                    <div class="img_icone">
+                        <img src="assets\img\cart\span-new.png" alt="">
+                    </div>
+                    <div class="product_action">
+                        <a href="#"> <i class="fa fa-shopping-cart"></i> Add to cart</a>
+                    </div>
+                </div>
+                <div class="product_content">
+                    <span class="product_price">@item</span>
+                    <h3 class="product_title"><a href="single-product.html">Curabitur sodales</a></h3>
+                </div>
+                <div class="product_info">
+                    <ul>
+                        <li><a href="#" title=" Add to Wishlist ">Add to Wishlist</a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#modal_box" title="Quick view">View Detail</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+	}
+}
