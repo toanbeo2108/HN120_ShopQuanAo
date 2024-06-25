@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HN120_ShopQuanAo.API\HN120_ShopQuanAo.API.csproj" />
     <ProjectReference Include="..\HN120_ShopQuanAo\HN120_ShopQuanAo.Data.csproj" />
   </ItemGroup>
 

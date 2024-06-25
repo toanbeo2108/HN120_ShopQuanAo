@@ -1,0 +1,69 @@
+﻿@using HN120_ShopQuanAo.Data.Models
+@using HN120_ShopQuanAo.View.Areas.Admin.Data
+
+
+@{
+    ViewData["Title"] = "Index";
+   
+    //IEnumerable<ChiTietSp> lstctsp = ViewBag.lstctsp as IEnumerable<ChiTietSp>;
+    IEnumerable<ChiTietSPView> litspctview = ViewBag.JoinedData   as IEnumerable<ChiTietSPView>;
+    
+}
+@if (litspctview.Any())
+{
+    <table class="table table-bordered" style="height: 630px; overflow-y: auto;">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Ảnh</th>
+                <th>SKU</th>
+                <th>Mã Sp</th>
+                <th>Tên sp</th>
+                <th>Size</th>
+                <th>Màu</th>
+                <th>Chất liệu</th>
+                <th>Giá bán</th>
+                <th>Số lượng hiện có</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+            }
+            @foreach (var item in litspctview)
+            {
+
+                <tr>
+                    <td>@i</td>
+                    <td>@item.UrlAnhSpct</td>
+                    <td>@item.SKU</td>
+                    <td>@item.MaSp</td>
+                    <td>@item.TenSP</td>
+                    <td>@item.TenSize</td>
+                    <td>@item.TenMau</td>
+                    <td>@item.MaChatLieu</td>
+                    <td>@item.GiaBan</td>
+                    <td>@item.SoLuongTon</td>
+                    <td>
+                        <button class="btn btn-primary" type="button"                   id="btn_updatedhct"
+                           data-SKU="@item.SKU"
+                           data-tensp="@item.TenSP"
+                           data-MaSp="@item.MaSp"
+                           data-GiaBan="@item.GiaBan"
+                           data-img="@item.UrlAnhSpct"
+                        >
+                            Thêm sản phẩm 
+                          </button>
+                    </td>
+                </tr>
+                i++;
+            }
+        </tbody>
+
+    </table>
+}
+else
+{
+    <p>Không có dữ liệu.</p>
+}

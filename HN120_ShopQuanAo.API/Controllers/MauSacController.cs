@@ -44,7 +44,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.CreateItem(b);
         }
         [HttpPut("[Action]/{id}")]
-        public async Task<bool> UpdateMS(string id, [FromBody] MauSac _ctsp)
+        public async Task<bool> EditMS(string id, [FromBody] MauSac _ctsp)
         {
             var ctsp = await _irespon.GetAll();
             var b = ctsp.FirstOrDefault(c => c.MaMau == id);

@@ -43,7 +43,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.CreateItem(b);
         }
         [HttpPut("[Action]/{id}")]
-        public async Task<bool> UpdateSZ(string id, [FromBody] Size _ctsp)
+        public async Task<bool> EditSZ(string id, [FromBody] Size _ctsp)
         {
             var ctsp = await _irespon.GetAll();
             var b = ctsp.FirstOrDefault(c => c.MaSize == id);

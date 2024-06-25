@@ -43,37 +43,74 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View(lst);
         }
         [HttpPost, Route("Add-hoadonct")]
-        public async Task<IActionResult> Add_HoaDon(HoaDonChiTiet hd)
+        public async Task<IActionResult> Add_HoaDonChiTiet([FromBody] List<HoaDonChiTiet> hdct)
         {
-            var apiurl = "https://localhost:7197/api/ChiTietHoaDon/GetAll";
-            var httpClient = new HttpClient();
-            var respon = await _httpClient.GetAsync(apiurl);
-            string apiData = await respon.Content.ReadAsStringAsync();
-            var lst = JsonConvert.DeserializeObject<List<HoaDonChiTiet>>(apiData);
-            var apiurlcr = "https://localhost:7197/api/ChiTietHoaDon/CreateHDCT";
-            var totalHoaDonCT = lst.Count();
-            hd.MaHoaDonChiTiet = "HDCT" + (totalHoaDonCT + 1);
-            var content = new StringContent(JsonConvert.SerializeObject(hd), Encoding.UTF8, "application/json");
-            var responcr = await httpClient.PostAsync(apiurlcr, content);
-
-            if (responcr.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
+               
+                var apiCTSP = "https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+                var responCTSP = await _httpClient.GetAsync(apiCTSP);
+                string apidataCTSP = await responCTSP.Content.ReadAsStringAsync();
+                var lstCTSP = JsonConvert.DeserializeObject<List<ChiTietSp>>(apidataCTSP);
 
-                _stt = true;
-                _mess = "thêm thành công!";
 
+                var apiurl = "https://localhost:7197/api/ChiTietHoaDon/GetAll";
+                var respon = await _httpClient.GetAsync(apiurl);
+                string apiData = await respon.Content.ReadAsStringAsync();
+                DateTime now = DateTime.Now;
+                string formattedTime = now.ToString("yyyyMMddHHmmss");
+                var lst = JsonConvert.DeserializeObject<List<HoaDonChiTiet>>(apiData);
+                var totalHoaDonCT = lst.Count();
+                foreach (var hdctList in hdct)
+                {
+                    hdctList.MaHoaDonChiTiet = ("HDCT" + formattedTime + (totalHoaDonCT+1)).ToString(); // Gán mã hóa đơn chi tiết
+                    totalHoaDonCT++; // Tăng tổng số hóa đơn chi tiết để cho lần tiếp theo
+                    var ctsanpham = lstCTSP.FirstOrDefault(c => c.SKU == hdctList.SKU);
+                    if (ctsanpham != null)
+                    {
+                        if (ctsanpham.SoLuongTon < hdctList.SoLuongMua)
+                        {
+                            return Json(new
+                            {
+                                status = false,
+                                message = "Sản phẩm còn lại không đủ"
+                            });
+                        }
+                    }
+                }
+                var apiurlcr = "https://localhost:7197/api/ChiTietHoaDon/CreateHDCT";
+                var content = new StringContent(JsonConvert.SerializeObject(hdct), Encoding.UTF8, "application/json");
+                var responcr = await _httpClient.PostAsync(apiurlcr, content);
+
+                if (responcr.IsSuccessStatusCode)
+                {
+                    
+                    return Json(new
+                    {
+                        status = true,
+                        message = "Thêm thành công"
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        status = false,
+                        message = "Thêm thất bại"
+                    });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                _stt = false;
-                _mess = "Thêm thất bại";
+                return BadRequest($"Lỗi: {ex.Message}");
             }
-            return Json(new
+            finally
             {
-                status = _stt,
-                message = _mess
-            });
+                _httpClient.Dispose(); // Giải phóng tài nguyên HttpClient sau khi sử dụng
+            }
         }
+
+
         [HttpGet, Route("Detail-hoadonCT/{ma}")]
         public async Task<IActionResult> Detail(string ma)
         {
@@ -138,30 +175,31 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             });
         }
 
-        [HttpGet, Route("DELETEHDCT/{ma}")]
-        public async Task<IActionResult> DeleteVoucher(string ma, HoaDonChiTiet hd)
+        [HttpPost]
+        [Route("Dell-HDCT/{ma}")]
+        public async Task<IActionResult> DeleteHDCT(string ma)
         {
             var url = $"https://localhost:7197/api/ChiTietHoaDon/Delete/{ma}";
-            var content = new StringContent(JsonConvert.SerializeObject(hd), Encoding.UTF8, "application/json");
-            var respon = await _httpClient.PutAsync(url, content);
-            if (respon.StatusCode == System.Net.HttpStatusCode.OK)
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (response.IsSuccessStatusCode)
             {
-
                 _stt = true;
-                _mess = "Xóa thanh cong!";
-
+                _mess = "Xóa thành công!";
             }
             else
             {
                 _stt = false;
-                _mess = "Xóa that bai!";
+                _mess = "Xóa thất bại!";
             }
+
             return Json(new
             {
                 status = _stt,
                 message = _mess
             });
         }
+
 
     }
 }

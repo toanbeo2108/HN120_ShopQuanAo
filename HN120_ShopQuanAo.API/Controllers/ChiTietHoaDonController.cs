@@ -35,7 +35,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
         }
         [HttpPost("[Action]")]
-        public IActionResult CreateHDCT(HoaDonChiTiet hoaDonCT)
+        public IActionResult CreateHDCT([FromBody] List<HoaDonChiTiet> hoaDonCT)
         {
             try
             {

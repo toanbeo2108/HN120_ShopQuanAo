@@ -2,42 +2,46 @@
 
 @{
     ViewData["Title"] = "UpdateChatLieu";
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Update ChatLieu</h1>
+<h1>Sửa Chất Liệu</h1>
 
+<hr />
 @if (TempData["errorMessage"] != null)
 {
-            <div class="alert alert-danger">
+                <div class="alert alert-danger">
         @TempData["errorMessage"]
-            </div>
+                </div>
 }
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="UpdateChatLieu">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaChatLieu" />
+            
+            <div class="form-group">
+                <label asp-for="TenChatLieu" class="control-label"></label>
+                <input asp-for="TenChatLieu" class="form-control" />
+                <span asp-validation-for="TenChatLieu" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MoTa" class="control-label"></label>
+                <input asp-for="MoTa" class="form-control" />
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+    <a asp-action="AllChatLieuManager" class="btn btn-warning">Hủy</a>
 
-<form asp-action="UpdateChatLieu" method="post">
-    <input type="hidden" asp-for="MaChatLieu" />
-    
-    <div class="form-group">
-        <label asp-for="TenChatLieu" class="control-label"></label>
-        <input asp-for="TenChatLieu" class="form-control" />
-        <span asp-validation-for="TenChatLieu" class="text-danger"></span>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="MoTa" class="control-label"></label>
-        <textarea asp-for="MoTa" class="form-control"></textarea>
-        <span asp-validation-for="MoTa" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Update" class="btn btn-primary" />
-    </div>
-</form>
+</div>
 
 <div>
-    <a asp-action="AllChatLieuManager">Back to List</a>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

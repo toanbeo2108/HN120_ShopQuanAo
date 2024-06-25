@@ -6,7 +6,7 @@
 
 }
 
-<h1>Create ThuongHieu</h1>
+<h1>Thêm Thương Hiệu </h1>
 
 @if (ViewData["ErrorMessage"] != null)
 {
@@ -28,6 +28,8 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="AllThuongHieuManager" class="btn btn-warning">Hủy</a>
+
 </form>
 @section Scripts {
     @{

@@ -51,7 +51,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.CreateItem(b);
         }
         [HttpPut("[Action]/{id}")]
-        public async Task<bool> UpdateChatLieu(string id, [FromBody] ChatLieu _ctsp)
+        public async Task<bool> EditChatLieu(string id, [FromBody] ChatLieu _ctsp)
         {
             var ctsp = await _irespon.GetAll();
             var b = ctsp.FirstOrDefault(c => c.MaChatLieu == id);

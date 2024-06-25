@@ -57,8 +57,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 TempData["errorMessage"] = "Tên chất liệu đã tồn tại.";
                 return View();
             }
-
-            var urlBook = $"https://localhost:7197/api/ChatLieu/AddChatLieu";
+            var urlBook = $"https://localhost:7197/api/ChatLieu/AddChatLieu?TenChatLieu={bk.TenChatLieu}&MoTa={bk.MoTa}";
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PostAsync(urlBook, content);
             if (respon.IsSuccessStatusCode)
@@ -114,7 +113,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(vc);
             }
 
-            var urlBook = $"https://localhost:7197/api/ChatLieu/UpdateChatLieu/{id}";
+            var urlBook = $"https://localhost:7197/api/ChatLieu/EditChatLieu/{id}";
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)

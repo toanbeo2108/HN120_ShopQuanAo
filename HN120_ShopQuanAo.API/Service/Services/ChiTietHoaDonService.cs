@@ -11,11 +11,10 @@ namespace HN120_ShopQuanAo.API.Service.Services
         {
                 _repo = repo;
         }
-        public void CreateCTHD(HoaDonChiTiet hdct)
+        public void CreateCTHD(List<HoaDonChiTiet> hdct)
         {
             _repo.CreateCTHD(hdct);
         }
-
         public void DeleteCTHD(string ma)
         {
             try
