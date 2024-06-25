@@ -1,7 +1,19 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
+@if (TempData["SuccessMessageRegister"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Đăng ký thành công',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}
 <!--pos home section-->
 <div class=" pos_home_section">
     <div class="row pos_home">

@@ -2,6 +2,7 @@
 using HN120_ShopQuanAo.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -28,8 +29,65 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var ListUser = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
             return View(ListUser);
         }
-        
-        // Mở form
+        // Lọc tài khoản    
+        [HttpGet]
+        public async Task<IActionResult> FilterByRole(string roleName)
+        {
+            var token = Request.Cookies["Token"];
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var url = $"https://localhost:7197/api/User/GetUsersByRole?roleName={roleName}";
+            var response = await _httpClient.GetAsync(url);
+            string apiDataUser = await response.Content.ReadAsStringAsync();
+            var ListUser = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
+            return View("GetAllAccount", ListUser);
+        }
+        // Thêm tài khoản mới
+        [HttpGet]
+        public async Task<IActionResult> CreateAnAccount()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateAnAccount(RegisterUser registerUser, string role)
+        {
+            var token = Request.Cookies["Token"];
+            // Convert registerUser to JSON
+            var registerUserJSON = JsonConvert.SerializeObject(registerUser);
+
+            // Convert to string content
+            var stringContent = new StringContent(registerUserJSON, Encoding.UTF8, "application/json");
+
+            // Add role to queryString
+            var queryString = $"?role={role}";
+
+            // Send request POST to register API
+            var response = await _httpClient.PostAsync($"https://localhost:7197/api/Register{queryString}", stringContent);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("GetAllAccount", "UserManager");
+            }
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            ViewBag.Message = $"Login failed: {errorResponse}";
+            return View();
+        }
+
+
+
+        // Sửa trạng thái người dùng
+        [HttpGet]
+        public async Task<IActionResult> UpdateStatusUser(string id, int status)
+        {
+            var token = Request.Cookies["Token"];
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var url = $"https://localhost:7197/api/User/UpdateUserStatus?id={id}&status={status}";
+            var httpClient = new HttpClient();
+            var content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            var respone = await httpClient.PutAsync(url, content);
+            return RedirectToAction("GetAllAccount");
+        }
+
+        // Cập nhật người dùng
         [HttpGet]
         public async Task<IActionResult> Update(string id)
         {
@@ -90,6 +148,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
 
         // Quản lý địa chỉ người dùng
+
+        // Thêm địa chỉ mới
         [HttpGet]
         public async Task<IActionResult> AddUserAddress(string id)
         {
@@ -97,8 +157,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUserAddress(string id,DeliveryAddressModel address)
-        {   
+        public async Task<IActionResult> AddUserAddress(string id, DeliveryAddressModel address)
+        {
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             address.UserID = id;
@@ -113,7 +173,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return BadRequest();
         }
 
-
+        // Sửa địa chỉ
         [HttpGet]
         public async Task<IActionResult> UpdateUserAddress(string id)
         {
@@ -143,7 +203,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return BadRequest("Lỗi");
         }
 
-
+        // Xóa địa chỉ
         [HttpPost]
         public async Task<IActionResult> DeleteAddressUser(string id)
         {
@@ -159,6 +219,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
             return BadRequest("Lỗi");
         }
+
 
     }
 }

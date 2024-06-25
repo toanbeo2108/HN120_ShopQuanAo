@@ -5,8 +5,18 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 
 }
-
-<h1>GetAllAccount</h1>
+<!-- Form hoặc nút lọc -->
+<form asp-action="FilterByRole" method="get">
+    <label>Select Role:</label>
+    <select name="roleName">
+        <option value="Admin">Admin</option>
+        <option value="User">User</option>
+        <option value="Employee">Employee</option>
+        <!-- Thêm các vai trò khác nếu cần -->
+    </select>
+    <button type="submit">Filter</button>
+</form>
+<a class="btn btn-primary" asp-controller="UserManager" asp-action="CreateAnAccount">+ Thêm mới tài khoản</a>
 <table id="tble_ajax" class="table" enctype="multipart/form-data">
     <thead>
         <tr>
@@ -32,11 +42,14 @@
                 Birthday
             </th>
             <th>
+                Status
+            </th>
+            <th>
                 Action
             </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="userTableBody">
         @foreach (var items in Model)
         {
             <tr>
@@ -54,7 +67,7 @@
                     @items.UserName
                 </td>
                 <td>
-                    @items.FirstName @items.LastName
+                    @items.FullName
                 </td>
                 <td>
                     @items.Email
@@ -63,18 +76,50 @@
                     @items.PhoneNumber
                 </td>
                 <td>
-                    @items.Gender
+                    @if (items.Gender == null)
+                    {
+                        <p>Chưa có cập nhật giới tính</p >
+                    }else
+                    {
+                        if (items.Gender == 1)
+                        {
+                            <p>Nam</p>
+                        }
+                        else if (items.Gender == 2)
+                        {
+                            <p>Nữ</p>
+                        }else
+                        {
+                            <p>Khác</p>
+                        }
+                    }
+                    
                 </td>
                 <td>
                     @items.Birthday
                 </td>
                 <td>
+                    @if (items.Status == 1)
+                    {
+                        <span style="color:green">Khả dụng</span>
+                    }
+                    else if (items.Status == 0)
+                    {
+                        <span style="color:red">Đã khóa</span>
+                    }
+                </td>
+                <td>
                     <a asp-controller="UserManager" asp-action="Update" asp-route-id="@items.Id" class="btn btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
-                            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
-                            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
-                        </svg>  Details
+                        <i class="bi bi-gear-fill"></i>
                     </a>
+                    @if (items.Status == 1)
+                    {
+                        <a asp-controller="UserManager" asp-action="UpdateStatusUser" asp-route-id="@items.Id" asp-route-status="0" class="btn btn-danger"><i class="bi bi-lock"></i></a>
+                    }
+                    else if (items.Status == 0)
+                    {
+                        <a asp-controller="UserManager" asp-action="UpdateStatusUser" asp-route-id="@items.Id" asp-route-status="1" class="btn btn-success"><i class="bi bi-key"></i></a>
+                    }
                 </td>
             </tr>
         }
@@ -94,4 +139,3 @@
         });
     </script>
 }
-
