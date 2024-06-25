@@ -5,14 +5,13 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>CreateKhuyenMai</h1>
+<h1>Thêm Khuyến Mại</h1>
 @if (TempData["errorMessage"] != null)
 {
                 <div class="alert alert-danger">
         @TempData["errorMessage"]
                 </div>
 }
-<h4>KhuyenMai</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -32,13 +31,14 @@
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+    <a asp-action="AllKhuyenMaiManager" class="btn btn-warning">Hủy</a>
+
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

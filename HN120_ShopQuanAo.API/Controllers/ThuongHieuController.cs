@@ -44,7 +44,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.CreateItem(b);
         }
         [HttpPut("[Action]/{id}")]
-        public async Task<bool> UpdateThuongHieu(string id, [FromBody] ThuongHieu _ctsp)
+        public async Task<bool> EditThuongHieu(string id, [FromBody] ThuongHieu _ctsp)
         {
             var ctsp = await _irespon.GetAll();
             var b = ctsp.FirstOrDefault(c => c.MaThuongHieu == id);

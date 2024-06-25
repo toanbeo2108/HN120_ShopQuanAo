@@ -5,7 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>CreateTheLoai</h1>
+<h1>Thêm Thể Loại</h1>
 
 <h4>TheLoai</h4>
 @if (TempData["errorMessage"] != null)
@@ -33,13 +33,14 @@
             
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+    <a asp-action="AllTheLoaiManager" class="btn btn-warning">Hủy</a>
+
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
