@@ -97,97 +97,28 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> AddChiTietSp(string id)
         {
-            var urlSize = $"https://localhost:7197/api/Size/GetAllSize";
-            var responSize = await _httpClient.GetAsync(urlSize);
-            string apiDatasz = await responSize.Content.ReadAsStringAsync();
-            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
-            ViewBag.lstSZ = lstSZ;
-
-            var urlms = $"https://localhost:7197/api/MauSac/GetAllMauSac";
-            var responms = await _httpClient.GetAsync(urlms);
-            string apiDatams = await responms.Content.ReadAsStringAsync();
-            var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
-            ViewBag.lstms = lstms;
-
-            var urlkm = $"https://localhost:7197/api/khuyenmai/getallkhuyenmai";
-            var responkm = await _httpClient.GetAsync(urlkm);
-            string apiDatakm = await responkm.Content.ReadAsStringAsync();
-            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
-            ViewBag.lstkm = lstkm;
-
+            await LoadDataForViewBag();
             var model = new AddChiTietSpViewModel { MaSp = id };
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> AddChiTietSp(AddChiTietSpViewModel model)
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            var urlSize = "https://localhost:7197/api/Size/GetAllSize";
-            var responSize = await httpClient.GetAsync(urlSize);
-            string apiDatasz = await responSize.Content.ReadAsStringAsync();
-            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
-            ViewBag.lstSZ = lstSZ;
-
-            var urlms = "https://localhost:7197/api/MauSac/GetAllMauSac";
-            var responms = await httpClient.GetAsync(urlms);
-            string apiDatams = await responms.Content.ReadAsStringAsync();
-            var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
-            ViewBag.lstms = lstms;
-
-            if (model.SelectedSizes != null && model.SelectedMaus != null)
-            {
-                model.TempChiTietSps = new List<TempChiTietSpViewModel>();
-
-                foreach (var size in model.SelectedSizes)
-                {
-                    var sizeDetail = lstSZ.FirstOrDefault(s => s.MaSize == size);
-                    foreach (var mau in model.SelectedMaus)
-                    {
-                        var mauDetail = lstms.FirstOrDefault(m => m.MaMau == mau);
-                        model.TempChiTietSps.Add(new TempChiTietSpViewModel
-                        {
-                            MaSp = model.MaSp,
-                            MaSize = size,
-                            TenSize = sizeDetail?.TenSize,
-                            MaMau = mau,
-                            TenMau = mauDetail?.TenMau
-                        });
-                    }
-                }
-            }
-
-            await LoadDataForViewBag();
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddChiTietSp(AddChiTietSpViewModel model, IFormFile imageFile)
-        {
             if (ModelState.IsValid)
             {
-                var chiTietSpList = new List<ChiTietSp>();
+                var chiTietSpList = new List<TempChiTietSpViewModel>();
 
                 foreach (var size in model.SelectedSizes)
                 {
                     foreach (var mau in model.SelectedMaus)
                     {
-                        var chiTietSp = new ChiTietSp
+                        var chiTietSp = new TempChiTietSpViewModel
                         {
                             MaSp = model.MaSp,
                             MaSize = size,
-                            MaMau = mau,
-                            //DonGia = model.DonGia,
-                            //GiaBan = model.GiaBan,
-                            //SoLuongTon = model.SoLuongTon,
-                            //MaKhuyenMai = model.MaKhuyenMai
+                            MaMau = mau
                         };
-
-                        if (imageFile != null && imageFile.Length > 0)
-                        {
-                            var imageUrl = await UploadImageAsync(imageFile);
-                            chiTietSp.UrlAnhSpct = imageUrl;
-                        }
 
                         chiTietSpList.Add(chiTietSp);
                     }
@@ -200,29 +131,99 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return RedirectToAction("ShowTempChiTietSps");
             }
 
+            await LoadDataForViewBag(); // Load lại dữ liệu nếu ModelState không hợp lệ
             return View(model);
+        }
+
+        public IActionResult ShowTempChiTietSps()
+        {
+            var tempChiTietSpJson = HttpContext.Session.GetString("TempChiTietSp");
+            var tempChiTietSpList = string.IsNullOrEmpty(tempChiTietSpJson) ? new List<TempChiTietSpViewModel>() : JsonConvert.DeserializeObject<List<TempChiTietSpViewModel>>(tempChiTietSpJson);
+            return View(tempChiTietSpList);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveChiTietSps(List<TempChiTietSpViewModel> models, List<IFormFile> imageFiles)
+        {
+            
+                var chiTietSpList = new List<ChiTietSp>();
+
+                for (int i = 0; i < models.Count; i++)
+                {
+                    var model = models[i];
+                    var chiTietSp = new ChiTietSp
+                    {
+                        MaSp = model.MaSp,
+                        MaSize = model.MaSize,
+                        MaMau = model.MaMau,
+                        DonGia = model.DonGia,
+                        GiaBan = model.GiaBan,
+                        SoLuongTon = model.SoLuongTon,
+                        MaKhuyenMai = model.MaKhuyenMai // Có thể để null hoặc bỏ qua nếu không cần thiết
+                    };
+
+                    if (imageFiles.Count > i && imageFiles[i] != null && imageFiles[i].Length > 0)
+                    {
+                        var imageUrl = await UploadImageAsync(imageFiles[i]);
+                        chiTietSp.UrlAnhSpct = imageUrl;
+                    }
+
+                    chiTietSpList.Add(chiTietSp);
+                }
+
+                try
+                {
+                    var success = await AddChiTietSpToApi(chiTietSpList);
+                    if (success)
+                    {
+                        TempData["SuccessMessage"] = "Thêm chi tiết sản phẩm thành công.";
+                        return RedirectToAction("AllChiTietSpManager", "ChiTietSp", new { area = "Admin", id = models.FirstOrDefault()?.MaSp });
+                    }
+
+                    TempData["ErrorMessage"] = "Thêm chi tiết sản phẩm thất bại.";
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while saving product details");
+                    TempData["ErrorMessage"] = "Có lỗi xảy ra trong quá trình lưu chi tiết sản phẩm.";
+                }
+            
+
+            return View(models);
         }
 
         private async Task LoadDataForViewBag()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            var urlSize = "https://localhost:7197/api/Size/GetAllSize";
-            var responSize = await httpClient.GetAsync(urlSize);
-            string apiDatasz = await responSize.Content.ReadAsStringAsync();
-            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
-            ViewBag.lstSZ = lstSZ;
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
 
-            var urlms = "https://localhost:7197/api/MauSac/GetAllMauSac";
-            var responms = await httpClient.GetAsync(urlms);
-            string apiDatams = await responms.Content.ReadAsStringAsync();
-            var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
-            ViewBag.lstms = lstms;
+                var urlSize = "https://localhost:7197/api/Size/GetAllSize";
+                var responSize = await httpClient.GetAsync(urlSize);
+                responSize.EnsureSuccessStatusCode();
+                string apiDatasz = await responSize.Content.ReadAsStringAsync();
+                var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
+                ViewBag.lstSZ = lstSZ;
 
-            var urlkm = "https://localhost:7197/api/khuyenmai/getallkhuyenmai";
-            var responkm = await httpClient.GetAsync(urlkm);
-            string apiDatakm = await responkm.Content.ReadAsStringAsync();
-            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
-            ViewBag.lstkm = lstkm;
+                var urlms = "https://localhost:7197/api/MauSac/GetAllMauSac";
+                var responms = await httpClient.GetAsync(urlms);
+                responms.EnsureSuccessStatusCode();
+                string apiDatams = await responms.Content.ReadAsStringAsync();
+                var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
+                ViewBag.lstms = lstms;
+
+                var urlkm = "https://localhost:7197/api/khuyenmai/getallkhuyenmai";
+                var responkm = await httpClient.GetAsync(urlkm);
+                responkm.EnsureSuccessStatusCode();
+                string apiDatakm = await responkm.Content.ReadAsStringAsync();
+                var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
+                ViewBag.lstkm = lstkm;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while loading data for ViewBag");
+                TempData["ErrorMessage"] = "Có lỗi xảy ra trong quá trình tải dữ liệu.";
+            }
         }
 
         private async Task<string> UploadImageAsync(IFormFile imageFile)
@@ -245,14 +246,16 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var content = new StringContent(JsonConvert.SerializeObject(chiTietSpList), Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync(url, content);
+            response.EnsureSuccessStatusCode();
+
             return response.IsSuccessStatusCode;
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateSanPham(SanPham bk, IFormFile imageFile)
         {
             var urlTL = $"https://localhost:7197/api/TheLoai/GetAllTheLoai";
-            //var httpClient = new HttpClient();
             var responTL = await _httpClient.GetAsync(urlTL);
             string apiDataTL = await responTL.Content.ReadAsStringAsync();
             var lstTL = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataTL);
@@ -260,7 +263,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             ViewBag.lstTL = lstTL;
 
             var urlTH = $"https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
-            //var httpClient = new HttpClient();
             var responTH = await _httpClient.GetAsync(urlTH);
             string apiDataTH = await responTH.Content.ReadAsStringAsync();
             var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
@@ -274,16 +276,11 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             //var lstCL = lstCL1.Where(c => c.TrangThai == 1);
             ViewBag.lstCL = lstCL;
 
-            //var token = Request.Cookies["Token"];
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            //var token = Request.Cookies["Token"];
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             if (await IsDuplicateSP(bk.TenSP))
             {
                 TempData["errorMessage"] = "Tên đã tồn tại.";
                 return View();
             }
-            //bk.CreateDate = DateTime.Now;
             if (imageFile != null && imageFile.Length > 0)
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photoSP", imageFile.FileName);
