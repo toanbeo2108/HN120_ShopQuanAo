@@ -611,6 +611,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayBatDau")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("NgayKetThuc")
@@ -709,29 +710,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-
-                            Id = "1316b6fa-0ad2-4c7b-8ee1-b09662d488ec",
-                            ConcurrencyStamp = "f35369df-6b02-4a77-ad28-0ba31497eb0d",
-
+                            Id = "b627327a-3d8f-422e-8c9d-75ee07d4ccc7",
+                            ConcurrencyStamp = "79c0be55-16ec-4651-af22-c32ef1b0dc99",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-
-                            Id = "70b06318-8a14-4332-9bf0-e30a94358ed0",
-                            ConcurrencyStamp = "3e9b18cf-83c5-42c1-8062-c842ff9d52e2",
-
+                            Id = "d1e684b3-07f0-409b-b45c-986743722133",
+                            ConcurrencyStamp = "444618c5-313f-46cb-8cb7-e9a662945bd9",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-
-
-                            Id = "2d2ab5c3-9c58-4e50-b7d2-002dfbbf5095",
-                            ConcurrencyStamp = "d4817391-6a8a-4a06-b8a6-1f8e5428e357",
-
+                            Id = "bba658a6-049f-4ae6-b1b6-262e22dcfb36",
+                            ConcurrencyStamp = "2ca18525-72d0-48ee-b950-931074faecb9",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
