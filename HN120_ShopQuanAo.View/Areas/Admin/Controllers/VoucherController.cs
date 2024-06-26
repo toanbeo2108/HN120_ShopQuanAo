@@ -32,21 +32,15 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         {
             try
             {
-                // Gửi yêu cầu lấy danh sách voucher từ API
                 var urlBook = $"https://localhost:7197/GetAllVoucher";
                 var responseBook = await _httpClient.GetAsync(urlBook);
 
                 if (responseBook.IsSuccessStatusCode)
                 {
-                    // Đọc dữ liệu từ phản hồi
                     string apiDataBook = await responseBook.Content.ReadAsStringAsync();
-                    // Chuyển đổi dữ liệu JSON thành danh sách voucher
                     var lstBook = JsonConvert.DeserializeObject<List<Voucher>>(apiDataBook);
-
-                    // Sắp xếp lại danh sách để voucher mới nhất được đưa lên đầu
                     lstBook = lstBook.OrderByDescending(v => v.MaVoucher).ToList();
-
-                    return View(lstBook); // Trả về view với danh sách đã sắp xếp
+                    return View(lstBook); 
                 }
                 else
                 {
@@ -60,20 +54,16 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(new List<Voucher>());
             }
         }
-
-        // GET: Form tạo mới voucher
         public IActionResult CreateVC()
         {
             return View();
         }
 
-        // POST: Xử lý yêu cầu tạo mới voucher
         [HttpPost]
         public async Task<IActionResult> CreateVC(Voucher bk)
         {
             try
             {
-                // Kiểm tra validation
                 if (string.IsNullOrEmpty(bk.MaVoucher) || string.IsNullOrEmpty(bk.Ten) ||
                     bk.KieuGiamGia == null || bk.GiaGiamToiThieu == null ||
                     bk.GiaGiamToiDa == null || bk.NgayBatDau == null ||
@@ -137,30 +127,20 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 {
                     return View(bk);
                 }
-
-                // Gửi yêu cầu tạo mới voucher đến API
                 string createUrl = $"https://localhost:7197/CreateVCher?MaVoucher={bk.MaVoucher}&Ten={bk.Ten}&GiaGiamToiThieu={bk.GiaGiamToiThieu}&GiaGiamToiDa={bk.GiaGiamToiDa}&NgayBatDau={bk.NgayBatDau}&NgayKetThuc={bk.NgayKetThuc}&KieuGiamGia={bk.KieuGiamGia}&GiaTriGiam={bk.GiaTriGiam}&SoLuong={bk.SoLuong}&MoTa={bk.MoTa}&TrangThai={bk.TrangThai}";
-                //        var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
                 var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
                 var response = await _httpClient.PostAsync(createUrl, content);
-
                 if (response.IsSuccessStatusCode)
                 {
-                    // Sau khi thêm thành công, cập nhật lại danh sách voucher
                     var getAllUrl = "https://localhost:7197/GetAllVoucher";
                     var responseGetAll = await _httpClient.GetAsync(getAllUrl);
 
                     if (responseGetAll.IsSuccessStatusCode)
                     {
-                        // Đọc dữ liệu từ phản hồi
                         var apiData = await responseGetAll.Content.ReadAsStringAsync();
-                        // Chuyển đổi dữ liệu JSON thành danh sách voucher
                         var lstBook = JsonConvert.DeserializeObject<List<Voucher>>(apiData);
-
-                        // Sắp xếp lại danh sách để voucher mới nhất được đưa lên đầu
                         lstBook = lstBook.OrderByDescending(v => v.MaVoucher).ToList();
-
-                        return RedirectToAction("AllVoucherManager", lstBook); // Chuyển hướng đến action hiển thị danh sách với danh sách đã sắp xếp
+                        return RedirectToAction("AllVoucherManager", lstBook);
                     }
                     else
                     {
@@ -180,8 +160,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(bk);
             }
         }
-
-
         // update
         [HttpGet]
         public async Task<IActionResult> UpdateVC(string id)
