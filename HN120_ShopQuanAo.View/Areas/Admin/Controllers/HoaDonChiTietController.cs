@@ -88,7 +88,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     return Json(new
                     {
                         status = true,
-                        message = "Thêm thành công"
+                        message = "Thanh toán thành công"
                     });
                 }
                 else
@@ -96,7 +96,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     return Json(new
                     {
                         status = false,
-                        message = "Thêm thất bại"
+                        message = "Thanh toán thất bại"
                     });
                 }
             }

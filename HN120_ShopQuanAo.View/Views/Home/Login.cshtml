@@ -1,27 +1,68 @@
 ﻿@model HN120_ShopQuanAo.Data.ViewModels.LoginUser;
-<link rel="stylesheet" href="~/src/assets/css/styles.min.css" />
+<hr />
+<div class="customer_login container">
+    <div class="row">
+        <!--login area start-->
+        <div class="col-lg-6 col-md-6">
+            <div class="account_form">
+                <h2>login</h2>
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                }
+                @if (ViewBag.Message != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.Message</div>
+                }
+                <form asp-controller="Home" asp-action="Login">
+                    <p>
+                        <label>PhoneNumber<span>*</span></label>
+                        <input type="text" required asp-for="PhoneNumber">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </p>
+                    <p>
+                        <label>Passwords <span>*</span></label>
+                        <input type="password" required asp-for="Password">
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </p>
+                    <div class="login_submit">
+                        <button type="submit">login</button>
+                        <a class="text-primary fw-bold ms-2" asp-controller="Home" asp-action="Register">Create an account</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--login area end-->
+    </div>
+</div>
+
 @* 
+<link rel="stylesheet" href="~/src/assets/css/styles.min.css" />
+
 <!--  Body Wrapper -->
 <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
      data-sidebar-position="fixed" data-header-position="fixed">
     <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
         <div class="d-flex align-items-center justify-content-center w-100">
             <div class="row justify-content-center w-100">
-                <div class="col-md-8 col-lg-6 col-xxl-3">
+                <div class="col-md-10 col-lg-6 col-xxl-3">
                     <div class="card mb-0">
                         <div class="card-body">
-                            <a asp-action="Index" asp-controller="Home" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                                <img src="~/src/assets/images/logos/dark-logo.svg" width="180" alt="">
-                            </a>
-                            <p class="text-center">Your Social Campaigns</p>
+                            <h2>login</h2>
+                            @if (ViewBag.Message != null)
+                            {
+                                <div class="alert alert-danger">@ViewBag.Message</div>
+                            }
                             <form asp-controller="Home" asp-action="Login">
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">PhoneNumber</label>
-                                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" asp-for="PhoneNumber">
+                                    <label class="form-label">PhoneNumber<span>*</span></label>
+                                    <input type="text" required asp-for="PhoneNumber" class="form-control">
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="exampleInputPassword1" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="exampleInputPassword1" asp-for="Password">
+                                    <label for="exampleInputPassword1" class="form-label">Password <span>*</span></label>
+                                    <input type="password" required asp-for="Password" class="form-control">
+                                    <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mb-4">
                                     <div class="form-check">
@@ -34,7 +75,7 @@
                                 </div>
                                 <a href="./index.html" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Sign In</a>
                                 <div class="d-flex align-items-center justify-content-center">
-                                    <p class="fs-4 mb-0 fw-bold">New to Modernize?</p>
+                                    <p class="fs-4 mb-0 fw-bold">Don't have account?</p>
                                     <a class="text-primary fw-bold ms-2" href="./authentication-register.html">Create an account</a>
                                 </div>
                             </form>
@@ -46,6 +87,7 @@
     </div>
 </div>
 <script src="~/src/assets/libs/jquery/dist/jquery.min.js"></script>
+
 <script src="~/src/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
 
 <hr />

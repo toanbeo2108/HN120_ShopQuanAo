@@ -23,7 +23,38 @@ namespace HN120_ShopQuanAo.API.Responsitories
 		{
 			// Check user is exists
 			var user = await _userManager.Users.FirstOrDefaultAsync(p => p.PhoneNumber == loginUser.PhoneNumber);
-			if (user != null && await _userManager.CheckPasswordAsync(user, loginUser.Password))
+            if (user == null)
+            {
+                return new Response()
+                {
+                    IsSuccess = false,
+                    StatusCode = 404,
+                    Message = "Tài khoản không tồn tại"
+                };
+            }
+
+            // Kiểm tra trạng thái của tài khoản
+            if (user.Status == 0)
+            {
+                return new Response()
+                {
+                    IsSuccess = false,
+                    StatusCode = 403,
+                    Message = "Tài khoản của bạn đang bị khóa"
+                };
+            }
+
+            if (!await _userManager.CheckPasswordAsync(user, loginUser.Password))
+            {
+                return new Response()
+                {
+                    IsSuccess = false,
+                    StatusCode = 401,
+                    Message = "Sai mật khẩu"
+                };
+            }
+
+            if (user != null && await _userManager.CheckPasswordAsync(user, loginUser.Password))
 			{
 				// Get list roles of user
 				var roles = await _userManager.GetRolesAsync(user);
