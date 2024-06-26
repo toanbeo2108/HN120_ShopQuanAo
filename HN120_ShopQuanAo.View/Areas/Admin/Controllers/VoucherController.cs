@@ -26,27 +26,54 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         {
             return View();
         }
+        // GET: Hiển thị tất cả voucher
         [HttpGet]
         public async Task<IActionResult> AllVoucherManager()
         {
-            var urlBook = $"https://localhost:7197/GetAllVoucher";
-            var responBook = await _httpClient.GetAsync(urlBook);
-            string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstBook = JsonConvert.DeserializeObject<List<Voucher>>(apiDataBook);
-            return View(lstBook);
+            try
+            {
+                // Gửi yêu cầu lấy danh sách voucher từ API
+                var urlBook = $"https://localhost:7197/GetAllVoucher";
+                var responseBook = await _httpClient.GetAsync(urlBook);
+
+                if (responseBook.IsSuccessStatusCode)
+                {
+                    // Đọc dữ liệu từ phản hồi
+                    string apiDataBook = await responseBook.Content.ReadAsStringAsync();
+                    // Chuyển đổi dữ liệu JSON thành danh sách voucher
+                    var lstBook = JsonConvert.DeserializeObject<List<Voucher>>(apiDataBook);
+
+                    // Sắp xếp lại danh sách để voucher mới nhất được đưa lên đầu
+                    lstBook = lstBook.OrderByDescending(v => v.MaVoucher).ToList();
+
+                    return View(lstBook); // Trả về view với danh sách đã sắp xếp
+                }
+                else
+                {
+                    TempData["error message"] = "Lỗi khi lấy danh sách voucher từ API.";
+                    return View(new List<Voucher>());
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["error message"] = "Có lỗi xảy ra: " + ex.Message;
+                return View(new List<Voucher>());
+            }
         }
 
-        // create
+        // GET: Form tạo mới voucher
         public IActionResult CreateVC()
         {
             return View();
         }
+
+        // POST: Xử lý yêu cầu tạo mới voucher
         [HttpPost]
         public async Task<IActionResult> CreateVC(Voucher bk)
         {
-           
             try
             {
+                // Kiểm tra validation
                 if (string.IsNullOrEmpty(bk.MaVoucher) || string.IsNullOrEmpty(bk.Ten) ||
                     bk.KieuGiamGia == null || bk.GiaGiamToiThieu == null ||
                     bk.GiaGiamToiDa == null || bk.NgayBatDau == null ||
@@ -56,26 +83,32 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     TempData["error message"] = "Vui lòng nhập đầy đủ thông tin.";
                     return View(bk);
                 }
+
                 if (bk.GiaGiamToiThieu < 0)
                 {
                     ModelState.AddModelError("GiaGiamToiThieu", "Giá giảm tối thiểu không được âm");
                 }
+
                 if (bk.GiaGiamToiDa < 0)
                 {
                     ModelState.AddModelError("GiaGiamToiDa", "Giá giảm tối đa không được âm");
                 }
+
                 if (bk.GiaGiamToiThieu > bk.GiaGiamToiDa)
                 {
                     ModelState.AddModelError("GiaGiamToiThieu", "Giá giảm tối thiểu không được lớn hơn giá giảm tối đa");
                 }
+
                 if (bk.GiaTriGiam <= 0)
                 {
                     ModelState.AddModelError("GiaTriGiam", "Mời bạn nhập giá trị giảm lớn hơn 0");
                 }
+
                 if (bk.SoLuong <= 0)
                 {
                     ModelState.AddModelError("SoLuong", "Mời bạn nhập số lượng lớn hơn 0");
                 }
+
                 if (bk.NgayKetThuc < bk.NgayBatDau)
                 {
                     ModelState.AddModelError("NgayKetThuc", "Ngày kết thúc phải lớn hơn ngày bắt đầu");
@@ -104,25 +137,42 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 {
                     return View(bk);
                 }
-                string apiURL = "https://localhost:7197/GetAllVoucher";
-                var response1 = await _httpClient.GetAsync(apiURL);
-                var apiData = await response1.Content.ReadAsStringAsync();
-                var vouchers = JsonConvert.DeserializeObject<List<Voucher>>(apiData);
-                var timkiem = vouchers.FirstOrDefault(x => x.MaVoucher == bk.MaVoucher.Trim());
-                if (timkiem != null)
-                {
-                    ModelState.AddModelError("MaVoucher", "Mã này đã tồn tại");
-                    return View(bk);
-                }
-                var urlBook = $"https://localhost:7197/CreateVCher?MaVoucher={bk.MaVoucher}&Ten={bk.Ten}&GiaGiamToiThieu={bk.GiaGiamToiThieu}&GiaGiamToiDa={bk.GiaGiamToiDa}&NgayBatDau={bk.NgayBatDau}&NgayKetThuc={bk.NgayKetThuc}&KieuGiamGia={bk.KieuGiamGia}&GiaTriGiam={bk.GiaTriGiam}&SoLuong={bk.SoLuong}&MoTa={bk.MoTa}&TrangThai={bk.TrangThai}";
+
+                // Gửi yêu cầu tạo mới voucher đến API
+                string createUrl = $"https://localhost:7197/CreateVCher?MaVoucher={bk.MaVoucher}&Ten={bk.Ten}&GiaGiamToiThieu={bk.GiaGiamToiThieu}&GiaGiamToiDa={bk.GiaGiamToiDa}&NgayBatDau={bk.NgayBatDau}&NgayKetThuc={bk.NgayKetThuc}&KieuGiamGia={bk.KieuGiamGia}&GiaTriGiam={bk.GiaTriGiam}&SoLuong={bk.SoLuong}&MoTa={bk.MoTa}&TrangThai={bk.TrangThai}";
+                //        var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
                 var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(urlBook, content);
+                var response = await _httpClient.PostAsync(createUrl, content);
+
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("AllVoucherManager", "Voucher", new { area = "Admin" });
+                    // Sau khi thêm thành công, cập nhật lại danh sách voucher
+                    var getAllUrl = "https://localhost:7197/GetAllVoucher";
+                    var responseGetAll = await _httpClient.GetAsync(getAllUrl);
+
+                    if (responseGetAll.IsSuccessStatusCode)
+                    {
+                        // Đọc dữ liệu từ phản hồi
+                        var apiData = await responseGetAll.Content.ReadAsStringAsync();
+                        // Chuyển đổi dữ liệu JSON thành danh sách voucher
+                        var lstBook = JsonConvert.DeserializeObject<List<Voucher>>(apiData);
+
+                        // Sắp xếp lại danh sách để voucher mới nhất được đưa lên đầu
+                        lstBook = lstBook.OrderByDescending(v => v.MaVoucher).ToList();
+
+                        return RedirectToAction("AllVoucherManager", lstBook); // Chuyển hướng đến action hiển thị danh sách với danh sách đã sắp xếp
+                    }
+                    else
+                    {
+                        TempData["error message"] = "Lỗi khi lấy danh sách voucher từ API sau khi thêm mới.";
+                        return RedirectToAction("AllVoucherManager");
+                    }
                 }
-                TempData["error message"] = "Thêm thất bại";
-                return View(bk);
+                else
+                {
+                    TempData["error message"] = "Thêm mới voucher thất bại.";
+                    return View(bk);
+                }
             }
             catch (Exception ex)
             {
@@ -130,6 +180,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(bk);
             }
         }
+
 
         // update
         [HttpGet]
