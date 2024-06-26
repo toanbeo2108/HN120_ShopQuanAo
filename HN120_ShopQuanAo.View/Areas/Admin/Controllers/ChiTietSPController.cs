@@ -45,12 +45,12 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View(Book);
         }
         [HttpGet]
-        public IActionResult CreateChiTietSp()
+        public IActionResult CreateChiTietSp(string id)
         {
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateChiTietSp(ChiTietSp bk, IFormFile imageFile)
+        public async Task<IActionResult> CreateChiTietSp(string id,ChiTietSp bk, IFormFile imageFile)
         {
             if (imageFile != null && imageFile.Length > 0)
             {
@@ -59,6 +59,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 imageFile.CopyTo(stream);
                 bk.UrlAnhSpct = imageFile.FileName;
             }
+            bk.MaSp = id;
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 

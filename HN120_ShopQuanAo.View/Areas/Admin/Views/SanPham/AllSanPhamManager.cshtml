@@ -90,9 +90,12 @@
                             @chatlieu
                             </td>
                         <td >
-                                    <img src="~/photoSanPham/@item.UrlAvatar" alt="Combo Image" width="100" height="100" />
+                                    <img src="~/photoSP/@item.UrlAvatar" alt="SanPham Image" width="100" height="100" />
                             @*<img src="~/photoBooks/@item.MainPhoto" class="rounded float-start" alt="...">*@
                         </td>
+                            <td>
+                            @item.Mota
+                            </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.TongSoLuong)
                         </td>
@@ -121,8 +124,9 @@
 
                                     <a asp-action="SanPhamDetail" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Chi Tiết</a>
                                     <a asp-action="UpdateSanPham" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Sửa</a>    
-                                    <a asp-action="AllChiTietSpManager" asp-controller="ChiTietSP" asp-area="Admin" id="btn_chitiet_detail" class="btn btn-primary" type="button" asp-route-id="@item.MaSp"> SP Chi Tiết</a>
-                                    <a asp-action="AddChiTietSp" asp-route-id="@item.MaSp" class="btn btn-primary">Thêm Chi Tiết</a>
+                                    <a asp-action="AllChiTietSpManager" asp-controller="ChiTietSP" asp-area="Admin" id="btn_chitiet_detail" class="btn btn-primary" type="button" asp-route-id="@item.MaSp"> All Chi Tiết</a>
+                                        <a asp-action="CreateChiTietSp" asp-controller="ChiTietSP" asp-area="Admin" id="btn_chitiet_detail" class="btn btn-primary" type="button" asp-route-id="@item.MaSp"> Them 1 </a>
+                                    <a asp-action="AddChiTietSp" asp-route-id="@item.MaSp" class="btn btn-primary">Thêm Nhiều</a>
 
                         </td>
                     </tr>

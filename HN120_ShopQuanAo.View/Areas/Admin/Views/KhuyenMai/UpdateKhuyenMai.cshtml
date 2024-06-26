@@ -21,18 +21,18 @@
             <input type="hidden" asp-for="MaKhuyenMai" />
             
             <div class="form-group">
-                <label asp-for="TenKhuyenMai" class="control-label"></label>
+                <label asp-for="TenKhuyenMai" class="control-label">Tên Khuyến Mại</label>
                 <input asp-for="TenKhuyenMai" class="form-control" />
                 <span asp-validation-for="TenKhuyenMai" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PhanTramGiam" class="control-label"></label>
+                <label asp-for="PhanTramGiam" class="control-label">Phần Trăm Giảm</label>
                 <input asp-for="PhanTramGiam" class="form-control" />
                 <span asp-validation-for="PhanTramGiam" class="text-danger"></span>
             </div>
             
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Sửa" class="btn btn-primary" />
     <a asp-action="AllKhuyenMaiManager" class="btn btn-warning">Hủy</a>
 
             </div>
