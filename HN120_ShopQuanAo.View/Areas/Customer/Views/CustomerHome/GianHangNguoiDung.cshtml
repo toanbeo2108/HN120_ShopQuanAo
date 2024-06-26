@@ -10,28 +10,29 @@
 else{
 	foreach(var item in lstSanPham)
 	{
-        <div class="col-lg-4 col-md-6">
-            <div class="single_product">
-                <div class="product_thumb">
-                    <a href="single-product.html"><img src="~/img/product/@item.UrlAvatar" alt=""></a>
-                    <div class="img_icone">
-                        <img src="assets\img\cart\span-new.png" alt="">
+        <a asp-action="DetailSanPham" asp-controller="CustomerHome" asp-area="Customer" asp-route-id="@item.MaSp">
+            <div class="col-lg-4 col-md-6">
+                <div class="single_product">
+                    <div class="product_thumb">
+                        <a href="single-product.html"><img src="~/img/product/@item.UrlAvatar" alt=""></a>
+                        <div class="img_icone">
+                            <img src="~/img/product/@item.UrlAvatar" alt="">
+                        </div>
+                        <div class="product_action">
+                            <a asp-action="DetailSanPham" asp-controller="CustomerHome" asp-area="Customer" asp-route-id="@item.MaSp"> <i class="fa fa-shopping-cart"></i> Mua Hàng</a>
+                        </div>
                     </div>
-                    <div class="product_action">
-                        <a href="#"> <i class="fa fa-shopping-cart"></i> Add to cart</a>
+                    <div class="product_content">
+                        <span class="product_price">@item</span>
+                        <h3 class="product_title"><a asp-action="DetailSanPham" asp-controller="CustomerHome" asp-area="Customer" asp-route-id="@item.MaSp">@item.TenSP</a></h3>
                     </div>
-                </div>
-                <div class="product_content">
-                    <span class="product_price">@item</span>
-                    <h3 class="product_title"><a href="single-product.html">Curabitur sodales</a></h3>
-                </div>
-                <div class="product_info">
-                    <ul>
-                        <li><a href="#" title=" Add to Wishlist ">Add to Wishlist</a></li>
-                        <li><a href="#" data-toggle="modal" data-target="#modal_box" title="Quick view">View Detail</a></li>
-                    </ul>
+                    <div class="product_info">
+                        <ul>
+                            <li><a asp-action="DetailSanPham" asp-controller="CustomerHome" asp-area="Customer" asp-route-id="@item.MaSp" data-toggle="modal" data-target="#modal_box" title="Quick view">Xem Chi Tiết</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+		</a>
 	}
 }
