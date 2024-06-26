@@ -10,8 +10,6 @@ namespace HN120_ShopQuanAo.Data.Models
 	public class Voucher
 	{
         [Key]
-        [Required(ErrorMessage = "mời bạn nhập Mã")]
-        [StringLength(40, ErrorMessage = "Mã không được quá 40 kí tự")]
         public string MaVoucher { get; set; }
         [Required(ErrorMessage = "mời bạn nhập Tên")]
         [StringLength(40, ErrorMessage = "Tên không được quá 40 kí tự")]

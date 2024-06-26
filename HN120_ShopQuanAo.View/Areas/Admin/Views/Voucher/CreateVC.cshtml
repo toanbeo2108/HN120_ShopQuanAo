@@ -15,9 +15,8 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label">Mã Voucher</label>
-                <input asp-for="MaVoucher" class="form-control" />
+                <input asp-for="MaVoucher" class="form-control" value="VC" />
                 <span asp-validation-for="MaVoucher" class="text-danger"></span>
-                <span class="text-danger">@ViewData["MaVoucher"]</span>
             </div>
             <div class="form-group">
                 <label class="control-label">Tên Voucher</label>

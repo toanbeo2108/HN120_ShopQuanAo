@@ -41,27 +41,12 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         {
             return View();
         }
-        //[HttpPost]
-        //public async Task<IActionResult> CreateVC(Voucher bk)
-        //{
-        //    var urlBook = $"https://localhost:7197/CreateVCher?MaVoucher={bk.MaVoucher}&Ten={bk.Ten}&GiaGiamToiThieu={bk.GiaGiamToiThieu}&GiaGiamToiDa={bk.GiaGiamToiDa}&NgayBatDau={bk.NgayBatDau}&NgayKetThuc={bk.NgayKetThuc}&KieuGiamGia={bk.KieuGiamGia}&GiaTriGiam={bk.GiaTriGiam}&SoLuong={bk.SoLuong}&MoTa={bk.MoTa}&TrangThai={bk.TrangThai}";
-        //    var httpClient = new HttpClient();
-        //    var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
-        //    var respon = await httpClient.PostAsync(urlBook, content);
-        //    if (respon.IsSuccessStatusCode)
-        //    {
-        //        return RedirectToAction("GetAllVoucher", "Voucher", new { areas = "Admin" });
-        //    }
-        //    TempData["error message"] = "thêm thất bại";
-        //    return View();
-        //}
         [HttpPost]
         public async Task<IActionResult> CreateVC(Voucher bk)
         {
            
             try
             {
-                // Kiểm tra các điều kiện nhập dữ liệu từ người dùng
                 if (string.IsNullOrEmpty(bk.MaVoucher) || string.IsNullOrEmpty(bk.Ten) ||
                     bk.KieuGiamGia == null || bk.GiaGiamToiThieu == null ||
                     bk.GiaGiamToiDa == null || bk.NgayBatDau == null ||
@@ -119,7 +104,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 {
                     return View(bk);
                 }
-
                 string apiURL = "https://localhost:7197/GetAllVoucher";
                 var response1 = await _httpClient.GetAsync(apiURL);
                 var apiData = await response1.Content.ReadAsStringAsync();
@@ -130,7 +114,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     ModelState.AddModelError("MaVoucher", "Mã này đã tồn tại");
                     return View(bk);
                 }
-
                 var urlBook = $"https://localhost:7197/CreateVCher?MaVoucher={bk.MaVoucher}&Ten={bk.Ten}&GiaGiamToiThieu={bk.GiaGiamToiThieu}&GiaGiamToiDa={bk.GiaGiamToiDa}&NgayBatDau={bk.NgayBatDau}&NgayKetThuc={bk.NgayKetThuc}&KieuGiamGia={bk.KieuGiamGia}&GiaTriGiam={bk.GiaTriGiam}&SoLuong={bk.SoLuong}&MoTa={bk.MoTa}&TrangThai={bk.TrangThai}";
                 var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
                 var response = await _httpClient.PostAsync(urlBook, content);
@@ -138,7 +121,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 {
                     return RedirectToAction("AllVoucherManager", "Voucher", new { area = "Admin" });
                 }
-
                 TempData["error message"] = "Thêm thất bại";
                 return View(bk);
             }

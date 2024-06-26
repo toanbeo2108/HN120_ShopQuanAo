@@ -380,12 +380,15 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaChatLieu")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaTheLoai")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaThuongHieu")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Mota")
@@ -608,6 +611,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayBatDau")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("NgayKetThuc")
@@ -706,28 +710,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-
-                            Id = "1316b6fa-0ad2-4c7b-8ee1-b09662d488ec",
-                            ConcurrencyStamp = "f35369df-6b02-4a77-ad28-0ba31497eb0d",
-
+                            Id = "5115818b-d0a8-49fa-9f6e-2a218f56379b",
+                            ConcurrencyStamp = "1cfee25d-2fd9-400a-99be-b0f91cfc603e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-
-                            Id = "70b06318-8a14-4332-9bf0-e30a94358ed0",
-                            ConcurrencyStamp = "3e9b18cf-83c5-42c1-8062-c842ff9d52e2",
-
+                            Id = "f867c7ac-b618-45d8-a4e0-cdfbe9d7ee3f",
+                            ConcurrencyStamp = "e454048d-b28b-41d5-932b-9b0f3adf474a",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-
-                            Id = "2d2ab5c3-9c58-4e50-b7d2-002dfbbf5095",
-                            ConcurrencyStamp = "d4817391-6a8a-4a06-b8a6-1f8e5428e357",
-
+                            Id = "582c07c1-eaff-478f-8135-8a79f7db8109",
+                            ConcurrencyStamp = "da8e60d8-fd29-461e-b3c7-38e5a2f196e0",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
