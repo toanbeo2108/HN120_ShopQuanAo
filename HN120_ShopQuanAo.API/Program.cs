@@ -25,7 +25,6 @@ builder.Services.AddScoped<IHoaDon_Respository, HoaDon_Respository>();
 builder.Services.AddScoped<IHoaDon_Service, HoaDon_Service>();
 builder.Services.AddScoped<IChiTietHoaDonRepository, ChiTietHoaDonRepository>();
 builder.Services.AddScoped<IChiTietHoaDonService, ChiTietHoaDonService>();
-
 builder.Services.AddScoped<IAddressUserReponse, AddressUserReponse>();
 builder.Services.AddScoped<IThanhToanHoaDonRepository, ThanhToanHoaDonRepository>();
 builder.Services.AddScoped<IThanhToanHoaDonService, ThanhToanHoaDonService>();
