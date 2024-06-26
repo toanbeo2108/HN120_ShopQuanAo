@@ -33,8 +33,10 @@ namespace HN120_ShopQuanAo.API.Responsitories
 				{
 					new Claim(ClaimTypes.Name, user.UserName),
 					new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
-					new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
-				};
+					new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+					// Thêm UserID vào claim
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                };
 				foreach (var userrole in roles)
 				{
 					claims.Add(new Claim(ClaimTypes.Role, userrole));

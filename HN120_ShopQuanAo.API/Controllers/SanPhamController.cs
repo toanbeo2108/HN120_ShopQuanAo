@@ -33,7 +33,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.GetByID(id);
         }
         [HttpPost("[Action]")]
-        public async Task<bool> AddSP(string? Tensp, string? MaThuongHieu, string? MaTheLoai, string? MoTa, string? UrlAvatar)
+        public async Task<bool> AddSP(string? Tensp, string? MaThuongHieu, string? MaTheLoai, string? MaChatLieu, string? MoTa, string? UrlAvatar)
         {
             var sizes = await GetAllSanPham();
             int szCount = sizes.Count() + 1;
@@ -42,8 +42,11 @@ namespace HN120_ShopQuanAo.API.Controllers
             b.TenSP = Tensp;
             b.MaThuongHieu = MaThuongHieu;
             b.MaTheLoai = MaTheLoai;
+            b.MaChatLieu = MaChatLieu;
+
             b.TongSoLuong = 0;
             b.Mota = MoTa;
+            b.NgayNhap = DateTime.Now;
             b.TrangThai = 1;
             b.UrlAvatar = UrlAvatar;
             return await _irespon.CreateItem(b);
@@ -61,7 +64,6 @@ namespace HN120_ShopQuanAo.API.Controllers
                 b.MaTheLoai = _sp.MaTheLoai;
                 b.MaThuongHieu = _sp.MaThuongHieu;
                 b.Mota = _sp.Mota;
-                b.TrangThai = _sp.TrangThai;
                 return await _irespon.UpdateItem(b);
             }
             else
@@ -104,13 +106,13 @@ namespace HN120_ShopQuanAo.API.Controllers
         }
 
         [HttpPut("[Action]/{id}")]
-        public async Task<bool> UpdateStatusSanPham(string id, int? _ctsp)
+        public async Task<bool> UpdateStatusSanPham(string id,int _sp)
         {
             var ctsp = await _irespon.GetAll();
             var b = ctsp.FirstOrDefault(c => c.MaSp == id);
             if (b != null)
             {
-                b.TrangThai = _ctsp;
+                b.TrangThai = _sp;
                 return await _irespon.UpdateItem(b);
             }
             else
@@ -118,6 +120,7 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return false;
             }
         }
+        
         [HttpDelete("[Action]/{id}")]
         public async Task<bool> deleteSP(string id)
         {

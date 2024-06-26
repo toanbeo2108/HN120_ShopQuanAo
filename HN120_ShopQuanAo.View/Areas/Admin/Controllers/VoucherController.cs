@@ -4,29 +4,30 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
 using HN120_ShopQuanAo.Data.ViewModels;
-
 using static System.Net.WebRequestMethods;
 using HN120_ShopQuanAo.View.PhanTrang;
 using System.Drawing.Printing;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 {
     public class VoucherController : Controller
     {
-        private HttpClient _httpClient;
-        private AppDbContext _context;
-        public VoucherController()
+        private readonly HttpClient _httpClient;
+        private readonly ILogger<VoucherController> _logger;
+        public VoucherController(ILogger<VoucherController> logger)
         {
             _httpClient = new HttpClient();
+            _logger = logger;
         }
         public IActionResult Index()
         {
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllVoucher()
+        public async Task<IActionResult> AllVoucherManager()
         {
             var urlBook = $"https://localhost:7197/GetAllVoucher";
             var responBook = await _httpClient.GetAsync(urlBook);
@@ -57,6 +58,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateVC(Voucher bk)
         {
+           
             try
             {
                 // Kiểm tra các điều kiện nhập dữ liệu từ người dùng
@@ -134,7 +136,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 var response = await _httpClient.PostAsync(urlBook, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("GetAllVoucher", "Voucher", new { area = "Admin" });
+                    return RedirectToAction("AllVoucherManager", "Voucher", new { area = "Admin" });
                 }
 
                 TempData["error message"] = "Thêm thất bại";
@@ -167,11 +169,10 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateVC(string id, Voucher vc)
+        public async Task<IActionResult> UpdateVC( Voucher vc)
         {
             try
             {
-                // Kiểm tra các điều kiện nhập dữ liệu từ người dùng (trừ MaVoucher)
                 if (string.IsNullOrEmpty(vc.Ten) || vc.KieuGiamGia == null ||
                     vc.GiaGiamToiThieu == null || vc.GiaGiamToiDa == null ||
                     vc.NgayBatDau == null || vc.NgayKetThuc == null ||
@@ -207,15 +208,14 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     ModelState.AddModelError("NgayKetThuc", "Ngày kết thúc phải lớn hơn ngày bắt đầu");
                 }
 
-                // Kiểm tra điều kiện giảm giá và giá trị giảm
-                if (vc.KieuGiamGia == 1) // Percentage discount
+                if (vc.KieuGiamGia == 1) 
                 {
                     if (vc.GiaTriGiam > 100 || vc.GiaTriGiam <= 0)
                     {
                         ModelState.AddModelError("GiaTriGiam", "Giá trị giảm phải từ 1 đến 100");
                     }
                 }
-                else if (vc.KieuGiamGia == 0) // Fixed amount discount
+                else if (vc.KieuGiamGia == 0) 
                 {
                     if (vc.GiaTriGiam <= 0)
                     {
@@ -232,8 +232,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     return View(vc);
                 }
 
-                // Nếu các điều kiện hợp lệ, tiến hành cập nhật voucher
-                var urlBook = $"https://localhost:7197/UpdateVCher?MaVoucher={vc.MaVoucher}&Ten={vc.Ten}&GiaGiamToiThieu={vc.GiaGiamToiThieu}&GiaGiamToiDa={vc.GiaGiamToiDa}&NgayBatDau={vc.NgayBatDau}&NgayKetThuc={vc.NgayKetThuc}&KieuGiamGia={vc.KieuGiamGia}&GiaTriGiam={vc.GiaTriGiam}&SoLuong={vc.SoLuong}&MoTa={vc.MoTa}&TrangThai={vc.TrangThai}";
+                // var urlBook = $"https://localhost:7197/UpdateVCher?MaVoucher={vc.MaVoucher}&Ten={vc.Ten}&GiaGiamToiThieu={vc.GiaGiamToiThieu}&GiaGiamToiDa={vc.GiaGiamToiDa}&NgayBatDau={vc.NgayBatDau}&NgayKetThuc={vc.NgayKetThuc}&KieuGiamGia={vc.KieuGiamGia}&GiaTriGiam={vc.GiaTriGiam}&SoLuong={vc.SoLuong}&MoTa={vc.MoTa}&TrangThai={vc.TrangThai}";
+                var urlBook = $"https://localhost:7197/UpdateVCher/VC1";
                 var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
                 var respon = await _httpClient.PutAsync(urlBook, content);
                 if (!respon.IsSuccessStatusCode)
@@ -241,8 +241,11 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     TempData["error message"] = "Cập nhật thất bại";
                     return View(vc);
                 }
+                else
+                {
+                    return RedirectToAction("AllVoucherManager", "Voucher", new { Areas = "Admin" });
+                }
 
-                return RedirectToAction("GetAllVoucher", "Voucher", new { area = "Admin" });
             }
             catch (Exception ex)
             {
@@ -252,53 +255,33 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatusVCKD(string id)
+        {
+            var urlBook = $"https://localhost:7197/UpdateStatusVoucher/{id}?TrangThai=1";
+            var response = await _httpClient.PutAsync(urlBook, null);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to update status to Kinh Doanh: {Error}", errorMessage);
+                return BadRequest("Failed to update status to Kinh Doanh.");
+            }
+            return RedirectToAction("AllVoucherManager", "Voucher", new { Areas = "Admin" });
+        }
 
-        //public async Task<IActionResult> SuDung(Guid id)
-        //{
-        //    try
-        //    {
-        //        var timkiem = _context.Voucher.FirstOrDefault(x => x.Id == id);
-        //        if (timkiem != null)
-        //        {
-        //            timkiem.TrangThai = 1;
-        //            _context.Voucher.Update(timkiem);
-        //            _context.SaveChanges();
-        //            return RedirectToAction("GetAllVoucher");
-        //        }
-        //        else
-        //        {
-        //            return View();
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-
-        //}
-        //public async Task<IActionResult> KoSuDung(string id)
-        //{
-        //    try
-        //    {
-        //        var timkiem = _context.Voucher.FirstOrDefault(x => x.Id == id);
-        //        if (timkiem != null)
-        //        {
-        //            timkiem.TrangThai = 0;
-        //            _context.Voucher.Update(timkiem);
-        //            _context.SaveChanges();
-        //            return RedirectToAction("GetAllVoucher");
-        //        }
-        //        else
-        //        {
-        //            return View();
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-
-        //}
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatusVCKKD(string id)
+        {
+            var urlBook = $"https://localhost:7197/UpdateStatusVoucher/{id}?TrangThai=0";
+            var response = await _httpClient.PutAsync(urlBook, null);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to update status to Không Kinh Doanh: {Error}", errorMessage);
+                return BadRequest("Failed to update status to Không Kinh Doanh.");
+            }
+            return RedirectToAction("AllVoucherManager", "Voucher", new { Areas = "Admin" });
+        }
 
 
     }

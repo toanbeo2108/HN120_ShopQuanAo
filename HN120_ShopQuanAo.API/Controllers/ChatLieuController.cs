@@ -12,12 +12,12 @@ namespace HN120_ShopQuanAo.API.Controllers
     public class ChatLieuController : ControllerBase
     {
         private readonly IAllResponsitories<ChatLieu> _irespon;
-        private readonly IAllResponsitories<ChiTietSp> _iresponCTSP;
+        private readonly IAllResponsitories<SanPham> _iresponSP;
         AppDbContext _context = new AppDbContext();
         public ChatLieuController()
         {
             _irespon = new AllResponsitories<ChatLieu>(_context, _context.ChatLieu);
-            _iresponCTSP = new AllResponsitories<ChiTietSp>(_context, _context.ChiTietSp);
+            _iresponSP = new AllResponsitories<SanPham>(_context, _context.SanPham);
         }
 
         // GET: api/<MauSacController>
@@ -34,13 +34,20 @@ namespace HN120_ShopQuanAo.API.Controllers
         [HttpPost("[Action]")]
         public async Task<bool> AddChatLieu(string? TenChatLieu, string? MoTa)
         {
-            var chatlieus = await GetAllChatLieu();
-            int clCount = chatlieus.Count() + 1;
+            var lstchatlieu = await _irespon.GetAll();
+            var cl = lstchatlieu.FirstOrDefault(x => x.TenChatLieu == TenChatLieu);
+
+            int clCount = lstchatlieu.Count() + 1;
+            if (cl != null)
+            {
+                return false;
+            }
             ChatLieu b = new ChatLieu();
             b.MaChatLieu = "CL" + clCount.ToString();
             b.TenChatLieu = TenChatLieu;
             b.MoTa = MoTa;
             b.TrangThai = 1;
+
             return await _irespon.CreateItem(b);
         }
         [HttpPut("[Action]/{id}")]
@@ -53,7 +60,6 @@ namespace HN120_ShopQuanAo.API.Controllers
 
                 b.TenChatLieu = _ctsp.TenChatLieu;
                 b.MoTa = _ctsp.MoTa;
-                b.TrangThai = _ctsp.TrangThai;
                 return await _irespon.UpdateItem(b);
             }
             else
@@ -84,11 +90,11 @@ namespace HN120_ShopQuanAo.API.Controllers
 
             if (ms != null)
             {
-                var lstspct = await _iresponCTSP.GetAll();
+                var lstspct = await _iresponSP.GetAll();
                 var dsspct = lstspct.Where(pd => pd.MaChatLieu == ms.MaChatLieu).ToList();
                 foreach (var t in dsspct)
                 {
-                    await _iresponCTSP.DeleteItem(t);
+                    await _iresponSP.DeleteItem(t);
                 }
                 return await _irespon.DeleteItem(ms);
             }

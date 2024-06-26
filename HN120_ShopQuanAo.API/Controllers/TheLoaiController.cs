@@ -32,7 +32,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _irespon.GetByID(id);
         }
         [HttpPost("[Action]")]
-        public async Task<bool> AddTL(string? Tentl, string? MoTa)
+        public async Task<bool> AddT(string? Tentl, string? MoTa)
         {
             var theloais = await GetAllTheLoai();
             int tlCount = theloais.Count() + 1;
@@ -53,7 +53,6 @@ namespace HN120_ShopQuanAo.API.Controllers
 
                 b.TenTheLoai = _ctsp.TenTheLoai;
                 b.MoTa = _ctsp.MoTa;
-                b.TrangThai = _ctsp.TrangThai;
                 return await _irespon.UpdateItem(b);
             }
             else

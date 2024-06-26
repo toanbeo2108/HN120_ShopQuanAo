@@ -35,19 +35,23 @@ namespace HN120_ShopQuanAo.View.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginUser loginUser)
 		{
-			// Convert registerUser to JSON
-			var loginUserJSON = JsonConvert.SerializeObject(loginUser);
-			// Convert to string content
-			var stringContent = new StringContent(loginUserJSON, Encoding.UTF8, "application/json");
-			// Send request POST to register API
-			var response = await _httpClient.PostAsync($"https://localhost:7197/api/Login", stringContent);
-			if (response.IsSuccessStatusCode)
-			{
-				var token = await response.Content.ReadAsStringAsync();
-				var handler = new JwtSecurityTokenHandler();
-				var jwt = handler.ReadJwtToken(token);
+            var loginUserJSON = JsonConvert.SerializeObject(loginUser);
+            var stringContent = new StringContent(loginUserJSON, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"https://localhost:7197/api/Login", stringContent);
 
-				var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+
+                // In ra phản hồi để kiểm tra
+                _logger.LogInformation($"Response Data: {responseData}");
+
+                // Giả sử rằng phản hồi chứa token dưới dạng chuỗi
+                var token = responseData.Trim('"');  // Loại bỏ dấu ngoặc kép nếu cần
+                var handler = new JwtSecurityTokenHandler();
+                var jwt = handler.ReadJwtToken(token);
+
+                var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 var nameClaim = jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name);
                 if (nameClaim != null)
                 {
@@ -58,37 +62,42 @@ namespace HN120_ShopQuanAo.View.Controllers
                 if (nameIdentifierClaim != null)
                 {
                     identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, nameIdentifierClaim.Value));
+                    // Lưu UserId vào cookie
+                    Response.Cookies.Append("UserId", nameIdentifierClaim.Value, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        Expires = DateTimeOffset.UtcNow.AddDays(1)
+                    });
                 }
-				var roleClaim = jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role);
-				if (roleClaim != null)
-				{
-					identity.AddClaim(new Claim(ClaimTypes.Role, roleClaim.Value));
-				}
-				var principal = new ClaimsPrincipal(identity);
-				await HttpContext.SignInAsync(principal);
 
-				var check = User.Identity.IsAuthenticated;
-				// RiRedirect to Area
-				if (roleClaim != null)
-				{
-					if (roleClaim.Value == "Admin")
-					{
-						return RedirectToAction("Index", "AdminHome", new { area = "Admin" });
-					}
-					else if (roleClaim.Value == "Customer")
-					{
-						return RedirectToAction("Index", "Home", new { area = "Customer" });
-					}
-				}
-				// Nếu k thì chuyển về màn hình index mặc định
-				return RedirectToAction("Index", "Home");
-			}
-			else
-			{
-				ViewBag.Message = await response.Content.ReadAsStringAsync();
-				return View();
-			}
-		}
+                var roleClaims = jwt.Claims.Where(u => u.Type == ClaimTypes.Role).ToList();
+                foreach (var roleClaim in roleClaims)
+                {
+                    identity.AddClaim(new Claim(ClaimTypes.Role, roleClaim.Value));
+                }
+
+                var principal = new ClaimsPrincipal(identity);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                var check = User.Identity.IsAuthenticated;
+                if (roleClaims.Any(rc => rc.Value == "Admin"))
+                {
+                    return RedirectToAction("Index", "AdminHome", new { area = "Admin" });
+                }
+                else if (roleClaims.Any(rc => rc.Value == "Customer"))
+                {
+                    return RedirectToAction("Index", "Home", new { area = "Customer" });
+                }
+
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ViewBag.Message = await response.Content.ReadAsStringAsync();
+                return View();
+            }
+        }
 		public IActionResult Privacy()
 		{
 			return View();

@@ -1,4 +1,5 @@
 ﻿using HN120_ShopQuanAo.API.Data;
+using HN120_ShopQuanAo.API.IResponsitories;
 using HN120_ShopQuanAo.Data.Models;
 using HN120_ShopQuanAo.Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -15,20 +16,29 @@ namespace HN120_ShopQuanAo.API.Controllers
 	{
 		public AppDbContext _context = new AppDbContext();
 		private readonly UserManager<User> _userManager;
-		public UserAPIController(UserManager<User> userManager)
+        private readonly IAddressUserReponse _response;
+        public UserAPIController(UserManager<User> userManager, IAddressUserReponse reponse)
 		{
 			_userManager = userManager;
 		}
 
 		[HttpGet]
-		[Route("GetAllUser")]
-		[Authorize]
-		public async Task<IEnumerable<User>> GetAllUser()
+		[Route("GetAllAccount")]
+		//[Authorize]
+		public async Task<IEnumerable<User>> GetAllAccount()
 		{
 			return await _userManager.Users.ToListAsync();
 		}
+        [HttpGet]
+        [Route("GetUsersByRole")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IEnumerable<User>> getUserByRole(string roleName)
+        {
+            return await _userManager.GetUsersInRoleAsync(roleName);
+        }
 
-		[HttpGet]
+
+        [HttpGet]
 		[Route("GetUserById")]
 		//[Authorize]
 		public async Task<User> GetUserById(string id)
@@ -67,10 +77,14 @@ namespace HN120_ShopQuanAo.API.Controllers
 
 			// Cập nhật thông tin người dùng
 			user.UserName = model.UserName;
-			user.Email = model.Email;
+			user.FirstName = model.FirstName;
+			user.LastName = model.LastName;
+            user.Email = model.Email;
 			user.PhoneNumber = model.PhoneNumber;
 			user.Avatar = model.Avatar;
-			user.Status = model.Status;
+			user.Gender = model.Gender;
+			user.Birthday = model.Birthday;
+            user.Status = model.Status;
 			// Cập nhật các thuộc tính khác của User tại đây
 
 			// Lưu thay đổi
@@ -85,8 +99,42 @@ namespace HN120_ShopQuanAo.API.Controllers
 			}
 		}
 
+        [HttpDelete]
+        [Route("DeleteUser")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            var deliveryAddresses = _context.DeliveryAddress.Where(da => da.UserID == id);
+            _context.DeliveryAddress.RemoveRange(deliveryAddresses);
+
+            // Lưu các thay đổi sau khi xóa các bản ghi phụ thuộc
+            await _context.SaveChangesAsync();
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return Ok("User deleted successfully");
+            }
+            else
+            {
+                return BadRequest("Error deleting user");
+            }
+        }
+
+        //[HttpGet]
+        //[Route("GetUserIdByUsername")]
+        ////[Authorize]
+        //public async Task<User> GetUserIdByUsername(string Name)
+        //{
+        //    return await _userManager.FindByIdAsync(id);
+        //}
 
 
-
-	}
+    }
 }
