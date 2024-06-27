@@ -5,7 +5,9 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>All Mau Sac Manager</h1>
+
+<h1>Quản Lý Màu Sắc</h1>
+
 <div class="form-group">
     <form method="get" asp-action="AllMauSacManager" asp-controller="MauSac" asp-area="Admin">
         <div class="row">
@@ -17,7 +19,9 @@
     </form>
 </div>
 <div>
-    <a asp-action="CreateMauSac" class="btn btn-primary">Thêm Chất Liệu</a>
+
+    <a asp-action="CreateMauSac" class="btn btn-primary">Thêm Màu Săc</a>
+
 </div>
 <table class="table">
     <thead>
@@ -38,7 +42,8 @@
                                         <td>@item.MoTa</td>
                                     <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
                                 <td>
-                                                    <a asp-action="MauSacDetail" asp-route-id="@item.MaMau" class="btn btn-info">Chi Tiết</a>
+
+
                                                     <a asp-action="UpdateMauSac" asp-route-id="@item.MaMau" class="btn btn-warning">Cập Nhật</a>
                     @if (item.TrangThai == 1)
                     {

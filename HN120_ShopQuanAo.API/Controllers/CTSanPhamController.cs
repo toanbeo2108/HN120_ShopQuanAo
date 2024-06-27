@@ -105,7 +105,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return check;
         }
         [HttpPut("[Action]/{id}")]
-        public async Task<bool> UpdateCTSP(string id, [FromBody] ChiTietSp _ctsp)
+        public async Task<bool> EditCTSP(string id, [FromBody] ChiTietSp _ctsp)
         {
 
             var ctsp = await _iresponCTSP.GetAll();

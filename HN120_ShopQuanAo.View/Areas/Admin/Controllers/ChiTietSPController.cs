@@ -45,12 +45,14 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View(Book);
         }
         [HttpGet]
-        public IActionResult CreateChiTietSp()
+        public IActionResult CreateChiTietSp(string id)
         {
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateChiTietSp(ChiTietSp bk, IFormFile imageFile)
+
+        public async Task<IActionResult> CreateChiTietSp(string id,ChiTietSp bk, IFormFile imageFile)
+
         {
             if (imageFile != null && imageFile.Length > 0)
             {
@@ -59,6 +61,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 imageFile.CopyTo(stream);
                 bk.UrlAnhSpct = imageFile.FileName;
             }
+
+            bk.MaSp = id;
+
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -124,7 +129,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 vc.UrlAnhSpct = imageFile.FileName;
             }
 
-            var urlBook = $"https://localhost:7197/api/CTSanPham/UpdateCTSP/{id}";
+
+            var urlBook = $"https://localhost:7197/api/CTSanPham/EditCTSP/{id}";
+
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)

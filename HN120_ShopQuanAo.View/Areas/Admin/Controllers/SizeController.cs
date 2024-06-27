@@ -115,7 +115,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 TempData["errorMessage"] = "Tên đã tồn tại.";
                 return View();
             }
-            var urlBook = $"https://localhost:7197/api/Size/UpdateSZ/{id}";
+
+            var urlBook = $"https://localhost:7197/api/Size/EditSZ/{id}";
+
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)

@@ -1,0 +1,53 @@
+﻿@model List<HN120_ShopQuanAo.Data.ViewModels.TempChiTietSpViewModel>
+
+@{
+    ViewData["Title"] = "Chi Tiết Sản Phẩm Tạm Thời";
+}
+
+<h1>Chi Tiết Sản Phẩm Tạm Thời</h1>
+
+@if (Model != null && Model.Count > 0)
+{
+        <form asp-action="SaveChiTietSps" method="post" enctype="multipart/form-data">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Mã Sản Phẩm</th>
+                        <th>Size</th>
+                        <th>Màu</th>
+                        <th>Đơn Giá</th>
+                        <th>Giá Bán</th>
+                        <th>Số Lượng Tồn</th>
+                        <th>Ảnh</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                            <tr>
+                                <td>@Model[i].MaSp</td>
+                                <td>@Model[i].MaSize</td>
+                                <td>@Model[i].MaMau</td>
+                                <td>
+                                    <input class="form-control" type="number" name="models[@i].DonGia" value="@Model[i].DonGia" />
+                                </td>
+                                <td>
+                                    <input class="form-control" type="number" name="models[@i].GiaBan" value="@Model[i].GiaBan" />
+                                </td>
+                                <td>
+                                    <input class="form-control" type="number" name="models[@i].SoLuongTon" value="@Model[i].SoLuongTon" />
+                                </td>
+                                <td>
+                                    <input class="form-control" type="file" name="imageFiles[@i]" />
+                                </td>
+                            </tr>
+                }
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-success">Lưu Chi Tiết Sản Phẩm</button>
+        </form>
+}
+else
+{
+        <p>Không có sản phẩm chi tiết tạm thời để hiển thị.</p>
+}

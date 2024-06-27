@@ -1,12 +1,13 @@
-﻿@model HN120_ShopQuanAo.Data.ViewModels.AddChiTietSpViewModel
+
+﻿@using HN120_ShopQuanAo.Data.ViewModels
+@model AddChiTietSpViewModel
 
 @{
     ViewData["Title"] = "Thêm Chi Tiết Sản Phẩm";
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";  
-
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>Thêm Chi Tiết Sản Phẩm</h1>
+
 
 <form asp-action="AddChiTietSp" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="MaSp" />
@@ -14,69 +15,34 @@
     <div class="form-group">
         <label>Chọn Size:</label>
         <div>
-            @foreach (var size in ViewBag.lstSZ)
-            {
-                        <input type="checkbox" name="SelectedSizes" value="@size.MaSize" />
-                        <label for="Size_@size.MaSize">@size.TenSize</label>
-            }
-        </div>
-    </div >
 
-    <div class="form-group">
-        <label>Chọn Màu:</label>
-        <div>
-            @foreach (var mau in ViewBag.lstms)
+            @for (int i = 0; i < ViewBag.lstSZ.Count; i++)
             {
-                        <input type="checkbox" name="SelectedMaus" value="@mau.MaMau" />
-                        <label for="Mau_@mau.MaMau">@mau.TenMau</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="SelectedSizes" value="@ViewBag.lstSZ[i].MaSize" 
+                           @(Model.SelectedSizes != null && Model.SelectedSizes.Contains(ViewBag.lstSZ[i].MaSize) ? "checked" : "") />
+                        <label class="form-check-label" for="Size_@ViewBag.lstSZ[i].MaSize">@ViewBag.lstSZ[i].TenSize</label>
+                    </div>
+
             }
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-3">Tạo Chi Tiết Sản Phẩm</button>
+
+    <div class="form-group">
+        <label>Chọn Màu:</label>
+        <div>
+            @for (int i = 0; i < ViewBag.lstms.Count; i++)
+            {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="SelectedMaus" value="@ViewBag.lstms[i].MaMau" 
+                           @(Model.SelectedMaus != null && Model.SelectedMaus.Contains(ViewBag.lstms[i].MaMau) ? "checked" : "") />
+                        <label class="form-check-label" for="Mau_@ViewBag.lstms[i].MaMau">@ViewBag.lstms[i].TenMau</label>
+                    </div>
+            }
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Thêm Chi Tiết Sản Phẩm</button>
 </form>
 
-@if (Model.TempChiTietSps != null && Model.TempChiTietSps.Any())
-{
-            <form asp-action="SaveChiTietSps" method="post" enctype="multipart/form-data">
-        @for (int i = 0; i < Model.TempChiTietSps.Count; i++)
-        {
-                    <hr />
-                            <div>
-                                <input type="hidden" asp-for="@Model.TempChiTietSps[i].MaSp" />
-                                <input type="hidden" asp-for="@Model.TempChiTietSps[i].MaSize" />
-                                <input type="hidden" asp-for="@Model.TempChiTietSps[i].MaMau" />
-                                <p>Size: @Model.TempChiTietSps[i].TenSize, Màu: @Model.TempChiTietSps[i].TenMau</p>
-
-                                        <div class="form-group">
-                                    <label>Đơn Giá</label>
-                                    <input type="number" asp-for="@Model.TempChiTietSps[i].DonGia" class="form-control" />
-                                </div>
-                                        <div class="form-group">
-                                    <label>Giá Bán</label>
-                                    <input type="number" asp-for="@Model.TempChiTietSps[i].GiaBan" class="form-control" />
-                                </div>
-                                        <div class="form-group">
-                                    <label>Số Lượng Tồn</label>
-                                    <input type="number" asp-for="@Model.TempChiTietSps[i].SoLuongTon" class="form-control" />
-                                </div>
-                                    <div class="form-group">
-                                    <label>Khuyến Mãi</label>
-                                    <select asp-for="@Model.TempChiTietSps[i].MaKhuyenMai" class="form-control">
-                                    <option value="">Chọn khuyến mãi</option>
-                        @foreach (var km in ViewBag.lstkm)
-                        {
-                                        <option value="@km.MaKhuyenMai">@km.TenKhuyenMai</option>
-                        }
-                                    </select>
-                                </div>
-                                        <div class="form-group">
-                                    <label>Ảnh Sản Phẩm</label>
-                                    <input type="file" name="imageFiles" class="form-control" />
-                                </div>
-                            </div>
-        }
-
-                <button type="submit" class="btn btn-primary mt-3">Lưu Chi Tiết Sản Phẩm</button>
-            </form>
-}

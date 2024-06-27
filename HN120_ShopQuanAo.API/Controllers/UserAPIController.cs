@@ -69,7 +69,6 @@ namespace HN120_ShopQuanAo.API.Controllers
 
 		[HttpPut]
 		[Route("UpdateUser")]
-		//[Authorize]
 		public async Task<User> UpdateUser(User model)
 		{
 			// Tìm người dùng theo ID
@@ -77,8 +76,7 @@ namespace HN120_ShopQuanAo.API.Controllers
 
 			// Cập nhật thông tin người dùng
 			user.UserName = model.UserName;
-			user.FirstName = model.FirstName;
-			user.LastName = model.LastName;
+			user.FullName = model.FullName;
             user.Email = model.Email;
 			user.PhoneNumber = model.PhoneNumber;
 			user.Avatar = model.Avatar;
@@ -101,7 +99,7 @@ namespace HN120_ShopQuanAo.API.Controllers
 
         [HttpDelete]
         [Route("DeleteUser")]
-        //[Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -127,14 +125,27 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
         }
 
-        //[HttpGet]
-        //[Route("GetUserIdByUsername")]
-        ////[Authorize]
-        //public async Task<User> GetUserIdByUsername(string Name)
-        //{
-        //    return await _userManager.FindByIdAsync(id);
-        //}
 
+        [HttpPut]
+        [Route("UpdateUserStatus")]
+        public async Task<User> UpdateUserStatus(string id, int status)
+        {
+            // Tìm người dùng theo ID
+            var user = await _userManager.FindByIdAsync(id);
 
+			// Cập nhật thông tin người dùng
+			user.Status = status;
+
+            // Lưu thay đổi
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return user;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

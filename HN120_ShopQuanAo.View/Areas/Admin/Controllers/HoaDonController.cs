@@ -1,63 +1,193 @@
 ﻿using HN120_ShopQuanAo.Data.Models;
+using HN120_ShopQuanAo.View.Areas.Admin.Data;
+using Humanizer.Localisation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication;
+using System.Collections.Generic;
+using HN120_ShopQuanAo.Data.ViewModels;
+using Newtonsoft.Json.Linq;
+
 
 namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 {
     public class HoaDonController : Controller
     {
         private readonly HttpClient _httpClient;
-        
+       // private readonly UserManager<User> _userManager;
+       // private readonly UserManager<User> _userManager;
         string _mess;
         bool _stt;
         object _data = null;
         public HoaDonController()
         {
             _httpClient = new HttpClient();
+    
         }
 
+        // bán Hàng tại quầy 
+       
         public async Task<IActionResult> Index()
         {
-            //var apiuser = "https://localhost:7197/api/HoaDon/GetAllHoaDon";
-            //var responuser = await _httpClient.GetAsync(apiuser);
-            //string apiDataus = await responuser.Content.ReadAsStringAsync();
-            //var lstus = JsonConvert.DeserializeObject<List<User>>(apiDataus);
-            //ViewBag.lstus = lstus;
-            var apivc = "https://localhost:7197/GetAllVoucher";
-            var responvc = await _httpClient.GetAsync(apivc);
-            string apidatavc = await responvc.Content.ReadAsStringAsync();
-            var lstvc = JsonConvert.DeserializeObject<List<Voucher>>(apidatavc);
-            ViewBag.lstvc = lstvc;
-            var apiurl = "https://localhost:7197/api/HoaDon/GetAllHoaDon";
-            var httpClient = new HttpClient();
-            var respon = await _httpClient.GetAsync(apiurl);
-            string apiData = await respon.Content.ReadAsStringAsync();
-            var lst = JsonConvert.DeserializeObject<List<HoaDon>>(apiData);
 
-            if (lst == null)
+            var token = Request.Cookies["Token"];
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var urluser = $"https://localhost:7197/api/User/GetUsersByRole?roleName=admin";
+            var responseuser = await _httpClient.GetAsync(urluser);
+            string apiDataUser = await responseuser.Content.ReadAsStringAsync();
+            var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
+            ViewBag.ListUseradmin = ListUseradmin;
+            
+            var urlusers = $"https://localhost:7197/api/User/GetUsersByRole?roleName=user";
+            var responseusers = await _httpClient.GetAsync(urlusers);
+            string apiDataUsers = await responseusers.Content.ReadAsStringAsync();
+            var ListUsers = JsonConvert.DeserializeObject<List<User>>(apiDataUsers);
+            ViewBag.ListUsers = ListUsers;
+
+
+            var apiThanhToan = "https://localhost:7197/api/ThanhToan/GetAllThanhToan";
+            var responThanhToan = await _httpClient.GetAsync(apiThanhToan);
+            string apidaThanhToan = await responThanhToan.Content.ReadAsStringAsync();
+            var lstThanhToan = JsonConvert.DeserializeObject<List<ThanhToan>>(apidaThanhToan);
+
+            var apiThanhToan_hd = "https://localhost:7197/api/ThanhToan/GetAllThanhToan";
+            var responThanhToan_hd = await _httpClient.GetAsync(apiThanhToan_hd);
+            string apidaThanhToan_hd = await responThanhToan_hd.Content.ReadAsStringAsync();
+            var lstThanhToan_hd = JsonConvert.DeserializeObject<List<ThanhToan_HoaDon>>(apidaThanhToan_hd);
+
+            var apiurl_hd = "https://localhost:7197/api/HoaDon/GetAllHoaDon";
+            var respon_hd = await _httpClient.GetAsync(apiurl_hd);
+            string apiData_hd = await respon_hd.Content.ReadAsStringAsync();
+            var lst_hd = JsonConvert.DeserializeObject<List<HoaDon>>(apiData_hd);
+            var thanhtoanhoadon = from tt in lstThanhToan
+                                  join lstt in lstThanhToan_hd
+                                  on tt.MaPhuongThuc equals lstt.MaPhuongThuc
+                                  select new ThanhToan_ThanhToanHistory
+                                  {
+                                      MaPhuongThuc = tt.MaPhuongThuc,
+                                      TenPhuongThuc = tt.TenPhuongThuc,
+                                      MoTa = tt.MoTa,
+                                      NgayTao = tt.NgayTao,
+                                      NgayThayDoi = tt.NgayThayDoi,
+                                      // thanh toán historry
+                                      MaPhuongThuc_HoaDon = lstt.MaPhuongThuc_HoaDon,
+                                      NgayTaoThanhToan = lstt.NgayTao,
+                                      NgayThayDoiThanhToan = lstt.NgayThayDoi,
+                                 
+                                  };
+
+            ViewBag.thanhtoanhoadon = thanhtoanhoadon.ToList();
+            var apiSp = "https://localhost:7197/api/SanPham/GetAllSanPham";
+            var responsp = await _httpClient.GetAsync(apiSp);
+            string apiDataSP = await responsp.Content.ReadAsStringAsync();
+            var lstsp = JsonConvert.DeserializeObject<List<SanPham>>(apiDataSP);
+
+            var apiCTSP = "https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+            var responCTSP = await _httpClient.GetAsync(apiCTSP);
+            string apidataCTSP = await responCTSP.Content.ReadAsStringAsync();
+            var lstCTSP = JsonConvert.DeserializeObject<List<ChiTietSp>>(apidataCTSP);
+
+            var apiMauSac = "https://localhost:7197/api/MauSac/GetAllMauSac";
+            var responMauSac = await _httpClient.GetAsync(apiMauSac);
+            string apidaMauSac = await responMauSac.Content.ReadAsStringAsync();
+            var lstMauSac = JsonConvert.DeserializeObject<List<MauSac>>(apidaMauSac);
+
+            var apiSize = "https://localhost:7197/api/Size/GetAllSize";
+            var responSize = await _httpClient.GetAsync(apiSize);
+            string apidaSize = await responSize.Content.ReadAsStringAsync();
+            var lstSize = JsonConvert.DeserializeObject<List<Size>>(apidaSize);
+
+             var apiVC = "https://localhost:7197/GetAllVoucher";
+            var responVC = await _httpClient.GetAsync(apiVC);
+            string apidaVC = await responVC.Content.ReadAsStringAsync();
+            var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apidaVC);
+            ViewBag.lstVC = lstVC;
+
+            var joinedData = from sp in lstsp
+                             join ctsp in lstCTSP on sp.MaSp equals ctsp.MaSp
+                             join ms in lstMauSac on ctsp.MaMau equals ms.MaMau
+                             join sz in lstSize on ctsp.MaSize equals sz.MaSize
+                             where ctsp.SoLuongTon > 0
+                             select new ChiTietSPView
+                             {
+                                 MaSp = sp.MaSp,
+                                 MaThuongHieu = sp.MaThuongHieu,
+                                 MaTheLoai = sp.MaTheLoai,
+                                 UrlAvatar = sp.UrlAvatar,
+                                 TenSP = sp.TenSP,
+                                 Mota = sp.Mota,
+                                 TongSoLuong = sp.TongSoLuong,
+                                 SKU = ctsp.SKU,
+                                 MaSize = ctsp.MaSize,
+                                 MaMau = ctsp.MaMau,
+                                 MaKhuyenMai = ctsp.MaKhuyenMai,
+                                // MaChatLieu = ctsp.MaChatLieu,
+                                 UrlAnhSpct = ctsp.UrlAnhSpct,
+                                 GiaBan = ctsp.GiaBan,
+                                 SoLuongTon = ctsp.SoLuongTon,
+                                 TrangThai = ctsp.TrangThai,
+                                 TenMau = ms.TenMau,
+                                 TenSize = sz.TenSize
+            };
+            var litspctview = joinedData.ToList();
+            ViewBag.JoinedData = litspctview;
+     
+
+            if (litspctview == null)
             {
                 return BadRequest();
             }
-            return View(lst);
+
+            return View(litspctview);
         }
+        [HttpGet, Route("getkhachhang")]
+        public async Task<IActionResult> GetallLstKhachHang()
+        {
+            var urlusers = $"https://localhost:7197/api/User/GetUsersByRole?roleName=user";
+            var responseusers = await _httpClient.GetAsync(urlusers);
+
+            if (responseusers.IsSuccessStatusCode)
+            {
+                var apiDataUsers = await responseusers.Content.ReadAsStringAsync();
+                var ListUser = JsonConvert.DeserializeObject<List<User>>(apiDataUsers);
+
+                // Lấy danh sách các đối tượng có dạng { id: ..., fullName: ... }
+                var selectList = ListUser.Select(u => new { id = u.Id, fullName = u.FullName }).ToList();
+
+                return Json(new
+                {
+                    status = true,
+                    message = "Danh sách khách hàng",
+                    data = selectList
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "Không có danh sách khách hàng",
+                    data = new List<object>() // Hoặc có thể trả về một danh sách rỗng
+                });
+            }
+        }
+
         [HttpPost, Route("Add-hoadon")]
         public async Task<IActionResult> Add_HoaDon(HoaDon hd)
         {
-            var apiurl = "https://localhost:7197/api/HoaDon/GetAllHoaDon";
-            var httpClient = new HttpClient();
-            var respon = await _httpClient.GetAsync(apiurl);
-            string apiData = await respon.Content.ReadAsStringAsync();
-            var lst = JsonConvert.DeserializeObject<List<HoaDon>>(apiData);
+          
             var apiurlcr = "https://localhost:7197/api/HoaDon/CreateHoaDon";    
-            var totalHoaDon = lst.Count();
-            hd.MaHoaDon = "HD" + (totalHoaDon + 1);
             var content = new StringContent(JsonConvert.SerializeObject(hd), Encoding.UTF8, "application/json");
-            var responcr = await httpClient.PostAsync(apiurlcr, content);
+            var responcr = await _httpClient.PostAsync(apiurlcr, content);
+            string apiData = await responcr.Content.ReadAsStringAsync();
 
             if (responcr.StatusCode == System.Net.HttpStatusCode.Created)
             {
@@ -76,28 +206,54 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 status = _stt,
                 message = _mess
             });
-        }
-        [HttpGet, Route("Detail-hoadon/{ma}")]
-        public async Task<IActionResult> Detail(string ma)
+        }       
+        // Quản lý hóa đơn
+        [HttpGet]
+        public async Task<IActionResult> GetAllHoaDon()
         {
-           
-            var url = $"https://localhost:7197/api/HoaDon/GetAllHoaDon";
-            var respon = await _httpClient.GetAsync(url);
+            var apiurltt = $"https://localhost:7197/api/ThanhToan/GetAllThanhToan";
+            var respontt = await _httpClient.GetAsync(apiurltt);
+            string apiDatatt = await respontt.Content.ReadAsStringAsync();
+            var lstt = JsonConvert.DeserializeObject<List<ThanhToan>>(apiDatatt);
+            ViewBag.lstt = lstt;
+
+            var apiurl = "https://localhost:7197/api/HoaDon/GetAllHoaDon";
+            var httpClient = new HttpClient();
+            var respon = await _httpClient.GetAsync(apiurl);
             string apiData = await respon.Content.ReadAsStringAsync();
             var lst = JsonConvert.DeserializeObject<List<HoaDon>>(apiData);
-            var hoadon = lst.FirstOrDefault(x => x.MaHoaDon == ma);
+
+
+            if (respon.IsSuccessStatusCode)
+            {
+                return View(lst);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet, Route("Detail-hoadon/{ma}")]
+        public async Task<IActionResult> GetHoaDonByMa(string ma)
+        {
+
+            var apiurl = $"https://localhost:7197/api/HoaDon/GetAllHoaDonMa/{ma}";            
+            var respon = await _httpClient.GetAsync(apiurl);
+            string apiData = await respon.Content.ReadAsStringAsync();
+            HoaDon detail = null;
             if (respon.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                if (hoadon == null)
+                detail = JsonConvert.DeserializeObject<HoaDon>(apiData);
+                if (detail == null)
                 {
                     _stt = false;
-                    _mess = "Không tìn thấy";
+                    _mess = "Không tìm thấy";
                 }
                 else
                 {
                     _stt = true;
                     _mess = "";
-                    _data = hoadon;
+                    _data = detail;
                 }
 
 
@@ -113,8 +269,99 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 message = _mess,
                 data = _data
             });
-
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> DetailHoaDon(string ma)
+        {
+            var apiurlHDCT = "https://localhost:7197/api/ChiTietHoaDon/GetAll";
+            var responHDCT = await _httpClient.GetAsync(apiurlHDCT);
+            string apiDataHDCT = await responHDCT.Content.ReadAsStringAsync();
+            var lstHDCT = JsonConvert.DeserializeObject<List<HoaDonChiTiet>>(apiDataHDCT);
+            //var totalHoaDonChiTiet = lstHDCT.Count();
+            //ViewBag.lstHDCT = "HDCT" + (totalHoaDonChiTiet + 1);
+            var apiSp = "https://localhost:7197/api/SanPham/GetAllSanPham";
+            var responsp = await _httpClient.GetAsync(apiSp);
+            string apiDataSP = await responsp.Content.ReadAsStringAsync();
+            var lstsp = JsonConvert.DeserializeObject<List<SanPham>>(apiDataSP);
+
+            var apiCTSP = "https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+            var responCTSP = await _httpClient.GetAsync(apiCTSP);
+            string apidataCTSP = await responCTSP.Content.ReadAsStringAsync();
+            var lstCTSP = JsonConvert.DeserializeObject<List<ChiTietSp>>(apidataCTSP);
+
+            var apiMauSac = "https://localhost:7197/api/MauSac/GetAllMauSac";
+            var responMauSac = await _httpClient.GetAsync(apiMauSac);
+            string apidaMauSac = await responMauSac.Content.ReadAsStringAsync();
+            var lstMauSac = JsonConvert.DeserializeObject<List<MauSac>>(apidaMauSac);
+
+            var apiSize = "https://localhost:7197/api/Size/GetAllSize";
+            var responSize = await _httpClient.GetAsync(apiSize);
+            string apidaSize = await responSize.Content.ReadAsStringAsync();
+            var lstSize = JsonConvert.DeserializeObject<List<Size>>(apidaSize);
+
+            var apiVC = "https://localhost:7197/GetAllVoucher";
+            var responVC = await _httpClient.GetAsync(apiVC);
+            string apidaVC = await responVC.Content.ReadAsStringAsync();
+            var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apidaVC);
+            ViewBag.lstVC = lstVC;
+
+            var joinedData = from sp in lstsp
+                             join ctsp in lstCTSP on sp.MaSp equals ctsp.MaSp
+                             join ms in lstMauSac on ctsp.MaMau equals ms.MaMau
+                             join sz in lstSize on ctsp.MaSize equals sz.MaSize
+
+                             select new ChiTietSPView
+                             {
+                                 MaSp = sp.MaSp,
+                                 MaThuongHieu = sp.MaThuongHieu,
+                                 MaTheLoai = sp.MaTheLoai,
+                                 UrlAvatar = sp.UrlAvatar,
+                                 TenSP = sp.TenSP,
+                                 Mota = sp.Mota,
+                                 TongSoLuong = sp.TongSoLuong,
+                                 SKU = ctsp.SKU,
+                                 MaSize = ctsp.MaSize,
+                                 MaMau = ctsp.MaMau,
+                                 MaKhuyenMai = ctsp.MaKhuyenMai,
+                                // MaChatLieu = ctsp.MaChatLieu,
+                                 UrlAnhSpct = ctsp.UrlAnhSpct,
+                                 GiaBan = ctsp.GiaBan,
+                                 SoLuongTon = ctsp.SoLuongTon,
+                                 TrangThai = ctsp.TrangThai,
+                                 TenMau = ms.TenMau,
+                                 TenSize = sz.TenSize
+                             };
+
+            var litspctview = joinedData.ToList();
+            ViewBag.JoinedData = litspctview;
+            var url = $"https://localhost:7197/api/HoaDon/GetHoaDonWithDetails/{ma}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var apiData = await response.Content.ReadAsStringAsync();
+                var hoaDonWithDetailsList = JsonConvert.DeserializeObject<List<HoaDonWithDetailsViewModel>>(apiData);
+
+                // Tìm hoặc lọc danh sách hoaDonWithDetailsList theo mã hoá đơn cần hiển thị chi tiết
+                var hoaDonWithDetails = hoaDonWithDetailsList.FirstOrDefault(); // hoặc lọc theo mã hoá đơn cụ thể
+
+                if (hoaDonWithDetails == null)
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    return View(hoaDonWithDetails);
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
 
         [HttpPost, Route("Update-hoadon")]
         public async Task<IActionResult> UpdateVoucher(HoaDon hd)
@@ -164,6 +411,20 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 status = _stt,
                 message = _mess
             });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllHoaDonBySTT(int stt)
+        {
+            var url = $"https://localhost:7197/api/HoaDon/GetAllHoaDonBySTT/{stt}";
+            var response = await _httpClient.GetAsync(url);
+
+               
+            
+                var apiData = await response.Content.ReadAsStringAsync();
+                var hoaDon = JsonConvert.DeserializeObject<List<HoaDon>>(apiData);
+
+                var listhoaDon = hoaDon.Where(c => c.TrangThai == stt).ToList();
+            return View(listhoaDon); 
         }
     }
 }

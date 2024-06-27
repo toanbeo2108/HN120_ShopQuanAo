@@ -10,9 +10,9 @@ namespace HN120_ShopQuanAo.API.Controllers
     [ApiController]
     public class HoaDonController : ControllerBase
     {
-        private readonly IHoaDonService _sv;
+        private readonly IHoaDon_Service _sv;
 
-        public HoaDonController(IHoaDonService sv)
+        public HoaDonController(IHoaDon_Service sv)
         {
             _sv = sv;
         }
@@ -22,6 +22,13 @@ namespace HN120_ShopQuanAo.API.Controllers
             var hoadon = _sv.GetAllHoaDon();
             return Ok(hoadon);
         }
+         [HttpGet("[Action]/{stt}")]
+        public IActionResult GetAllHoaDonBySTT(int stt)
+        {
+            var hoadon = _sv.GetHoaDonByTrangthai(stt);
+            return Ok(hoadon);
+        }
+
         [HttpGet("[Action]/{ma}")]
         public IActionResult GetAllHoaDonMa(string ma)
         {
@@ -37,6 +44,13 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
 
 
+        }
+        [HttpGet("[Action]/{ma}")]
+        public IActionResult GetHoaDonWithDetails(string ma)
+        {
+           
+                var hoadon = _sv.GetHoaDonWithDetails(ma);
+                return Ok(hoadon);
         }
         [HttpPost("[Action]")]
         public IActionResult CreateHoaDon(HoaDon hoaDon)

@@ -1,38 +1,28 @@
 ﻿using HN120_ShopQuanAo.API.Data;
 using HN120_ShopQuanAo.API.IResponsitories;
 using HN120_ShopQuanAo.Data.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace HN120_ShopQuanAo.API.Responsitories
 {
-    public class HoaDonRepository : IHoaDonRepository
+    public class HoaDon_Respository : IHoaDon_Respository
     {
         private readonly AppDbContext _context;
-        
-        public HoaDonRepository(AppDbContext context)
+        public HoaDon_Respository(AppDbContext context)
         {
             _context = context;
         }
-       
         public void CreateHoaDon(HoaDon hoaDon)
         {
-            // Lấy tổng số lượng hóa đơn hiện có trong cơ sở dữ liệu
-            var totalHoaDon = _context.HoaDon.Count();
-
-            // Tạo mã hóa đơn mới bằng cách thêm 1 vào tổng số lượng hóa đơn và thêm tiền tố "HD"
-            hoaDon.MaHoaDon = "HD" + (totalHoaDon + 1);
-            //kiểm tra hóa đơn trươc khi tạo tạo
             var hd = _context.HoaDon.FirstOrDefault(c => c.MaHoaDon == hoaDon.MaHoaDon);
             if (hd != null)
             {
                 throw new Exception("Hóa đơn đã tồn tại");
             }
             var vc = _context.Voucher.FirstOrDefault(c => c.MaVoucher == hoaDon.MaVoucher);
-            if (vc == null)
-            {
-                throw new Exception("Voucher không tồn tại");
-            }
+            //if (vc == null)
+            //{
+            //    throw new Exception("Voucher không tồn tại");
+            //}
             _context.HoaDon.Add(hoaDon);
             _context.SaveChanges();
         }
@@ -55,7 +45,6 @@ namespace HN120_ShopQuanAo.API.Responsitories
             {
                 throw new Exception("Hóa đơn không tồn tại.");
             }
-
         }
 
         public IEnumerable<HoaDon> GetAllHoaDon()
@@ -65,17 +54,33 @@ namespace HN120_ShopQuanAo.API.Responsitories
 
         public HoaDon GetHoaDonByMa(string ma)
         {
-
             var mahd = _context.HoaDon.FirstOrDefault(c => c.MaHoaDon == ma);
             if (mahd != null)
             {
-
                 return mahd;
             }
             else
             {
                 throw new Exception("Hóa đơn không tồn tại.");
             }
+        }
+
+        public IEnumerable<HoaDon> GetHoaDonByTrangthai(int stt)
+        {
+            return _context.HoaDon.Where(hd => hd.TrangThai == stt).ToList();
+        }
+
+        public IEnumerable<dynamic> GetHoaDonWithDetails(string ma)
+        {
+            var result = from hd in _context.HoaDon
+                         where hd.MaHoaDon == ma
+                         select new
+                         {
+                             HoaDon = hd,
+                             HoaDonChiTiets = _context.HoaDonChiTiet.Where(hct => hct.MaHoaDon == ma).ToList()
+                         };
+
+            return result.ToList();
         }
 
         public void UpdateHoaDon(HoaDon hoaDon)
@@ -85,11 +90,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
             {
                 throw new Exception("Hóa đơn không tồn tại.");
             }
-            var vc = _context.Voucher.FirstOrDefault(c => c.MaVoucher == hoaDon.MaVoucher);
-            if (vc == null)
-            {
-                throw new Exception("Voucher không tồn tại");
-            }
+           
 
             update.UserID = hoaDon.UserID;
             update.MaVoucher = hoaDon.MaVoucher;
@@ -102,7 +103,6 @@ namespace HN120_ShopQuanAo.API.Responsitories
             update.TrangThai = hoaDon.TrangThai;
 
             _context.SaveChanges();
-
         }
     }
 }

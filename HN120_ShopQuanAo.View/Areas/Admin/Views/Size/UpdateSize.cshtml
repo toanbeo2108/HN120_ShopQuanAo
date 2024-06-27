@@ -5,7 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>UpdateSize</h1>
+<h1>Sửa Size</h1>
 
 <h4>Size</h4>
 @if (TempData["errorMessage"] != null)
@@ -34,13 +34,14 @@
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
+    <a asp-action="AllSizeManager" class="btn btn-warning">Hủy</a>
+
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
