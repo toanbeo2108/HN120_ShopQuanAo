@@ -46,18 +46,36 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
             ViewBag.ListUseradmin = ListUseradmin;
             
-            var urlusers = $"https://localhost:7197/api/User/GetUsersByRole?roleName=user";
+            var urlusers = $"https://localhost:7197/api/UserAddress/GetAll";
             var responseusers = await _httpClient.GetAsync(urlusers);
             string apiDataUsers = await responseusers.Content.ReadAsStringAsync();
-            var ListUsers = JsonConvert.DeserializeObject<List<User>>(apiDataUsers);
-            ViewBag.ListUsers = ListUsers;
+            var ListUsers = JsonConvert.DeserializeObject<List<DeliveryAddressModel>>(apiDataUsers);
+            var urluseraccout = $"https://localhost:7197/api/User/GetAllAccount";
+            var responaccout = await _httpClient.GetAsync(urluseraccout);
+            string apiDataaccout = await responaccout.Content.ReadAsStringAsync();
+            var Listaccout = JsonConvert.DeserializeObject<List<User>>(apiDataaccout);
+
+            var user = from us in Listaccout
+                       join ad in ListUsers on us.Id equals ad.UserID
+                       where ad.Status > 0
+                       select new {
+                       idUser = us.Id,
+                       Ten = us.FullName,
+                       tinhthanh = ad.City,
+                       quanhuyen = ad.District,
+                       xaphuong = ad.Ward,
+                       cuthe = ad.Street,
+
+                       };
+
+            ViewBag.user = user.ToList();
 
 
             var apiThanhToan = "https://localhost:7197/api/ThanhToan/GetAllThanhToan";
             var responThanhToan = await _httpClient.GetAsync(apiThanhToan);
             string apidaThanhToan = await responThanhToan.Content.ReadAsStringAsync();
             var lstThanhToan = JsonConvert.DeserializeObject<List<ThanhToan>>(apidaThanhToan);
-
+            ViewBag.lstThanhToan = lstThanhToan;
             var apiThanhToan_hd = "https://localhost:7197/api/ThanhToan/GetAllThanhToan";
             var responThanhToan_hd = await _httpClient.GetAsync(apiThanhToan_hd);
             string apidaThanhToan_hd = await responThanhToan_hd.Content.ReadAsStringAsync();
@@ -77,7 +95,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                                       MoTa = tt.MoTa,
                                       NgayTao = tt.NgayTao,
                                       NgayThayDoi = tt.NgayThayDoi,
-                                      // thanh toán historry
                                       MaPhuongThuc_HoaDon = lstt.MaPhuongThuc_HoaDon,
                                       NgayTaoThanhToan = lstt.NgayTao,
                                       NgayThayDoiThanhToan = lstt.NgayThayDoi,
