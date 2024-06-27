@@ -15,9 +15,8 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label">Mã Voucher</label>
-                <input asp-for="MaVoucher" class="form-control" />
+                <input asp-for="MaVoucher" class="form-control" value="VC" />
                 <span asp-validation-for="MaVoucher" class="text-danger"></span>
-                <span class="text-danger">@ViewData["MaVoucher"]</span>
             </div>
             <div class="form-group">
                 <label class="control-label">Tên Voucher</label>
@@ -39,13 +38,13 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Ngày bắt đầu</label>
-                <input asp-for="NgayBatDau" class="form-control" />
+                <input asp-for="NgayBatDau" id="NgayBatDau" class="form-control" />
                 <span asp-validation-for="NgayBatDau" class="text-danger"></span>
                 <span class="text-danger">@ViewData["NgayBatDau"]</span>
             </div>
             <div class="form-group">
                 <label class="control-label">Ngày kết thúc</label>
-                <input asp-for="NgayKetThuc" class="form-control" />
+                <input asp-for="NgayKetThuc" id="NgayKetThuc" class="form-control" />
                 <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
                 <span class="text-danger">@ViewData["NgayKetThuc"]</span>
             </div>
@@ -59,7 +58,7 @@
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="kieugiamgia" value="1" asp-for="KieuGiamGia">
-                    <label class="form-check-label" for="flexRadioDefault2">                 
+                    <label class="form-check-label" for="flexRadioDefault2">
                         Phần trăm
                     </label>
                 </div>
@@ -84,7 +83,7 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Trạng thái</label>
-                <input asp-for="TrangThai" class="form-control" />
+                <input asp-for="TrangThai" id="TrangThai" class="form-control" readonly />
                 <span asp-validation-for="TrangThai" class="text-danger"></span>
                 <span class="text-danger">@ViewData["TrangThai"]</span>
             </div>
@@ -96,9 +95,36 @@
 </div>
 
 <div>
-    <a asp-action="GetAllVoucher">Quay Lại</a>
+    <a asp-action="AllVoucherManager">Quay Lại</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(function () {
+            $('#NgayBatDau, #NgayKetThuc').change(function () {
+                updateTrangThai();
+            });
+            function updateTrangThai() {
+                var ngayBatDau = $('#NgayBatDau').val();
+                var ngayKetThuc = $('#NgayKetThuc').val();
+
+                var now = new Date();
+                var startDate = new Date(ngayBatDau);
+                var endDate = new Date(ngayKetThuc);
+
+                if (endDate < now) {
+                    $('#TrangThai').val(2); 
+                } else if (startDate <= now && endDate >= now) {
+                    $('#TrangThai').val(1); 
+                } else if (startDate > now) {
+                    $('#TrangThai').val(0); 
+                }
+            }
+            updateTrangThai();
+        });
+    </script>
 }

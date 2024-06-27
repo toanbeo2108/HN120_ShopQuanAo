@@ -2,7 +2,9 @@
 using HN120_ShopQuanAo.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+
 using System.Net;
+
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -29,6 +31,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var ListUser = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
             return View(ListUser);
         }
+
         // Lọc tài khoản    
         [HttpGet]
         public async Task<IActionResult> FilterByRole(string roleName)
@@ -88,6 +91,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         // Cập nhật người dùng
+
         [HttpGet]
         public async Task<IActionResult> Update(string id)
         {
@@ -149,7 +153,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
         // Quản lý địa chỉ người dùng
 
+
         // Thêm địa chỉ mới
+
         [HttpGet]
         public async Task<IActionResult> AddUserAddress(string id)
         {
@@ -157,8 +163,10 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost]
+
         public async Task<IActionResult> AddUserAddress(string id, DeliveryAddressModel address)
         {
+
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             address.UserID = id;
@@ -173,7 +181,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return BadRequest();
         }
 
+
         // Sửa địa chỉ
+
         [HttpGet]
         public async Task<IActionResult> UpdateUserAddress(string id)
         {
@@ -203,7 +213,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return BadRequest("Lỗi");
         }
 
+
         // Xóa địa chỉ
+
         [HttpPost]
         public async Task<IActionResult> DeleteAddressUser(string id)
         {
@@ -219,6 +231,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
             return BadRequest("Lỗi");
         }
+
+
 
 
     }

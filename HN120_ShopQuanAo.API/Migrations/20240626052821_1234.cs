@@ -5,11 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HN120_ShopQuanAo.API.Migrations
 {
-<<<<<<<< HEAD:HN120_ShopQuanAo.API/Migrations/20240626052821_1234.cs
     public partial class _1234 : Migration
-========
-    public partial class alo : Migration
->>>>>>>> master:HN120_ShopQuanAo.API/Migrations/20240625072900_alo.cs
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -34,12 +30,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
-<<<<<<<< HEAD:HN120_ShopQuanAo.API/Migrations/20240626052821_1234.cs
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-========
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
->>>>>>>> master:HN120_ShopQuanAo.API/Migrations/20240625072900_alo.cs
                     Gender = table.Column<int>(type: "int", nullable: true),
                     Birthday = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -616,29 +608,17 @@ namespace HN120_ShopQuanAo.API.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-<<<<<<<< HEAD:HN120_ShopQuanAo.API/Migrations/20240626052821_1234.cs
                 values: new object[] { "5115818b-d0a8-49fa-9f6e-2a218f56379b", "1cfee25d-2fd9-400a-99be-b0f91cfc603e", "Admin", "ADMIN" });
-========
-                values: new object[] { "b627327a-3d8f-422e-8c9d-75ee07d4ccc7", "79c0be55-16ec-4651-af22-c32ef1b0dc99", "Admin", "ADMIN" });
->>>>>>>> master:HN120_ShopQuanAo.API/Migrations/20240625072900_alo.cs
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-<<<<<<<< HEAD:HN120_ShopQuanAo.API/Migrations/20240626052821_1234.cs
                 values: new object[] { "582c07c1-eaff-478f-8135-8a79f7db8109", "da8e60d8-fd29-461e-b3c7-38e5a2f196e0", "Employee", "EMPLOYEE" });
-========
-                values: new object[] { "bba658a6-049f-4ae6-b1b6-262e22dcfb36", "2ca18525-72d0-48ee-b950-931074faecb9", "Employee", "EMPLOYEE" });
->>>>>>>> master:HN120_ShopQuanAo.API/Migrations/20240625072900_alo.cs
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-<<<<<<<< HEAD:HN120_ShopQuanAo.API/Migrations/20240626052821_1234.cs
                 values: new object[] { "f867c7ac-b618-45d8-a4e0-cdfbe9d7ee3f", "e454048d-b28b-41d5-932b-9b0f3adf474a", "User", "USER" });
-========
-                values: new object[] { "d1e684b3-07f0-409b-b45c-986743722133", "444618c5-313f-46cb-8cb7-e9a662945bd9", "User", "USER" });
->>>>>>>> master:HN120_ShopQuanAo.API/Migrations/20240625072900_alo.cs
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

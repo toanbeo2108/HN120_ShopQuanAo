@@ -12,6 +12,8 @@ namespace HN120_ShopQuanAo.Data.ViewModels
         public string MaSp { get; set; }
         public List<string> SelectedSizes { get; set; }
         public List<string> SelectedMaus { get; set; }
+
+
     }
 
     public class TempChiTietSpViewModel
@@ -21,10 +23,13 @@ namespace HN120_ShopQuanAo.Data.ViewModels
         //public string TenSize { get; set; }
         public string MaMau { get; set; }
         //public string TenMau { get; set; }
+
         public decimal DonGia { get; set; }
         public decimal GiaBan { get; set; }
         public int SoLuongTon { get; set; }
         public string MaKhuyenMai { get; set; }
         public string UrlAnhSpct { get; set; }
     }
+
 }
+

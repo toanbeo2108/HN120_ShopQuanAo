@@ -97,6 +97,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> AddChiTietSp(string id)
         {
+
             await LoadDataForViewBag();
             var model = new AddChiTietSpViewModel { MaSp = id };
             return View(model);
@@ -146,6 +147,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         public async Task<IActionResult> SaveChiTietSps(List<TempChiTietSpViewModel> models, List<IFormFile> imageFiles)
         {
             
+
                 var chiTietSpList = new List<ChiTietSp>();
 
                 for (int i = 0; i < models.Count; i++)
@@ -159,7 +161,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                         DonGia = model.DonGia,
                         GiaBan = model.GiaBan,
                         SoLuongTon = model.SoLuongTon,
+
                         MaKhuyenMai = model.MaKhuyenMai // Có thể để null hoặc bỏ qua nếu không cần thiết
+
                     };
 
                     if (imageFiles.Count > i && imageFiles[i] != null && imageFiles[i].Length > 0)
@@ -170,6 +174,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
                     chiTietSpList.Add(chiTietSp);
                 }
+
 
                 try
                 {
@@ -189,11 +194,13 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 }
             
 
+
             return View(models);
         }
 
         private async Task LoadDataForViewBag()
         {
+
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -224,6 +231,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 _logger.LogError(ex, "Error while loading data for ViewBag");
                 TempData["ErrorMessage"] = "Có lỗi xảy ra trong quá trình tải dữ liệu.";
             }
+
         }
 
         private async Task<string> UploadImageAsync(IFormFile imageFile)
@@ -246,16 +254,20 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var content = new StringContent(JsonConvert.SerializeObject(chiTietSpList), Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync(url, content);
+
             response.EnsureSuccessStatusCode();
 
             return response.IsSuccessStatusCode;
         }
 
 
+
         [HttpPost]
         public async Task<IActionResult> CreateSanPham(SanPham bk, IFormFile imageFile)
         {
             var urlTL = $"https://localhost:7197/api/TheLoai/GetAllTheLoai";
+
+
             var responTL = await _httpClient.GetAsync(urlTL);
             string apiDataTL = await responTL.Content.ReadAsStringAsync();
             var lstTL = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataTL);
@@ -263,6 +275,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             ViewBag.lstTL = lstTL;
 
             var urlTH = $"https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
+
+
             var responTH = await _httpClient.GetAsync(urlTH);
             string apiDataTH = await responTH.Content.ReadAsStringAsync();
             var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
@@ -276,11 +290,15 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             //var lstCL = lstCL1.Where(c => c.TrangThai == 1);
             ViewBag.lstCL = lstCL;
 
+
+
             if (await IsDuplicateSP(bk.TenSP))
             {
                 TempData["errorMessage"] = "Tên đã tồn tại.";
                 return View();
             }
+
+
             if (imageFile != null && imageFile.Length > 0)
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photoSP", imageFile.FileName);
@@ -418,7 +436,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 imageFile.CopyTo(stream);
                 vc.UrlAvatar = imageFile.FileName;
             }
+
             var urlBook = $"https://localhost:7197/api/SanPham/EditSP/{id}";
+
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)

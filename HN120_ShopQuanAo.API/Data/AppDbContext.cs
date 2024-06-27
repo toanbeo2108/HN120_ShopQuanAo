@@ -54,7 +54,9 @@ namespace HN120_ShopQuanAo.API.Data
 			{
 
 
+
 				optionsBuilder.UseSqlServer("Data Source=HƯNG\\SQLEXPRESS;Initial Catalog=ShopQuanAoOnlineNEWW;Integrated Security=True;");
+
 
 
 			}

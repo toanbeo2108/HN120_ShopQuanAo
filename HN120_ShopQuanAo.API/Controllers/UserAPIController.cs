@@ -99,6 +99,7 @@ namespace HN120_ShopQuanAo.API.Controllers
 
         [HttpDelete]
         [Route("DeleteUser")]
+
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);

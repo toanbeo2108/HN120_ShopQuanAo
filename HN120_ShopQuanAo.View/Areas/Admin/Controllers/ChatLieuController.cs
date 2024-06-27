@@ -113,7 +113,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(vc);
             }
 
+
             var urlBook = $"https://localhost:7197/api/ChatLieu/EditChatLieu/{id}";
+
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)

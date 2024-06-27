@@ -5,6 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 
 }
+
 <!-- Form hoặc nút lọc -->
 <form asp-action="FilterByRole" method="get">
     <label>Select Role:</label>
@@ -17,6 +18,7 @@
     <button type="submit">Filter</button>
 </form>
 <a class="btn btn-primary" asp-controller="UserManager" asp-action="CreateAnAccount">+ Thêm mới tài khoản</a>
+
 <table id="tble_ajax" class="table" enctype="multipart/form-data">
     <thead>
         <tr>
@@ -42,14 +44,18 @@
                 Birthday
             </th>
             <th>
+
                 Status
             </th>
             <th>
+
                 Action
             </th>
         </tr>
     </thead>
+
     <tbody id="userTableBody">
+
         @foreach (var items in Model)
         {
             <tr>
@@ -67,7 +73,9 @@
                     @items.UserName
                 </td>
                 <td>
+
                     @items.FullName
+
                 </td>
                 <td>
                     @items.Email
@@ -76,6 +84,7 @@
                     @items.PhoneNumber
                 </td>
                 <td>
+
                     @if (items.Gender == null)
                     {
                         <p>Chưa có cập nhật giới tính</p >
@@ -94,11 +103,13 @@
                         }
                     }
                     
+
                 </td>
                 <td>
                     @items.Birthday
                 </td>
                 <td>
+
                     @if (items.Status == 1)
                     {
                         <span style="color:green">Khả dụng</span>
@@ -120,6 +131,7 @@
                     {
                         <a asp-controller="UserManager" asp-action="UpdateStatusUser" asp-route-id="@items.Id" asp-route-status="1" class="btn btn-success"><i class="bi bi-key"></i></a>
                     }
+
                 </td>
             </tr>
         }
@@ -138,4 +150,6 @@
             var dataTable = $('#tble_ajax').DataTable();
         });
     </script>
+
 }
+

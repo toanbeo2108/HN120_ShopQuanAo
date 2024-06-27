@@ -710,22 +710,28 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
+
                             Id = "b627327a-3d8f-422e-8c9d-75ee07d4ccc7",
                             ConcurrencyStamp = "79c0be55-16ec-4651-af22-c32ef1b0dc99",
+
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
+
                             Id = "d1e684b3-07f0-409b-b45c-986743722133",
                             ConcurrencyStamp = "444618c5-313f-46cb-8cb7-e9a662945bd9",
+
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
+
                             Id = "bba658a6-049f-4ae6-b1b6-262e22dcfb36",
                             ConcurrencyStamp = "2ca18525-72d0-48ee-b950-931074faecb9",
+
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -921,11 +927,16 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("CardNumber")
                         .HasColumnType("nvarchar(max)");
 
+
                     b.Property<string>("FullName")
+
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Gender")
                         .HasColumnType("int");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
