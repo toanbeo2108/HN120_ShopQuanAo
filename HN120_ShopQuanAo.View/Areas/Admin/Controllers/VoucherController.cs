@@ -10,6 +10,7 @@ using System.Drawing.Printing;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 {
@@ -39,8 +40,27 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 {
                     string apiDataBook = await responseBook.Content.ReadAsStringAsync();
                     var lstBook = JsonConvert.DeserializeObject<List<Voucher>>(apiDataBook);
+
+                    // Cập nhật trạng thái voucher
+                    DateTime now = DateTime.Now;
+                    foreach (var voucher in lstBook)
+                    {
+                        if (now < voucher.NgayBatDau)
+                        {
+                            voucher.TrangThai = 0; // Voucher sắp diễn ra
+                        }
+                        else if (now >= voucher.NgayBatDau && now < voucher.NgayKetThuc)
+                        {
+                            voucher.TrangThai = 1; // Voucher đang hoạt động
+                        }
+                        else if (now >= voucher.NgayKetThuc)
+                        {
+                            voucher.TrangThai = 2; // Voucher đã kết thúc
+                        }
+                    }
+
                     lstBook = lstBook.OrderByDescending(v => v.MaVoucher).ToList();
-                    return View(lstBook); 
+                    return View(lstBook);
                 }
                 else
                 {
@@ -54,6 +74,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(new List<Voucher>());
             }
         }
+
         public IActionResult CreateVC()
         {
             return View();
@@ -127,6 +148,22 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 {
                     return View(bk);
                 }
+
+                // Tính toán và đặt trạng thái của voucher
+                DateTime now = DateTime.Now;
+                if (now < bk.NgayBatDau)
+                {
+                    bk.TrangThai = 0; // Voucher sắp diễn ra
+                }
+                else if (now >= bk.NgayBatDau && now < bk.NgayKetThuc)
+                {
+                    bk.TrangThai = 1; // Voucher đang hoạt động
+                }
+                else if (now >= bk.NgayKetThuc)
+                {
+                    bk.TrangThai = 3; // Voucher đã kết thúc
+                }
+
                 string createUrl = $"https://localhost:7197/CreateVCher?MaVoucher={bk.MaVoucher}&Ten={bk.Ten}&GiaGiamToiThieu={bk.GiaGiamToiThieu}&GiaGiamToiDa={bk.GiaGiamToiDa}&NgayBatDau={bk.NgayBatDau}&NgayKetThuc={bk.NgayKetThuc}&KieuGiamGia={bk.KieuGiamGia}&GiaTriGiam={bk.GiaTriGiam}&SoLuong={bk.SoLuong}&MoTa={bk.MoTa}&TrangThai={bk.TrangThai}";
                 var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
                 var response = await _httpClient.PostAsync(createUrl, content);
@@ -160,6 +197,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(bk);
             }
         }
+
         // update
         [HttpGet]
         public async Task<IActionResult> UpdateVC(string id)
@@ -180,7 +218,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateVC( Voucher vc)
+        public async Task<IActionResult> UpdateVC(Voucher vc)
         {
             try
             {
@@ -193,40 +231,44 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     return View(vc);
                 }
 
-                // Kiểm tra các điều kiện cụ thể
                 if (vc.GiaGiamToiThieu < 0)
                 {
                     ModelState.AddModelError("GiaGiamToiThieu", "Giá giảm tối thiểu không được âm");
                 }
+
                 if (vc.GiaGiamToiDa < 0)
                 {
                     ModelState.AddModelError("GiaGiamToiDa", "Giá giảm tối đa không được âm");
                 }
+
                 if (vc.GiaGiamToiThieu > vc.GiaGiamToiDa)
                 {
                     ModelState.AddModelError("GiaGiamToiThieu", "Giá giảm tối thiểu không được lớn hơn giá giảm tối đa");
                 }
+
                 if (vc.GiaTriGiam <= 0)
                 {
                     ModelState.AddModelError("GiaTriGiam", "Mời bạn nhập giá trị giảm lớn hơn 0");
                 }
+
                 if (vc.SoLuong <= 0)
                 {
                     ModelState.AddModelError("SoLuong", "Mời bạn nhập số lượng lớn hơn 0");
                 }
+
                 if (vc.NgayKetThuc < vc.NgayBatDau)
                 {
                     ModelState.AddModelError("NgayKetThuc", "Ngày kết thúc phải lớn hơn ngày bắt đầu");
                 }
 
-                if (vc.KieuGiamGia == 1) 
+                if (vc.KieuGiamGia == 1)
                 {
                     if (vc.GiaTriGiam > 100 || vc.GiaTriGiam <= 0)
                     {
                         ModelState.AddModelError("GiaTriGiam", "Giá trị giảm phải từ 1 đến 100");
                     }
                 }
-                else if (vc.KieuGiamGia == 0) 
+                else if (vc.KieuGiamGia == 0)
                 {
                     if (vc.GiaTriGiam <= 0)
                     {
@@ -243,8 +285,22 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     return View(vc);
                 }
 
-                // var urlBook = $"https://localhost:7197/UpdateVCher?MaVoucher={vc.MaVoucher}&Ten={vc.Ten}&GiaGiamToiThieu={vc.GiaGiamToiThieu}&GiaGiamToiDa={vc.GiaGiamToiDa}&NgayBatDau={vc.NgayBatDau}&NgayKetThuc={vc.NgayKetThuc}&KieuGiamGia={vc.KieuGiamGia}&GiaTriGiam={vc.GiaTriGiam}&SoLuong={vc.SoLuong}&MoTa={vc.MoTa}&TrangThai={vc.TrangThai}";
-                var urlBook = $"https://localhost:7197/UpdateVCher/VC1";
+                // Tính toán và đặt trạng thái của voucher
+                DateTime now = DateTime.Now;
+                if (now < vc.NgayBatDau)
+                {
+                    vc.TrangThai = 0; // Voucher sắp diễn ra
+                }
+                else if (now >= vc.NgayBatDau && now < vc.NgayKetThuc)
+                {
+                    vc.TrangThai = 1; // Voucher đang hoạt động
+                }
+                else if (now >= vc.NgayKetThuc)
+                {
+                    vc.TrangThai = 3; // Voucher đã kết thúc
+                }
+
+                var urlBook = $"https://localhost:7197/UpdateVCher/{vc.MaVoucher}";
                 var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
                 var respon = await _httpClient.PutAsync(urlBook, content);
                 if (!respon.IsSuccessStatusCode)
@@ -264,6 +320,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(vc);
             }
         }
+
 
 
         [HttpPost]
@@ -294,6 +351,20 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return RedirectToAction("AllVoucherManager", "Voucher", new { Areas = "Admin" });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetUpdatedVoucherStatus()
+        {
+            var getAllUrl = "https://localhost:7197/GetAllVoucher";
+            var response = await _httpClient.GetAsync(getAllUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var apiData = await response.Content.ReadAsStringAsync();
+                var lstVoucher = JsonConvert.DeserializeObject<List<Voucher>>(apiData);
+                return Json(lstVoucher.OrderByDescending(v => v.MaVoucher).ToList());
+            }
+            return StatusCode((int)HttpStatusCode.InternalServerError, "Lỗi khi lấy danh sách voucher từ API.");
+        }
 
     }
 

@@ -29,7 +29,7 @@ namespace HN120_ShopQuanAo.Data.Models
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public int? SoLuong { get; set; }
         public string? MoTa { get; set; }
-        [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
+        //[Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public int? TrangThai { get; set; }
 
         public virtual List<HoaDon>? HoaDons { get; set; }
