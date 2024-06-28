@@ -60,6 +60,11 @@ namespace HN120_ShopQuanAo.API.Responsitories
             var hdct = _appDbContext.HoaDonChiTiet.FirstOrDefault(c => c.MaHoaDonChiTiet == ma);
             if (hdct != null)
             {
+                var ctsp = _appDbContext.ChiTietSp.FirstOrDefault(c => c.SKU == hdct.SKU);
+                if (ctsp != null)
+                {
+                    ctsp.SoLuongTon += hdct.SoLuongMua;
+                }
                 _appDbContext.Remove(hdct);
                 _appDbContext.SaveChanges();
             }
