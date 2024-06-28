@@ -7,7 +7,7 @@ $(document).ready(function () {
         $.notify(notification.message, notification.type);
         localStorage.removeItem('notification');
     }
-    var token = 'd0d7cce1-3125-11ef-8e53-0a00184fe694';
+    var token = '8fbfedf6-b458-11ee-b6f7-7a81157ff3b1';
     filterFunction();
     addSelectButtonEventListeners();
     $('#btn_SoDienThoai').on('change', validatePhoneNumber);
@@ -66,7 +66,7 @@ $(document).ready(function () {
         let wardCode ;
         try {
             const response = await $.ajax({
-                url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province',
+                url: 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province',
                 method: 'GET',
                 headers: {
                     'Token': token
@@ -86,7 +86,7 @@ $(document).ready(function () {
             var quanhuyen = $('#district').val();
             try {
                 const response = await $.ajax({
-                    url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district',
+                    url: 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district',
                     method: 'GET',
                     headers: {
                         'Token': token
@@ -109,7 +109,7 @@ $(document).ready(function () {
             var xaphuong = $('#ward').val();
             try {
                 const response = await $.ajax({
-                    url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward',
+                    url: 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward',
                     method: 'GET',
                     headers: {
                         'Token': token
@@ -125,9 +125,9 @@ $(document).ready(function () {
                         wardCode = item.WardCode;
                     }
                 });
-                if (wardCode == undefined) {
-                  $.notify('Hiện giao hàng nhanh chưa hỗ trợ địa điểm này, thông cảm !', 'error')
-                }
+                //if (wardCode == undefined) {
+                //  $.notify('Hiện giao hàng nhanh chưa hỗ trợ địa điểm này, thông cảm !', 'error') 
+                //}
                 console.log('Mã Tỉnh' + provinceID + 'Mã quận: ' + districtID + 'Mã xã: ' + wardCode);
                 await getShippingFee(provinceID, districtID, wardCode)
             } catch (error) {
@@ -138,16 +138,17 @@ $(document).ready(function () {
             const SshopId = 192652;
             try {
                 const response = await $.ajax({
-                    url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee',
+                    url: 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee',
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Token': token,
-                        'ShopId': SshopId
+                        'Token': token
+                        //'ShopId': SshopId
                     },
                     data: JSON.stringify({
                         "service_type_id": 2,
                         "from_district_id": 3440,
+                        "from_ward_code": "13009",
                         "to_district_id": districtID,
                         "to_ward_code": wardCode,
                         "height": 20,
@@ -159,10 +160,12 @@ $(document).ready(function () {
 
                     }) 
                 });
+           
                 if (response.code === 200) {
                   
                     $('#btn_PhiShip').val(response.data.total);
                     updatePaymentDetails()
+                    
                 } else {
                     console.error('Error:', response.message);
                 }
@@ -250,7 +253,7 @@ $(document).ready(function () {
 // thanh toán chuyển khoản 
 function QRCODE_PAYMENT() {
     $('#pop_QR').modal('show');
-    let countdownTime = 5;
+    let countdownTime = 300;
     const countdownElement = document.getElementById("countdown");
 
     // Cập nhật đồng hồ đếm ngược mỗi giây
