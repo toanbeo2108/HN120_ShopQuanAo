@@ -1,6 +1,12 @@
 ﻿//import { Console } from "console";
 
 $(document).ready(function () {
+    var notification = localStorage.getItem('notification');
+    if (notification) {
+        notification = JSON.parse(notification);
+        $.notify(notification.message, notification.type);
+        localStorage.removeItem('notification');
+    }
     var token = 'd0d7cce1-3125-11ef-8e53-0a00184fe694';
     filterFunction();
     addSelectButtonEventListeners();
@@ -143,9 +149,10 @@ $(document).ready(function () {
                         "insurance_value": 0,
                         "coupon": null
 
-                    })
+                    }) 
                 });
                 if (response.code === 200) {
+                  
                     $('#btn_PhiShip').val(response.data.total);
                     updatePaymentDetails()
                 } else {
@@ -211,17 +218,18 @@ $(document).ready(function () {
 // thanh toán chuyển khoản 
 function QRCODE_PAYMENT() {
     $('#pop_QR').modal('show');
-    let countdownTime = 120;
+    let countdownTime = 5;
     const countdownElement = document.getElementById("countdown");
 
     // Cập nhật đồng hồ đếm ngược mỗi giây
     const countdownInterval = setInterval(function () {
-        countdownElement.textContent = countdownTime + " seconds remaining";
+        countdownElement.textContent = 'Giao dịch sẽ kết thúc sau: ' + countdownTime;
         countdownTime--;
         // Khi đồng hồ đếm ngược về 0, đóng modal và dừng đồng hồ đếm ngược
         if (countdownTime < 0) {
             clearInterval(countdownInterval);
-            alert('Giao dịch không thành công, quá thời gian chờ')
+            localStorage.setItem('notification', JSON.stringify({ message: 'Giao dịch không thành công, quá thời gian chờ', type: 'error' }));
+          
             $("#pop_QR").modal('hide');
             window.location.reload();
         }
@@ -558,26 +566,28 @@ function Thanhtoan() {
                 success: function (re) {
                     if (re.status) {      
                         if ($('#btn_Status').val() == 5) {
-                            alert('Thanh toán thành công');
+                            localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
                             window.location.reload();
+                           // $.notify('Thanh toán thành công','success');
                         }
-                         if ($('#btn_Status').val() == 1) {
-                             alert('Tạo đơn thành công');
-                             window.location.reload();
+                        if ($('#btn_Status').val() == 1) {
+                            localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
+                            window.location.reload();
+                         //   $.notify('Tạo đơn thành công', 'success');
                         }
 
                            
                     } else {
-                        alert(re.message);
+                        $.notify(re.message, 'error');
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Có lỗi xảy ra: ' + error);
+                    $.notify('Có lỗi xảy ra: ' + error, 'error');
                 }
             });
         }
         else {
-            alert(re.message);
+            $.notify(re.message, 'error');
         }
     }).fail(function (xhr, status, error) {
         // Xử lý lỗi khi yêu cầu /Add-hoadon thất bại
