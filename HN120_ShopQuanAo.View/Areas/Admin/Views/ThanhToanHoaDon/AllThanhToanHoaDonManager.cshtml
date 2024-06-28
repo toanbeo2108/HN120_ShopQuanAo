@@ -67,11 +67,11 @@
                                     <td>@item.NgayThayDoi</td>
                                     @if (item.TrangThai == 1)
                                     {
-                                        <td>Đang Hoạt Động</td>
+                                        <td>Đã thanh toán</td>
                                     }
                                     @if (item.TrangThai != 1)
                                     {
-                                        <td>Ngưng Hoạt Động</td>
+                                        <td>Chưa thanh toán</td>
                                     }
                                     <td>
                                         <button class="btn btn-primary" type="button" id="btn_chitiet" data-id="@item.MaPhuongThuc_HoaDon">Xem Chi tiết</button>
