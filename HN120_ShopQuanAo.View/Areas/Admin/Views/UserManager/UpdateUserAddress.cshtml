@@ -6,35 +6,42 @@
 }
 
 <form asp-action="UpdateUserAddress" method="post">
+    @* <div asp-validation-summary="All" class="text-danger"></div> *@
     <div class="form-group">
         <label for="Consignee">Họ và tên</label>
         <input type="text" class="form-control" asp-for="Consignee" name="Consignee" required>
+        <span asp-validation-for="Consignee" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label for="PhoneNumber">Số điện thoại</label>
         <input type="text" class="form-control" asp-for="PhoneNumber" name="PhoneNumber" required>
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label for="City">Tỉnh/Thành phố</label>
         <select class="form-control" asp-for="City" id="city" name="City" required>
             <option value="" selected>Chọn tỉnh thành</option>
         </select>
+        <span asp-validation-for="City" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label for="District">Quận/Huyện</label>
         <select class="form-control" asp-for="District" id="district" name="District" required>
             <option value="" selected>Chọn quận huyện</option>
         </select>
+        <span asp-validation-for="District" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label for="Ward">Phường/Xã</label>
         <select class="form-control" asp-for="Ward" id="ward" name="Ward" required>
             <option value="" selected>Chọn phường xã</option>
         </select>
+        <span asp-validation-for="Ward" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label for="SpecificAddress">Địa chỉ cụ thể</label>
         <input type="text" class="form-control" asp-for="Street" name="Street" required>
+        <span asp-validation-for="Street" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Lưu</button>
     <button type="button" class="btn btn-secondary" onclick="window.history.back()">Trở lại</button>

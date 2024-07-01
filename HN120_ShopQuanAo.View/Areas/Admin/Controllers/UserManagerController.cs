@@ -1,4 +1,4 @@
-﻿using HN120_ShopQuanAo.Data.Models;
+﻿    using HN120_ShopQuanAo.Data.Models;
 using HN120_ShopQuanAo.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -51,28 +51,35 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View();
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> CreateAnAccount(RegisterUser registerUser, string role)
         {
-            var token = Request.Cookies["Token"];
-            // Convert registerUser to JSON
-            var registerUserJSON = JsonConvert.SerializeObject(registerUser);
-
-            // Convert to string content
-            var stringContent = new StringContent(registerUserJSON, Encoding.UTF8, "application/json");
-
-            // Add role to queryString
-            var queryString = $"?role={role}";
-
-            // Send request POST to register API
-            var response = await _httpClient.PostAsync($"https://localhost:7197/api/Register{queryString}", stringContent);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("GetAllAccount", "UserManager");
+                var token = Request.Cookies["Token"];
+                // Convert registerUser to JSON
+                var registerUserJSON = JsonConvert.SerializeObject(registerUser);
+
+                // Convert to string content
+                var stringContent = new StringContent(registerUserJSON, Encoding.UTF8, "application/json");
+
+                // Add role to queryString
+                var queryString = $"?role={role}";
+
+                // Send request POST to register API
+                var response = await _httpClient.PostAsync($"https://localhost:7197/api/Register{queryString}", stringContent);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("GetAllAccount", "UserManager");
+                }
+                var errorResponse = await response.Content.ReadAsStringAsync();
+                ViewBag.Message = $"Login failed: {errorResponse}";
+                return View();
             }
-            var errorResponse = await response.Content.ReadAsStringAsync();
-            ViewBag.Message = $"Login failed: {errorResponse}";
-            return View();
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
 
@@ -97,19 +104,29 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         {
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var url = $"https://localhost:7197/api/User/GetUserById?id=" + id;
-            var httpClient = new HttpClient();
-            var response = await _httpClient.GetAsync(url);
-            string apiDataUser = await response.Content.ReadAsStringAsync();
-            var User = JsonConvert.DeserializeObject<User>(apiDataUser);
 
-            var urlDc = $"https://localhost:7197/api/UserAddress/GetByUserID?id=" + id;
-            var responseDc = await _httpClient.GetAsync(urlDc);
-            string apiDataDc = await responseDc.Content.ReadAsStringAsync();
-            var UserAddress = JsonConvert.DeserializeObject<List<DeliveryAddress>>(apiDataDc);
-            ViewBag.UserAddress = UserAddress;
+            // Lấy thông tin người dùng
+            var userUrl = $"https://localhost:7197/api/User/GetUserById?id={id}";
+            var userResponse = await _httpClient.GetAsync(userUrl);
+            if (!userResponse.IsSuccessStatusCode)
+            {
+                return BadRequest("Không thể lấy thông tin người dùng");
+            }
+            string userData = await userResponse.Content.ReadAsStringAsync();
+            var user = JsonConvert.DeserializeObject<User>(userData);
 
-            return View(User);
+            // Lấy danh sách địa chỉ người dùng
+            var addressUrl = $"https://localhost:7197/api/UserAddress/GetByUserID?id={id}";
+            var addressResponse = await _httpClient.GetAsync(addressUrl);
+            if (!addressResponse.IsSuccessStatusCode)
+            {
+                return BadRequest("Không thể lấy danh sách địa chỉ người dùng");
+            }
+            string addressData = await addressResponse.Content.ReadAsStringAsync();
+            var userAddresses = JsonConvert.DeserializeObject<List<DeliveryAddress>>(addressData);
+            ViewBag.UserAddress = userAddresses;
+
+            return View(user);
         }
 
         [HttpPost]
@@ -118,8 +135,20 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            string apiURL = $"https://localhost:7197/api/user/UpdateUser";
-
+            // Lấy thông tin người dùng
+            var userUrl = $"https://localhost:7197/api/User/GetUserById?id={user.Id}";
+            var userResponse = await _httpClient.GetAsync(userUrl);
+            if (!userResponse.IsSuccessStatusCode)
+            {
+                return BadRequest("Không thể lấy thông tin người dùng");
+            }
+            string userData = await userResponse.Content.ReadAsStringAsync();
+            var ExsitUser = JsonConvert.DeserializeObject<User>(userData);
+            if (user.Birthday == null)
+            {
+                user.Birthday = ExsitUser.Birthday;
+            }
+            // Xử lý upload file
             if (imageFile != null && imageFile.Length > 0)
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Avatar", imageFile.FileName);
@@ -127,26 +156,53 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 {
                     await imageFile.CopyToAsync(stream);
                 }
-                user.Avatar = imageFile.FileName;
+                ExsitUser.Avatar = imageFile.FileName;
+                ExsitUser.Gender = user.Gender;
+                ExsitUser.Birthday = user.Birthday;
+                ExsitUser.FullName = user.FullName;
+                ExsitUser.PhoneNumber = user.PhoneNumber;
+                ExsitUser.Email = user.Email;
             }
             else
             {
-                var url = $"https://localhost:7197/api/User/GetUserById?id=" + user.Id;
-                var responseUrl = await _httpClient.GetAsync(url);
-                string apiDataUser = await responseUrl.Content.ReadAsStringAsync();
-                var existingUser = JsonConvert.DeserializeObject<User>(apiDataUser);
-                user.Avatar = existingUser.Avatar;
+                ExsitUser.Gender = user.Gender;
+                ExsitUser.Birthday = user.Birthday;
+                ExsitUser.FullName = user.FullName;
+                ExsitUser.PhoneNumber = user.PhoneNumber;
+                ExsitUser.Email = user.Email;
             }
-            var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+
+
+            string apiURL = "https://localhost:7197/api/user/UpdateUser";
+
+            // Tuần tự hóa đối tượng người dùng
+            var content = new StringContent(JsonConvert.SerializeObject(ExsitUser), Encoding.UTF8, "application/json");
+
+            // Gửi yêu cầu PUT tới API
             var response = await _httpClient.PutAsync(apiURL, content);
 
+            // Kiểm tra mã trạng thái phản hồi
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("GetAllAccount");
             }
             else
             {
-                return BadRequest();
+                // Đọc thông báo lỗi từ API
+                string responseMessage = await response.Content.ReadAsStringAsync();
+                ViewBag.ErrorMessage = $"Lỗi cập nhật người dùng: {responseMessage}";
+
+                // Log chi tiết phản hồi để giúp debug
+                var errorDetails = new
+                {
+                    StatusCode = response.StatusCode,
+                    ReasonPhrase = response.ReasonPhrase,
+                    RequestMessage = response.RequestMessage.ToString(),
+                    ResponseContent = responseMessage
+                };
+                Console.WriteLine(JsonConvert.SerializeObject(errorDetails, Formatting.Indented));
+
+                return BadRequest($"Lỗi cập nhật người dùng: {responseMessage}");
             }
         }
 
@@ -166,6 +222,11 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
         public async Task<IActionResult> AddUserAddress(string id, DeliveryAddressModel address)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(address);
+            }
+
 
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -173,12 +234,14 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var url = $"https://localhost:7197/api/UserAddress/Create";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(address), Encoding.UTF8, "application/json");
-            var respone = await httpClient.PostAsync(url, content);
-            if (respone.IsSuccessStatusCode)
+            var response = await httpClient.PostAsync(url, content);
+            if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("GetAllAccount");
+                return RedirectToAction("Update", new { id = address.UserID });
             }
-            return BadRequest();
+
+            ModelState.AddModelError(string.Empty, "Lỗi thêm địa chỉ.");
+            return View(address);
         }
 
 
@@ -199,18 +262,30 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateUserAddress(string id, DeliveryAddressModel address)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(address);
+            }
+
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-           
+            var ExistAddressUrl = $"https://localhost:7197/api/UserAddress/GetByID?id=" + id;
+            var ExistAddressresponse = await _httpClient.GetAsync(ExistAddressUrl);
+            string ExistAddressData = await ExistAddressresponse.Content.ReadAsStringAsync();
+            var ExistAddress = JsonConvert.DeserializeObject<DeliveryAddressModel>(ExistAddressData);
+
+
             var url = $"https://localhost:7197/api/UserAddress/Update/" + id;
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(address), Encoding.UTF8, "application/json");
             var respone = await httpClient.PutAsync(url, content);
             if (respone.IsSuccessStatusCode)
             {
-                return RedirectToAction("Update", new { id = address.UserID });
+                return RedirectToAction("Update", new { id = ExistAddress.UserID });
             }
-            return BadRequest("Lỗi");
+
+            ModelState.AddModelError(string.Empty, "Lỗi cập nhật địa chỉ.");
+            return View(address);
         }
 
 
@@ -224,14 +299,32 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
             var url = $"https://localhost:7197/api/UserAddress/Delete/" + id;
             var httpClient = new HttpClient();
-            var respone = await httpClient.DeleteAsync(url);
-            if (respone.IsSuccessStatusCode)
+            var response = await httpClient.DeleteAsync(url);
+            if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("GetAllAccount");
+                return Json(new { success = true });
             }
-            return BadRequest("Lỗi");
+
+            return Json(new { success = false, message = "Lỗi xóa địa chỉ" });
         }
 
+        // Set địa chỉ mặc định
+        [HttpPost]
+        public async Task<IActionResult> SetasDefault(string id)
+        {
+            var token = Request.Cookies["Token"];
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var url = $"https://localhost:7197/api/UserAddress/SetDefaultAddress/?id=" + id;
+            var response = await _httpClient.PostAsync(url, null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false, message = "Lỗi cài đặt địa chỉ mặc định" });
+        }
 
 
 
