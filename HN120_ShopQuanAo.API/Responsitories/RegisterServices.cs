@@ -2,6 +2,7 @@
 using HN120_ShopQuanAo.Data.Models;
 using HN120_ShopQuanAo.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text;
 
@@ -82,18 +83,23 @@ namespace HN120_ShopQuanAo.API.Responsitories
 					Message = "Email này đã tồn tại!"
 				};
 			}
-			else if (await _userManager.FindByNameAsync(registerUser.PhoneNumber) != null)
-			{
-				return new Response
-				{
-					IsSuccess = false,
-					StatusCode = 400,
-					Message = "Số điện thoại này đã tồn tại!"
-				};
-			}
 
-			// Kiểm tra Confirm password có đúng so với Password không
-			if (registerUser.Password != registerUser.ConfirmPassword)
+            // Kiểm tra xem số điện thoại đã tồn tại hay chưa
+            var existingUserWithPhoneNumber = await _userManager.Users
+                .AnyAsync(u => u.PhoneNumber == registerUser.PhoneNumber);
+
+            if (existingUserWithPhoneNumber)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    StatusCode = 400,
+                    Message = "Số điện thoại này đã tồn tại!"
+                };
+            }
+
+            // Kiểm tra Confirm password có đúng so với Password không
+            if (registerUser.Password != registerUser.ConfirmPassword)
 			{
 				return new Response
 				{
