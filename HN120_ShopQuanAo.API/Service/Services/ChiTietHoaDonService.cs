@@ -46,7 +46,7 @@ namespace HN120_ShopQuanAo.API.Service.Services
             }
         }
 
-        public void UpdateCTHD(HoaDonChiTiet hdct)
+        public void UpdateCTHD(List<HoaDonChiTiet> hdct)
         {
             try
             {

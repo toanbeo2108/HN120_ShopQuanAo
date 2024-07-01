@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
-   
+    var today = new Date();
+    var date = 'HD' + today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     var Parameter = {
         url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
         method: "GET",
@@ -16,7 +17,7 @@
         document.getElementById('district').innerHTML = '<option value="" selected>Chọn quận huyện</option>';
         document.getElementById('ward').innerHTML = '<option value="" selected>Chọn phường xã</option>';
         document.getElementById('street').value = '';
-
+        $('#btn_PhiShip').val('');
         var Parameter = {
             url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
             method: "GET",

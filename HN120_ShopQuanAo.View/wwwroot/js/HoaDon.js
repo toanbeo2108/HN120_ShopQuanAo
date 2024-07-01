@@ -6,7 +6,7 @@ $(document).ready(function () {
         notification = JSON.parse(notification);
         $.notify(notification.message, notification.type);
         localStorage.removeItem('notification');
-    }
+    } console.log($('#btn_maQR').val());
     var token = '8fbfedf6-b458-11ee-b6f7-7a81157ff3b1';
     filterFunction();
     addSelectButtonEventListeners();
@@ -271,7 +271,7 @@ function QRCODE_PAYMENT() {
     }, 1000); // Cập nhật mỗi giây
     $('#btn_sotienck').text(($('#btn_tienkhachphaitra').val() != '' ? $('#btn_tienkhachphaitra').val() : 0) + ' VNĐ');
 
-    thongtinhoadon = $('#btn_thongtinhoadon').val();
+    thongtinhoadon = $('#btn_maQR').val();
     //string thongtinhoadon = a;
     let sotienck = parseInt($('#btn_tienkhachphaitra').val().replace('.',''));
     let QR = `https://img.vietqr.io/image/MB-0336262156-qr_only.png?amount=${sotienck}&addInfo=${thongtinhoadon}`
@@ -458,7 +458,7 @@ function addNewRow(table, sku, tenSp, giaBan, maSize, maMau, slton) {
     soLuongCell.innerHTML = '<input type="number" value="1" min="1" class="form-control" oninput="updateTotalPrice(this, ' + giaBan + ', ' + slton + ')">';
 
     giaBanCell.innerText = formatMoney(giaBan);
-    actionCell.innerHTML = '<button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button>';
+    actionCell.innerHTML = `<button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash fa-beat" style="color: #b71515;"></i></button>`;
     updatePaymentDetails();
 }
 // Function to update total price based on quantity change
@@ -528,10 +528,8 @@ function getdataHoaDonChiTiet() {
             var maSize = $(this).find('td:eq(2)').text().trim();
             var maMau = $(this).find('td:eq(3)').text().trim();
             var soLuongMua = parseInt($(this).find('td:eq(4) input').val().trim());
-            var donGia = parseFloat($(this).find('td:eq(5)').text().trim());
-
+            var donGia = parseFloat($(this).find('td:eq(5)').text().trim().replace(/\./g, ''));
             var hoaDonChiTiet = {
-               // MaHoaDonChiTiet: $('#btn_ma').val(),
                 SKU: sku,
                 TenSp: tenSp,
                 MaHoaDon: mahd,
@@ -574,20 +572,23 @@ function setdataHoaDon(data) {
     }
 }
 function getdataHoaDon() {
-
+    var tenkhachhang = $('#btn_TenKhachHang').val()
+    if (tenkhachhang == '') {
+        tenkhachhang = 'Khách lẻ';
+    }
+    var tongtienhoadon = $('#btn_tienkhachphaitra').val().replace(/\./g, '').split(',')[0];   
     return {
         MaHoaDon: $('#btn_ma').val(),
         UserID: $('#btn_UserID').val(),
-        MaVoucher: $('#btn_MaVoucher').val(),
+        MaVoucher: $('#btn_MaVoucher').val(), 
         NgayTaoDon: $('#btn_NgayTaoDon').val(),
-        TenKhachHang: $('#btn_TenKhachHang').val(),
+        TenKhachHang: tenkhachhang,
         SoDienThoai: $('#btn_SoDienThoai').val(),
-        PhiShip: $('#btn_PhiShip').val(),
-        TongGiaTriHangHoa: $('#btn_tongtien').val(),
+        PhiShip: $('#btn_PhiShip').val() != '' ? $('#btn_PhiShip').val() : 0,
+        TongGiaTriHangHoa: tongtienhoadon,
         PhuongThucThanhToan: $('#btn_phuongthucthanhtoan').val(),
         TrangThai: $('#btn_Status').val(),
         PhanLoai: $('#btn_phanloai').val(),
-        Ghichu: $('#btn_Status').val(),
         TinhThanh: $('#city').val(),
         QuanHuyen: $('#district').val(), 
         XaPhuong: $('#ward').val(),
