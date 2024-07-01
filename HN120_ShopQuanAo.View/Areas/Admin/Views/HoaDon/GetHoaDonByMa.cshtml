@@ -1,0 +1,557 @@
+﻿@using HN120_ShopQuanAo.Data.Models
+@using HN120_ShopQuanAo.View.Areas.Admin.Data
+@model HN120_ShopQuanAo.Data.Models.HoaDon
+
+@{
+    ViewData["Title"] = "GetHoaDonByMa";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    IEnumerable<User> ListUseradmin = ViewBag.ListUseradmin as IEnumerable<User>;
+    IEnumerable<Voucher> lstVC = ViewBag.lstVC as IEnumerable<Voucher>;
+    IEnumerable<User> Listaccout = ViewBag.Listaccout as IEnumerable<User>;
+    IEnumerable<ThanhToan> lstt = ViewBag.lstt as IEnumerable<ThanhToan>;
+    IEnumerable<HoaDonChiTiet> lsthdct = ViewBag.lsthdct as IEnumerable<HoaDonChiTiet>;
+    IEnumerable<ChiTietSPView> litspctview = ViewBag.JoinedData as IEnumerable<ChiTietSPView>;
+    IEnumerable<ThanhToan_HoaDon> lstThanhToan_hd = ViewBag.lstThanhToan_hd as IEnumerable<ThanhToan_HoaDon>;
+
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script src="~/src/assets/libs/jquery/dist/jquery.min.js"></script>
+<script src="~/js/notify.js"></script>
+<script src="~/js/Hoadon/GetDiaChi.js"></script>
+<script src="~/js/Hoadon/CRUDHoaDon.js"></script>
+<script src="~/js/Hoadon/CapNhatChiTietHoaDon.js"></script>
+
+@if (Model.TrangThai != 6)
+{
+    <div class="row align-items-center">       
+        @if (Model.TrangThai == 1)
+        {
+            <div class="col-md-2">
+                <button class="btn btn-primary" id="btn_Xacnhandonhang">Xác nhận</button>
+            </div>
+        }
+        @if (Model.TrangThai == 2)
+        {
+            <div class="col-md-2">
+                <button class="btn btn-primary" id="btn_ChoGiaoHang">Chờ giao hàng</button>
+            </div>
+        }
+        @if (Model.TrangThai == 3)
+        {
+            <div class="col-md-2">
+                <button class="btn btn-primary" id="btn_GiaoHang">Đang giao</button>
+            </div>
+        }
+        @if (Model.TrangThai == 4)
+        {
+            <div class="col-md-2">
+                <button class="btn btn-primary" id="btn_HoanThanh"> Hoàn thành</button>
+            </div>
+        }
+        @if (Model.TrangThai == 5)
+        {          
+            <div class="col-md-2">
+                <button class="btn btn-primary" id="btn_XacnhanThanh">Xác nhận hoàn thành</button>
+            </div>
+        }
+        @if (Model.TrangThai == 1 || Model.TrangThai == 2 || Model.TrangThai == 3)
+        {
+            <div class="col-md-2">
+                <button class="btn btn-danger" id="btn_huydon"> Hủy đơn</button>
+            </div>
+        }
+        @if (Model.TrangThai >=2  && Model.TrangThai <=3 )
+        {
+        <div class="col-md-2">
+            <button class="btn btn-danger" id="btn_back"> Quay lại</button>
+        </div>
+            
+        }
+    </div>
+}
+<div>
+    <h4>Hóa đơn @Model.MaHoaDon</h4>
+    <input style="display:none" id="btn_mahoadon" value="@Model.MaHoaDon" />
+    <hr />
+    <table class="table table-bordered">
+
+    <thead>
+        <tr>
+                <th style="text-align : center;">
+                    Mã hóa đơn
+                </th>
+
+                <th style="text-align : center;">
+                    Người tạo
+                </th>
+                <th style="text-align : center;">
+                    Mã Voucher
+                </th>
+                <th style="text-align : center;">
+                    Ngày tạo
+                </th>
+                <th style="text-align : center;">
+                    Tên khách hàng
+                </th>
+                <th style="text-align : center;">
+                    Số điện thoại
+                </th>
+                <th style="text-align : center;">
+                    Phí ship
+                </th>
+                <th style="text-align : center;">
+                    Tổng giá trị
+                </th>
+                <th style="text-align : center;">
+                    Phương thức thanh toán
+                </th>
+                <th style="text-align : center;">
+                    Trạng thái
+                </th>
+                @if (Model.TrangThai == 1 || Model.TrangThai == 2 || Model.TrangThai == 3)
+                {
+                    <th>Hành động</th>
+                }
+                
+        </tr>
+    </thead>
+        <tbody>
+            <tr>
+
+                <td style="text-align : center; margin-bottom : 20px">
+                    @Model.MaHoaDon
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @foreach (var nv in ListUseradmin)
+                    {
+                        if (nv.Id == Model.UserID)
+                        {
+                            @nv.FullName
+                            ;
+                        }
+                    }
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @foreach (var vc in lstVC)
+                    {
+                        if (vc.MaVoucher == Model.MaVoucher)
+                        {
+                            @vc.Ten
+                            ;
+                        }
+                    }
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @Model.NgayTaoDon
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                     @Model.TenKhachHang                      
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @Model.SoDienThoai
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @Model.PhiShip
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @Model.TongGiaTriHangHoa
+                </td>
+                <td style="text-align : center; margin-bottom : 20px">
+                    @if (Model.PhuongThucThanhToan == 1)
+                    {
+                        <p>Tiền mặt</p>
+                    }
+                    @if (Model.PhuongThucThanhToan == 2)
+                    {
+                        <p>Chuyển khoản</p>
+
+                    }
+                    @if (Model.PhuongThucThanhToan == 3)
+                    {
+                        <p>Thập cẩm</p>
+                    }
+                    @if (Model.PhuongThucThanhToan == 4)
+                    {
+                        <p>Thanh toán khi nhận hàng</p>
+                    }
+                </td>
+
+                @if (Model.TrangThai == 1)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Chờ xác nhận
+                    </td>
+                }
+                @if (Model.TrangThai == 2)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Đã xác nhận
+                    </td>
+                }
+                @if (Model.TrangThai == 3)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Chờ giao hàng
+                    </td>
+                }
+                @if (Model.TrangThai == 4)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Đang giao
+                    </td>
+                }
+                @if (Model.TrangThai == 5)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Hoàn thành
+                    </td>
+                }
+                @if (Model.TrangThai == 6)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        Hủy
+                    </td>
+                }
+                @if (Model.TrangThai <= 3)
+                {
+                    <td>
+                        <button class="btn btn-danger" id="btn_update_hoadon" data-mahoadon="@Model.MaHoaDon" > Cập nhật</button>
+                    </td>
+                }
+            </tr>
+        </tbody>
+
+    </table>
+    <hr />
+</div>
+
+<div>
+    <h4>Chi tiết thanh toán</h4>
+    <hr />
+    <table class="table table-bordered">
+
+        <thead>
+            <tr style="text-align : center; margin-bottom : 20px">
+                <th style="text-align : center;">
+                    Phương thức thanh toán
+                </th>
+
+                <th style="text-align : center;">
+                    Ngày tạo
+                </th>
+                <th style="text-align : center;">
+                    Trạng thái
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in lstThanhToan_hd)
+            {
+                if (item.MaHoaDon == Model.MaHoaDon)
+                {
+                    var ten = lstt.FirstOrDefault(tt => tt.MaPhuongThuc == item.MaPhuongThuc);
+                    <tr style="text-align : center; margin-bottom : 20px">
+                        <td style="text-align : center; margin-bottom : 20px">@ten.TenPhuongThuc</td>
+                        <td style="text-align : center; margin-bottom : 20px">@item.NgayTao</td>
+                        <td style="text-align : center; margin-bottom : 20px">
+                            @if (@item.TrangThai == 1)
+                            {
+                                <p>Chưa thanh toán</p>
+                            }
+                            else
+                            {
+                                <p>Đã thanh toán</p>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <hr />
+</div>
+<div style="height: 600px; overflow-y: auto;">
+    <h4>Chi tiết hóa đơn</h4>
+    @if (Model.TrangThai == 1 || Model.TrangThai == 2 || Model.TrangThai == 3)
+    {
+        <div>
+            <button class="btn btn-primary" id="btn_themchitietsp">Thêm sản phẩm</button>
+        </div>
+    }
+    <hr />
+    <table class="table table-bordered" id="hoaDonctTable">
+        <thead>
+            <tr>
+                <td style="text-align : center; margin-bottom : 20px">STT</td>
+                <td style="text-align : center; margin-bottom : 20px">Ảnh</td>
+                <td style="text-align : center; margin-bottom : 20px">SKU</td>
+                <td style="text-align : center; margin-bottom : 20px">Tên  sản phẩm</td>
+                <td style="text-align : center; margin-bottom : 20px">Màu sắc</td>
+                <td style="text-align : center; margin-bottom : 20px">Size</td>
+                <td style="text-align : center; margin-bottom : 20px">Số lượng mua </td>
+                <td style="text-align : center; margin-bottom : 20px">Đơn giá </td>
+                 @if (Model.TrangThai == 1 || Model.TrangThai == 2 || Model.TrangThai == 3)
+                {
+                    <td style="text-align : center; margin-bottom : 20px">Hành động </td>
+                }
+
+            </tr>
+        </thead>
+        <tbody>
+            
+            @{
+                int i = 1;
+
+            }
+            @foreach (var item in lsthdct)
+            { 
+                if (item.MaHoaDon == Model.MaHoaDon)
+                {
+                    var chiTietSPView = litspctview.FirstOrDefault(sp => sp.SKU == item.SKU);
+                    <tr>
+                        <td style="text-align : center; margin-bottom : 20px">@i</td>
+                        <td style="text-align : center; margin-bottom : 20px">  
+                            <img src="~/photoSanPhamCT/@chiTietSPView.UrlAnhSpct" alt="Combo Image" width="100" height="100" />
+                            </td>
+                        <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.SKU</td>
+                        <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.TenSP</td>
+                        <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.TenMau</td>
+                        <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.TenSize</td>
+                        <td style="text-align : center; margin-bottom : 20px">@item.SoLuongMua</td>
+                        <td style="text-align : center; margin-bottom : 20px">@item.DonGia</td>
+                        
+                        @if (Model.TrangThai == 1 || Model.TrangThai == 2 || Model.TrangThai == 3)
+                        {
+                            <td style="text-align : center; margin-bottom : 20px">
+                               <button class="btn btn-danger" id="btn_xoachitietsp" data-ma="@item.MaHoaDonChiTiet">Xóa</button>
+                            </td>
+                        }
+                        <input type="hidden" class="maHoaDonChiTiet" value="@item.MaHoaDonChiTiet" />
+                        <input type="hidden" class="sku" value="@item.SKU" />
+                        <input type="hidden" class="maHoaDon" value="@item.MaHoaDon" />
+                        <input type="hidden" class="tenSp" value="@item.TenSp" />
+                        <input type="hidden" class="soLuongMua" value="@item.SoLuongMua" />
+                        <input type="hidden" class="donGia" value="@item.DonGia" />
+                        <input type="hidden" class="trangThai" value="@item.TrangThai" />
+                    </tr>
+                 
+                i++;
+                }
+            }
+        </tbody>
+    </table>
+    <hr />
+</div>
+
+@* modal danh sach sản phẩm *@
+
+<div class="modal fade" tabindex="-1" id="pop_sp">
+    <div class="modal-dialog  modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body" style="height: 630px; overflow-y: auto;">
+                    <partial name="SP_partial" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn_savecthd">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id="pop_xoa">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body">
+                    <div style="display:none">
+                        <input type="type" name="name" id="in_ma" />
+                    </div>
+                    <p>Bạn có muốn xóa sản phẩm này không?</p>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn_dell">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" id="pop_soluongmua">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body">
+                    <div>
+                        <label for="inp_soluongmua" class="form-control">Nhập số lượng muốn thêm</label>
+                        <input type="number" class="form-control" name="name" id="inp_soluongmua" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn_themsoluong">Thêm</button>
+            </div>
+        </div>
+    </div>
+</div>
+ @* modal update hóa đơn *@
+
+<div class="modal fade" tabindex="-1" id="pop_updatehoadon">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+               
+                    <div class="col-md-12">
+                        <input id="btn_ma" style="display:none" class="form-control" type="text" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="btn_UserID">Tên nhân viên</label>
+                        <input id="btn_UserID" class="form-control" type="text" />
+                    </div>
+                    <div class="col-md-4">
+                        <label for="btn_MaVoucher">Mã Voucher</label>
+                        <select id="btn_MaVoucher" class="form-select">
+                            <option value="">Chọn</option>
+                            @foreach (var item in lstVC)
+                            {
+
+                                <option value="@item.MaVoucher">@item.Ten</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="btn_NgayTaoDon">Ngày tạo</label>
+                        <input id="btn_NgayTaoDon" class="form-control" type="date" />
+                    </div>
+                    <div class="col-md-4">
+                        <label for="btn_TenKhachHang">Tên khách hàng</label>
+                        <input id="btn_TenKhachHang" class="form-control"/> 
+                    </div>
+                    <div class="col-md-4">
+                        <label for="btn_SoDienThoai">Số điện thoại</label>
+                        <input id="btn_SoDienThoai" class="form-control" type="text" />
+                    </div>
+                    <div class="col-md-4">
+                        <label for="City">Tỉnh/Thành phố</label>
+                        <select class="form-control" id="city" name="City">
+                            <option value="" selected>Chọn tỉnh thành</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="District">Quận/Huyện</label>
+                        <select class="form-control" id="district" name="District">
+                            <option value="" selected>Chọn quận huyện</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="Ward">Phường/Xã</label>
+                        <select class="form-control" id="ward" name="Ward">
+                            <option value="" selected>Chọn phường xã</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="street">Địa chỉ cụ thể</label>
+                        <input type="text" class="form-control" name="Street" id="street">
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <label for="clear"></label>
+                        <button type="text" class="form-control w-50 d-grid gap-2 col-6 mx-auto" name="clear" id="clear">Reset địa chỉ</button>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="btn_PhiShip">Phí ship</label>
+                        <input id="btn_PhiShip" class="form-control" type="text" />
+                    </div>
+                    <div class="col-md-10">
+                        <label for="btn_ghichu">Ghi chú</label>
+                        <input id="btn_ghichu" class="form-control" type="text" />
+                    </div>
+                    <div class="col-md-4" style="display:none">
+                        <label for="btn_TongGiaTriHangHoa">Tổng tiền</label>
+                        <input id="btn_TongGiaTriHangHoa" class="form-control" type="text" />
+                    </div>
+                    <div class="col-md-4" style="display:none">
+                        <label for="btn_PhuongTTT">Phương thức thanh toán</label>
+                        <select id="btn_PhuongTTT" class="form-select">
+                            @foreach (var item in lstt)
+                            {
+                                <option value="@item.MaPhuongThuc">@item.TenPhuongThuc</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4" style="display:none">
+                        <label for="btn_Status">Trạng thái</label>
+                        <select id="btn_Status" class="form-select">
+                            <option value="">Chọn</option>
+                            <option value="1">Chờ xác nhận</option>
+                            <option value="2">Xác nhận</option>
+                            <option value="3">Chờ giao hàng</option>
+                            <option value="4">Đang giao hàng</option>
+                            <option value="5">Hoàn thành</option>
+                            <option value="6">Hủy</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="btn_phanloai" style="display:none">PhanLoai</label>
+                        <input id="btn_phanloai" class="form-control" type="number" />
+                    </div>
+                </div>
+            </div>
+           
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn_save">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  
+<div >
+    <input id="btn_ma_fake" />
+    <input id="btn_UserID_fake" />
+    <input id="btn_MaVoucher_fake" />
+    <input id="btn_NgayTaoDon_fake" />
+    <input id="btn_TenKhachHang_fake" />
+    <input id="btn_SoDienThoai_fake" />
+    <input id="btn_PhiShip_fake" />
+    <input id="btn_TongGiaTriHangHoa_fake" />
+    <input id="btn_PhuongTTT_fake" />
+    <input id="btn_Status_fake" />
+    <input id="btn_phanloai_fake" />
+    <input id="city_fake" />
+    <input id="district_fake" />
+    <input id="ward_fake" />
+    <input id="street_fake" />
+    <input id="btn_ghichu_fake" />
+    <input id="tongtiennew_fake" />
+</div>

@@ -3,7 +3,7 @@
 @model IEnumerable<HN120_ShopQuanAo.View.Areas.Admin.Data.ChiTietSPView>
 
     @{
-  Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+   //  Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
     IEnumerable<Voucher> lstvc = ViewBag.lstVC as IEnumerable<Voucher>;
     IEnumerable<User> ListUseradmin = ViewBag.ListUseradmin as IEnumerable<User>;
     IEnumerable<ThanhToan> lstThanhToan = ViewBag.lstThanhToan as IEnumerable<ThanhToan>;
@@ -11,6 +11,8 @@
     IEnumerable<ThanhToan_ThanhToanHistory> thanhtoanhoadon = ViewBag.thanhtoanhoadon as IEnumerable<ThanhToan_ThanhToanHistory>;
    
     }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <style>
     #chitiethoadon_table th:nth-child(1),
     #chitiethoadon_table td:nth-child(1) {
@@ -21,6 +23,7 @@
     </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -36,7 +39,7 @@
         <div class="card-header">
            <h2>Hóa đơn</h2>
            <div class="col-md-12">
-                        <input id="btn_ma" style="display:none" class="form-control" type="text" />
+                <input id="btn_ma" style="display:none" class="form-control" type="text" /> <input id="btn_maQR" style="display:none" class="form-control" type="text" value="@ViewBag.RandomString" />
                     </div>
            <div class="row">
               <div class="col-md-5" >
@@ -72,7 +75,7 @@
                                 <option value="">Khách lẻ</option>
                                 @foreach (var item in ViewBag.user)
                                 {
-                                    <option value="@item.idUser" data-tinh="@item.tinhthanh" data-quanhuyen="@item.quanhuyen" data-xaphuong="@item.xaphuong" data-cuthe="@item.cuthe">@item.Ten</option>
+                                    <option value="@item.Ten" data-tinh="@item.tinhthanh" data-quanhuyen="@item.quanhuyen" data-xaphuong="@item.xaphuong" data-cuthe="@item.cuthe">@item.Ten</option>
                                 }
                                
                             </select>
@@ -309,11 +312,12 @@
                                         </button><hr />
 
                                     </div>
-                                    <div class="col-md-12">
-                                        <button type="button" class="btn btn-outline-success" id="btn_dathang" style="width: 100%; height: 100%;">
-                                            <i class="fa-solid fa-truck-arrow-right fa-xl" style="width: 100%; height:100%;"></i>
+                                    <div class="col-md-12" style="position: relative;">
+                                        <button type="button" class="btn btn-outline-success" id="btn_dathang" style="width: 100%; height: 70px; position: relative;">
+                                            <i class="fa-solid fa-truck-arrow-right fa-xl" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
                                         </button>
                                     </div>
+
 
                                 </div>
                                
@@ -350,14 +354,14 @@
                     <img width="100%" id="imgQR" src="https://img.vietqr.io/image/MB-0336262156-qr_only.png" />
                 </div>
                 <div class="col-md-12">
-                    <input id="btn_thongtinhoadon" style="color:brown;border:none" class="form-control w-100" type="text" value="Chuyen khoan cho lu an hai">
+                   <p>Nội dung chuyển khoản: @ViewBag.RandomString</p>
                 </div>
                  <div class="col-md-12">
                        
-                    <label for="btn_sotienck" class="form-control">Số tiền: 
+                    <p>Số tiền: 
                        
                         <span id="btn_sotienck"></span>
-                    </label>
+                    </p>
                 </div>
 
              </div>

@@ -8,7 +8,7 @@
     IEnumerable<User> Listaccout = ViewBag.Listaccout as IEnumerable<User>;
     IEnumerable<ThanhToan> lstt = ViewBag.lstt as IEnumerable<ThanhToan>;
 }
-<div style="height: 600px; overflow-y: auto;"> 
+<div style="height: 600px; overflow-y: auto;">
 
 
 
@@ -54,7 +54,7 @@
         <tbody>
             @foreach (var item in Model)
             {
-                if (item.PhanLoai == "1")
+                if (item.PhanLoai == "2")
                 {
                     <tr>
 
@@ -85,8 +85,7 @@
                             @item.NgayTaoDon
                         </td>
                         <td style="text-align : center; margin-bottom : 20px">
-                            @item.TenKhachHang
-                             
+                           @item.TenKhachHang
                         </td>
                         <td style="text-align : center; margin-bottom : 20px">
                             @item.SoDienThoai
@@ -155,7 +154,7 @@
                         }
 
                         <td>
-                            <a href="@Url.Action("GetHoaDonByMa", "HoaDon", new { ma =item.MaHoaDon })" class="btn btn-primary">Chi tiết</a>
+                            <a href="@Url.Action("GetHoaDonByMa", "HoaDon", new { ma = item.MaHoaDon })" class="btn btn-primary">Chi tiết</a>
                         </td>
                     </tr>
                 }

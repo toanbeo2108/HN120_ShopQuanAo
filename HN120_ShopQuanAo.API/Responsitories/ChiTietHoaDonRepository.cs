@@ -32,6 +32,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
             {
                 var ctsanpham = _appDbContext.ChiTietSp.FirstOrDefault(c => c.SKU == hd.SKU);
                 var sanpham = _appDbContext.SanPham.FirstOrDefault(c => c.MaSp == ctsanpham.MaSp);
+                var hoadon = _appDbContext.HoaDon.FirstOrDefault(c => c.MaHoaDon == hd.MaHoaDon);
                 if (ctsanpham != null)
                 {
                     if (ctsanpham.SoLuongTon < hd.SoLuongMua)
@@ -44,14 +45,16 @@ namespace HN120_ShopQuanAo.API.Responsitories
                     }
                     else
                     {
-                        ctsanpham.SoLuongTon -= hd.SoLuongMua;
-                        sanpham.TongSoLuong -= hd.SoLuongMua;
+                        if (hoadon.TrangThai >= 2 )
+                        {
+                            ctsanpham.SoLuongTon -= hd.SoLuongMua;
+                            sanpham.TongSoLuong -= hd.SoLuongMua;
+                        }
                         _appDbContext.HoaDonChiTiet.Add(hd);
                     }
                 }
-                
+              
             }
-
             _appDbContext.SaveChanges();
         }
 
@@ -61,9 +64,12 @@ namespace HN120_ShopQuanAo.API.Responsitories
             if (hdct != null)
             {
                 var ctsp = _appDbContext.ChiTietSp.FirstOrDefault(c => c.SKU == hdct.SKU);
+                var hoadon = _appDbContext.HoaDon.FirstOrDefault(c => c.MaHoaDon == hdct.MaHoaDon);
                 if (ctsp != null)
                 {
+                    if (hoadon.TrangThai >= 2) { 
                     ctsp.SoLuongTon += hdct.SoLuongMua;
+                    }
                 }
                 _appDbContext.Remove(hdct);
                 _appDbContext.SaveChanges();
@@ -92,25 +98,37 @@ namespace HN120_ShopQuanAo.API.Responsitories
             }
         }
 
-        public void UpdateCTHD(HoaDonChiTiet hdct)
+        public void UpdateCTHD(List<HoaDonChiTiet> hdctList)
         {
-            var mshd = _appDbContext.HoaDonChiTiet.FirstOrDefault(c => c.MaHoaDonChiTiet == hdct.MaHoaDonChiTiet);
-            if (mshd == null)
+            foreach(var hdct in hdctList)
             {
-                throw new Exception("Mã hóa đơn chi tiết không tồn tại");
+               
+                var mshd = _appDbContext.HoaDonChiTiet.FirstOrDefault(c => c.MaHoaDonChiTiet == hdct.MaHoaDonChiTiet);
+                if (mshd == null)
+                {
+                    throw new Exception($"Mã hóa đơn chi tiết {hdct.MaHoaDonChiTiet} không tồn tại");
 
+                }
+                var hoaDonExists = _appDbContext.HoaDon.FirstOrDefault(c => c.MaHoaDon == hdct.MaHoaDon);
+                if (hoaDonExists == null)
+                {
+                    throw new Exception($"Mã hóa đơn {hdct.MaHoaDon} không tồn tại");
+                }
+                var sanphamchitiet = _appDbContext.ChiTietSp.FirstOrDefault(c=>c.SKU == hdct.SKU);
+                if (sanphamchitiet == null)
+                {
+                    throw new Exception($"SKU {hdct.SKU} không tồn tại");
+                }
+                
+                sanphamchitiet.SoLuongTon -= hdct.SoLuongMua;
+                
+                mshd.SKU = hdct.SKU;
+                mshd.MaHoaDon = hdct.MaHoaDon;
+                mshd.TenSp = hdct.TenSp;
+                mshd.DonGia = hdct.DonGia;
+                mshd.SoLuongMua = hdct.SoLuongMua;
+                mshd.TrangThai = hdct.TrangThai;
             }
-            var hoaDonExists = _appDbContext.HoaDon.FirstOrDefault(c => c.MaHoaDon == hdct.MaHoaDon);
-            if (hoaDonExists == null)
-            {
-                throw new Exception("Mã hóa đơn không tồn tại");
-            }
-            mshd.SKU = hdct.SKU;
-            mshd.MaHoaDon = hdct.MaHoaDon;
-            mshd.TenSp = hdct.TenSp;
-            mshd.DonGia = hdct.DonGia;
-            mshd.SoLuongMua = hdct.SoLuongMua;
-            mshd.TrangThai = hdct.TrangThai;
             _appDbContext.SaveChanges();
         }
     }

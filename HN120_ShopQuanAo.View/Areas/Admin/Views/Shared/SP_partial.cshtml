@@ -36,7 +36,10 @@
 
                 <tr>
                     <td>@i</td>
-                    <td>@item.UrlAnhSpct</td>
+                    <td>
+                        <img src="~/photoSanPhamCT/@item.UrlAnhSpct" alt="Combo Image" width="100" height="100" />
+                   
+                    </td>
                     <td>@item.SKU</td>
                     <td>@item.MaSp</td>
                     <td>@item.TenSP</td>
@@ -52,6 +55,7 @@
                            data-MaSp="@item.MaSp"
                            data-GiaBan="@item.GiaBan"
                            data-img="@item.UrlAnhSpct"
+                           data-trangthai="@item.TrangThai"
                         >
                             Thêm sản phẩm 
                           </button>

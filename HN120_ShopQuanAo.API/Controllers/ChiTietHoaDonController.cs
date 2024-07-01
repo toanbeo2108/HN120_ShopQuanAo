@@ -49,7 +49,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
         }
         [HttpPut("[Action]")]
-        public IActionResult Update(HoaDonChiTiet hdct)
+        public IActionResult Update([FromBody] List<HoaDonChiTiet> hdct)
         {
             try
             {
