@@ -18,10 +18,11 @@ builder.Services.AddSession(options =>
 // Configure authorization policies
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Admin", Role => Role.RequireRole("Admin"));
-    options.AddPolicy("User", Role => Role.RequireRole("User"));
-    // options.AddPolicy("Shipper", Role => Role.RequireRole("Shipper"));
-    // options.AddPolicy("Employee", Role => Role.RequireRole("Employee"));
+    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("User", policy => policy.RequireRole("User"));
+    // Uncomment the following lines if you want to add policies for Shipper and Employee
+    // options.AddPolicy("Shipper", policy => policy.RequireRole("Shipper"));
+    // options.AddPolicy("Employee", policy => policy.RequireRole("Employee"));
 });
 
 // Configure authentication with cookie scheme
@@ -41,7 +42,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -50,14 +50,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Add session middleware
+app.UseSession();
+
 // Add authentication middleware
 app.UseAuthentication();
 
 // Add authorization middleware
 app.UseAuthorization();
-
-// Add session middleware
-app.UseSession();
 
 // Configure endpoints
 app.UseEndpoints(endpoints =>
@@ -82,5 +82,6 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Home}/{action=Index}/{id?}"
     );
 });
+
 
 app.Run();

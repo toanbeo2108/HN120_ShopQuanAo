@@ -23,24 +23,59 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
     {
         private readonly HttpClient _httpClient;
        // private readonly UserManager<User> _userManager;
+       // private readonly UserManager<User> _userManager;
         string _mess;
         bool _stt;
         object _data = null;
         public HoaDonController()
         {
             _httpClient = new HttpClient();
+    
         }
 
         // bán Hàng tại quầy 
-
+       
         public async Task<IActionResult> Index()
         {
+
+            var token = Request.Cookies["Token"];
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var urluser = $"https://localhost:7197/api/User/GetUsersByRole?roleName=admin";
+            var responseuser = await _httpClient.GetAsync(urluser);
+            string apiDataUser = await responseuser.Content.ReadAsStringAsync();
+            var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
+            ViewBag.ListUseradmin = ListUseradmin;
+            
+            var urlusers = $"https://localhost:7197/api/UserAddress/GetAll";
+            var responseusers = await _httpClient.GetAsync(urlusers);
+            string apiDataUsers = await responseusers.Content.ReadAsStringAsync();
+            var ListUsers = JsonConvert.DeserializeObject<List<DeliveryAddressModel>>(apiDataUsers);
+            var urluseraccout = $"https://localhost:7197/api/User/GetAllAccount";
+            var responaccout = await _httpClient.GetAsync(urluseraccout);
+            string apiDataaccout = await responaccout.Content.ReadAsStringAsync();
+            var Listaccout = JsonConvert.DeserializeObject<List<User>>(apiDataaccout);
+
+            var user = from us in Listaccout
+                       join ad in ListUsers on us.Id equals ad.UserID
+                       where ad.Status > 0
+                       select new {
+                       idUser = us.Id,
+                       Ten = us.FullName,
+                       tinhthanh = ad.City,
+                       quanhuyen = ad.District,
+                       xaphuong = ad.Ward,
+                       cuthe = ad.Street,
+
+                       };
+
+            ViewBag.user = user.ToList();
+
 
             var apiThanhToan = "https://localhost:7197/api/ThanhToan/GetAllThanhToan";
             var responThanhToan = await _httpClient.GetAsync(apiThanhToan);
             string apidaThanhToan = await responThanhToan.Content.ReadAsStringAsync();
             var lstThanhToan = JsonConvert.DeserializeObject<List<ThanhToan>>(apidaThanhToan);
-
+            ViewBag.lstThanhToan = lstThanhToan;
             var apiThanhToan_hd = "https://localhost:7197/api/ThanhToan/GetAllThanhToan";
             var responThanhToan_hd = await _httpClient.GetAsync(apiThanhToan_hd);
             string apidaThanhToan_hd = await responThanhToan_hd.Content.ReadAsStringAsync();
@@ -60,7 +95,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                                       MoTa = tt.MoTa,
                                       NgayTao = tt.NgayTao,
                                       NgayThayDoi = tt.NgayThayDoi,
-                                      // thanh toán historry
                                       MaPhuongThuc_HoaDon = lstt.MaPhuongThuc_HoaDon,
                                       NgayTaoThanhToan = lstt.NgayTao,
                                       NgayThayDoiThanhToan = lstt.NgayThayDoi,
@@ -120,24 +154,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                                  TenMau = ms.TenMau,
                                  TenSize = sz.TenSize
             };
-
-            //if (!string.IsNullOrEmpty(selectedColor) && selectedColor != "Chọn màu")
-            //{
-            //    joinedData = joinedData.Where(x => x.TenMau == selectedColor);
-            //}
-
-            //if (!string.IsNullOrEmpty(selectedSize) && selectedSize != "Chọn size")
-            //{
-            //    joinedData = joinedData.Where(x => x.TenSize == selectedSize);
-            //}
-
-            // Áp dụng tìm kiếm theo Tên sản phẩm (TenSP)
-            //if (!string.IsNullOrEmpty(searchText))
-            //{
-            //    joinedData = joinedData.Where(x => x.TenSP.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0);
-            //}
-
-
             var litspctview = joinedData.ToList();
             ViewBag.JoinedData = litspctview;
      
@@ -148,6 +164,37 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
 
             return View(litspctview);
+        }
+        [HttpGet, Route("getkhachhang")]
+        public async Task<IActionResult> GetallLstKhachHang()
+        {
+            var urlusers = $"https://localhost:7197/api/User/GetUsersByRole?roleName=user";
+            var responseusers = await _httpClient.GetAsync(urlusers);
+
+            if (responseusers.IsSuccessStatusCode)
+            {
+                var apiDataUsers = await responseusers.Content.ReadAsStringAsync();
+                var ListUser = JsonConvert.DeserializeObject<List<User>>(apiDataUsers);
+
+                // Lấy danh sách các đối tượng có dạng { id: ..., fullName: ... }
+                var selectList = ListUser.Select(u => new { id = u.Id, fullName = u.FullName }).ToList();
+
+                return Json(new
+                {
+                    status = true,
+                    message = "Danh sách khách hàng",
+                    data = selectList
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "Không có danh sách khách hàng",
+                    data = new List<object>() // Hoặc có thể trả về một danh sách rỗng
+                });
+            }
         }
 
         [HttpPost, Route("Add-hoadon")]
@@ -176,8 +223,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 status = _stt,
                 message = _mess
             });
-        }
-
+        }       
         // Quản lý hóa đơn
         [HttpGet]
         public async Task<IActionResult> GetAllHoaDon()

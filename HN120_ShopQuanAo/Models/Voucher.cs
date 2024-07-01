@@ -10,8 +10,6 @@ namespace HN120_ShopQuanAo.Data.Models
 	public class Voucher
 	{
         [Key]
-        [Required(ErrorMessage = "mời bạn nhập Mã")]
-        [StringLength(40, ErrorMessage = "Mã không được quá 40 kí tự")]
         public string MaVoucher { get; set; }
         [Required(ErrorMessage = "mời bạn nhập Tên")]
         [StringLength(40, ErrorMessage = "Tên không được quá 40 kí tự")]
@@ -31,7 +29,7 @@ namespace HN120_ShopQuanAo.Data.Models
         [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public int? SoLuong { get; set; }
         public string? MoTa { get; set; }
-        [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
+        //[Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public int? TrangThai { get; set; }
 
         public virtual List<HoaDon>? HoaDons { get; set; }

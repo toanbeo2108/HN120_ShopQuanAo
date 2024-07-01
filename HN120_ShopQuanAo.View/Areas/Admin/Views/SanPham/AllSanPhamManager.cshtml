@@ -12,10 +12,12 @@
 }
 
 <div style="background : #fff;">
+
 <h1 style="text-align: center">Quản Lý Sản Phẩm</h1>
 <div>
 <p>
     <a class="btn btn-primary" asp-action="CreateSanPham">Thêm Sản Phẩm</a>
+
 </p>
 <table class="table">
     <thead>
@@ -90,30 +92,41 @@
                             @chatlieu
                             </td>
                         <td >
-                                    <img src="~/photoSanPham/@item.UrlAvatar" alt="Combo Image" width="100" height="100" />
+
+                                    <img src="~/photoSP/@item.UrlAvatar" alt="SanPham Image" width="100" height="100" />
                             @*<img src="~/photoBooks/@item.MainPhoto" class="rounded float-start" alt="...">*@
                         </td>
+                            <td>
+                            @item.Mota
+                            </td>
+
                         <td>
                             @Html.DisplayFor(modelItem => item.TongSoLuong)
                         </td>
                         <td>
                             @{
+
                                 var trangThai = item.TrangThai == 1 && item.TongSoLuong == 0 ? "Hết Hàng" :
                                                 item.TrangThai == 0 ? "Không Khả Dụng" : "Khả Dụng";
+
                             }
                             @trangThai
                         </td>
                         <td style="text-align : center; margin-bottom : 20px">
                             @if (item.TrangThai == 0)
                             {
+
                                                 <form asp-action="UpdateStatusSPKD" method="post" style="display:inline;">
+
                                                             <input type="hidden" name="id" value="@item.MaSp" />
                                                             <button type="submit" class="btn btn-secondary">Bật</button>
                                                 </form>
                             }
                             @if (item.TrangThai == 1)
                             {
+
                                                            <form asp-action="UpdateStatusSPKKD" method="post" style="display:inline;">
+
                                                             <input type="hidden" name="id" value="@item.MaSp" />
                                                     <button type="submit" class="btn btn-secondary">Tăt</button>
                                                 </form>
@@ -121,8 +134,11 @@
 
                                     <a asp-action="SanPhamDetail" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Chi Tiết</a>
                                     <a asp-action="UpdateSanPham" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Sửa</a>    
-                                    <a asp-action="AllChiTietSpManager" asp-controller="ChiTietSP" asp-area="Admin" id="btn_chitiet_detail" class="btn btn-primary" type="button" asp-route-id="@item.MaSp"> SP Chi Tiết</a>
-                                    <a asp-action="AddChiTietSp" asp-route-id="@item.MaSp" class="btn btn-primary">Thêm Chi Tiết</a>
+
+                                    <a asp-action="AllChiTietSpManager" asp-controller="ChiTietSP" asp-area="Admin" id="btn_chitiet_detail" class="btn btn-primary" type="button" asp-route-id="@item.MaSp"> All Chi Tiết</a>
+                                        <a asp-action="CreateChiTietSp" asp-controller="ChiTietSP" asp-area="Admin" id="btn_chitiet_detail" class="btn btn-primary" type="button" asp-route-id="@item.MaSp"> Them 1 </a>
+                                    <a asp-action="AddChiTietSp" asp-route-id="@item.MaSp" class="btn btn-primary">Thêm Nhiều</a>
+
 
                         </td>
                     </tr>

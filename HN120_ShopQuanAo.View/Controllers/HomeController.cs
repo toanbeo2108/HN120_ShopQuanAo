@@ -87,14 +87,12 @@ namespace HN120_ShopQuanAo.View.Controllers
                 }
                 else if (roleClaims.Any(rc => rc.Value == "Customer"))
                 {
-                    return RedirectToAction("Index", "Home", new { area = "Customer" });
-                }
 
-                TempData["SuccessMessage"] = "Đăng nhập thành công!";
                 return RedirectToAction("Index", "Home");
             }
             else
             {
+
                 var errorResponse = await response.Content.ReadAsStringAsync();
                 ViewBag.Message = $"Login failed: {errorResponse}";
                 return View();
@@ -138,6 +136,7 @@ namespace HN120_ShopQuanAo.View.Controllers
         }
 
         public IActionResult Privacy()
+
 		{
 			return View();
 		}

@@ -5,7 +5,9 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+
 <h1>Quản Lý Size</h1>
+
 <div class="form-group">
     <form method="get" asp-action="AllSizeManager" asp-controller="Size" asp-area="Admin">
         <div class="row">
@@ -38,6 +40,8 @@
                                             <td>@item.MoTa</td>
                                         <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
                                     <td>
+
+
                                                                 <a asp-action="UpdateSize" asp-route-id="@item.MaSize" class="btn btn-warning">Cập Nhật</a>
                     @if (item.TrangThai == 1)
                     {

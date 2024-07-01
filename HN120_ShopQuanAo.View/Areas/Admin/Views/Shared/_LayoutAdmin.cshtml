@@ -57,6 +57,8 @@
                         <li class="sidebar-item">
 
                             <a class="sidebar-link" asp-action="AllSanPhamManager" asp-controller="SanPham" asp-area="Admin">
+
+
                                 <span>
                                     <i class="ti ti-article"></i>
                                 </span>
@@ -148,15 +150,16 @@
                             <span class="hide-menu">Giảm giá</span>
                         </li>
                         <li class="sidebar-item">
+
                             <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
 
-                                <a asp-controller="Voucher" asp-action="GetAllVoucher">
+                                <a asp-area="Admin" asp-controller="Voucher" asp-action="GetAllVoucher" >
                                     <i class="bi bi-circle"></i><span>Quản lý Voucher</span>
                                 </a>
                            @*      <span class="hide-menu">Danh sách Voucher</span> *@
+
                             </a>
                         </li>
-
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->
@@ -228,6 +231,8 @@
     </div>
     @* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
     <script src="~/src/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/notify.js"></script>
+    <script src="~/js/notify.min.js"></script>
     <script src="~/src/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

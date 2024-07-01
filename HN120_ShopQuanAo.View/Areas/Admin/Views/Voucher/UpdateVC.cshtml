@@ -11,13 +11,13 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="UpdateVC">
+        <form asp-action="UpdateVC" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label">Mã Voucher</label>
                 <input asp-for="MaVoucher" class="form-control" />
                 <span asp-validation-for="MaVoucher" class="text-danger"></span>
-         @*        <span class="text-danger">@ViewData["MaVoucher"]</span> *@
+                @*        <span class="text-danger">@ViewData["MaVoucher"]</span> *@
             </div>
             <div class="form-group">
                 <label class="control-label">Tên Voucher</label>
@@ -96,9 +96,11 @@
 </div>
 
 <div>
-    <a asp-action="GetAllVoucher">Quay Lại</a>
+    <a asp-action="AllVoucherManager">Quay Lại</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

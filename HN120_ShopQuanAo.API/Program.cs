@@ -31,8 +31,9 @@ builder.Services.AddScoped<IThanhToanHoaDonService, ThanhToanHoaDonService>();
 builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
 builder.Services.AddScoped<IThanhToanRepository, ThanhToanRepository>();
 builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
-builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
-builder.Services.AddScoped<IVoucherServices, VoucherServices>();
+//builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
+//builder.Services.AddScoped<IVoucherServices, VoucherServices>();
+
 
 
 

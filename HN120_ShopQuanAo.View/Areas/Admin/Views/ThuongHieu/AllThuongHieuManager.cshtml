@@ -38,13 +38,17 @@
                         <td>@item.MoTa</td>
                         <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
                         <td>
+
                                 <a asp-action="UpdateThuongHieu" asp-route-id="@item.MaThuongHieu" class="btn btn-warning">Sửa</a> 
+
 
                         @if (item.TrangThai == 1)
                         {
                                             <form asp-action="UpdateStatusThuongHieuKKD" method="post" style="display:inline;">
                                                 <input type="hidden" name="id" value="@item.MaThuongHieu" />
+
                                                         <button type="submit" class="btn btn-secondary">Tăt</button>
+
 
                                                 </form>
 
@@ -58,7 +62,9 @@
                                                 </form>       
                         }
 
+
                              
+
 
                         </td>
                     </tr>

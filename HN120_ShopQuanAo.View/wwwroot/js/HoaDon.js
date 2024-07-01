@@ -1,115 +1,185 @@
-﻿$(document).ready(function () {
+﻿//import { Console } from "console";
+
+$(document).ready(function () {
+    var notification = localStorage.getItem('notification');
+    if (notification) {
+        notification = JSON.parse(notification);
+        $.notify(notification.message, notification.type);
+        localStorage.removeItem('notification');
+    }
+    var token = '8fbfedf6-b458-11ee-b6f7-7a81157ff3b1';
     filterFunction();
     addSelectButtonEventListeners();
     $('#btn_SoDienThoai').on('change', validatePhoneNumber);
-    
+    var today = new Date();
+
+    var date = 'HD' + today.getDate() + (today.getMonth() + 1) + today.getFullYear() + today.getHours() + today.getMinutes() + today.getSeconds();
+    $('#btn_ma').val(date.toString());
     $('#sanpham_table tbody tr').each(function () {
-        var giaBanCell = $(this).find('td:eq(7)');
-        var giaBan = parseFloat(giaBanCell.text().trim().replace(/\./g, '').replace(',', '.'));
+        var giaBanCell = $(this).find('td:eq(3)');
+
+        var giaBanText = giaBanCell.html().split('<br>')[0].trim();
+        var giaBan = parseFloat(giaBanText.replace(' VNĐ', '').replace(/\./g, '').replace(',', '.'));
+      //  var giaBan = parseFloat(giaBanCell.text().trim().replace(/\./g, '').replace(',', '.'));
         if (!isNaN(giaBan)) {
-            giaBanCell.text(formatMoney(giaBan));
+            // giaBanCell.text(formatMoney(giaBan));
+            giaBanCell.html(formatMoney(giaBan) + ' VNĐ<br>' + giaBanCell.html().split('<br>')[1]);
         }
     });
     $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD'));
     $('body').on('click', '#btn_thanhtoanhoadon', function () {
+        if ($('#btn_phuongthucthanhtoan').val() == '4') {
+
+            $.notify( 'Phương thức thanh toán chỉ áp dụng cho đặt hàng tại quầy', 'error' );
+        }
         var today = new Date();
-       
         var date = 'HD' + today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         $('#btn_ma').val(date.toString());
+        $('#btn_Status').val(5);
 
-        let tt = $('#btn_tienkhachdua').val();
-        let kt = ($('#btn_tienkhachphaitra').val() === '') ? 0 : parseFloat($('#btn_PhiShip').val());
-        var hoaDonChiTiets = getdataHoaDonChiTiet();
-        if (tt < kt || tt == '' || tt =='' || tt == 0) {
-            $.post('/Add-hoadon', { hd: getdataHoaDon() }, function (re) {
-                if (re.status) {
-                    $.ajax({
-                        url: '/Add-hoadonct',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(hoaDonChiTiets),
-                        success: function (re) {
-                            if (re.status) {
-                                alert(re.message);
-                                window.location.reload();
-                            } else {
-                                alert(re.message);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            alert('Có lỗi xảy ra: ' + error);
-                        }
-                    });
-                }
-                else {
-                    alert(re.message);
-                }
-            }).fail(function (xhr, status, error) {
-                // Xử lý lỗi khi yêu cầu /Add-hoadon thất bại
-                alert('Có lỗi xảy ra khi thêm hóa đơn: ' + error);
-            });
+        let tt = ($('#btn_tienkhachdua').val().replace(/\./g, '').replace(',', '.'));
+        let kt = ($('#btn_tienkhachphaitra').val().replace(/\./g, '').replace(',', '.'));
+        
+        if ((tt - kt >= 0) || tt == '' || tt == '' || tt == 0) {
+            if ($('#btn_phuongthucthanhtoan').val() =='1') {
+               
+                Thanhtoan();
+              
+            }
+            if ($('#btn_phuongthucthanhtoan').val() == '2') {
+              
+                QRCODE_PAYMENT();
+               
+            }
+                    
         }
-        else {
-            alert('Số tiền khách đưa chưa đủ ')
+        if ( $('#btn_phuongthucthanhtoan').val() == '3') {
+
+            QRCODE_PAYMENT();
         }
-      
        
-      
-      
     });
-    async function getShippingFee() {
-        const token = 'd0d7cce1-3125-11ef-8e53-0a00184fe694'; // Thay thế 'YOUR_TOKEN_HERE' bằng token của bạn
-        const qh = parseInt($('#btn_QuanHuyen').val()); // Lấy giá trị từ input Quận/Huyện
-        const xp = $('#btn_XaPhuong').val();
-        const SshopId = 192652;
+    async function loadTinhThanh() {
+        var tinhthanh = $('#city').val();
+        let provinceID;
+        let districtID;
+        let wardCode ;
         try {
             const response = await $.ajax({
-                url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee',
-                method: 'POST',
+                url: 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province',
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Token': token,
-                    'ShopId': SshopId
-                },
-                data: JSON.stringify({
-                    "service_type_id": 2,
-                    "from_district_id": 1482,
-                    "to_district_id": qh,
-                    "to_ward_code": xp,
-                    "height": 20,
-                    "length": 30,
-                    "weight": 3000,
-                    "width": 40,
-                    "insurance_value": 0,
-                    "coupon": null
-
-                })
+                    'Token': token
+                }
             });
-            if (response.code === 200) {
-                $('#btn_PhiShip').val(response.data.total);
-                updatePaymentDetails()
-            } else {
-                console.error('Error:', response.message);
-            }
+
+            response.data.forEach(function (item) {
+                if (item.ProvinceName.trim() === tinhthanh.replace(/^Tỉnh\s+|\s+$/g, '').trim()) { // So sánh chuỗi đã loại bỏ khoảng trắng thừa và dấu tiếng Việt
+                    provinceID = item.ProvinceID;
+                }
+            });
+            await loadQuanHuyen(provinceID)
         } catch (error) {
-            console.error('Error calling API:', error);
+            alert('Không tìm thấy mã tỉnh.');
+        }
+        async function loadQuanHuyen(provinceId) {
+            var quanhuyen = $('#district').val();
+            try {
+                const response = await $.ajax({
+                    url: 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district',
+                    method: 'GET',
+                    headers: {
+                        'Token': token
+                    }
+                });
+
+                response.data.forEach(function (item) {
+                    if (item.DistrictName.trim() === quanhuyen.trim()) {
+
+                        districtID = item.DistrictID;
+                    }
+
+                });
+                await loadXaPhuong(districtID);
+            } catch (error) {
+                handleError(error);
+            }
+        }
+        async function loadXaPhuong(districtID) {
+            var xaphuong = $('#ward').val();
+            try {
+                const response = await $.ajax({
+                    url: 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward',
+                    method: 'GET',
+                    headers: {
+                        'Token': token
+                    },
+                    data: { district_id: districtID }
+                });
+
+                response.data.forEach(function (item) {
+                    console.log('So sánh:', item.WardName.trim(), '===', xaphuong.trim()) // Hiển thị để kiểm tra so sánh
+
+                    if (item.WardName.trim() === xaphuong.trim()) {
+
+                        wardCode = item.WardCode;
+                    }
+                });
+                //if (wardCode == undefined) {
+                //  $.notify('Hiện giao hàng nhanh chưa hỗ trợ địa điểm này, thông cảm !', 'error') 
+                //}
+                console.log('Mã Tỉnh' + provinceID + 'Mã quận: ' + districtID + 'Mã xã: ' + wardCode);
+                await getShippingFee(provinceID, districtID, wardCode)
+            } catch (error) {
+
+            }
+        }
+        async function getShippingFee(provinceID, districtID, wardCode) {
+            const SshopId = 192652;
+            try {
+                const response = await $.ajax({
+                    url: 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Token': token
+                        //'ShopId': SshopId
+                    },
+                    data: JSON.stringify({
+                        "service_type_id": 2,
+                        "from_district_id": 3440,
+                        "from_ward_code": "13009",
+                        "to_district_id": districtID,
+                        "to_ward_code": wardCode,
+                        "height": 20,
+                        "length": 30,
+                        "weight": 3000,
+                        "width": 40,
+                        "insurance_value": 0,
+                        "coupon": null
+
+                    }) 
+                });
+           
+                if (response.code === 200) {
+                  
+                    $('#btn_PhiShip').val(response.data.total);
+                    updatePaymentDetails()
+                    
+                } else {
+                    console.error('Error:', response.message);
+                }
+            } catch (error) {
+                console.error('Error calling API:', error);
+            }
         }
     }
-    $('#btn_MaVoucher').change(function () {
-        var giaTriGiam = 0;
-        var selectedOption = $(this).find(':selected');
 
-        if (selectedOption.val() !== '') {
-            giaTriGiam = parseFloat(selectedOption);
-           
-        }
-       
-        updatePaymentDetails(giaTriGiam);
-        
-    });
-    $('#btn_XaPhuong').change(function () {
-        getShippingFee();
-     //   
+    $('#ward').change(function () {
+        loadTinhThanh();
+    })
+    $('#btn_MaVoucher').change(function () {       
+        updatePaymentDetails();  
     });
     $('#btn_PhiShip').change(function () {
         updatePaymentDetails();
@@ -129,10 +199,140 @@
         updatePaymentDetails();
     });
     $('#btn_tienkhachdua').change(function () {
-        updatePaymentDetails();
 
+        tienthua();
+    });
+    $('#btn_tienkhachdua').on('focus', handleTienKhachDuaFocus);
+    $('body').on('click', '#btn_dathang', function () {
+        var today = new Date();
+
+        var date = 'HD' + today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        $('#btn_ma').val(date.toString());
+        $('#btn_Status').val(1)
+
+        let tt = ($('#btn_tienkhachdua').val().replace(/\./g, '').replace(',', '.'));
+        let kt = ($('#btn_tienkhachphaitra').val().replace(/\./g, '').replace(',', '.'));
+
+        if ((tt - kt >= 0) || tt == '' || tt == '' || tt == 0) {
+            if ($('#btn_phuongthucthanhtoan').val() == 1) {
+
+                Thanhtoan();
+            }
+            if ($('#btn_phuongthucthanhtoan').val() == 2) {
+
+                QRCODE_PAYMENT();
+            }
+
+        }
+        if ($('#btn_phuongthucthanhtoan').val() == 3) {
+
+            QRCODE_PAYMENT();
+        }   
+        if ($('#btn_phuongthucthanhtoan').val() == 4) {
+            Thanhtoan();
+        }
+    })
+
+    $('#btn_TenKhachHang').change(function () {
+        var selectedOption = this.options[this.selectedIndex];
+        var tinhThanh = selectedOption.getAttribute('data-tinh');
+        var quanHuyen = selectedOption.getAttribute('data-quanhuyen');
+        var xaPhuong = selectedOption.getAttribute('data-xaphuong');
+        var cuThe = selectedOption.getAttribute('data-cuthe');
+        if ($('#btn_btn_TenKhachHang').val != '') {
+            document.getElementById('city').innerHTML = '<option value="' + tinhThanh + '">' + tinhThanh + '</option>';
+            document.getElementById('district').innerHTML = '<option value="' + quanHuyen + '">' + quanHuyen + '</option>';
+            document.getElementById('ward').innerHTML = '<option value="' + xaPhuong + '">' + xaPhuong + '</option>';
+            document.getElementById('street').value = cuThe;
+        }
+        loadTinhThanh();
     });
 });
+
+
+// thanh toán chuyển khoản 
+function QRCODE_PAYMENT() {
+    $('#pop_QR').modal('show');
+    let countdownTime = 300;
+    const countdownElement = document.getElementById("countdown");
+
+    // Cập nhật đồng hồ đếm ngược mỗi giây
+    const countdownInterval = setInterval(function () {
+        countdownElement.textContent = 'Giao dịch sẽ kết thúc sau: ' + countdownTime;
+        countdownTime--;
+        // Khi đồng hồ đếm ngược về 0, đóng modal và dừng đồng hồ đếm ngược
+        if (countdownTime < 0) {
+            clearInterval(countdownInterval);
+            localStorage.setItem('notification', JSON.stringify({ message: 'Giao dịch không thành công, quá thời gian chờ', type: 'error' }));
+          
+            $("#pop_QR").modal('hide');
+            window.location.reload();
+        }
+    }, 1000); // Cập nhật mỗi giây
+    $('#btn_sotienck').text(($('#btn_tienkhachphaitra').val() != '' ? $('#btn_tienkhachphaitra').val() : 0) + ' VNĐ');
+
+    thongtinhoadon = $('#btn_thongtinhoadon').val();
+    //string thongtinhoadon = a;
+    let sotienck = parseInt($('#btn_tienkhachphaitra').val().replace('.',''));
+    let QR = `https://img.vietqr.io/image/MB-0336262156-qr_only.png?amount=${sotienck}&addInfo=${thongtinhoadon}`
+    $('#imgQR').attr('src', QR);
+    setInterval(() => {
+
+        checkpaid(sotienck, thongtinhoadon);
+    }, 1000);
+}
+
+async function checkpaid(price , content) {
+    try {
+        const respon = await fetch("https://script.google.com/macros/s/AKfycbxwZpNWFZTZmzDCaWaxfbHbUX5hHKImRf1bCtbIU8dQkHKmDNhagjFAxkR9TDLGMoMYKQ/exec");
+        const datas = await respon.json();
+
+        if (datas.error === false) {
+            const lastPaid = datas.data[0];
+            let pr = lastPaid['Giá trị'];
+            let ct = lastPaid['Mô tả'];           
+            if (pr >= price && ct.includes(content)) {                
+                Thanhtoan(); 
+            }
+            else {
+                console.log('giao dịch không thành công'); 
+            }
+        } else {
+            console.error("Error in the response:", datas.error);
+        }
+    } catch (e) {
+
+    }
+}
+function tienthua() {
+    var tienkhachdua = $('#btn_tienkhachdua').val();
+    var tienkhachphaitra = $('#btn_tienkhachphaitra').val()
+    
+    var value = formatMoney(parseFloat(tienkhachdua))
+    var value2 = parseFloat(tienkhachphaitra.replace(/\./g, '').replace(',', '.'));
+
+    $('#btn_tienkhachdua').val(value);
+    if ($('#btn_phuongthucthanhtoan').val() == '1') {
+
+        let tienthua = tienkhachdua - value2;
+        if (tienkhachdua <= 0 || tienkhachdua < value2) {
+            $('#btn_tienthua').val(0);
+        } else {
+            $('#btn_tienthua').val(formatMoney(tienthua));
+        }
+    }
+     if ($('#btn_phuongthucthanhtoan').val() == '3') {
+         let tienchuyenkhoan = value2 - tienkhachdua;     
+         let tck = formatMoney(tienchuyenkhoan);
+         $('#btn_tienkhachphaitra').val(tck)
+    } 
+   
+}
+
+function handleTienKhachDuaFocus() {
+    var input = $('#btn_tienkhachdua');
+    input.val(''); // Reset giá trị của input
+}
 
 // kiểm tra số điện thoại
 function validatePhoneNumber() {
@@ -150,7 +350,6 @@ function validatePhoneNumber() {
         phoneError.hide();
     }
 }
-
 
 // format money 
 function formatMoney(amount) {
@@ -299,11 +498,11 @@ function updatePaymentDetails() {
             total += giaBan;
         }
     });
-    var vat = total * 0.1;
+   
     var ship = ($('#btn_PhiShip').val() === '') ? 0 : parseFloat($('#btn_PhiShip').val());
     var selectedOption = $('#btn_MaVoucher').find(':selected');
     var giaTriGiam = selectedOption.val() !== '' ? parseFloat(selectedOption.data('giatrigiam').replace(/\./g, '').replace(',', '.')) : 0;
-    var tienkhachdua = ($('#btn_tienkhachdua').val() == '') ? 0 : parseFloat($('#btn_tienkhachdua').val());
+   /* var tienkhachdua = ($('#btn_tienkhachdua').val() == '') ? 0 : parseFloat($('#btn_tienkhachdua').val());*/
     var tongtienkhachphaitra = total + ship - giaTriGiam;
     var tongtien = total;
     if (tongtienkhachphaitra <= 0) {
@@ -311,21 +510,7 @@ function updatePaymentDetails() {
     }
     else {
         $('#btn_tienkhachphaitra').val(formatMoney(tongtienkhachphaitra));
-    }
-    if (tienkhachdua <=0 ) {
-        $('#btn_tienthua').val(0);
-    }
-    else {
-       let t =  tienkhachdua - tongtienkhachphaitra;
-        if (t <= 0) {
-            $('#btn_tienthua').val(0);
-        }
-        else {
-            $('#btn_tienthua').val(formatMoney(t));
-        }
-    }
-    // $('#btn_tongtien').val(tongtien.toFixed(2));
-   
+    }   
     $('#btn_tongtien').val(formatMoney(tongtien));
 }
 
@@ -389,7 +574,7 @@ function setdataHoaDon(data) {
     }
 }
 function getdataHoaDon() {
-    
+
     return {
         MaHoaDon: $('#btn_ma').val(),
         UserID: $('#btn_UserID').val(),
@@ -399,8 +584,90 @@ function getdataHoaDon() {
         SoDienThoai: $('#btn_SoDienThoai').val(),
         PhiShip: $('#btn_PhiShip').val(),
         TongGiaTriHangHoa: $('#btn_tongtien').val(),
-        PhuongThucThanhToan: $('#btn_PhuongTTT').val(),
+        PhuongThucThanhToan: $('#btn_phuongthucthanhtoan').val(),
         TrangThai: $('#btn_Status').val(),
+        PhanLoai: $('#btn_phanloai').val(),
+        Ghichu: $('#btn_Status').val(),
+        TinhThanh: $('#city').val(),
+        QuanHuyen: $('#district').val(), 
+        XaPhuong: $('#ward').val(),
+        Cuthe: $('#street').val(),
+        Ghichu: $('#btn_ghichu').val(),
+        
     }                                           
 }
+function Thanhtoan() {
+    var hoaDonChiTiets = getdataHoaDonChiTiet();
+    $.post('/Add-hoadon', { hd: getdataHoaDon() }, function (re) {
+        console.log(re.data)
+        if (re.status) {
+            console.log(getdataHoaDon());
+            $.ajax({
+                url: '/Add-hoadonct',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(hoaDonChiTiets),
+                success: function (re) {
+                    if (re.status) {      
+                        if ($('#btn_Status').val() == 5) {
+                            AddThanhTOanHoaDon();
+                            localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
+                            window.location.reload();
+                          
+                        }
+                        if ($('#btn_Status').val() == 1) {
+                            AddThanhTOanHoaDon();
+                            localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
+                            window.location.reload();
+                         
+                        }   
+                        if ($('#btn_Status').val() == 4) {
+                            localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
+                            AddThanhTOanHoaDon();
+                        }
+                    } else {
+                        $.notify(re.message, 'error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $.notify('Có lỗi xảy ra: ' + error, 'error');
+                }
+            });
+        }
+        else {
+            $.notify(re.message, 'error');
+        }
+    }).fail(function (xhr, status, error) {
+        // Xử lý lỗi khi yêu cầu /Add-hoadon thất bại
+        alert('Có lỗi xảy ra khi thêm hóa đơn: ' + error);
+    });
+}
+function getThanhToanHoaDon() {
+   
+    return data;
+}
+function AddThanhTOanHoaDon() {
+    let stt;
+    if ($('#btn_phuongthucthanhtoan').val() == '4') {
+        stt =0
+    }
+    else {
+        stt = 1
+    }
+    var data = {
+        MaHoaDon: $('#btn_ma').val(),
+        MaPhuongThuc: $('#btn_phuongthucthanhtoan').val(),
+        NgayTao: $('#btn_NgayTaoDon').val(),
+        TrangThai:stt,
+    };
+   
+    $.post('/Add-ThanhToanhoadon', { tt: data }, function (re) {
+        if (re.status) {
+            
+        }
+        else {
+            console.log('Lưu thanh toán hóa đơn thất bại');
+        }
 
+    })
+}

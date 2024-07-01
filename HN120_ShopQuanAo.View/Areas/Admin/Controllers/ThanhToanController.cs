@@ -41,7 +41,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 string apiDatac = await responc.Content.ReadAsStringAsync();
                 var lstc = JsonConvert.DeserializeObject<List<ThanhToan>>(apiDatac);
                 var coun = lstc.Count();
-                tt.MaPhuongThuc = "TT" + (coun + 1);
+                tt.MaPhuongThuc = (coun + 1).ToString() ;
 
                 var apiurl = "https://localhost:7197/api/ThanhToan/CreateThanhToan";
                 var content = new StringContent(JsonConvert.SerializeObject(tt), Encoding.UTF8, "application/json");

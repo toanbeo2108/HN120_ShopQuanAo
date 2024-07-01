@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HN120_ShopQuanAo.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240625045600_25_6")]
-    partial class _25_6
+<<<<<<<< HEAD:HN120_ShopQuanAo.API/Migrations/20240626052821_1234.Designer.cs
+    [Migration("20240626052821_1234")]
+    partial class _1234
+========
+    [Migration("20240625072900_alo")]
+    partial class alo
+>>>>>>>> master:HN120_ShopQuanAo.API/Migrations/20240625072900_alo.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -281,7 +286,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("VoucherMaVoucher")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(40)");
 
                     b.HasKey("MaHoaDon");
 
@@ -576,7 +581,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("VoucherMaVoucher")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(40)");
 
                     b.HasKey("UserVoucherID");
 
@@ -590,33 +595,47 @@ namespace HN120_ShopQuanAo.API.Migrations
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.Voucher", b =>
                 {
                     b.Property<string>("MaVoucher")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal?>("DieuKienGiam")
-                        .HasColumnType("decimal(18,2)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
                     b.Property<decimal?>("GiaGiamToiDa")
+                        .IsRequired()
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("GiaGiamToiThieu")
+                        .IsRequired()
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("GiaTriGiam")
+                        .IsRequired()
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("KieuGiamGia")
+                        .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<string>("MoTa")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("NgayBatDau")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("NgayKetThuc")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("SoLuong")
+                        .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<string>("Ten")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
                     b.Property<int?>("TrangThai")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("MaVoucher");
@@ -660,7 +679,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("VoucherMaVoucher")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(40)");
 
                     b.HasKey("Id");
 
@@ -698,22 +717,37 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4bf3ed4f-3bcf-4a30-a56e-88560479aae5",
-                            ConcurrencyStamp = "78028b02-763e-4101-8de4-300954002370",
+<<<<<<<< HEAD:HN120_ShopQuanAo.API/Migrations/20240626052821_1234.Designer.cs
+                            Id = "5115818b-d0a8-49fa-9f6e-2a218f56379b",
+                            ConcurrencyStamp = "1cfee25d-2fd9-400a-99be-b0f91cfc603e",
+========
+                            Id = "b627327a-3d8f-422e-8c9d-75ee07d4ccc7",
+                            ConcurrencyStamp = "79c0be55-16ec-4651-af22-c32ef1b0dc99",
+>>>>>>>> master:HN120_ShopQuanAo.API/Migrations/20240625072900_alo.Designer.cs
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "67b045a2-65fb-409e-999e-ed50f042cfff",
-                            ConcurrencyStamp = "84fa4ea7-260b-466e-b367-b81e497800bb",
+<<<<<<<< HEAD:HN120_ShopQuanAo.API/Migrations/20240626052821_1234.Designer.cs
+                            Id = "f867c7ac-b618-45d8-a4e0-cdfbe9d7ee3f",
+                            ConcurrencyStamp = "e454048d-b28b-41d5-932b-9b0f3adf474a",
+========
+                            Id = "d1e684b3-07f0-409b-b45c-986743722133",
+                            ConcurrencyStamp = "444618c5-313f-46cb-8cb7-e9a662945bd9",
+>>>>>>>> master:HN120_ShopQuanAo.API/Migrations/20240625072900_alo.Designer.cs
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "9bb954ac-dee9-4603-8332-c246a8b2c6fc",
-                            ConcurrencyStamp = "88e7c583-e7dc-4e47-870c-75aa06c29339",
+<<<<<<<< HEAD:HN120_ShopQuanAo.API/Migrations/20240626052821_1234.Designer.cs
+                            Id = "582c07c1-eaff-478f-8135-8a79f7db8109",
+                            ConcurrencyStamp = "da8e60d8-fd29-461e-b3c7-38e5a2f196e0",
+========
+                            Id = "bba658a6-049f-4ae6-b1b6-262e22dcfb36",
+                            ConcurrencyStamp = "2ca18525-72d0-48ee-b950-931074faecb9",
+>>>>>>>> master:HN120_ShopQuanAo.API/Migrations/20240625072900_alo.Designer.cs
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -909,11 +943,18 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("CardNumber")
                         .HasColumnType("nvarchar(max)");
 
+<<<<<<<< HEAD:HN120_ShopQuanAo.API/Migrations/20240626052821_1234.Designer.cs
+                    b.Property<string>("FirstName")
+========
                     b.Property<string>("FullName")
+>>>>>>>> master:HN120_ShopQuanAo.API/Migrations/20240625072900_alo.Designer.cs
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Gender")
                         .HasColumnType("int");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");

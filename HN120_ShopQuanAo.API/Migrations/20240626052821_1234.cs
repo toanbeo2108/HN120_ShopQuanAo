@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HN120_ShopQuanAo.API.Migrations
 {
-    public partial class _25_6 : Migration
+    public partial class _1234 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: true),
                     Birthday = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -159,16 +160,17 @@ namespace HN120_ShopQuanAo.API.Migrations
                 name: "Voucher",
                 columns: table => new
                 {
-                    MaVoucher = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DieuKienGiam = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    GiaGiamToiThieu = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    GiaGiamToiDa = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    NgayBatDau = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    NgayKetThuc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    KieuGiamGia = table.Column<int>(type: "int", nullable: true),
-                    GiaTriGiam = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    SoLuong = table.Column<int>(type: "int", nullable: true),
-                    TrangThai = table.Column<int>(type: "int", nullable: true)
+                    MaVoucher = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Ten = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    KieuGiamGia = table.Column<int>(type: "int", nullable: false),
+                    GiaGiamToiThieu = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    GiaGiamToiDa = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    NgayBatDau = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NgayKetThuc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    GiaTriGiam = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SoLuong = table.Column<int>(type: "int", nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TrangThai = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -377,7 +379,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                     TongGiaTriHangHoa = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     PhuongThucThanhToan = table.Column<int>(type: "int", nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true),
-                    VoucherMaVoucher = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    VoucherMaVoucher = table.Column<string>(type: "nvarchar(40)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -402,7 +404,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     MaVoucher = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true),
-                    VoucherMaVoucher = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    VoucherMaVoucher = table.Column<string>(type: "nvarchar(40)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -434,7 +436,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                     KieuGiamGia = table.Column<int>(type: "int", nullable: true),
                     GiaTriGiam = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true),
-                    VoucherMaVoucher = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    VoucherMaVoucher = table.Column<string>(type: "nvarchar(40)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -606,17 +608,17 @@ namespace HN120_ShopQuanAo.API.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "4bf3ed4f-3bcf-4a30-a56e-88560479aae5", "78028b02-763e-4101-8de4-300954002370", "Admin", "ADMIN" });
+                values: new object[] { "5115818b-d0a8-49fa-9f6e-2a218f56379b", "1cfee25d-2fd9-400a-99be-b0f91cfc603e", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "67b045a2-65fb-409e-999e-ed50f042cfff", "84fa4ea7-260b-466e-b367-b81e497800bb", "User", "USER" });
+                values: new object[] { "582c07c1-eaff-478f-8135-8a79f7db8109", "da8e60d8-fd29-461e-b3c7-38e5a2f196e0", "Employee", "EMPLOYEE" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "9bb954ac-dee9-4603-8332-c246a8b2c6fc", "88e7c583-e7dc-4e47-870c-75aa06c29339", "Employee", "EMPLOYEE" });
+                values: new object[] { "f867c7ac-b618-45d8-a4e0-cdfbe9d7ee3f", "e454048d-b28b-41d5-932b-9b0f3adf474a", "User", "USER" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

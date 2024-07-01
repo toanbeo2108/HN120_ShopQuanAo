@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.Voucher>
 
 @{
-    ViewData["Title"] = "Quản lý Voucher";
+    ViewData["Title"] = "AllVoucherManager";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -22,7 +22,7 @@
             max-width: 400px;
             margin-bottom: 20px;
         }
-
+            
         .table {
             width: 100%;
             margin-bottom: 1rem;
@@ -171,17 +171,16 @@
                 <th>STT</th>
                 <th>Mã Voucher</th>
                 <th>Tên Voucher</th>
-                <th>kiểu giảm giá</th>
-                <th>Gía giảm tối thiểu</th>
-                <th>Gía giảm tối đa</th>
-                <th>Gia trị giảm</th>
-                <th>Ngày bắt đầu</th>
-                <th>Ngày kết thúc</th>
-                <th>Số lượng</th>
-                <th>Mô tả</th>
-                <th>Tình trạng</th>
-                <th>Trạng thái</th>
-                <th>Hành động Chung</th>
+                <th>Kiểu Giảm Giá</th>
+                <th>Giá Giảm Tối Thiểu</th>
+                <th>Giá Giảm Tối Đa</th>
+                <th>Giá Trị Giảm</th>
+                <th>Ngày Bắt Đầu</th>
+                <th>Ngày Kết Thúc</th>
+                <th>Số Lượng</th>
+                <th>Mô Tả</th>
+                <th>Trạng Thái</th>
+                <th>Hành Động Chung</th>
             </tr>
         </thead>
         <tbody id="voucherTableBody">
@@ -213,12 +212,10 @@
                             @if (item.KieuGiamGia == 0)
                             {
                                 <div style="color:red">@($"{item.GiaTriGiam:n0} VND")</div>
-
                             }
                             else
                             {
                                 <div style="color:red">@($"{item.GiaTriGiam:n0} %")</div>
-
                             }
                         </td>
                         <td>
@@ -233,7 +230,6 @@
                             {
                                 <div style="color:red">@item.NgayKetThuc</div>
                             }
-
                         </td>
                         <td>
                             <div style="color:red">@item.SoLuong</div>
@@ -241,49 +237,37 @@
                         <td>
                             <div style="color:black">@item.MoTa</div>
                         </td>
+
                         <td>
                             @{
-                                if (item.NgayKetThuc >= DateTime.Now && item.SoLuong > 0)
+                                if (item.NgayKetThuc < DateTime.Now || item.SoLuong <= 0)
                                 {
-                                    <div style="color:green">Còn khuyến mãi</div>
+                                    <span class="text-danger">Đã kết thúc</span>
                                 }
-                                else
+                                else if (item.TrangThai == 0)
                                 {
-                                    <div style="color:red">Hết Khuyến mãi</div>
+                                    <span class="text-success">Sắp diễn ra</span>
                                 }
-                            }
-                        </td>
-                        <td>
-                            @{
-                                if (item.TrangThai == 1)
+                                else if (item.TrangThai == 1)
                                 {
-                                    <span class="text-success">Sử dụng</span>
+                                    <span class="text-info">Đang hoạt động</span>
                                 }
-                                else
+                                else if (item.TrangThai == 2)
                                 {
-                                    <span class="text-danger">Không sử dụng</span>
+                                    <span class="text-warning">Đã kết thúc</span>
                                 }
                             }
                         </td>
                         <td>
                             @Html.ActionLink("Sửa", "UpdateVC", new { id = item.MaVoucher }, new { @class = "btn btn-success btn-sm" })
-                            @if (item.TrangThai == 1)
-                            {
-                                @Html.ActionLink("Không Sử Dụng", "KoSuDung", new { MaVoucher = item.MaVoucher }, new { @class = "btn btn-danger btn-sm text-white" })
-                            }
-                            else
-                            {
-                                @Html.ActionLink("sử dụng", "SuDung", new { MaVoucher = item.MaVoucher }, new { @class = "btn btn-success btn-sm text-white" })
-                            }
-                            
                         </td>
-                        
                     </tr>
                     index++;
                 }
             }
         </tbody>
     </table>
+
 
     <script>
         function searchVoucher() {

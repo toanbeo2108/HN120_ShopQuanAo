@@ -2,7 +2,9 @@
 using HN120_ShopQuanAo.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+
 using System.Net;
+
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -29,6 +31,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var ListUser = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
             return View(ListUser);
         }
+
         // Lọc tài khoản    
         [HttpGet]
         public async Task<IActionResult> FilterByRole(string roleName)
@@ -95,6 +98,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         // Cập nhật người dùng
+
         [HttpGet]
         public async Task<IActionResult> Update(string id)
         {
@@ -205,7 +209,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
         // Quản lý địa chỉ người dùng
 
+
         // Thêm địa chỉ mới
+
         [HttpGet]
         public async Task<IActionResult> AddUserAddress(string id)
         {
@@ -213,12 +219,14 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost]
+
         public async Task<IActionResult> AddUserAddress(string id, DeliveryAddressModel address)
         {
             if (!ModelState.IsValid)
             {
                 return View(address);
             }
+
 
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -236,7 +244,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View(address);
         }
 
+
         // Sửa địa chỉ
+
         [HttpGet]
         public async Task<IActionResult> UpdateUserAddress(string id)
         {
@@ -278,7 +288,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View(address);
         }
 
+
         // Xóa địa chỉ
+
         [HttpPost]
         public async Task<IActionResult> DeleteAddressUser(string id)
         {
@@ -313,6 +325,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
             return Json(new { success = false, message = "Lỗi cài đặt địa chỉ mặc định" });
         }
+
+
 
     }
 }
