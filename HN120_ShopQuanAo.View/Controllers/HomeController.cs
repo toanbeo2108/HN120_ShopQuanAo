@@ -12,29 +12,29 @@ using System.Security.Claims;
 
 namespace HN120_ShopQuanAo.View.Controllers
 {
-	public class HomeController : Controller
-	{
-		private readonly ILogger<HomeController> _logger;
-		private readonly HttpClient _httpClient;
+    public class HomeController : Controller
+    {
+        private readonly ILogger<HomeController> _logger;
+        private readonly HttpClient _httpClient;
 
-		public HomeController(ILogger<HomeController> logger)
-		{
-			_logger = logger;
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
             _httpClient = new HttpClient();
         }
 
         public IActionResult Index()
-		{
-			return View();
-		}
-		public IActionResult Login()
-		{
-			return View();
-		}
+        {
+            return View();
+        }
+        public IActionResult Login()
+        {
+            return View();
+        }
 
-		[HttpPost]
-		public async Task<IActionResult> Login(LoginUser loginUser)
-		{
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginUser loginUser)
+        {
             var loginUserJSON = JsonConvert.SerializeObject(loginUser);
             var stringContent = new StringContent(loginUserJSON, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"https://localhost:7197/api/Login", stringContent);
@@ -87,12 +87,14 @@ namespace HN120_ShopQuanAo.View.Controllers
                 }
                 else if (roleClaims.Any(rc => rc.Value == "Customer"))
                 {
+                    return RedirectToAction("Index", "Home", new { area = "Customer" });
+                }
 
+                TempData["SuccessMessage"] = "Đăng nhập thành công!";
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-
                 var errorResponse = await response.Content.ReadAsStringAsync();
                 ViewBag.Message = $"Login failed: {errorResponse}";
                 return View();
@@ -136,15 +138,14 @@ namespace HN120_ShopQuanAo.View.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
 
-		{
-			return View();
-		}
-
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Error()
-		{
-			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-		}
-	}
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
 }

@@ -6,7 +6,6 @@
 }
 
 <form asp-action="AddUserAddress" method="post">
-    @* <div asp-validation-summary="All" class="text-danger"></div> *@
     <div class="form-group">
         <label for="Consignee">Họ và tên</label>
         <input type="text" class="form-control" asp-for="Consignee" name="Consignee" required>
@@ -49,6 +48,14 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
+    var notification = localStorage.getItem('notification');
+    if (notification) {
+        notification = JSON.parse(notification);
+        $.notify(notification.message, notification.type);
+        localStorage.removeItem('notification');
+    }
+
+
     var citis = document.getElementById("city");
     var districts = document.getElementById("district");
     var wards = document.getElementById("ward");
@@ -89,4 +96,5 @@
             }
         };
     }
+    
 </script>
