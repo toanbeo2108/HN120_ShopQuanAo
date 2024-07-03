@@ -22,7 +22,7 @@
             max-width: 400px;
             margin-bottom: 20px;
         }
-            
+
         .table {
             width: 100%;
             margin-bottom: 1rem;
@@ -133,12 +133,13 @@
     <p>
         <a asp-action="CreateVC" class="btn btn-primary">Thêm mới</a>
     </p>
-    <!-- Bộ lọc tìm trạng thái -->
+
     <div class="input-group mb-3">
         <select class="form-control" id="statusFilter">
             <option value="">Tất cả trạng thái</option>
-            <option value="1">Đang sử dụng</option>
-            <option value="0">Không sử dụng</option>
+            <option value="SapDienRa">Sắp diễn ra</option>
+            <option value="DangHoatDong">Đang hoạt động</option>
+            <option value="DaKetThuc">Đã kết thúc</option>
         </select>
         <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button" onclick="filterByStatus()">
@@ -147,7 +148,7 @@
         </div>
     </div>
 
-    <!-- Bộ lọc tìm voucher từ ngày 12/6/2024 đến ngày 26/6/2024 -->
+
     <div class="input-group mb-3">
         <input type="date" class="form-control" id="startDateFilter">
         <input type="date" class="form-control" id="endDateFilter">
@@ -270,6 +271,7 @@
 
 
     <script>
+        // lọc mã
         function searchVoucher() {
             var input, filter, table, tr, td, i, txtValue;
             input = document.getElementById("searchBox");
@@ -292,16 +294,20 @@
         }
 
 
-        // JavaScript function for filtering vouchers by status
+        // Lọc Trạng thái
         function filterByStatus() {
             var status = document.getElementById("statusFilter").value;
             var table = document.getElementById("voucherTableBody");
             var tr = table.getElementsByTagName("tr");
 
             for (var i = 0; i < tr.length; i++) {
-                var td = tr[i].getElementsByTagName("td")[12]; // Cột index 12 là trạng thái
+                var td = tr[i].getElementsByTagName("td")[11];
                 if (td) {
-                    if (status == "" || td.textContent.trim() == (status == "1" ? "Sử dụng" : "Không sử dụng")) {
+                    var statusText = td.textContent.trim();
+                    if (status === "" ||
+                        (status === "SapDienRa" && statusText === "Sắp diễn ra") ||
+                        (status === "DangHoatDong" && statusText === "Đang hoạt động") ||
+                        (status === "DaKetThuc" && statusText === "Đã kết thúc")) {
                         tr[i].style.display = "";
                     } else {
                         tr[i].style.display = "none";
@@ -309,48 +315,48 @@
                 }
             }
         }
+
+        // Lọc ngày
         function filterByDateRange() {
             var status = document.getElementById("statusFilter").value;
             var startDate = document.getElementById("startDateFilter").value;
             var endDate = document.getElementById("endDateFilter").value;
 
-            // Chuyển đổi ngày thành đối tượng Date để so sánh
+
             var startDateObj = startDate ? new Date(startDate) : null;
             var endDateObj = endDate ? new Date(endDate) : null;
 
-            // Nếu endDateObj tồn tại, set giờ, phút, giây về cuối ngày (23:59:59)
+
             if (endDateObj) {
                 endDateObj.setHours(23);
                 endDateObj.setMinutes(59);
                 endDateObj.setSeconds(59);
             }
 
-            // Lấy danh sách các dòng trong bảng
+
             var table = document.getElementById("voucherTableBody");
             var rows = table.getElementsByTagName("tr");
 
-            // Duyệt qua từng dòng trong bảng
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
 
-                // Lấy ngày bắt đầu và ngày kết thúc từ từng dòng
+
                 var startDateCell = new Date(row.getElementsByTagName("td")[7].textContent);
                 var endDateCell = new Date(row.getElementsByTagName("td")[8].textContent);
                 var statusCell = row.getElementsByTagName("td")[11].textContent;
 
-                // Nếu endDateCell tồn tại, set giờ, phút, giây về cuối ngày (23:59:59)
+
                 if (endDateCell) {
                     endDateCell.setHours(23);
                     endDateCell.setMinutes(59);
                     endDateCell.setSeconds(59);
                 }
 
-                // Kiểm tra điều kiện về trạng thái và ngày tháng
+
                 var meetsStatusCriteria = (status === "" || status === statusCell);
                 var meetsDateCriteria = (startDateObj === null || endDateObj === null ||
                     (startDateCell >= startDateObj && endDateCell <= endDateObj));
 
-                // Hiển thị hoặc ẩn dòng dựa trên kết quả của điều kiện
                 if (meetsStatusCriteria && meetsDateCriteria) {
                     row.style.display = "";
                 } else {
@@ -358,10 +364,29 @@
                 }
             }
         }
+        // Hàm để lấy thời gian hiện tại và kiểm tra khi nào đến mỗi phút mới
+        function checkAndReloadIfMinuteChanged() {
+            var currentDateTime = new Date();
+            var currentMinute = currentDateTime.getMinutes();
 
+            // Tự động làm mới trang khi đồng hồ sang mỗi phút mới
+            setTimeout(function () {
+                var newDateTime = new Date();
+                var newMinute = newDateTime.getMinutes();
 
+                if (newMinute !== currentMinute) {
+                    location.reload(); // Làm mới trang
+                } else {
+                    checkAndReloadIfMinuteChanged(); // Kiểm tra lại sau 1 giây nếu chưa sang phút mới
+                }
+            }, 1000); // Kiểm tra sau mỗi 1 giây
+        }
+
+        // Gọi hàm kiểm tra khi trang được load
+        window.onload = function () {
+            checkAndReloadIfMinuteChanged();
+        };
     </script>
-
 </body>
 </html>
 

@@ -18,10 +18,12 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<VoucherController> _logger;
+        private readonly AppDbContext _context;
         public VoucherController(ILogger<VoucherController> logger)
         {
             _httpClient = new HttpClient();
             _logger = logger;
+            _context = new AppDbContext();
         }
         public IActionResult Index()
         {
@@ -149,7 +151,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     return View(bk);
                 }
 
-                // Tính toán và đặt trạng thái của voucher
                 DateTime now = DateTime.Now;
                 if (now < bk.NgayBatDau)
                 {
@@ -216,6 +217,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(Book);
             }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateVC(Voucher vc)
@@ -351,22 +353,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return RedirectToAction("AllVoucherManager", "Voucher", new { Areas = "Admin" });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetUpdatedVoucherStatus()
-        {
-            var getAllUrl = "https://localhost:7197/GetAllVoucher";
-            var response = await _httpClient.GetAsync(getAllUrl);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var apiData = await response.Content.ReadAsStringAsync();
-                var lstVoucher = JsonConvert.DeserializeObject<List<Voucher>>(apiData);
-                return Json(lstVoucher.OrderByDescending(v => v.MaVoucher).ToList());
-            }
-            return StatusCode((int)HttpStatusCode.InternalServerError, "Lỗi khi lấy danh sách voucher từ API.");
-        }
 
     }
 
 }
-
