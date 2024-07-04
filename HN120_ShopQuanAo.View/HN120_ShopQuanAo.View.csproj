@@ -20,6 +20,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Areas\Employee\Views\EmployeeHome\Index.cshtml" />
+    <None Include="Areas\Employee\Views\Shared\Error.cshtml" />
+    <None Include="Areas\Employee\Views\Shared\HoaDon_Partialview.cshtml" />
+    <None Include="Areas\Employee\Views\Shared\SP_partial.cshtml" />
+    <None Include="Areas\Employee\Views\Shared\_LayoutEmployee.cshtml" />
+    <None Include="Areas\Employee\Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Areas\Employee\Views\UserManagerEmployee\AddUserAddress.cshtml" />
+    <None Include="Areas\Employee\Views\UserManagerEmployee\CreateAnAccount.cshtml" />
+    <None Include="Areas\Employee\Views\UserManagerEmployee\GetAllAccount.cshtml" />
+    <None Include="Areas\Employee\Views\UserManagerEmployee\Update.cshtml" />
+    <None Include="Areas\Employee\Views\UserManagerEmployee\UpdateUserAddress.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\HN120_ShopQuanAo.API\HN120_ShopQuanAo.API.csproj" />
     <ProjectReference Include="..\HN120_ShopQuanAo\HN120_ShopQuanAo.Data.csproj" />
   </ItemGroup>
