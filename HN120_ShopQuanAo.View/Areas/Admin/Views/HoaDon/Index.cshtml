@@ -107,7 +107,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                 <option value="">Khách lẻ</option>
                                 @foreach (var item in ViewBag.user)
                                 {
-                                    <option value="@item.Ten" data-tinh="@item.tinhthanh" data-quanhuyen="@item.quanhuyen" data-xaphuong="@item.xaphuong" data-cuthe="@item.cuthe">@item.Ten</option>
+                                    <option value="@item.Ten" data-tinh="@item.tinhthanh" data-quanhuyen="@item.quanhuyen" data-xaphuong="@item.xaphuong" data-cuthe="@item.cuthe" data-sodienthoai="@item.sdt">@item.Ten</option>
                                 }
                                
                             </select>
@@ -145,7 +145,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                       </div>
                       <div class="col-md-4">
                             <label for="clear"></label>
-                            <button type="text" class="form-control w-50" name="clear" id="clear">Reset địa chỉ</button>
+                            <button type="text" class="form-control w-50 d-grid gap-2 col-6 mx-auto mt-4" name="clear" id="clear">Reset địa chỉ</button>
                       </div>
                         <div class="col-md-4">
                             <label for="btn_ghichu">Ghi chú</label>

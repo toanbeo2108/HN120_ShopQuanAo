@@ -124,7 +124,7 @@
 <script src="~/js/Hoadon/CRUDHoaDon.js"></script>
 <script src="~/js/Hoadon/CapNhatChiTietHoaDon.js"></script>
 
-
+<div class="container">
 <div class="row">
     <div class="col-md-12">
         <div class="table-container" style="overflow-x: auto; height: 200px; overflow-y: hidden;">
@@ -531,7 +531,7 @@
     </table>
     <hr />
 </div>
-
+</div>
 @* modal danh sach sản phẩm *@
 
 <div class="modal fade" tabindex="-1" id="pop_sp">
@@ -708,17 +708,19 @@
                         <label for="street">Địa chỉ cụ thể</label>
                         <input type="text" class="form-control" name="Street" id="street">
                     </div>
+                    <div class="col-md-4">
+                        <label for="btn_PhiShip">Phí ship</label>
+                        <input id="btn_PhiShip" class="form-control " type="text" />
+                       
+                    </div>
                     <div class="col-md-12 text-center">
                         <label for="clear"></label>
                         <button type="text" class="form-control w-50 d-grid gap-2 col-6 mx-auto" name="clear" id="clear">Reset địa chỉ</button>
                     </div>
-                    <div class="col-md-2">
-                        <label for="btn_PhiShip">Phí ship</label>
-                        <input id="btn_PhiShip" class="form-control" type="text" />
-                    </div>
+                    
                     <div class="col-md-10">
                         <label for="btn_ghichu">Ghi chú</label>
-                        <input id="btn_ghichu" class="form-control" type="text" />
+                        <textarea id="btn_ghichu" class="form-control" type="text" /></textarea>
                     </div>
                     <div class="col-md-4" style="display:none">
                         <label for="btn_TongGiaTriHangHoa">Tổng tiền</label>

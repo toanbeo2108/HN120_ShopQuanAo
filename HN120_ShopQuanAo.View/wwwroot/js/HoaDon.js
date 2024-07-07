@@ -30,8 +30,28 @@ $(document).ready(function () {
     $('body').on('click', '#btn_thanhtoanhoadon', function () {
         if ($('#btn_phuongthucthanhtoan').val() == '4') {
 
-            $.notify( 'Phương thức thanh toán chỉ áp dụng cho đặt hàng tại quầy', 'error' );
+            $.notify('Phương thức thanh toán chỉ áp dụng cho đặt hàng tại quầy', 'error');
+            return;
         }
+        if ($('#btn_TenKhachHang').val() != '' && $('#btn_SoDienThoai').val() == '') {
+            $.notify('Vui lòng nhập số điện thoại', 'error');
+            return;
+        }
+        if ($('#btn_TenKhachHang').val() != '') {
+            var phoneInput = $('#btn_SoDienThoai');
+            var phoneError = $('#phoneError');
+            var phoneNumber = phoneInput.val();
+
+            // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+            var phonePattern = /^0\d{9,10}$/;
+
+            // Kiểm tra tính hợp lệ của số điện thoại
+            if (!phonePattern.test(phoneNumber)) {
+                $.notify('Số điện thoại không hợp lệ', 'error');
+                return;
+            }
+        }
+
         var today = new Date();
         var date = 'HD' + today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         $('#btn_ma').val(date.toString());
@@ -211,7 +231,24 @@ $(document).ready(function () {
 
         let tt = ($('#btn_tienkhachdua').val().replace(/\./g, '').replace(',', '.'));
         let kt = ($('#btn_tienkhachphaitra').val().replace(/\./g, '').replace(',', '.'));
+        if ($('#btn_TenKhachHang').val() != '' && $('#btn_SoDienThoai').val() == '') {
+            $.notify('Vui lòng nhập số điện thoại', 'error');
+            return;
+        }
+        if ($('#btn_TenKhachHang').val() != '') {
+            var phoneInput = $('#btn_SoDienThoai');
+            var phoneError = $('#phoneError');
+            var phoneNumber = phoneInput.val();
 
+            // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+            var phonePattern = /^0\d{9,10}$/;
+
+            // Kiểm tra tính hợp lệ của số điện thoại
+            if (!phonePattern.test(phoneNumber)) {
+                $.notify('Số điện thoại không hợp lệ', 'error');
+                return;
+            }
+        }
         if ((tt - kt >= 0) || tt == '' || tt == '' || tt == 0) {
             if ($('#btn_phuongthucthanhtoan').val() == 1) {
 
@@ -242,13 +279,15 @@ $(document).ready(function () {
         var quanHuyen = selectedOption.getAttribute('data-quanhuyen');
         var xaPhuong = selectedOption.getAttribute('data-xaphuong');
         var cuThe = selectedOption.getAttribute('data-cuthe');
+        var sodt = selectedOption.getAttribute('data-sodienthoai');
         if ($('#btn_btn_TenKhachHang').val != '') {
             document.getElementById('city').innerHTML = '<option value="' + tinhThanh + '">' + tinhThanh + '</option>';
             document.getElementById('district').innerHTML = '<option value="' + quanHuyen + '">' + quanHuyen + '</option>';
             document.getElementById('ward').innerHTML = '<option value="' + xaPhuong + '">' + xaPhuong + '</option>';
-            document.getElementById('street').value = cuThe;
+            document.getElementById('street').value = cuThe; document.getElementById('btn_SoDienThoai').value = sodt;
         }
         loadTinhThanh();
+
     });
 });
 
