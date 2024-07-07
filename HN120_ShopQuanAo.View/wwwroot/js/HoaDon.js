@@ -6,7 +6,7 @@ $(document).ready(function () {
         notification = JSON.parse(notification);
         $.notify(notification.message, notification.type);
         localStorage.removeItem('notification');
-    } console.log($('#btn_maQR').val());
+    } 
     var token = '8fbfedf6-b458-11ee-b6f7-7a81157ff3b1';
     filterFunction();
     addSelectButtonEventListeners();
@@ -119,8 +119,6 @@ $(document).ready(function () {
                 });
 
                 response.data.forEach(function (item) {
-                    console.log('So sánh:', item.WardName.trim(), '===', xaphuong.trim()) // Hiển thị để kiểm tra so sánh
-
                     if (item.WardName.trim() === xaphuong.trim()) {
 
                         wardCode = item.WardCode;
@@ -550,33 +548,33 @@ function getdataHoaDonChiTiet() {
 
     return hoaDonChiTiets;
 }
-function setdataHoaDon(data) {
-    if (data == null || data == undefined || data == '') {
-        $('#btn_ma').val('');
-        $('#btn_UserID').val('');
-        $('#btn_MaVoucher').val('');
-        $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD HH:mm:ss'));
-        $('#btn_TenKhachHang').val('');
-        $('#btn_SoDienThoai').val('');
-        $('#btn_PhiShip').val('');
-        $('#btn_tongtien').val('');
-        $('#btn_PhuongTTT').val('');
-        $('#btn_Status').val(5);    
-    }
-    else {
-        var nt = moment(data.ngayTaoDon).format('YYYY-MM-DD HH:mm:ss');
-        $('#btn_ma').val(data.maHoaDon);
-        $('#btn_UserID').val(data.userID);
-        $('#btn_MaVoucher').val(data.maVoucher);
-        $('#btn_NgayTaoDon').val(data.ngayTaoDon) != null ? $('#btn_NgayTaoDon').val(nt) : '';
-        $('#btn_TenKhachHang').val(data.tenKhachHang);
-        $('#btn_SoDienThoai').val(data.soDienThoai);
-        $('#btn_PhiShip').val(data.phiShip);
-        $('#btn_tongtien').val(data.tongGiaTriHangHoa);
-        $('#btn_PhuongTTT').val(data.phuongThucThanhToan);
-        $('#btn_Status').val(data.trangThai);
-    }
-}
+//function setdataHoaDon(data) {
+//    if (data == null || data == undefined || data == '') {
+//        $('#btn_ma').val('');
+//        $('#btn_UserID').val('');
+//        $('#btn_MaVoucher').val('');
+//        $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD HH:mm:ss'));
+//        $('#btn_TenKhachHang').val('');
+//        $('#btn_SoDienThoai').val('');
+//        $('#btn_PhiShip').val('');
+//        $('#btn_tongtien').val('');
+//        $('#btn_PhuongTTT').val('');
+//        $('#btn_Status').val(5);    
+//    }
+//    else {
+//        var nt = moment(data.ngayTaoDon).format('YYYY-MM-DD HH:mm:ss');
+//        $('#btn_ma').val(data.maHoaDon);
+//        $('#btn_UserID').val(data.userID);
+//        $('#btn_MaVoucher').val(data.maVoucher);
+//        $('#btn_NgayTaoDon').val(data.ngayTaoDon) != null ? $('#btn_NgayTaoDon').val(nt) : '';
+//        $('#btn_TenKhachHang').val(data.tenKhachHang);
+//        $('#btn_SoDienThoai').val(data.soDienThoai);
+//        $('#btn_PhiShip').val(data.phiShip);
+//        $('#btn_tongtien').val(data.tongGiaTriHangHoa);
+//        $('#btn_PhuongTTT').val(data.phuongThucThanhToan);
+//        $('#btn_Status').val(data.trangThai);
+//    }
+//}
 function getdataHoaDon() {
     var tenkhachhang = $('#btn_TenKhachHang').val()
     if (tenkhachhang == '') {
@@ -606,11 +604,8 @@ function getdataHoaDon() {
 function Thanhtoan() {
     var hoaDonChiTiets = getdataHoaDonChiTiet();
     var hoaD = getdataHoaDon();
-    console.log(hoaD);
-    $.post('/Add-hoadon', { hd: getdataHoaDon() }, function (re) {
-        console.log(re.data)
+    $.post('/Add-hoadon', { hd: hoaD }, function (re) {
         if (re.status) {
-            console.log(getdataHoaDon());
             $.ajax({
                 url: '/Add-hoadonct',
                 type: 'POST',

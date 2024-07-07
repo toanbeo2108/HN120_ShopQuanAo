@@ -10,8 +10,30 @@
     
 }
 @if (litspctview.Any())
-{
-    <table class="table table-bordered" style="height: 630px; overflow-y: auto;">
+{<div class="row">
+    <div class="col-md-4">
+        <input type="text" id="search-input" class="form-control" onkeyup="filterFunction()" placeholder="Tìm kiếm...">
+    </div>
+    <div class="col-md-4">
+        <select id="select-color" class="form-select" aria-label="Default select example" onchange="filterFunction()">
+            <option selected>Chọn màu</option>
+            @foreach (var item in litspctview.Select(x => x.TenMau).Distinct())
+            {
+                <option value="@item">@item</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-4">
+        <select id="select-size" class="form-select" aria-label="Default selectexample" onchange="filterFunction()">
+            <option selected>Chọn size</option>
+            @foreach (var item in litspctview.Select(x => x.TenSize).Distinct())
+            {
+                <option value="@item">@item</option>
+            }
+        </select>
+    </div>
+</div>
+    <table class="table table-bordered" id="sp_table_" style="height: 630px; overflow-y: auto;">
         <thead>
             <tr>
                 <th>STT</th>
@@ -56,7 +78,8 @@
                            data-GiaBan="@item.GiaBan"
                            data-img="@item.UrlAnhSpct"
                            data-trangthai="@item.TrangThai"
-                        >
+                           data-masize="@item.TenSize"
+                           data-mamau="@item.TenMau">
                             <i class="fa-solid fa-plus" style="color: #f00f0f;"></i>
                           </button>
                     </td>
@@ -71,3 +94,29 @@ else
 {
     <p>Không có dữ liệu.</p>
 }
+<script>
+    function filterFunction() {
+        var searchInput = document.getElementById("search-input").value.toUpperCase();
+        var selectedColor = document.getElementById("select-color").value;
+        var selectedSize = document.getElementById("select-size").value;
+        var table = document.getElementById("sp_table_");
+        var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+        // table = document.getElementById("sp_table");
+        // tr = table.getElementsByTagName("tr");
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var color = row.querySelector('[data-mamau]').getAttribute('data-mamau').trim();
+            var size = row.querySelector('[data-masize]').getAttribute('data-masize').trim();
+            var tenSp = row.querySelector('[data-tensp]').getAttribute('data-tensp').toUpperCase().trim();
+            if ((selectedColor === "Chọn màu" || color === selectedColor) &&
+                (selectedSize === "Chọn size" || size === selectedSize) &&
+                (tenSp.includes(searchInput))) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+
+        }
+    }
+</script>

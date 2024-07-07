@@ -78,7 +78,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                             <label for="btn_UserName">Nhân viên:</label>
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <input class="form-control" type="text" id="btn_UserName" value="@user.UserName" readonly />
+                                <input class="form-control" type="text" id="btn_UserName" value="@user.UserName" readonly style="display:block"/>
+                                <input class="form-control" type="text" id="btn_UserID" value="@user.UserId" readonly style="display:none"/>
                             }
                             else
                             {
