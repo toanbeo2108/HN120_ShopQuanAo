@@ -132,7 +132,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                        quanhuyen = ad.District,
                        xaphuong = ad.Ward,
                        cuthe = ad.Street,
-
+                       sdt = ad.PhoneNumber
                        };
 
             ViewBag.user = user.ToList();
@@ -386,7 +386,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                            quanhuyen = ad.District,
                            xaphuong = ad.Ward,
                            cuthe = ad.Street,
-
+                         //  sdt = ad.PhoneNumber
                        };
 
             ViewBag.user = user.ToList();
