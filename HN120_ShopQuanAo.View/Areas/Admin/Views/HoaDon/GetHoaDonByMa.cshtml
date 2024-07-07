@@ -649,8 +649,10 @@
                     </div>
 
                     <div class="col-md-4">
+                        
                         <label for="btn_UserID">Tên nhân viên</label>
                         <input id="btn_UserID" class="form-control" type="text" style="display:none" />
+                        
                         @foreach (var nv in ListUseradmin)
                         {
                             if (nv.Id == Model.UserID)
