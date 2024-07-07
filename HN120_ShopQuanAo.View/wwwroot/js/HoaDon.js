@@ -26,7 +26,7 @@ $(document).ready(function () {
             giaBanCell.html(formatMoney(giaBan) + ' VNĐ<br>' + giaBanCell.html().split('<br>')[1]);
         }
     });
-    $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD'));
+    $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD HH:mm:ss'));
     $('body').on('click', '#btn_thanhtoanhoadon', function () {
         if ($('#btn_phuongthucthanhtoan').val() == '4') {
 
@@ -44,7 +44,7 @@ $(document).ready(function () {
             if ($('#btn_phuongthucthanhtoan').val() =='1') {
                
                 Thanhtoan();
-              
+                AddLichsuhoadon();
             }
             if ($('#btn_phuongthucthanhtoan').val() == '2') {
               
@@ -56,6 +56,7 @@ $(document).ready(function () {
         if ( $('#btn_phuongthucthanhtoan').val() == '3') {
 
             QRCODE_PAYMENT();
+           
         }
        
     });
@@ -217,19 +218,23 @@ $(document).ready(function () {
             if ($('#btn_phuongthucthanhtoan').val() == 1) {
 
                 Thanhtoan();
+                AddLichsuhoadon();
             }
             if ($('#btn_phuongthucthanhtoan').val() == 2) {
 
                 QRCODE_PAYMENT();
+              
             }
 
         }
         if ($('#btn_phuongthucthanhtoan').val() == 3) {
 
             QRCODE_PAYMENT();
+           
         }   
         if ($('#btn_phuongthucthanhtoan').val() == 4) {
             Thanhtoan();
+            AddLichsuhoadon();
         }
     })
 
@@ -293,6 +298,7 @@ async function checkpaid(price , content) {
             let ct = lastPaid['Mô tả'];           
             if (pr >= price && ct.includes(content)) {                
                 Thanhtoan(); 
+                AddLichsuhoadon();
             }
             else {
                 console.log('giao dịch không thành công'); 
@@ -458,7 +464,7 @@ function addNewRow(table, sku, tenSp, giaBan, maSize, maMau, slton) {
     soLuongCell.innerHTML = '<input type="number" value="1" min="1" class="form-control" oninput="updateTotalPrice(this, ' + giaBan + ', ' + slton + ')">';
 
     giaBanCell.innerText = formatMoney(giaBan);
-    actionCell.innerHTML = `<button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash fa-beat" style="color: #b71515;"></i></button>`;
+    actionCell.innerHTML = `<button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>`;
     updatePaymentDetails();
 }
 // Function to update total price based on quantity change
@@ -549,7 +555,7 @@ function setdataHoaDon(data) {
         $('#btn_ma').val('');
         $('#btn_UserID').val('');
         $('#btn_MaVoucher').val('');
-        $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD'));
+        $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD HH:mm:ss'));
         $('#btn_TenKhachHang').val('');
         $('#btn_SoDienThoai').val('');
         $('#btn_PhiShip').val('');
@@ -558,7 +564,7 @@ function setdataHoaDon(data) {
         $('#btn_Status').val(5);    
     }
     else {
-        var nt = moment(data.ngayTaoDon).format('YYYY-MM-DD');
+        var nt = moment(data.ngayTaoDon).format('YYYY-MM-DD HH:mm:ss');
         $('#btn_ma').val(data.maHoaDon);
         $('#btn_UserID').val(data.userID);
         $('#btn_MaVoucher').val(data.maVoucher);
@@ -599,6 +605,8 @@ function getdataHoaDon() {
 }
 function Thanhtoan() {
     var hoaDonChiTiets = getdataHoaDonChiTiet();
+    var hoaD = getdataHoaDon();
+    console.log(hoaD);
     $.post('/Add-hoadon', { hd: getdataHoaDon() }, function (re) {
         console.log(re.data)
         if (re.status) {
@@ -643,14 +651,10 @@ function Thanhtoan() {
         alert('Có lỗi xảy ra khi thêm hóa đơn: ' + error);
     });
 }
-function getThanhToanHoaDon() {
-   
-    return data;
-}
 function AddThanhTOanHoaDon() {
     let stt;
-    if ($('#btn_phuongthucthanhtoan').val() == '4') {
-        stt =0
+    if ($('#btn_phuongthucthanhtoan').val() == 4) {
+        stt = 0
     }
     else {
         stt = 1
@@ -665,6 +669,34 @@ function AddThanhTOanHoaDon() {
     $.post('/Add-ThanhToanhoadon', { tt: data }, function (re) {
         if (re.status) {
             
+        }
+        else {
+            console.log('Lưu thanh toán hóa đơn thất bại');
+        }
+
+    })
+}
+function AddLichsuhoadon() {   
+    var today = new Date();
+
+    var date = 'HD' + today.getDate() + (today.getMonth() + 1) + today.getFullYear() + today.getHours() + today.getMinutes() + today.getSeconds();
+    var tongtienhoadon = $('#btn_tienkhachphaitra').val().replace(/\./g, '').split(',')[0];  
+    var selectedUserName = $("#btn_UserID option:selected").text();
+    var data = {
+        LichSuHoaDonID: date,
+        MaHoaDon: $('#btn_ma').val(),
+        UserID: $('#btn_UserName').val(),
+        NgayTaoDon: $('#btn_NgayTaoDon').val(),
+        NgayThayDoi: $('#btn_NgayTaoDon').val(),
+        TongGiaTri: parseFloat(tongtienhoadon),
+        HinhThucThanhToan: $('#btn_phuongthucthanhtoan').val(),
+        ChiTiet: $('#btn_Status').val(),
+        TrangThai: parseInt($('#btn_Status').val()) 
+    };
+
+    $.post('/Add-lichsuhoadon', { lshd: data }, function (re) {
+        if (re.status) {
+
         }
         else {
             console.log('Lưu thanh toán hóa đơn thất bại');

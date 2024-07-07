@@ -116,7 +116,7 @@ function fakedata() {
     })
 }
 function setdatafake(data) {
-    var nt = moment(data.ngayTaoDon).format('YYYY-MM-DD');
+    var nt = moment(data.ngayTaoDon).format('YYYY-MM-DD HH:mm:ss');
     $('#btn_ma_fake').val(data.maHoaDon);
     $('#btn_UserID_fake').val(data.userID);
     $('#btn_MaVoucher_fake').val(data.maVoucher);

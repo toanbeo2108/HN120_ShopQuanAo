@@ -1,5 +1,4 @@
-﻿//import { error } from "console";
-
+﻿
 $(document).ready(function () {
     var notification = localStorage.getItem('notification');
     if (notification) {
@@ -7,6 +6,8 @@ $(document).ready(function () {
         $.notify(notification.message, notification.type);
         localStorage.removeItem('notification');
     }
+    $('#btn_ngaytao').val(moment().format('YYYY-MM-DD HH:mm:ss'));
+    $('#btn_ngaythaydoils').val(moment().format('YYYY-MM-DD HH:mm:ss'));
     let ma = $('#btn_mahoadon').val();
     $('#GetAllHoaDon_partialView').show();
     $('#HoaDonTaiQuayPartialView').hide();
@@ -177,229 +178,129 @@ $(document).ready(function () {
     })
    
     $('body').on('click', '#btn_Xacnhandonhang', function () {
-        let ma = $('#btn_mahoadon').val();
-        var datahdct = getdataahoadonchitiet();
-
-        $.get('/Detail-hoadon/' + ma, function (re) {
-            if (re.status) {
-                setdata(re.data)
-                var data = {
-                    MaHoaDon: $('#btn_mahoadon').val(),
-                    UserID: $('#btn_UserID').val(),
-                    MaVoucher: $('#btn_MaVoucher').val(),
-                    NgayTaoDon: $('#btn_NgayTaoDon').val(),
-                    TenKhachHang: $('#btn_TenKhachHang').val(),
-                    SoDienThoai: $('#btn_SoDienThoai').val(),
-                    PhiShip: $('#btn_PhiShip').val() != '' ? $('#btn_PhiShip').val() : 0,
-                    TongGiaTriHangHoa: $('#btn_TongGiaTriHangHoa').val(),
-                    PhuongThucThanhToan: $('#btn_PhuongTTT').val(),
-                    TrangThai: 2,
-                    PhanLoai: $('#btn_phanloai').val(),
-                    TinhThanh: $('#city').val(),
-                    QuanHuyen: $('#district').val(),
-                    XaPhuong: $('#ward').val(),
-                    Cuthe: $('#street').val(),
-                    Ghichu: $('#btn_ghichu').val(),
-                }                 
-                $.post('/Update-hoadon', { hd: data }, function (re) {
-                    if (re.status) {
-                        
-                        $.ajax({
-                            url: '/Update-hoadonct',
-                            type: 'POST',
-                            contentType: 'application/json',
-                            data: JSON.stringify(datahdct),
-                            success: function (response) {
-                               
-                                if (response.status) {
-                                    localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }))
-                                  
-                                    window.location.reload();
-                                } else {
-                                    $.notify("Đã xảy ra lỗi: " + err, 'error');
-                                }
-                            },                           
-                        }); 
-                    }
-                    else {
-                        $.notify('Có lỗi sảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error')
-                    }
-                })
-            }
-            else {
-                $.notify('Có lỗi xảy ra: ' + error, 'error');
-            }
-        })
-
-        
+     /*   let ma = $('#btn_mahoadon').val();*/
+        let datahdct = getdataahoadonchitiet();
+        updateHoaDon(2);
+        updateHoaDonChiTiet(datahdct);
+        AddLichsuhoadon(2);
     })
     $('body').on('click', '#btn_ChoGiaoHang', function () {
-        let ma = $('#btn_mahoadon').val();
-        $.get('/Detail-hoadon/' + ma, function (re) {
-            if (re.status) {
-                setdata(re.data)
-                var data = {
-                    MaHoaDon: $('#btn_mahoadon').val(),
-                    UserID: $('#btn_UserID').val(),
-                    MaVoucher: $('#btn_MaVoucher').val(),
-                    NgayTaoDon: $('#btn_NgayTaoDon').val(),
-                    TenKhachHang: $('#btn_TenKhachHang').val(),
-                    SoDienThoai: $('#btn_SoDienThoai').val(),
-                    PhiShip: $('#btn_PhiShip').val() != '' ? $('#btn_PhiShip').val() : 0,
-                    TongGiaTriHangHoa: $('#btn_TongGiaTriHangHoa').val(),
-                    PhuongThucThanhToan: $('#btn_PhuongTTT').val(),
-                    TrangThai: 3,
-                    PhanLoai: $('#btn_phanloai').val(),
-                    TinhThanh: $('#city').val(),
-                    QuanHuyen: $('#district').val(),
-                    XaPhuong: $('#ward').val(),
-                    Cuthe: $('#street').val(),
-                    Ghichu: $('#btn_ghichu').val(),
-                }
-                $.post('/Update-hoadon', { hd: data }, function (re) {
-
-                    if (re.status) {
-                        localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }))
-                        $('#pop').modal('hide');
-                        window.location.reload();
-                    }
-                    else {
-                        $.notify('Có lỗi sảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error')
-                    }
-                })
-            }
-            else {
-                alert(re.message)
-            }
-        })
+        updateHoaDon(3);
+        AddLichsuhoadon(3);
     })
     $('body').on('click', '#btn_GiaoHang', function () {
-        let ma = $('#btn_mahoadon').val();
-        $.get('/Detail-hoadon/' + ma, function (re) {
-            if (re.status) {
-                setdata(re.data)
-                var data = {
-                    MaHoaDon: $('#btn_mahoadon').val(),
-                    UserID: $('#btn_UserID').val(),
-                    MaVoucher: $('#btn_MaVoucher').val(),
-                    NgayTaoDon: $('#btn_NgayTaoDon').val(),
-                    TenKhachHang: $('#btn_TenKhachHang').val(),
-                    SoDienThoai: $('#btn_SoDienThoai').val(),
-                    PhiShip: $('#btn_PhiShip').val() != '' ? $('#btn_PhiShip').val() : 0,
-                    TongGiaTriHangHoa: $('#btn_TongGiaTriHangHoa').val(),
-                    PhuongThucThanhToan: $('#btn_PhuongTTT').val(),
-                    TrangThai: 4,
-                    PhanLoai: $('#btn_phanloai').val(),
-                    TinhThanh: $('#city').val(),
-                    QuanHuyen: $('#district').val(),
-                    XaPhuong: $('#ward').val(),
-                    Cuthe: $('#street').val(),
-                    Ghichu: $('#btn_ghichu').val(),
-                }
-                $.post('/Update-hoadon', { hd: data }, function (re) {
-
-                    if (re.status) {
-                        localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }))
-                        $('#pop').modal('hide');
-                        window.location.reload();
-                    }
-                    else {
-                        $.notify('Có lỗi sảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error')
-                    }
-                })
-            }
-            else {
-                alert(re.message)
-            }
-        })
+        updateHoaDon(4);
+        AddLichsuhoadon(4);
     })
     $('body').on('click', '#btn_HoanThanh', function () {
-        let ma = $('#btn_mahoadon').val();
-        $.get('/Detail-hoadon/' + ma, function (re) {
-            if (re.status) {
-                setdata(re.data)
-                var data = {
-                    MaHoaDon: $('#btn_mahoadon').val(),
-                    UserID: $('#btn_UserID').val(),
-                    MaVoucher: $('#btn_MaVoucher').val(),
-                    NgayTaoDon: $('#btn_NgayTaoDon').val(),
-                    TenKhachHang: $('#btn_TenKhachHang').val(),
-                    SoDienThoai: $('#btn_SoDienThoai').val(),
-                    PhiShip: $('#btn_PhiShip').val() != '' ? $('#btn_PhiShip').val() : 0,
-                    TongGiaTriHangHoa: $('#btn_TongGiaTriHangHoa').val(),
-                    PhuongThucThanhToan: $('#btn_PhuongTTT').val(),
-                    TrangThai: 5,
-                    PhanLoai: $('#btn_phanloai').val(),
-                    TinhThanh: $('#city').val(),
-                    QuanHuyen: $('#district').val(),
-                    XaPhuong: $('#ward').val(),
-                    Cuthe: $('#street').val(),
-                    Ghichu: $('#btn_ghichu').val(),
-                }
-                $.post('/Update-hoadon', { hd: data }, function (re) {
-
-                    if (re.status) {
-                        localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }))
-                        $('#pop').modal('hide');
-                        window.location.reload();
-                    }
-                    else {
-                        $.notify('Có lỗi sảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error')
-                    }
-                })
-            }
-            else {
-                alert(re.message)
-            }
-        })
+        updateHoaDon(5);
+        AddLichsuhoadon(5);
     })
-    $('body').on('click', '#btn_HoanThanh', function () {
-        fakedata();
-        $('#btn_Status').val(5);
-        //  updatehoadon_fake();
-    })
+ 
     $('body').on('click', '#btn_back', function () {
-        let ma = $('#btn_mahoadon').val();
-        $.get('/Detail-hoadon/' + ma, function (re) {
-            if (re.status) {
-                setdata(re.data)
-                let stt = parseInt($('#btn_Status').val());
-                var data = {
-                    MaHoaDon: $('#btn_mahoadon').val(),
-                    UserID: $('#btn_UserID').val(),
-                    MaVoucher: $('#btn_MaVoucher').val(),
-                    NgayTaoDon: $('#btn_NgayTaoDon').val(),
-                    TenKhachHang: $('#btn_TenKhachHang').val(),
-                    SoDienThoai: $('#btn_SoDienThoai').val(),
-                    PhiShip: $('#btn_PhiShip').val() != '' ? $('#btn_PhiShip').val() : 0,
-                    TongGiaTriHangHoa: $('#btn_TongGiaTriHangHoa').val(),
-                    PhuongThucThanhToan: $('#btn_PhuongTTT').val(),
-                    TrangThai: (stt -1),
-                    PhanLoai: $('#btn_phanloai').val(),
-                    TinhThanh: $('#city').val(),
-                    QuanHuyen: $('#district').val(),
-                    XaPhuong: $('#ward').val(),
-                    Cuthe: $('#street').val(),
-                    Ghichu: $('#btn_ghichu').val(),
-                }
-                $.post('/Update-hoadon', { hd: data }, function (re) {
+        let stt = $('#stt_hoadon').val();
+        updateHoaDon(stt - 1);
+        AddLichsuhoadon(stt - 1);
+    })
+    $('body').on('click', '#btn_huydon', function () {
+       
+        $('#pop_huydon').modal('show');
+       
+    })
+    $('body').on('click', '#btn_dongy', function () {
+        if ($('#btn_ghichuhuy').val() == '') {
+            $.notify('Vui lòng nhập ghi chú', 'error');
+        }
+        else {
+            var today = new Date();
 
-                    if (re.status) {
-                        localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }))
-                        $('#pop').modal('hide');
-                        window.location.reload();
-                    }
-                    else {
-                        $.notify('Có lỗi sảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error')
-                    }
-                })
-            }
-            else {
-                alert(re.message)
-            }
-        })
+            var date = 'HD' + today.getDate() + (today.getMonth() + 1) + today.getFullYear() + today.getHours() + today.getMinutes() + today.getSeconds();
+            var tongtienhoadon = $('#btn_tonggiatrihd').val().replace(/\./g, '').split(',')[0];
+            var data = {
+                LichSuHoaDonID: date,
+                MaHoaDon: $('#btn_mahoadonls').val(),
+                UserID: $('#btn_nhanvien').val(),
+                NgayTaoDon: $('#btn_ngaytao').val(),
+                NgayThayDoi: $('#btn_ngaythaydoils').val(),
+                TongGiaTri: parseFloat(tongtienhoadon),
+                HinhThucThanhToan: $('#btn_httt').val(),
+                ChiTiet: $('#btn_ghichuhuy').val(),
+                TrangThai: parseInt($('#btn_trangthai').val())
+            };
+
+            $.post('/Add-lichsuhoadon', { lshd: data }, function (re) {
+                if (re.status) {
+                    updateHoaDon(6);
+                    window.location.reload();
+                }
+                else {
+                    $.notify('Lưu hóa đơn thất bại', 'error');
+               
+                }
+
+            })
+        }
+    });
+    $('body').on('click', '#btn_xemlichsu', function () {
+        $('#pop_lshd').modal('show');
     })
 })
+
+function updateHoaDon(status) {
+    let ma = $('#btn_mahoadon').val();
+    $.get('/Detail-hoadon/' + ma, function (re) {
+        if (re.status) {
+            setdata(re.data);
+            let data = {
+                MaHoaDon: $('#btn_mahoadon').val(),
+                UserID: $('#btn_UserID').val(),
+                MaVoucher: $('#btn_MaVoucher').val(),
+                NgayTaoDon: $('#btn_NgayTaoDon').val(),
+                TenKhachHang: $('#btn_TenKhachHang').val(),
+                SoDienThoai: $('#btn_SoDienThoai').val(),
+                PhiShip: $('#btn_PhiShip').val() != '' ? $('#btn_PhiShip').val() : 0,
+                TongGiaTriHangHoa: $('#btn_TongGiaTriHangHoa').val(),
+                PhuongThucThanhToan: $('#btn_PhuongTTT').val(),
+                TrangThai: status,
+                PhanLoai: $('#btn_phanloai').val(),
+                TinhThanh: $('#city').val(),
+                QuanHuyen: $('#district').val(),
+                XaPhuong: $('#ward').val(),
+                Cuthe: $('#street').val(),
+                Ghichu: $('#btn_ghichu').val(),
+            };
+
+            $.post('/Update-hoadon', { hd: data }, function (re) {
+                if (re.status) {
+                    localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }));
+                    window.location.reload();
+                } else {
+                    $.notify('Có lỗi xảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error');
+                }
+            });
+        } else {
+            alert(re.message);
+        }
+    });
+}
+
+function updateHoaDonChiTiet(datahdct) {
+    $.ajax({
+        url: '/Update-hoadonct',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(datahdct),
+        success: function (response) {
+            if (response.status) {
+                localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }));
+                window.location.reload();
+            } else {
+                $.notify("Đã xảy ra lỗi: " + err, 'error');
+            }
+        }
+    });
+}
+
 function updatehoadon() {
     $.post('/Update-hoadon', { hd: getdatahoadon() }, function (re) {
 
@@ -414,9 +315,9 @@ function updatehoadon() {
     })
 }
 function setdata(data) {  
-        var nt = moment(data.ngayTaoDon).format('YYYY-MM-DD');
+    var nt = moment(data.ngayTaoDon).format('YYYY-MM-DD HH:mm:ss');
     $('#btn_mahoadon').val(data.maHoaDon);
-        $('#btn_UserID').val(data.userID);
+      $('#btn_UserID').val(data.userID);
         $('#btn_MaVoucher').val(data.maVoucher);
         $('#btn_NgayTaoDon').val(data.ngayTaoDon) != null ? $('#btn_NgayTaoDon').val(nt) : '';
         $('#btn_TenKhachHang').val(data.tenKhachHang);
@@ -437,7 +338,7 @@ function setdata(data) {
 function getdatahoadon() {
     return {
         MaHoaDon: $('#btn_mahoadon').val(),
-        UserID: $('#btn_UserID').val(),
+        UserID: $('#btn_UserName').val(),
         MaVoucher: $('#btn_MaVoucher').val(),
         NgayTaoDon: $('#btn_NgayTaoDon').val(),
         TenKhachHang: $('#btn_TenKhachHang').val(),
@@ -477,4 +378,31 @@ function getdataahoadonchitiet() {
     hdctList.push(dt);
     });
     return hdctList;
+}
+function AddLichsuhoadon(status) {
+    var today = new Date();
+
+    var date = 'HD' + today.getDate() + (today.getMonth() + 1) + today.getFullYear() + today.getHours() + today.getMinutes() + today.getSeconds();
+    var tongtienhoadon = $('#btn_tonggiatrihd').val().replace(/\./g, '').split(',')[0];
+    var data = {
+        LichSuHoaDonID: date,
+        MaHoaDon: $('#btn_mahoadonls').val(),
+        UserID: $('#btn_UserName').val(),
+        NgayTaoDon: $('#btn_ngaytao').val(),
+        NgayThayDoi: $('#btn_ngaythaydoils').val(),
+        TongGiaTri: parseFloat(tongtienhoadon),
+        HinhThucThanhToan: $('#btn_httt').val(),
+        ChiTiet: status,
+        TrangThai: status,
+    };
+
+    $.post('/Add-lichsuhoadon', { lshd: data }, function (re) {
+        if (re.status) {
+            
+        }
+        else {
+          
+        }
+
+    })
 }

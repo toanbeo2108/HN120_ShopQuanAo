@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <!-- Load jQuery from CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>LichSuHoaDonID</th>
+                <th>MaHoaDon</th>
+                <th>UserID</th>
+                <th>NgayTaoDon</th>
+                <th>NgayThayDoi</th>
+                <th>TongGiaTri</th>
+                <th>HinhThucThanhToan</th>
+                <th>ChiTiet</th>
+                <th>TrangThai</th>
+            </tr>
+        </thead>
+        <tbody id="lichSuHoaDonBody">
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            function getData() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/GetAll-LichSuHoaDon', // Adjust the URL as needed
+                    success: function(response) {
+                        console.log(response); // Log entire response for debugging
+                        if (response.status) {
+                            var data = response.data;
+                            console.log(data); // Log data to see if it's correct
+                            var tableBody = $('#lichSuHoaDonBody');
+                            tableBody.empty(); // Clear existing data
+
+                            data.forEach(function(item) {
+                                var row = '<tr>' +
+                                    '<td>' + (item.LichSuHoaDonID || '') + '</td>' +
+                                    '<td>' + (item.MaHoaDon || '') + '</td>' +
+                                    '<td>' + (item.UserID || '') + '</td>' +
+                                    '<td>' + (item.NgayTaoDon ? new Date(item.NgayTaoDon).toLocaleDateString() : '') + '</td>' +
+                                    '<td>' + (item.NgayThayDoi ? new Date(item.NgayThayDoi).toLocaleDateString() : '') + '</td>' +
+                                    '<td>' + (item.TongGiaTri || '') + '</td>' +
+                                    '<td>' + (item.HinhThucThanhToan || '') + '</td>' +
+                                    '<td>' + (item.ChiTiet || '') + '</td>' +
+                                    '<td>' + (item.TrangThai || '') + '</td>' +
+                                    '</tr>';
+                                tableBody.append(row);
+                            });
+                        } else {
+                            console.log('Không tìm thấy dữ liệu: ' + response.message);
+                        }
+                    },
+                    error: function(err) {
+                        console.log('Error: ', err);
+                    }
+                });
+            }
+
+            // Call getData when the document is ready
+            getData();
+        });
+    </script>
+</body>
+</html>

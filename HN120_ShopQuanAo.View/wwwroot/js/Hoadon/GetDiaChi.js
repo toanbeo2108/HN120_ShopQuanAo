@@ -17,7 +17,7 @@
         document.getElementById('district').innerHTML = '<option value="" selected>Chọn quận huyện</option>';
         document.getElementById('ward').innerHTML = '<option value="" selected>Chọn phường xã</option>';
         document.getElementById('street').value = '';
-        $('#btn_PhiShip').val('');
+        $('#btn_PhiShip').val(0);
         var Parameter = {
             url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
             method: "GET",
