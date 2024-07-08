@@ -15,8 +15,8 @@ namespace HN120_ShopQuanAo.Data.Models
 		public string? MaGioHang { get; set; }
 		public string? SKU { get; set; }
 		public string? TenSp { get; set; }
-		public string? DonGia { get; set; }
-		public string? SoLuong { get; set; }
+		public decimal? DonGia { get; set; }
+		public int? SoLuong { get; set; }
 		public decimal? ThanhTien	{ get; set; }
 		public int? TrangThai { get; set; }
 		

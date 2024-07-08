@@ -29,7 +29,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _context.GioHangChiTiet.Where(x => x.MaGioHang == MaGH).ToListAsync();
         }
         [HttpPost("[Action]")]
-        public async Task<bool> CreateGioHangChiTiet( string? MaGH,string? SKU, string? TenSP,string? DonGia,string? SoLuong,decimal? ThanhTien,int? TrangThai)
+        public async Task<bool> CreateGioHangChiTiet( string? MaGH,string? SKU, string? TenSP,decimal? DonGia,int? SoLuong,decimal? ThanhTien,int? TrangThai)
         {
             GioHangChiTiet GHCT = new GioHangChiTiet();
             GHCT.MaGioHangChiTiet = Guid.NewGuid().ToString();
