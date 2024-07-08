@@ -31,8 +31,8 @@ builder.Services.AddScoped<IThanhToanHoaDonService, ThanhToanHoaDonService>();
 builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
 builder.Services.AddScoped<IThanhToanRepository, ThanhToanRepository>();
 builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
-//builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
-//builder.Services.AddScoped<IVoucherServices, VoucherServices>();
+builder.Services.AddScoped<LichSuHoaDon_Irepository, LichSuHoaDon_Repository>();
+builder.Services.AddScoped<LichSuHoaDon_IService, LichSuHoaDon_Service>();
 
 
 
@@ -100,13 +100,18 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+    app.UseSwagger();
 	app.UseSwaggerUI();
 }
 app.UseCors(options =>
 {
 	options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 });
+app.UseStaticFiles();
+app.UseRouting();
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

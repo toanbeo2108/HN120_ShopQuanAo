@@ -63,6 +63,7 @@ namespace HN120_ShopQuanAo.API.Controllers
                 b.TenSP = _sp.TenSP;
                 b.MaTheLoai = _sp.MaTheLoai;
                 b.MaThuongHieu = _sp.MaThuongHieu;
+                b.UrlAvatar = _sp.UrlAvatar;
                 b.Mota = _sp.Mota;
                 return await _irespon.UpdateItem(b);
             }
@@ -108,12 +109,20 @@ namespace HN120_ShopQuanAo.API.Controllers
         [HttpPut("[Action]/{id}")]
         public async Task<bool> UpdateStatusSanPham(string id,int _sp)
         {
-            var ctsp = await _irespon.GetAll();
-            var b = ctsp.FirstOrDefault(c => c.MaSp == id);
-            if (b != null)
+            var lstsp = await _irespon.GetAll();
+            var sp = lstsp.FirstOrDefault(c => c.MaSp == id);
+            var lstctsp = await _iresponCTSP.GetAll();
+            var ctsp_sp = lstctsp.Where(c => c.MaSp == id).ToList();
+            if (sp != null)
             {
-                b.TrangThai = _sp;
-                return await _irespon.UpdateItem(b);
+                foreach (var ctsp in ctsp_sp)
+                {
+                    ctsp.TrangThai = _sp;
+                    await _iresponCTSP.UpdateItem(ctsp);
+                }
+                sp.TrangThai = _sp;
+
+                return await _irespon.UpdateItem(sp);
             }
             else
             {

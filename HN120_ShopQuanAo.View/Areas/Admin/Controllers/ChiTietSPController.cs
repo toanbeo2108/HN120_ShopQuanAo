@@ -1,6 +1,7 @@
 ﻿using HN120_ShopQuanAo.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Text;
 
 namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
@@ -26,6 +27,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var responSize = await _httpClient.GetAsync(urlSize);
             string apiDatasz = await responSize.Content.ReadAsStringAsync();
             var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
+            ViewBag.lstSZ = lstSZ;
 
             var urlms = $"https://localhost:7197/api/MauSac/GetAllMauSac";
             var responms = await _httpClient.GetAsync(urlms);
@@ -33,20 +35,42 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
             ViewBag.lstms = lstms;
 
+            var urlkm = "https://localhost:7197/api/KhuyenMai/GetAllKhuyenMai";
+            var responkm = await _httpClient.GetAsync(urlkm);
+            responkm.EnsureSuccessStatusCode();
+            string apiDatakm = await responkm.Content.ReadAsStringAsync();
+            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
+            ViewBag.lstkm = lstkm;
 
-            //var token = Request.Cookies["Token"];
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var urlBook = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
-            //var httpClient = new HttpClient();
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
             var lstBook = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDataBook);
             var Book = lstBook.Where(x => x.MaSp == id);
             return View(Book);
         }
+
         [HttpGet]
-        public IActionResult CreateChiTietSp(string id)
+        public async Task<IActionResult> CreateChiTietSpAsync(string id)
         {
+            var urlSize = $"https://localhost:7197/api/Size/GetAllSize";
+            var responSize = await _httpClient.GetAsync(urlSize);
+            string apiDatasz = await responSize.Content.ReadAsStringAsync();
+            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
+            ViewBag.lstSZ = lstSZ;
+
+            var urlms = $"https://localhost:7197/api/MauSac/GetAllMauSac";
+            var responms = await _httpClient.GetAsync(urlms);
+            string apiDatams = await responms.Content.ReadAsStringAsync();
+            var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
+            ViewBag.lstms = lstms;
+
+            var urlkm = "https://localhost:7197/api/KhuyenMai/GetAllKhuyenMai";
+            var responkm = await _httpClient.GetAsync(urlkm);
+            responkm.EnsureSuccessStatusCode();
+            string apiDatakm = await responkm.Content.ReadAsStringAsync();
+            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
+            ViewBag.lstkm = lstkm;
             return View();
         }
         [HttpPost]
@@ -54,20 +78,55 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         public async Task<IActionResult> CreateChiTietSp(string id,ChiTietSp bk, IFormFile imageFile)
 
         {
+            var urlSize = $"https://localhost:7197/api/Size/GetAllSize";
+            var responSize = await _httpClient.GetAsync(urlSize);
+            string apiDatasz = await responSize.Content.ReadAsStringAsync();
+            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
+            ViewBag.lstSZ = lstSZ;
+
+            var urlms = $"https://localhost:7197/api/MauSac/GetAllMauSac";
+            var responms = await _httpClient.GetAsync(urlms);
+            string apiDatams = await responms.Content.ReadAsStringAsync();
+            var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
+            ViewBag.lstms = lstms;
+
+            var urlkm = "https://localhost:7197/api/KhuyenMai/GetAllKhuyenMai";
+            var responkm = await _httpClient.GetAsync(urlkm);
+            responkm.EnsureSuccessStatusCode();
+            string apiDatakm = await responkm.Content.ReadAsStringAsync();
+            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
+            ViewBag.lstkm = lstkm;
+
+            bk.MaSp = id;
+            bk.SKU = id + bk.MaSize + bk.MaMau;
+            if (await IsDuplicateChiTietSP(bk.SKU))
+            {
+                TempData["errorMessage"] = "chi tiết sản phẩm này đã tồn tại.";
+                return View();
+            }
             if (imageFile != null && imageFile.Length > 0)
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photoSanPhamCT", imageFile.FileName);
-                var stream = new FileStream(path, FileMode.Create);
-                imageFile.CopyTo(stream);
+
+                // Kiểm tra và tạo thư mục nếu chưa tồn tại
+                var directory = Path.GetDirectoryName(path);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                // Sử dụng 'using' để đảm bảo đóng stream
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                // Cập nhật URL của ảnh vào thuộc tính
                 bk.UrlAnhSpct = imageFile.FileName;
             }
 
-            bk.MaSp = id;
-
-            //var token = Request.Cookies["Token"];
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            //bk.MaSp = DateTime.Now;
+            
+           
             var urlBook = $"https://localhost:7197/api/CTSanPham/AddCTSP?MaSp={bk.MaSp}&MaSize={bk.MaSize}&MaMau={bk.MaMau}&MaKhuyenMai={bk.MaKhuyenMai}&UrlAnhSpct={bk.UrlAnhSpct}&DonGia={bk.DonGia}&SoLuongTon={bk.SoLuongTon}";
             var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
@@ -89,47 +148,102 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
             var lstBook = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDataBook);
-            var Book = lstBook.FirstOrDefault(x => x.SKU == id);
-            if (Book == null)
+            var chitietsp = lstBook.FirstOrDefault(x => x.SKU == id);
+            ViewBag.chitietsp = chitietsp;
+            if (chitietsp == null)
             {
                 return BadRequest();
             }
             else
             {
-                return View(Book);
+                return View(chitietsp);
             }
         }
         [HttpGet]
         public async Task<IActionResult> UpdateChiTietSp(string id)
         {
+            var urlSize = $"https://localhost:7197/api/Size/GetAllSize";
+            var responSize = await _httpClient.GetAsync(urlSize);
+            string apiDatasz = await responSize.Content.ReadAsStringAsync();
+            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
+            ViewBag.lstSZ = lstSZ;
+
+            var urlms = $"https://localhost:7197/api/MauSac/GetAllMauSac";
+            var responms = await _httpClient.GetAsync(urlms);
+            string apiDatams = await responms.Content.ReadAsStringAsync();
+            var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
+            ViewBag.lstms = lstms;
+
+            var urlkm = "https://localhost:7197/api/KhuyenMai/GetAllKhuyenMai";
+            var responkm = await _httpClient.GetAsync(urlkm);
+            responkm.EnsureSuccessStatusCode();
+            string apiDatakm = await responkm.Content.ReadAsStringAsync();
+            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
+            ViewBag.lstkm = lstkm;
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var urlBook = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
             var responBook = await _httpClient.GetAsync(urlBook);
             string apiDataBook = await responBook.Content.ReadAsStringAsync();
             var lstBook = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDataBook);
-            var Book = lstBook.FirstOrDefault(x => x.SKU == id);
-            if (Book == null)
+            var chitietsp = lstBook.FirstOrDefault(x => x.SKU == id);
+            ViewBag.chitietsp = chitietsp;
+            if (chitietsp == null)
             {
                 return BadRequest();
             }
             else
             {
-                return View(Book);
+                return View(chitietsp);
             }
         }
         [HttpPost]
         public async Task<IActionResult> UpdateChiTietSp(string id, ChiTietSp vc, IFormFile imageFile)
         {
+
+            var urlSize = $"https://localhost:7197/api/Size/GetAllSize";
+            var responSize = await _httpClient.GetAsync(urlSize);
+            string apiDatasz = await responSize.Content.ReadAsStringAsync();
+            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
+            ViewBag.lstSZ = lstSZ;
+
+            var urlms = $"https://localhost:7197/api/MauSac/GetAllMauSac";
+            var responms = await _httpClient.GetAsync(urlms);
+            string apiDatams = await responms.Content.ReadAsStringAsync();
+            var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
+            ViewBag.lstms = lstms;
+
+            var urlkm = "https://localhost:7197/api/KhuyenMai/GetAllKhuyenMai";
+            var responkm = await _httpClient.GetAsync(urlkm);
+            responkm.EnsureSuccessStatusCode();
+            string apiDatakm = await responkm.Content.ReadAsStringAsync();
+            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
+            ViewBag.lstkm = lstkm;
+
+            
+            
             if (imageFile != null && imageFile.Length > 0)
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photoSanPhamCT", imageFile.FileName);
-                var stream = new FileStream(path, FileMode.Create);
-                imageFile.CopyTo(stream);
+
+                // Kiểm tra và tạo thư mục nếu chưa tồn tại
+                var directory = Path.GetDirectoryName(path);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                // Sử dụng 'using' để đảm bảo đóng stream
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                // Cập nhật URL của ảnh vào thuộc tính
                 vc.UrlAnhSpct = imageFile.FileName;
             }
 
-
+            
             var urlBook = $"https://localhost:7197/api/CTSanPham/EditCTSP/{id}";
 
             var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
@@ -142,6 +256,17 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             return RedirectToAction("AllChiTietSpManager", "ChiTietSp", new { area = "Admin", id = vc.MaSp });
 
+        }
+        private async Task<bool> IsDuplicateChiTietSP(string SKU )
+        {
+            var urlBook = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+            var responBook = await _httpClient.GetAsync(urlBook);
+            string apiDataBook = await responBook.Content.ReadAsStringAsync();
+            var lstBook = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDataBook);
+
+            
+                return lstBook.Any(x => x.SKU == SKU);
+           
         }
     }
 }

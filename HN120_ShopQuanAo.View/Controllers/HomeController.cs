@@ -88,7 +88,7 @@ namespace HN120_ShopQuanAo.View.Controllers
                 {
                     return RedirectToAction("Index", "AdminHome", new { area = "Admin" });
                 }
-                else if (roleClaims.Any(rc => rc.Value == "Customer"))
+                else if (roleClaims.Any(rc => rc.Value == "User"))
                 {
                     return RedirectToAction("Index", "Home", new { area = "Customer" });
                 }

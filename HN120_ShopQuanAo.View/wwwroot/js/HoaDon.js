@@ -6,7 +6,7 @@ $(document).ready(function () {
         notification = JSON.parse(notification);
         $.notify(notification.message, notification.type);
         localStorage.removeItem('notification');
-    } console.log($('#btn_maQR').val());
+    } 
     var token = '8fbfedf6-b458-11ee-b6f7-7a81157ff3b1';
     filterFunction();
     addSelectButtonEventListeners();
@@ -26,12 +26,32 @@ $(document).ready(function () {
             giaBanCell.html(formatMoney(giaBan) + ' VNĐ<br>' + giaBanCell.html().split('<br>')[1]);
         }
     });
-    $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD'));
+    $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD HH:mm:ss'));
     $('body').on('click', '#btn_thanhtoanhoadon', function () {
         if ($('#btn_phuongthucthanhtoan').val() == '4') {
 
-            $.notify( 'Phương thức thanh toán chỉ áp dụng cho đặt hàng tại quầy', 'error' );
+            $.notify('Phương thức thanh toán chỉ áp dụng cho đặt hàng tại quầy', 'error');
+            return;
         }
+        if ($('#btn_TenKhachHang').val() != '' && $('#btn_SoDienThoai').val() == '') {
+            $.notify('Vui lòng nhập số điện thoại', 'error');
+            return;
+        }
+        if ($('#btn_TenKhachHang').val() != '') {
+            var phoneInput = $('#btn_SoDienThoai');
+            var phoneError = $('#phoneError');
+            var phoneNumber = phoneInput.val();
+
+            // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+            var phonePattern = /^0\d{9,10}$/;
+
+            // Kiểm tra tính hợp lệ của số điện thoại
+            if (!phonePattern.test(phoneNumber)) {
+                $.notify('Số điện thoại không hợp lệ', 'error');
+                return;
+            }
+        }
+
         var today = new Date();
         var date = 'HD' + today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         $('#btn_ma').val(date.toString());
@@ -44,7 +64,7 @@ $(document).ready(function () {
             if ($('#btn_phuongthucthanhtoan').val() =='1') {
                
                 Thanhtoan();
-              
+                AddLichsuhoadon();
             }
             if ($('#btn_phuongthucthanhtoan').val() == '2') {
               
@@ -56,6 +76,7 @@ $(document).ready(function () {
         if ( $('#btn_phuongthucthanhtoan').val() == '3') {
 
             QRCODE_PAYMENT();
+           
         }
        
     });
@@ -118,8 +139,6 @@ $(document).ready(function () {
                 });
 
                 response.data.forEach(function (item) {
-                    console.log('So sánh:', item.WardName.trim(), '===', xaphuong.trim()) // Hiển thị để kiểm tra so sánh
-
                     if (item.WardName.trim() === xaphuong.trim()) {
 
                         wardCode = item.WardCode;
@@ -212,24 +231,45 @@ $(document).ready(function () {
 
         let tt = ($('#btn_tienkhachdua').val().replace(/\./g, '').replace(',', '.'));
         let kt = ($('#btn_tienkhachphaitra').val().replace(/\./g, '').replace(',', '.'));
+        if ($('#btn_TenKhachHang').val() != '' && $('#btn_SoDienThoai').val() == '') {
+            $.notify('Vui lòng nhập số điện thoại', 'error');
+            return;
+        }
+        if ($('#btn_TenKhachHang').val() != '') {
+            var phoneInput = $('#btn_SoDienThoai');
+            var phoneError = $('#phoneError');
+            var phoneNumber = phoneInput.val();
 
+            // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+            var phonePattern = /^0\d{9,10}$/;
+
+            // Kiểm tra tính hợp lệ của số điện thoại
+            if (!phonePattern.test(phoneNumber)) {
+                $.notify('Số điện thoại không hợp lệ', 'error');
+                return;
+            }
+        }
         if ((tt - kt >= 0) || tt == '' || tt == '' || tt == 0) {
             if ($('#btn_phuongthucthanhtoan').val() == 1) {
 
                 Thanhtoan();
+                AddLichsuhoadon();
             }
             if ($('#btn_phuongthucthanhtoan').val() == 2) {
 
                 QRCODE_PAYMENT();
+              
             }
 
         }
         if ($('#btn_phuongthucthanhtoan').val() == 3) {
 
             QRCODE_PAYMENT();
+           
         }   
         if ($('#btn_phuongthucthanhtoan').val() == 4) {
             Thanhtoan();
+            AddLichsuhoadon();
         }
     })
 
@@ -239,13 +279,15 @@ $(document).ready(function () {
         var quanHuyen = selectedOption.getAttribute('data-quanhuyen');
         var xaPhuong = selectedOption.getAttribute('data-xaphuong');
         var cuThe = selectedOption.getAttribute('data-cuthe');
+        var sodt = selectedOption.getAttribute('data-sodienthoai');
         if ($('#btn_btn_TenKhachHang').val != '') {
             document.getElementById('city').innerHTML = '<option value="' + tinhThanh + '">' + tinhThanh + '</option>';
             document.getElementById('district').innerHTML = '<option value="' + quanHuyen + '">' + quanHuyen + '</option>';
             document.getElementById('ward').innerHTML = '<option value="' + xaPhuong + '">' + xaPhuong + '</option>';
-            document.getElementById('street').value = cuThe;
+            document.getElementById('street').value = cuThe; document.getElementById('btn_SoDienThoai').value = sodt;
         }
         loadTinhThanh();
+
     });
 });
 
@@ -293,6 +335,7 @@ async function checkpaid(price , content) {
             let ct = lastPaid['Mô tả'];           
             if (pr >= price && ct.includes(content)) {                
                 Thanhtoan(); 
+                AddLichsuhoadon();
             }
             else {
                 console.log('giao dịch không thành công'); 
@@ -458,7 +501,7 @@ function addNewRow(table, sku, tenSp, giaBan, maSize, maMau, slton) {
     soLuongCell.innerHTML = '<input type="number" value="1" min="1" class="form-control" oninput="updateTotalPrice(this, ' + giaBan + ', ' + slton + ')">';
 
     giaBanCell.innerText = formatMoney(giaBan);
-    actionCell.innerHTML = `<button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash fa-beat" style="color: #b71515;"></i></button>`;
+    actionCell.innerHTML = `<button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>`;
     updatePaymentDetails();
 }
 // Function to update total price based on quantity change
@@ -544,33 +587,33 @@ function getdataHoaDonChiTiet() {
 
     return hoaDonChiTiets;
 }
-function setdataHoaDon(data) {
-    if (data == null || data == undefined || data == '') {
-        $('#btn_ma').val('');
-        $('#btn_UserID').val('');
-        $('#btn_MaVoucher').val('');
-        $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD'));
-        $('#btn_TenKhachHang').val('');
-        $('#btn_SoDienThoai').val('');
-        $('#btn_PhiShip').val('');
-        $('#btn_tongtien').val('');
-        $('#btn_PhuongTTT').val('');
-        $('#btn_Status').val(5);    
-    }
-    else {
-        var nt = moment(data.ngayTaoDon).format('YYYY-MM-DD');
-        $('#btn_ma').val(data.maHoaDon);
-        $('#btn_UserID').val(data.userID);
-        $('#btn_MaVoucher').val(data.maVoucher);
-        $('#btn_NgayTaoDon').val(data.ngayTaoDon) != null ? $('#btn_NgayTaoDon').val(nt) : '';
-        $('#btn_TenKhachHang').val(data.tenKhachHang);
-        $('#btn_SoDienThoai').val(data.soDienThoai);
-        $('#btn_PhiShip').val(data.phiShip);
-        $('#btn_tongtien').val(data.tongGiaTriHangHoa);
-        $('#btn_PhuongTTT').val(data.phuongThucThanhToan);
-        $('#btn_Status').val(data.trangThai);
-    }
-}
+//function setdataHoaDon(data) {
+//    if (data == null || data == undefined || data == '') {
+//        $('#btn_ma').val('');
+//        $('#btn_UserID').val('');
+//        $('#btn_MaVoucher').val('');
+//        $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD HH:mm:ss'));
+//        $('#btn_TenKhachHang').val('');
+//        $('#btn_SoDienThoai').val('');
+//        $('#btn_PhiShip').val('');
+//        $('#btn_tongtien').val('');
+//        $('#btn_PhuongTTT').val('');
+//        $('#btn_Status').val(5);    
+//    }
+//    else {
+//        var nt = moment(data.ngayTaoDon).format('YYYY-MM-DD HH:mm:ss');
+//        $('#btn_ma').val(data.maHoaDon);
+//        $('#btn_UserID').val(data.userID);
+//        $('#btn_MaVoucher').val(data.maVoucher);
+//        $('#btn_NgayTaoDon').val(data.ngayTaoDon) != null ? $('#btn_NgayTaoDon').val(nt) : '';
+//        $('#btn_TenKhachHang').val(data.tenKhachHang);
+//        $('#btn_SoDienThoai').val(data.soDienThoai);
+//        $('#btn_PhiShip').val(data.phiShip);
+//        $('#btn_tongtien').val(data.tongGiaTriHangHoa);
+//        $('#btn_PhuongTTT').val(data.phuongThucThanhToan);
+//        $('#btn_Status').val(data.trangThai);
+//    }
+//}
 function getdataHoaDon() {
     var tenkhachhang = $('#btn_TenKhachHang').val()
     if (tenkhachhang == '') {
@@ -599,10 +642,9 @@ function getdataHoaDon() {
 }
 function Thanhtoan() {
     var hoaDonChiTiets = getdataHoaDonChiTiet();
-    $.post('/Add-hoadon', { hd: getdataHoaDon() }, function (re) {
-        console.log(re.data)
+    var hoaD = getdataHoaDon();
+    $.post('/Add-hoadon', { hd: hoaD }, function (re) {
         if (re.status) {
-            console.log(getdataHoaDon());
             $.ajax({
                 url: '/Add-hoadonct',
                 type: 'POST',
@@ -643,14 +685,10 @@ function Thanhtoan() {
         alert('Có lỗi xảy ra khi thêm hóa đơn: ' + error);
     });
 }
-function getThanhToanHoaDon() {
-   
-    return data;
-}
 function AddThanhTOanHoaDon() {
     let stt;
-    if ($('#btn_phuongthucthanhtoan').val() == '4') {
-        stt =0
+    if ($('#btn_phuongthucthanhtoan').val() == 4) {
+        stt = 0
     }
     else {
         stt = 1
@@ -665,6 +703,34 @@ function AddThanhTOanHoaDon() {
     $.post('/Add-ThanhToanhoadon', { tt: data }, function (re) {
         if (re.status) {
             
+        }
+        else {
+            console.log('Lưu thanh toán hóa đơn thất bại');
+        }
+
+    })
+}
+function AddLichsuhoadon() {   
+    var today = new Date();
+
+    var date = 'HD' + today.getDate() + (today.getMonth() + 1) + today.getFullYear() + today.getHours() + today.getMinutes() + today.getSeconds();
+    var tongtienhoadon = $('#btn_tienkhachphaitra').val().replace(/\./g, '').split(',')[0];  
+    var selectedUserName = $("#btn_UserID option:selected").text();
+    var data = {
+        LichSuHoaDonID: date,
+        MaHoaDon: $('#btn_ma').val(),
+        UserID: $('#btn_UserName').val(),
+        NgayTaoDon: $('#btn_NgayTaoDon').val(),
+        NgayThayDoi: $('#btn_NgayTaoDon').val(),
+        TongGiaTri: parseFloat(tongtienhoadon),
+        HinhThucThanhToan: $('#btn_phuongthucthanhtoan').val(),
+        ChiTiet: $('#btn_Status').val(),
+        TrangThai: parseInt($('#btn_Status').val()) 
+    };
+
+    $.post('/Add-lichsuhoadon', { lshd: data }, function (re) {
+        if (re.status) {
+
         }
         else {
             console.log('Lưu thanh toán hóa đơn thất bại');

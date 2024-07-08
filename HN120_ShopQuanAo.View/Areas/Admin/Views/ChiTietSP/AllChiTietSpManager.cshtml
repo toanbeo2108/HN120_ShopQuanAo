@@ -1,9 +1,12 @@
-﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.ChiTietSp>
+﻿﻿@using HN120_ShopQuanAo.Data.Models;
+@model IEnumerable<HN120_ShopQuanAo.Data.Models.ChiTietSp>
 
 @{
     ViewData["Title"] = "AllChiTietSpManager";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
-
+    List<Size> lstSZ = ViewBag.lstSZ as List<Size>;
+    List<MauSac> lstms = ViewBag.lstms as List<MauSac>;
+    List<KhuyenMai> lstkm = ViewBag.lstkm as List<KhuyenMai>;
 }
 
 <h1></h1>
@@ -19,9 +22,7 @@
             <th>
                 STT
             </th>
-            <th>
-               Tên 
-            </th>
+
             <th>
               Size
             </th>
@@ -50,25 +51,34 @@
         </tr>
     </thead>
     <tbody>
+        @{
+
+            int i = 1;
+        }
         @foreach (var item in Model)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.SKU)
+                    @i
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MaSp)
+                    @{
+                        var size = lstSZ.FirstOrDefault(th => th.MaSize == item.MaSize)?.TenSize ?? "N/A";
+                    }
+                    @size
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MaSize)
+                    @{
+                        var mau = lstms.FirstOrDefault(th => th.MaMau == item.MaMau)?.TenMau ?? "N/A";
+                    }
+                    @mau
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MaMau)
+                    @{
+                        var khuyenmai = lstkm.FirstOrDefault(th => th.MaKhuyenMai == item.MaKhuyenMai)?.TenKhuyenMai ?? "N/A";
+                    }
+                    @khuyenmai
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MaKhuyenMai)
-                </td>
-
                 <td >
                      <img src="~/photoSanPhamCT/@item.UrlAnhSpct" alt="Combo Image" width="100" height="100" />
                     @*<img src="~/photoBooks/@item.MainPhoto" class="rounded float-start" alt="...">*@
@@ -91,6 +101,7 @@
 
                         </td>
             </tr>
+            i++;
         }
     </tbody>
 </table>

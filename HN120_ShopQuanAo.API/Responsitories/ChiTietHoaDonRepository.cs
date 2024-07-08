@@ -45,7 +45,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
                     }
                     else
                     {
-                        if (hoadon.TrangThai >= 2 )
+                        if (hoadon.TrangThai > 1 )
                         {
                             ctsanpham.SoLuongTon -= hd.SoLuongMua;
                             sanpham.TongSoLuong -= hd.SoLuongMua;
@@ -67,7 +67,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 var hoadon = _appDbContext.HoaDon.FirstOrDefault(c => c.MaHoaDon == hdct.MaHoaDon);
                 if (ctsp != null)
                 {
-                    if (hoadon.TrangThai >= 2) { 
+                    if (hoadon.TrangThai > 1) { 
                     ctsp.SoLuongTon += hdct.SoLuongMua;
                     }
                 }
