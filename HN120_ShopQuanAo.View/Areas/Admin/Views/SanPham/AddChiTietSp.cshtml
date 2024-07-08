@@ -266,24 +266,5 @@ form {
         updateOptions();
     }
 
-    function updateOptions() {
-        var selectedSizes = Array.from(document.querySelectorAll("#chiTietSpContainer tbody input[name*='MaSize']")).map(input => input.value);
-        var selectedColors = Array.from(document.querySelectorAll("#chiTietSpContainer tbody input[name*='MaMau']")).map(input => input.value);
 
-        document.querySelectorAll("input[name='selectedSizes']").forEach(checkbox => {
-            if (selectedSizes.includes(checkbox.value)) {
-                checkbox.closest('.form-check').style.display = 'none';
-            } else {
-                checkbox.closest('.form-check').style.display = 'block';
-            }
-        });
-
-        document.querySelectorAll("input[name='selectedColors']").forEach(checkbox => {
-            if (selectedColors.includes(checkbox.value)) {
-                checkbox.closest('.form-check').style.display = 'none';
-            } else {
-                checkbox.closest('.form-check').style.display = 'block';
-            }
-        });
-    }
 </script>

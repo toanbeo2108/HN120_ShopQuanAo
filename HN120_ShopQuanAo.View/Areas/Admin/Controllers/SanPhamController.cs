@@ -111,7 +111,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> AddChiTietSp(AddChiTietSpViewModel viewModel, List<IFormFile> imageFiles)
         {
-            
+            try
+            {
                 var chiTietSps = new List<ChiTietSp>();
 
                 for (int i = 0; i < viewModel.ChiTietSps.Count; i++)
@@ -124,11 +125,13 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                         MaSize = ctsp.MaSize,
                         MaMau = ctsp.MaMau,
                         DonGia = ctsp.DonGia,
-                        //GiaBan = ctsp.GiaBan,
                         SoLuongTon = ctsp.SoLuongTon,
                         MaKhuyenMai = ctsp.MaKhuyenMai
                     };
 
+                    
+
+                    // Upload ảnh
                     if (imageFiles.Count > i && imageFiles[i] != null && imageFiles[i].Length > 0)
                     {
                         var imageUrl = await UploadImageAsync(imageFiles[i]);
@@ -146,7 +149,12 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 {
                     return RedirectToAction("AllChiTietSpManager", "ChiTietSp", new { area = "Admin", id = viewModel.MaSp });
                 }
-            
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while adding ChiTietSp");
+                TempData["ErrorMessage"] = "Có lỗi xảy ra trong quá trình thêm chi tiết sản phẩm.";
+            }
 
             await LoadDataForViewBag(); // Reload ViewBag data if ModelState is invalid
 
@@ -155,15 +163,18 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
         private async Task<string> UploadImageAsync(IFormFile imageFile)
         {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photoSanPhamCT");
             var fileName = Path.GetFileName(imageFile.FileName);
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photoSanPhamCT", fileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            Directory.CreateDirectory(uploadsFolder); // Ensure the directory exists
 
             await using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await imageFile.CopyToAsync(stream);
             }
 
-            return fileName;
+            return fileName; // Trả về tên tệp gốc
         }
 
         private async Task LoadDataForViewBag()
@@ -199,7 +210,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Có lỗi xảy ra trong quá trình tải dữ liệu.";
             }
         }
-            [HttpGet]
+
+        [HttpGet]
             public async Task<IActionResult> NhapHang(string id)
             {
                 //var httpClient = _httpClientFactory.CreateClient();
