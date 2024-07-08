@@ -2,6 +2,7 @@
 using HN120_ShopQuanAo.API.IResponsitories;
 using HN120_ShopQuanAo.API.Responsitories;
 using HN120_ShopQuanAo.Data.Models;
+using HN120_ShopQuanAo.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,6 @@ namespace HN120_ShopQuanAo.API.Controllers
         private readonly IAllResponsitories<SanPham> _iresponSP;
         private readonly IAllResponsitories<KhuyenMai> _iresponKM;
 
-        //private readonly IAllResponsitories<Size> _iresponSZ;
 
         AppDbContext _context = new AppDbContext();
         public CTSanPhamController()
@@ -25,34 +25,141 @@ namespace HN120_ShopQuanAo.API.Controllers
             _iresponSP = new AllResponsitories<SanPham>(_context, _context.SanPham);
             _iresponKM = new AllResponsitories<KhuyenMai>(_context, _context.KhuyenMai);
 
-            //_iresponSZ = new AllResponsitories<Size>(_context, _context.Size);
-
         }
         [HttpPost("[Action]")]
         public async Task<bool> AddLstCTSP([FromBody] List<ChiTietSp> lstctsp)
         {
             try
             {
+                var groupedByProduct = new Dictionary<string, int>();
 
                 foreach (var item in lstctsp)
                 {
                     item.SKU = item.MaSp + item.MaSize + item.MaMau;
                     item.TrangThai = 1;
 
+                    // Tính toán Giá Bán
+                    item.GiaBan = item.DonGia;
+                    if (item.MaKhuyenMai != null)
+                    {
+                        var km = await _iresponKM.GetByID(item.MaKhuyenMai);
+                        if (km != null)
+                        {
+                            item.GiaBan = item.DonGia - (item.DonGia * km.PhanTramGiam / 100);
+                        }
+                    }
+
                     await _iresponCTSP.CreateItem(item);
 
+                    // Tính tổng số lượng tồn
+                    if (groupedByProduct.ContainsKey(item.MaSp))
+                    {
+                        groupedByProduct[item.MaSp] += item.SoLuongTon.GetValueOrDefault(0);
+                    }
+                    else
+                    {
+                        groupedByProduct[item.MaSp] = item.SoLuongTon.GetValueOrDefault(0);
+                    }
                 }
 
+                // Cập nhật tổng số lượng cho sản phẩm
+                foreach (var kvp in groupedByProduct)
+                {
+                    var sp = await _iresponSP.GetByID(kvp.Key);
+                    if (sp != null)
+                    {
+                        sp.TongSoLuong = kvp.Value;
+                        await _iresponSP.UpdateItem(sp);
+                    }
+                }
 
                 return true;
             }
             catch (Exception ex)
             {
-
                 throw new Exception(ex.Message);
             }
-
         }
+
+        [HttpGet("GetByMaSp")]
+        public async Task<IActionResult> GetByMaSp(string maSp)
+        {
+            try
+            {
+                var chiTietSps = await _iresponCTSP.GetAll();
+                var result = chiTietSps.Where(ct => ct.MaSp == maSp).ToList();
+                return Ok(result); // Trả về danh sách
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [HttpPost("UpdateChiTietSp")]
+        public async Task<IActionResult> UpdateChiTietSp([FromBody] List<ChiTietSp> chiTietSps)
+        {
+            try
+            {
+                var groupedByProduct = new Dictionary<string, int>();
+
+                foreach (var ctsp in chiTietSps)
+                {
+                    // Cập nhật thông tin chi tiết sản phẩm
+                    var existingCtsp = await _iresponCTSP.GetByID(ctsp.SKU);
+                    if (existingCtsp != null)
+                    {
+                        existingCtsp.DonGia = ctsp.DonGia;
+                        existingCtsp.GiaBan = ctsp.DonGia;
+                        existingCtsp.SoLuongTon = ctsp.SoLuongTon;
+                        existingCtsp.UrlAnhSpct = ctsp.UrlAnhSpct;
+                        existingCtsp.MaKhuyenMai = ctsp.MaKhuyenMai;
+
+                        if (existingCtsp.MaKhuyenMai != null)
+                        {
+                            var km = await _iresponKM.GetByID(existingCtsp.MaKhuyenMai);
+                            if (km != null)
+                            {
+                                existingCtsp.GiaBan = existingCtsp.DonGia - (existingCtsp.DonGia * km.PhanTramGiam / 100);
+                            }
+                        }
+
+                        await _iresponCTSP.UpdateItem(existingCtsp);
+
+                        // Tính tổng số lượng tồn
+                        if (groupedByProduct.ContainsKey(existingCtsp.MaSp))
+                        {
+                            groupedByProduct[existingCtsp.MaSp] += existingCtsp.SoLuongTon.GetValueOrDefault(0);
+                        }
+                        else
+                        {
+                            groupedByProduct[existingCtsp.MaSp] = existingCtsp.SoLuongTon.GetValueOrDefault(0);
+                        }
+                    }
+                }
+
+                // Cập nhật tổng số lượng cho sản phẩm
+                foreach (var kvp in groupedByProduct)
+                {
+                    var sp = await _iresponSP.GetByID(kvp.Key);
+                    if (sp != null)
+                    {
+                        sp.TongSoLuong = kvp.Value;
+                        await _iresponSP.UpdateItem(sp);
+                    }
+                }
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+
         [HttpGet("[Action]")]
         public async Task<IEnumerable<ChiTietSp>> GetAllCTSanPham()
         {
@@ -119,6 +226,7 @@ namespace HN120_ShopQuanAo.API.Controllers
 
 
                 b.MaKhuyenMai = _ctsp.MaKhuyenMai;
+                b.UrlAnhSpct = _ctsp.UrlAnhSpct;
                 b.DonGia = _ctsp.DonGia;
                 if (b.MaKhuyenMai == null || ptkm == 0)
                 {
