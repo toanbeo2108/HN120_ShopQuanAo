@@ -1,8 +1,12 @@
-﻿@model HN120_ShopQuanAo.Data.Models.ChiTietSp
+﻿﻿@using HN120_ShopQuanAo.Data.Models;
+@model HN120_ShopQuanAo.Data.Models.ChiTietSp
 
 @{
     ViewData["Title"] = "CreateChiTietSp";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    List<Size> lstSZ = ViewBag.lstSZ as List<Size>;
+    List<MauSac> lstms = ViewBag.lstms as List<MauSac>;
+    List<KhuyenMai> lstkm = ViewBag.lstkm as List<KhuyenMai>;
 }
 
 <h1>CreateChiTietSp</h1>
@@ -17,23 +21,38 @@
 
             <div class="form-group">
                 <label asp-for="MaSize" class="control-label"></label>
-                <input asp-for="MaSize" class="form-control" />
-                <span asp-validation-for="MaSize" class="text-danger"></span>
+                <select class="form-select" asp-for="MaSize" aria-label="Default select example">
+                    <option value=""></option>
+                    @foreach (Size item in lstSZ)
+                    {
+                                                <option value="@item.MaSize">@item.TenSize</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="MaMau" class="control-label"></label>
-                <input asp-for="MaMau" class="form-control" />
-                <span asp-validation-for="MaMau" class="text-danger"></span>
+               <select class="form-select" asp-for="MaMau" aria-label="Default select example">
+                    <option value=""></option>
+                    @foreach (MauSac item in lstms)
+                    {
+                                        <option value="@item.MaMau">@item.TenMau</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="MaKhuyenMai" class="control-label"></label>
-                <input asp-for="MaKhuyenMai" class="form-control" />
-                <span asp-validation-for="MaKhuyenMai" class="text-danger"></span>
+                <select class="form-select" asp-for="MaKhuyenMai" aria-label="Default select example">
+                    <option value=""></option>
+                    @foreach (KhuyenMai item in lstkm)
+                    {
+                             <option value="@item.MaKhuyenMai">@item.TenKhuyenMai</option>
+                    }
+                </select>
             </div>
 
             <div class="form-group">
                 <label asp-for="UrlAnhSpct" class="control-label"></label>
-                <input asp-for="UrlAnhSpct" type="file" class="form-control" />
+                <input asp-for="UrlAnhSpct" type="file"  class="form-control" />
                 <span asp-validation-for="UrlAnhSpct" class="text-danger"></span>
             </div>
             <div class="form-group">

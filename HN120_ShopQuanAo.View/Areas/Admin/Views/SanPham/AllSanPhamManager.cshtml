@@ -74,10 +74,10 @@
                             @item.TenSP
                         </td>
                         <td>
-                            @{
-                                var thuongHieu = lstTH.FirstOrDefault(th => th.MaThuongHieu == item.MaThuongHieu)?.TenThuongHieu ?? "N/A";
-                            }
-                            @thuongHieu
+                                @{
+                                    var thuongHieu = lstTH.FirstOrDefault(th => th.MaThuongHieu == item.MaThuongHieu)?.TenThuongHieu ?? "N/A";
+                                }
+                                @thuongHieu
                         </td>
                         <td>
                             @{
@@ -138,6 +138,8 @@
                                     <a asp-action="AllChiTietSpManager" asp-controller="ChiTietSP" asp-area="Admin" id="btn_chitiet_detail" class="btn btn-primary" type="button" asp-route-id="@item.MaSp"> All Chi Tiết</a>
                                         <a asp-action="CreateChiTietSp" asp-controller="ChiTietSP" asp-area="Admin" id="btn_chitiet_detail" class="btn btn-primary" type="button" asp-route-id="@item.MaSp"> Them 1 </a>
                                     <a asp-action="AddChiTietSp" asp-route-id="@item.MaSp" class="btn btn-primary">Thêm Nhiều</a>
+                                            <a asp-action="NhapHang" asp-route-id="@item.MaSp" class="btn btn-primary">Thêm Nhiều</a>
+
 
 
                         </td>

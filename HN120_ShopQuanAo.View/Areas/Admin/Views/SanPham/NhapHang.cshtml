@@ -1,0 +1,134 @@
+﻿@using HN120_ShopQuanAo.Data.Models;
+@model HN120_ShopQuanAo.Data.ViewModels.AddChiTietSpViewModel
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #343a40;
+    }
+
+    form {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 18px;
+        text-align: left;
+    }
+
+    .styled-table thead tr {
+        background-color: #343a40;
+        color: #ffffff;
+        text-align: center;
+    }
+
+    .styled-table th, .styled-table td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+    }
+
+    .styled-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .styled-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    .styled-table tbody tr:last-of-type {
+        border-bottom: 2px solid #343a40;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+
+    .input-field:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .submit-button {
+        background-color: #007bff;
+        color: #ffffff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: block;
+        margin: 20px auto;
+    }
+
+    .submit-button:hover {
+        background-color: #0056b3;
+    }
+
+    .img-thumbnail {
+        width: 100px;
+        height: auto;
+    }
+</style>
+
+<h1>Nhập Hàng</h1>
+
+<form asp-action="NhapHang" method="post">
+    <input type="hidden" asp-for="MaSp" />
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Size</th>
+                <th>Màu</th>
+                <th>Đơn Giá</th>
+                <th>Số Lượng Tồn</th>
+                <th>Ảnh</th>
+                <th>Khuyến Mại</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.ChiTietSps.Count; i++)
+            {
+                    <tr>
+                        <td>@Model.ChiTietSps[i].MaSize <input type="hidden" asp-for="ChiTietSps[i].MaSize" /></td>
+                        <td>@Model.ChiTietSps[i].MaMau <input type="hidden" asp-for="ChiTietSps[i].MaMau" /></td>
+                        <td><input asp-for="ChiTietSps[i].DonGia" class="input-field" /></td>
+                        @*<td><input asp-for="ChiTietSps[i].GiaBan" class="input-field" /></td>*@
+                        <td><input asp-for="ChiTietSps[i].SoLuongTon" class="input-field" /></td>
+                        <td>
+                            <img src="~/photoSanPhamCT/@Model.ChiTietSps[i].UrlAnhSpct" class="img-thumbnail" />
+                            <input type="hidden" asp-for="ChiTietSps[i].UrlAnhSpct" />
+                        </td>
+                        <td>
+                            <select asp-for="ChiTietSps[i].MaKhuyenMai" class="input-field">
+                                <option value="">None</option>
+                            @foreach (var km in ViewBag.lstKM)
+                            {
+                                        <option value="@km.MaKhuyenMai">@km.TenKhuyenMai</option>
+                            }
+                                </select>
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="submit-button">Cập Nhật</button>
+</form>

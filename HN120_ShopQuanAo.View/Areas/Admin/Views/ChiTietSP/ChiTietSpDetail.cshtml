@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "ChiTietSpDetail";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
 <h1>ChiTietSpDetail</h1>
@@ -70,5 +71,5 @@
     </dl>
 </div>
 <div>
-    <a asp-action="AllChiTietSpManager" class="btn btn-warning">Hủy</a>
+    <a asp-action="AllChiTietSpManager" asp-route-id="@Model.MaSp" class="btn btn-warning">Hủy</a>
 </div>

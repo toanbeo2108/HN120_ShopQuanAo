@@ -1,16 +1,12 @@
-
-﻿﻿@using HN120_ShopQuanAo.Data.Models;
+@using HN120_ShopQuanAo.Data.Models;
 @model HN120_ShopQuanAo.Data.Models.SanPham
-
 
 @{
     ViewData["Title"] = "CreateSanPham";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
-
     List<ThuongHieu> lstTH = ViewBag.lstTH as List<ThuongHieu>;
     List<TheLoai> lstTL = ViewBag.lstTL as List<TheLoai>;
     List<ChatLieu> lstCL = ViewBag.lstCL as List<ChatLieu>;
-
 }
 
 <h1>CreateSanPham</h1>
@@ -19,12 +15,11 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateSanPham">
+        <form asp-action="CreateSanPham" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+
             <div class="form-group">
                 <label asp-for="MaThuongHieu" class="control-label"></label>
-
                 <select class="form-select" asp-for="MaThuongHieu" aria-label="Default select example">
                     <option value=""></option>
                     @foreach (ThuongHieu item in lstTH)
@@ -37,10 +32,9 @@
                 <label asp-for="MaTheLoai" class="control-label"></label>
                 <select class="form-select" asp-for="MaTheLoai" aria-label="Default select example">
                     <option value=""></option>
-
                     @foreach (TheLoai item in lstTL)
                     {
-                                    <option value="@item.MaTheLoai">@item.TenTheLoai</option>
+                                <option value="@item.MaTheLoai">@item.TenTheLoai</option>
                     }
                 </select>
             </div>
@@ -48,17 +42,15 @@
                 <label asp-for="MaChatLieu" class="control-label"></label>
                 <select class="form-select" asp-for="MaChatLieu" aria-label="Default select example">
                     <option value=""></option>
-
                     @foreach (ChatLieu item in lstCL)
                     {
-                                    <option value="@item.MaChatLieu">@item.TenChatLieu</option>
+                                <option value="@item.MaChatLieu">@item.TenChatLieu</option>
                     }
                 </select>
-
             </div>
             <div class="form-group">
                 <label asp-for="UrlAvatar" class="control-label"></label>
-                <input asp-for="UrlAvatar" type="file" class="form-control" />
+                <input asp-for="UrlAvatar" type="file" class="form-control" name="imageFile" />
                 <span asp-validation-for="UrlAvatar" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -72,21 +64,15 @@
                 <span asp-validation-for="Mota" class="text-danger"></span>
             </div>
             <div class="form-group">
-
                 <input type="submit" value="Create" class="btn btn-primary" />
-    <a asp-action="AllSanPhamManager" class="btn btn-warning">Hủy</a>
-
-
+                <a asp-action="AllSanPhamManager" class="btn btn-warning">Hủy</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-
-
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
