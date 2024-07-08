@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HN120_ShopQuanAo.API.Migrations
 {
-    public partial class _12345 : Migration
+    public partial class _123 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -311,7 +311,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                 columns: table => new
                 {
                     MaGioHang = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TongTien = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     MoTa = table.Column<int>(type: "int", nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true)
@@ -320,10 +319,11 @@ namespace HN120_ShopQuanAo.API.Migrations
                 {
                     table.PrimaryKey("PK_GioHang", x => x.MaGioHang);
                     table.ForeignKey(
-                        name: "FK_GioHang_AspNetUsers_UserID",
-                        column: x => x.UserID,
+                        name: "FK_GioHang_AspNetUsers_MaGioHang",
+                        column: x => x.MaGioHang,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -613,17 +613,17 @@ namespace HN120_ShopQuanAo.API.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "0f627436-ca2a-4e22-9b7c-66f9c3e56fd9", "0a7a53d4-3c52-4319-ae7c-50c80576e3e6", "Employee", "EMPLOYEE" });
+                values: new object[] { "1c7c52bb-1060-464f-b80d-419798c92404", "8ca47b3a-b83f-4b36-a587-e7e155e17044", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "513c8897-5bc7-4396-935c-c38355df1e54", "c1c4df94-b8d9-47f6-93a0-302bb980cc26", "Admin", "ADMIN" });
+                values: new object[] { "d93ca2e5-baa4-40e5-8a6c-3193b560c372", "46900222-dea7-4141-bd47-5f3c12112b16", "User", "USER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "e9b7928a-e12c-4bb9-a75f-a029afc0a8c1", "17bc443f-5bc8-416c-8053-6909ce86dd58", "User", "USER" });
+                values: new object[] { "e3b83c66-64e4-465b-9e50-13fe28695256", "4f79af9c-e870-42d5-944b-4cfe698ceb69", "Employee", "EMPLOYEE" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -687,11 +687,6 @@ namespace HN120_ShopQuanAo.API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_DeliveryAddress_UserID",
                 table: "DeliveryAddress",
-                column: "UserID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GioHang_UserID",
-                table: "GioHang",
                 column: "UserID");
 
             migrationBuilder.CreateIndex(

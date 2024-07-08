@@ -43,11 +43,9 @@ namespace HN120_ShopQuanAo.View.Controllers
             {
                 var responseData = await response.Content.ReadAsStringAsync();
 
-                // In ra phản hồi để kiểm tra
                 _logger.LogInformation($"Response Data: {responseData}");
 
-                // Giả sử rằng phản hồi chứa token dưới dạng chuỗi
-                var token = responseData.Trim('"');  // Loại bỏ dấu ngoặc kép nếu cần
+                var token = responseData.Trim('"');
                 var handler = new JwtSecurityTokenHandler();
                 var jwt = handler.ReadJwtToken(token);
 
@@ -62,13 +60,18 @@ namespace HN120_ShopQuanAo.View.Controllers
                 if (nameIdentifierClaim != null)
                 {
                     identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, nameIdentifierClaim.Value));
-                    // Lưu UserId vào cookie
                     Response.Cookies.Append("UserId", nameIdentifierClaim.Value, new CookieOptions
                     {
                         HttpOnly = true,
                         Secure = true,
                         Expires = DateTimeOffset.UtcNow.AddDays(1)
                     });
+                }
+
+                var avatarClaim = jwt.Claims.FirstOrDefault(u => u.Type == "Avatar");
+                if (avatarClaim != null)
+                {
+                    identity.AddClaim(new Claim("Avatar", avatarClaim.Value));
                 }
 
                 var roleClaims = jwt.Claims.Where(u => u.Type == ClaimTypes.Role).ToList();

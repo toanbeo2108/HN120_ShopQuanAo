@@ -195,12 +195,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("MaGioHang");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("GioHang");
                 });
@@ -726,22 +721,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "513c8897-5bc7-4396-935c-c38355df1e54",
-                            ConcurrencyStamp = "c1c4df94-b8d9-47f6-93a0-302bb980cc26",
+                            Id = "1c7c52bb-1060-464f-b80d-419798c92404",
+                            ConcurrencyStamp = "8ca47b3a-b83f-4b36-a587-e7e155e17044",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e9b7928a-e12c-4bb9-a75f-a029afc0a8c1",
-                            ConcurrencyStamp = "17bc443f-5bc8-416c-8053-6909ce86dd58",
+                            Id = "d93ca2e5-baa4-40e5-8a6c-3193b560c372",
+                            ConcurrencyStamp = "46900222-dea7-4141-bd47-5f3c12112b16",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "0f627436-ca2a-4e22-9b7c-66f9c3e56fd9",
-                            ConcurrencyStamp = "0a7a53d4-3c52-4319-ae7c-50c80576e3e6",
+                            Id = "e3b83c66-64e4-465b-9e50-13fe28695256",
+                            ConcurrencyStamp = "4f79af9c-e870-42d5-944b-4cfe698ceb69",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -997,8 +992,10 @@ namespace HN120_ShopQuanAo.API.Migrations
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.GioHang", b =>
                 {
                     b.HasOne("HN120_ShopQuanAo.Data.Models.User", "User")
-                        .WithMany("GioHangs")
-                        .HasForeignKey("UserID");
+                        .WithOne("GioHang")
+                        .HasForeignKey("HN120_ShopQuanAo.Data.Models.GioHang", "MaGioHang")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1233,7 +1230,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                 {
                     b.Navigation("DeliveryAddress");
 
-                    b.Navigation("GioHangs");
+                    b.Navigation("GioHang");
 
                     b.Navigation("HoaDons");
 
