@@ -93,5 +93,14 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return BadRequest(new { error = result.ErrorMessage });
             }
         }
+
+
+        [HttpPost("SetDefaultAddress")]
+        public async Task<IActionResult> SetDefaultAddress(string id)
+        {
+            var result = await _response.SetasDefault(id);
+
+            return Ok(result.ErrorMessage);
+        }
     }
 }

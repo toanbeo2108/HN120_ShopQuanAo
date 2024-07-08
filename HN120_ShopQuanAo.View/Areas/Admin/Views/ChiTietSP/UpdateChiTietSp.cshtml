@@ -1,8 +1,11 @@
-﻿@model HN120_ShopQuanAo.Data.Models.ChiTietSp
+﻿﻿@using HN120_ShopQuanAo.Data.Models;
+@model HN120_ShopQuanAo.Data.Models.ChiTietSp
 
 @{
     ViewData["Title"] = "UpdateChiTietSp";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    List<KhuyenMai> lstkm = ViewBag.lstkm as List<KhuyenMai>;
+
 }
 
 <h1>UpdateChiTietSp</h1>
@@ -14,19 +17,25 @@
         <form asp-action="UpdateChiTietSp">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="SKU" class="control-label"></label>
-                <input asp-for="SKU" class="form-control" />
-                <span asp-validation-for="SKU" class="text-danger"></span>
+                <input asp-for="SKU" type="hidden" class="form-control" />
+                <input asp-for="MaSp" type="hidden" class="form-control" />
+                <input asp-for="MaSize" type="hidden" class="form-control" />
+                <input asp-for="MaMau" type="hidden" class="form-control" />
             </div>
 
             <div class="form-group">
                 <label asp-for="MaKhuyenMai" class="control-label"></label>
-                <input asp-for="MaKhuyenMai" class="form-control" />
-                <span asp-validation-for="MaKhuyenMai" class="text-danger"></span>
+                <select class="form-select" asp-for="MaKhuyenMai" aria-label="Default select example">
+                    <option value=""></option>
+                    @foreach (KhuyenMai item in lstkm)
+                    {
+                                 <option value="@item.MaKhuyenMai">@item.TenKhuyenMai</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="UrlAnhSpct" class="control-label"></label>
-                <input asp-for="UrlAnhSpct" type="file" class="form-control" />
+                <input asp-for="UrlAnhSpct" type="file"  class="form-control" />
                 <span asp-validation-for="UrlAnhSpct" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -42,7 +51,9 @@
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
-    <a asp-action="AllChiTietSpManager" class="btn btn-warning">Hủy</a>
+
+    <a asp-action="AllChiTietSpManager" asp-route-id="@Model.MaSp" class="btn btn-warning">Hủy</a>
+
 
             </div>
         </form>
@@ -50,6 +61,8 @@
 </div>
 
 <div>
+
+
 </div>
 
 @section Scripts {

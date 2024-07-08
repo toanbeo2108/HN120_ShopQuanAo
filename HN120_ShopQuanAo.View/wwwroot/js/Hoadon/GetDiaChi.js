@@ -1,123 +1,68 @@
 ﻿$(document).ready(function () {
-    var token = 'd0d7cce1-3125-11ef-8e53-0a00184fe694'; // Thay thế 'YOUR_TOKEN_HERE' bằng token của bạn.
-
-    // Hàm xử lý lỗi
-    function handleError(xhr, status, error) {
-        console.error("Error: " + error);
-        console.error("Status: " + status);
-        console.error(xhr);
-    }
-
-    // Hàm hiển thị spinner
-    function showLoader(loaderId) {
-        $(loaderId).show();
-    }
-
-    // Hàm ẩn spinner
-    function hideLoader(loaderId) {
-        $(loaderId).hide();
-    }
-
-    // Hàm load Tỉnh/Thành
-    async function loadTinhThanh() {
-        showLoader('#tinhThanhLoader');
-        try {
-            const response = await $.ajax({
-                url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province',
-                method: 'GET',
-                headers: {
-                    'Token': token
-                }
-            });
-            const tinhThanhSelect = $('#btn_TinhThanh');
-            response.data.forEach(function (item) {
-                tinhThanhSelect.append(new Option(item.ProvinceName, item.ProvinceID));
-            });
-        } catch (error) {
-            handleError(error);
-        } finally {
-            hideLoader('#tinhThanhLoader');
-        }
-    }
-
-    // Hàm load Quận/Huyện
-    async function loadQuanHuyen(provinceId) {
-        showLoader('#quanHuyenLoader');
-        try {
-            const response = await $.ajax({
-                url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district',
-                method: 'GET',
-                headers: {
-                    'Token': token
-                }
-            });
-            const quanHuyenSelect = $('#btn_QuanHuyen');
-            response.data.forEach(function (item) {
-                if (item.ProvinceID == provinceId) {
-                    quanHuyenSelect.append(new Option(item.DistrictName, item.DistrictID));
-                }
-            });
-        } catch (error) {
-            handleError(error);
-        } finally {
-            hideLoader('#quanHuyenLoader');
-        }
-    }
-
-    // Hàm load Xã/Phường
-    async function loadXaPhuong(districtId) {
-        showLoader('#xaPhuongLoader');
-        try {
-            const response = await $.ajax({
-                url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward',
-                method: 'GET',
-                headers: {
-                    'Token': token
-                },
-                data: { district_id: districtId }
-            });
-            const xaPhuongSelect = $('#btn_XaPhuong');
-            response.data.forEach(function (item) {
-                xaPhuongSelect.append(new Option(item.WardName, item.WardCode));
-            });
-        } catch (error) {
-            handleError(error);
-        } finally {
-            hideLoader('#xaPhuongLoader');
-        }
-    }
-   
-    // Load Tỉnh/Thành khi trang web được chạy
-    loadTinhThanh();
-
-    // Load Quận/Huyện khi Tỉnh/Thành thay đổi
-    $('#btn_TinhThanh').change(function () {
-        const provinceId = $(this).val();
-        const quanHuyenSelect = $('#btn_QuanHuyen');
-        const xaPhuongSelect = $('#btn_XaPhuong');
-
-        quanHuyenSelect.empty().append(new Option("Chọn Quận/Huyện", "")).prop('disabled', !provinceId);
-        xaPhuongSelect.empty().append(new Option("Chọn Xã/Phường", "")).prop('disabled', true);
-
-        if (provinceId) {
-            loadQuanHuyen(provinceId);
-        }
+    var today = new Date();
+    var date = 'HD' + today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var Parameter = {
+        url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
+        method: "GET",
+        responseType: "application/json",
+    };
+    var promise = axios(Parameter);
+    promise.then(function (result) {
+        renderCity(result.data);
     });
-
-    // Load Xã/Phường khi Quận/Huyện thay đổi
-    $('#btn_QuanHuyen').change(function () {
-        const districtId = $(this).val();
-        const xaPhuongSelect = $('#btn_XaPhuong');
-
-        xaPhuongSelect.empty().append(new Option("Chọn Xã/Phường", "")).prop('disabled', !districtId);
-
-        if (districtId) {
-            loadXaPhuong(districtId);
-           
-        }
-    }); 
-    // Load phí vận chuyển khi Xã/Phường thay đổi
-
- 
   
-});
+    $('body').on('click', '#clear', function () {
+        
+        document.getElementById('city').innerHTML = '<option value="" selected>Chọn tỉnh thành</option>';
+        document.getElementById('district').innerHTML = '<option value="" selected>Chọn quận huyện</option>';
+        document.getElementById('ward').innerHTML = '<option value="" selected>Chọn phường xã</option>';
+        document.getElementById('street').value = '';
+        $('#btn_PhiShip').val(0);
+        var Parameter = {
+            url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
+            method: "GET",
+            responseType: "application/json",
+        };
+        var promise = axios(Parameter);
+        promise.then(function (result) {
+            renderCity(result.data);
+        });
+    })
+
+
+})
+function removeVietnameseTones(str) {
+    str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    str = str.replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    return str;
+}
+function renderCity(data) {
+    var citis = document.getElementById("city");
+    var districts = document.getElementById("district");
+    var wards = document.getElementById("ward");
+    for (const x of data) {
+        citis.options[citis.options.length] = new Option(x.Name, x.Name);
+    }
+    citis.onchange = function () {
+        districts.length = 1;
+        wards.length = 1;
+        if (this.value != "") {
+            const result = data.filter(n => n.Name === this.value);
+
+            for (const k of result[0].Districts) {
+                districts.options[districts.options.length] = new Option(k.Name, k.Name);
+            }
+        }
+    };
+    districts.onchange = function () {
+        wards.length = 1;
+        const dataCity = data.filter((n) => n.Name === citis.value);
+        if (this.value != "") {
+            const dataWards = dataCity[0].Districts.filter(n => n.Name === this.value)[0].Wards;
+
+            for (const w of dataWards) {
+                wards.options[wards.options.length] = new Option(w.Name, w.Name);
+            }
+        }
+    };
+}

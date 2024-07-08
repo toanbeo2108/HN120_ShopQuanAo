@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "GetAllHoaDon";
-  //  IEnumerable<ThanhToan> lstt = ViewBag.lstt as IEnumerable<ThanhToan>;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -16,101 +16,38 @@
     <div class="recentOrder">
         <div class="card-header">
             <h2></h2>
-            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                <button type="button" id="bantaiquay" class="btn btn-warning">Bán tai quầy</button>
-                <button type="button" id="banonline"  class="btn btn-success">Bán online</button>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        <button type="button" id="Tatca" class="btn btn-warning">Tấ cả</button>
+                        <button type="button" id="bantaiquay" class="btn btn-warning">Bán tai quầy</button>
+                        <button type="button" id="banonline" class="btn btn-success">Bán online</button>
+                    </div>
+                </div>
+                <div class="col-md-12">
+
+                  @*   <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        <button type="button" class="btn btn-outline-dark">Tất cả</button>
+                        <button type="button" class="btn btn-outline-primary">Chờ xác nhận</button>
+                        <button type="button" class="btn btn-outline-secondary">Đã xác nhận</button>
+                        <button type="button" class="btn btn-outline-success">Chờ giao hàng</button>
+                        <button type="button" class="btn btn-outline-danger">Đang giao</button>
+                        <button type="button" class="btn btn-outline-warning"> Hoàn thành</button>
+                        <button type="button" class="btn btn-outline-info">Hủy</button>
+                    </div> *@
+                </div>
             </div>
         </div>
-        
     </div>
     <div class="card-body" id="partialViewContainer">
+        <div id="GetAllHoaDon_partialView" style="display:none">
+            <partial name="GetAllHoaDon_partialView" />
+        </div>
         <div id="HoaDonTaiQuayPartialView" style="display:none">
          <partial name="HoaDonTaiQuayPartialView" />
         </div>
-        <div id="HoaDonOnlinePartialView" style="display:none">
-         <partial name="ChitietHoaDonPartial" />
-        </div>
-
-    </div>
-</div>
-
-@*=============modal================*@
-<div class="modal fade" tabindex="-1" id="pop">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="col-md-12">
-                    <input id="btn_ma" style="display:none" class="form-control" type="text" />
-                </div>
-
-                <div class="col-md-12">
-                    <label for="btn_UserID">User Name</label>
-                    <input id="btn_UserID" class="form-control" type="text" />
-                </div>
-                <div class="col-md-12">
-                    <label for="btn_MaVoucher">Mã Voucher</label>
-                    <select id="btn_MaVoucher" class="form-select">
-                        <option value="">Chọn</option>
-                        @foreach (var item in Model)
-                        {
-
-                            <option value="@item.MaVoucher">@item.MaVoucher</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-md-12">
-                    <label for="btn_NgayTaoDon">Ngày tạo</label>
-                    <input id="btn_NgayTaoDon" class="form-control" type="date" />
-                </div>
-                <div class="col-md-12">
-                    <label for="btn_TenKhachHang">Tên khách hàng</label>
-                    <input id="btn_TenKhachHang" class="form-control" type="text" />
-                </div>
-                <div class="col-md-12">
-                    <label for="btn_SoDienThoai">Số điện thoại</label>
-                    <input id="btn_SoDienThoai" class="form-control" type="text" />
-                </div>
-                <div class="col-md-12">
-                    <label for="btn_PhiShip">Phí ship</label>
-                    <input id="btn_PhiShip" class="form-control" type="text" />
-                </div>
-                <div class="col-md-12">
-                    <label for="btn_TongGiaTriHangHoa">Tổng tiền</label>
-                    <input id="btn_TongGiaTriHangHoa" class="form-control" type="text" />
-                </div>
-                <div class="col-md-12">
-                    <label for="btn_PhuongTTT">Phương thức thanh toán</label>
-                    <select id="btn_PhuongTTT" class="form-select">
-                        
-                        <option value="1">Nợ</option>
-                        <option value="2">Quỵt</option>
-                        <option value="3">Tiền tươi</option>
-                        <option value="4">chuyển khoản</option>
-                     
-                    </select>
-                </div>
-                <div class="col-md-12">
-                    <label for="btn_Status">Trạng thái</label>
-                    <select id="btn_Status" class="form-select">
-                        <option value="">Chọn</option>
-                         <option value="1">Chờ xác nhận</option>
-                         <option value="2">Xác nhận</option>
-                         <option value="3">Chờ giao hàng</option>
-                         <option value="4">Đang giao hàng</option>
-                         <option value="5">Hoàn thành</option>
-                         <option value="6">Hủy</option>
-                    </select>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="btn_save">Save changes</button>
-            </div>
-        </div>
+        <div id="BanHangOnline_partialView" style="display:none">
+            <partial name="BanHangOnline_partialView" />
+        </div>        
     </div>
 </div>

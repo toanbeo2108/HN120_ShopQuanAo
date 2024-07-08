@@ -1,42 +1,289 @@
-﻿@using HN120_ShopQuanAo.Data.ViewModels
-@model AddChiTietSpViewModel
+@using HN120_ShopQuanAo.Data.Models;
+@model HN120_ShopQuanAo.Data.ViewModels.AddChiTietSpViewModel
 
 @{
-    ViewData["Title"] = "Thêm Chi Tiết Sản Phẩm";
+    ViewData["Title"] = "Add List CTSP";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    List<Size> lstSZ = ViewBag.lstSZ as List<Size> ?? new List<Size>();
+    List<MauSac> lstms = ViewBag.lstms as List<MauSac> ?? new List<MauSac>();
+    List<KhuyenMai> lstkm = ViewBag.lstkm as List<KhuyenMai> ?? new List<KhuyenMai>();
 }
 
-<h1>Thêm Chi Tiết Sản Phẩm</h1>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+}
+
+h1.form-title {
+    text-align: center;
+    color: #343a40;
+}
+
+form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-check-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-check {
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #dee2e6;
+}
+
+.table thead th {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+.table tbody tr:nth-of-type(even) {
+    background-color: #f2f2f2;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.form-control-file {
+    width: 100%;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+</style>
+
+
+<h1 class="form-title">Thêm Chi Tiết Sản Phẩm</h1>
 
 <form asp-action="AddChiTietSp" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="MaSp" />
 
     <div class="form-group">
-        <label>Chọn Size:</label>
-        <div>
-            @for (int i = 0; i < ViewBag.lstSZ.Count; i++)
+        <label>Size:</label>
+        <div class="form-check-container" id="sizeContainer">
+            @foreach (Size size in lstSZ)
             {
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="SelectedSizes" value="@ViewBag.lstSZ[i].MaSize" 
-                           @(Model.SelectedSizes != null && Model.SelectedSizes.Contains(ViewBag.lstSZ[i].MaSize) ? "checked" : "") />
-                        <label class="form-check-label" for="Size_@ViewBag.lstSZ[i].MaSize">@ViewBag.lstSZ[i].TenSize</label>
+                        <input type="checkbox" class="form-check-input" name="selectedSizes" value="@size.MaSize" />
+                        <label class="form-check-label">@size.TenSize</label>
                     </div>
             }
         </div>
     </div>
 
     <div class="form-group">
-        <label>Chọn Màu:</label>
-        <div>
-            @for (int i = 0; i < ViewBag.lstms.Count; i++)
+        <label>Màu:</label>
+        <div class="form-check-container" id="colorContainer">
+            @foreach (MauSac mau in lstms)
             {
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="SelectedMaus" value="@ViewBag.lstms[i].MaMau" 
-                           @(Model.SelectedMaus != null && Model.SelectedMaus.Contains(ViewBag.lstms[i].MaMau) ? "checked" : "") />
-                        <label class="form-check-label" for="Mau_@ViewBag.lstms[i].MaMau">@ViewBag.lstms[i].TenMau</label>
+                        <input type="checkbox" class="form-check-input" name="selectedColors" value="@mau.MaMau" />
+                        <label class="form-check-label">@mau.TenMau</label>
                     </div>
             }
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Thêm Chi Tiết Sản Phẩm</button>
+    <button type="button" class="btn btn-primary" onclick="addChiTietSp()">Thêm chi tiết sản phẩm</button>
+
+    <div id="chiTietSpContainer" class="table-responsive" style="display:none;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Size</th>
+                    <th>Màu</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng tồn</th>
+                    <th>URL Ảnh</th>
+                    <th>Mã Khuyến Mại</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Các chi tiết sản phẩm sẽ được thêm vào đây -->
+            </tbody>
+        </table>
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu</button>
 </form>
+
+<script>
+    function addChiTietSp() {
+        var sizeCheckboxes = document.querySelectorAll("input[name='selectedSizes']:checked");
+        var colorCheckboxes = document.querySelectorAll("input[name='selectedColors']:checked");
+        var container = document.querySelector("#chiTietSpContainer tbody");
+        var count = container.children.length;
+
+        if (sizeCheckboxes.length > 0 && colorCheckboxes.length > 0) {
+            document.getElementById("chiTietSpContainer").style.display = "block";
+        }
+
+        sizeCheckboxes.forEach(sizeCheckbox => {
+            var size = sizeCheckbox.value;
+            var sizeText = sizeCheckbox.nextElementSibling.innerText;
+
+            colorCheckboxes.forEach(colorCheckbox => {
+                var color = colorCheckbox.value;
+                var colorText = colorCheckbox.nextElementSibling.innerText;
+
+                // Kiểm tra xem thuộc tính size và màu đã tồn tại trong danh sách hay chưa
+                var existingRow = Array.from(container.children).find(row => {
+                    var existingSize = row.querySelector(`input[name*='MaSize'][value='${size}']`);
+                    var existingColor = row.querySelector(`input[name*='MaMau'][value='${color}']`);
+                    return existingSize && existingColor;
+                });
+
+                if (existingRow) {
+                    alert("Thuộc tính này đã có trong danh sách cần thêm");
+                    return;
+                }
+
+                var newChiTietSpRow = document.createElement("tr");
+                newChiTietSpRow.innerHTML = `
+                    <td>
+                        <input type="hidden" name="ChiTietSps[${count}].MaSize" value="${size}" />
+                        ${sizeText}
+                    </td>
+                    <td>
+                        <input type="hidden" name="ChiTietSps[${count}].MaMau" value="${color}" />
+                        ${colorText}
+                    </td>
+                    <td>
+                        <input name="ChiTietSps[${count}].DonGia" required class="form-control" />
+                    </td>
+                    
+                    <td>
+                        <input name="ChiTietSps[${count}].SoLuongTon" required class="form-control" />
+                    </td>
+                    <td>
+                        <input type="file" name="imageFiles" required class="form-control-file" />
+                    </td>
+                    <td>
+                        <select name="ChiTietSps[${count}].MaKhuyenMai" class="form-control">
+                            <option value="">Chọn khuyến mại</option>
+    @foreach (var km in lstkm)
+    {
+                                    <option value="@km.MaKhuyenMai">@km.TenKhuyenMai</option>
+    }
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="removeChiTietSp(this)">Xóa</button>
+                    </td>
+                `;
+                container.appendChild(newChiTietSpRow);
+                count++;
+            });
+        });
+
+        // Clear selections
+        sizeCheckboxes.forEach(checkbox => checkbox.checked = false);
+        colorCheckboxes.forEach(checkbox => checkbox.checked = false);
+
+        // Cập nhật danh sách size và màu
+        updateOptions();
+    }
+
+    function removeChiTietSp(button) {
+        var row = button.closest('tr');
+        row.remove();
+
+        var container = document.querySelector("#chiTietSpContainer tbody");
+        if (container.children.length === 0) {
+            document.getElementById("chiTietSpContainer").style.display = "none";
+        }
+
+        // Cập nhật danh sách size và màu
+        updateOptions();
+    }
+
+    function updateOptions() {
+        var selectedSizes = Array.from(document.querySelectorAll("#chiTietSpContainer tbody input[name*='MaSize']")).map(input => input.value);
+        var selectedColors = Array.from(document.querySelectorAll("#chiTietSpContainer tbody input[name*='MaMau']")).map(input => input.value);
+
+        document.querySelectorAll("input[name='selectedSizes']").forEach(checkbox => {
+            if (selectedSizes.includes(checkbox.value)) {
+                checkbox.closest('.form-check').style.display = 'none';
+            } else {
+                checkbox.closest('.form-check').style.display = 'block';
+            }
+        });
+
+        document.querySelectorAll("input[name='selectedColors']").forEach(checkbox => {
+            if (selectedColors.includes(checkbox.value)) {
+                checkbox.closest('.form-check').style.display = 'none';
+            } else {
+                checkbox.closest('.form-check').style.display = 'block';
+            }
+        });
+    }
+</script>

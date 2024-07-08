@@ -20,6 +20,13 @@ namespace HN120_ShopQuanAo.Data.Models
 		public decimal? PhiShip { get; set; }
 		public decimal? TongGiaTriHangHoa { get; set; }
 		public int? PhuongThucThanhToan { get; set; }
+		public string? PhanLoai { get; set; }
+		public string? Ghichu { get; set; }
+		//địa chỉ
+		public string? TinhThanh { get; set; }
+		public string? QuanHuyen { get; set; }
+		public string? XaPhuong { get; set; }
+		public string? Cuthe { get; set; }
 		public int? TrangThai { get; set; }
 
 		public virtual User? User { get; set; }

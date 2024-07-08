@@ -151,23 +151,27 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("Update-hoadonct")]
-        public async Task<IActionResult> UpdateVoucher(HoaDonChiTiet hd)
+        public async Task<IActionResult> UpdateHoaDonChiTiet([FromBody] List<HoaDonChiTiet> hdctList)
         {
-            var url = $"https://localhost:7197/api/ChiTietHoaDon/Update";
-            var content = new StringContent(JsonConvert.SerializeObject(hd), Encoding.UTF8, "application/json");
-            var respon = await _httpClient.PutAsync(url, content);
-            if (respon.StatusCode == System.Net.HttpStatusCode.OK)
+            if (hdctList == null || !hdctList.Any())
             {
+                return BadRequest("Dữ liệu không hợp lệ.");
+            }
 
+            var url = $"https://localhost:7197/api/ChiTietHoaDon/Update";
+            var content = new StringContent(JsonConvert.SerializeObject(hdctList), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync(url, content);
+            if (response.IsSuccessStatusCode)
+            {
                 _stt = true;
                 _mess = "Cập nhật thành công!";
-
             }
             else
             {
                 _stt = false;
-                _mess = "Cập nhật thât bại!";
+                _mess = "Cập nhật thất bại!";
             }
+
             return Json(new
             {
                 status = _stt,
@@ -175,16 +179,24 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             });
         }
 
+
         [HttpPost]
         [Route("Dell-HDCT/{ma}")]
         public async Task<IActionResult> DeleteHDCT(string ma)
         {
+            var urlcthd = $"https://localhost:7197/api/ChiTietHoaDon/GetAll";
+            var responcthd = await _httpClient.GetAsync(urlcthd);
+            string apiDatacthd = await responcthd.Content.ReadAsStringAsync();
+            var lstcthd = JsonConvert.DeserializeObject<List<HoaDonChiTiet>>(apiDatacthd);
+            var hoadonct = lstcthd.FirstOrDefault(x => x.MaHoaDonChiTiet == ma);
+
             var url = $"https://localhost:7197/api/ChiTietHoaDon/Delete/{ma}";
             var response = await _httpClient.DeleteAsync(url);
 
             if (response.IsSuccessStatusCode)
             {
                 _stt = true;
+                _data = hoadonct;
                 _mess = "Xóa thành công!";
             }
             else
@@ -196,7 +208,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return Json(new
             {
                 status = _stt,
-                message = _mess
+                message = _mess,
+                data = _data
             });
         }
 
