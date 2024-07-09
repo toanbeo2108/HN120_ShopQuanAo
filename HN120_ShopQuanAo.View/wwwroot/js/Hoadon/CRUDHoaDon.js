@@ -12,24 +12,26 @@ $(document).ready(function () {
     $('#GetAllHoaDon_partialView').show();
     $('#HoaDonTaiQuayPartialView').hide();
     $('#BanHangOnline_partialView').hide();
-    $('#Tatca').click(function () {
-        $('#GetAllHoaDon_partialView').show();
-        $('#HoaDonTaiQuayPartialView').hide();
-        $('#BanHangOnline_partialView').hide();
+    $('body').on('change','#btn_phanloaihoadon',function () {
+        if ($('#btn_phanloaihoadon').val() == null) {
+            $('#GetAllHoaDon_partialView').show();
+            $('#HoaDonTaiQuayPartialView').hide();
+            $('#BanHangOnline_partialView').hide();
+        }
+        if ($('#btn_phanloaihoadon').val() == 1) {
+            $('#HoaDonTaiQuayPartialView').show();
+            $('#GetAllHoaDon_partialView').hide();
+            $('#BanHangOnline_partialView').hide();
+        }
+        if ($('#btn_phanloaihoadon').val() == 2) {
+            $('#BanHangOnline_partialView').show();
+            $('#GetAllHoaDon_partialView').hide();
+            $('#HoaDonTaiQuayPartialView').hide();  
+        }
+       
     });
     
-    $('#bantaiquay').click(function () {
-        $('#HoaDonTaiQuayPartialView').show();
-        $('#GetAllHoaDon_partialView').hide();
-        $('#BanHangOnline_partialView').hide();
-
-    });
-
-    $('#banonline').click(function () {
-        $('#BanHangOnline_partialView').show();
-        $('#GetAllHoaDon_partialView').hide();
-        $('#HoaDonTaiQuayPartialView').hide();
-    });
+   
 
     $('body').on('click', '#btn_update_hoadon', function () {
         let ma = $('#btn_mahoadon').val();

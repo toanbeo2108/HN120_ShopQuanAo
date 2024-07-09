@@ -1,0 +1,88 @@
+﻿
+/* Điều chỉnh màu chữ và font chữ */
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+/* Tạo khoảng cách giữa các phần tử */
+.row {
+    margin-bottom: 20px;
+}
+
+/* Thiết lập kích thước cho hình ảnh */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Định dạng các nút và input */
+.btn {
+    border-radius: 0;
+}
+
+.form-control {
+    border-radius: 0;
+}
+
+/* Tạo hiệu ứng hover cho nút */
+.btn:hover {
+    opacity: 0.8;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px; /* Chiều rộng của nút gạt */
+    height: 15px; /* Chiều cao của nút gạt */
+}
+
+ .switch input {
+     opacity: 0;
+     width: 0;
+     height: 0;
+ }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 11px; /* Chiều cao của vòng tròn gạt */
+    width: 11px; /* Chiều rộng của vòng tròn gạt */
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(25px); /* Khoảng cách dịch chuyển của vòng tròn gạt */
+}
+
+/* Kiểu tròn cho slider */
+.slider.round {
+    border-radius: 15px; /* Bo tròn các góc của slider */
+}
+
+.slider.round:before {
+    border-radius: 50%; /* Bo tròn các góc của vòng tròn gạt */
+}
+
+#chitiethoadon_table th:nth-child(1),
+#chitiethoadon_table td:nth-child(1) {
+    display: none;
+}

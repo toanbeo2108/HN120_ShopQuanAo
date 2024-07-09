@@ -7,6 +7,56 @@ $(document).ready(function () {
         $.notify(notification.message, notification.type);
         localStorage.removeItem('notification');
     } 
+    $('#thanhtoantaiquay').show();
+    var Parameter = {
+        url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
+        method: "GET",
+        responseType: "application/json",
+    };
+    var promise = axios(Parameter);
+    promise.then(function (result) {
+        renderCity(result.data);
+    });
+
+    $('body').on('click', '#clear', function () {
+
+        document.getElementById('city').innerHTML = '<option value="" selected>Chọn tỉnh thành</option>';
+        document.getElementById('district').innerHTML = '<option value="" selected>Chọn quận huyện</option>';
+        document.getElementById('ward').innerHTML = '<option value="" selected>Chọn phường xã</option>';
+        document.getElementById('street').value = '';
+        $('#btn_PhiShip').val(0);
+        $('#btn_PhiShip_fake').val('');
+        updatePaymentDetails();
+        var Parameter = {
+            url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
+            method: "GET",
+            responseType: "application/json",
+        };
+        var promise = axios(Parameter);
+        promise.then(function (result) {
+            renderCity(result.data);
+        });
+    })
+
+    $('#btn_giaohang').change(function () {
+        var isChecked = $(this).is(':checked');
+        if (isChecked ) {
+            $('#btn_thongtingiaohang').show();
+            $('#dathangtaiquay').show();
+            $('#thanhtoantaiquay').hide();
+            
+        } else {
+            $('#btn_thongtingiaohang').hide();
+            $('#dathangtaiquay').hide();
+            $('#thanhtoantaiquay').show();
+            //$('#btn_PhiShip').val(0);
+            //updatePaymentDetails();
+            //$('#btn_PhiShip_fake').val('');
+            $('#btn_TenKhachHang').val('');
+            $('#btn_SoDienThoai').val('');
+            $('#clear').click()
+        }
+    })
     var token = '8fbfedf6-b458-11ee-b6f7-7a81157ff3b1';
     filterFunction();
     addSelectButtonEventListeners();
@@ -183,6 +233,8 @@ $(document).ready(function () {
                 if (response.code === 200) {
                   
                     $('#btn_PhiShip').val(response.data.total);
+                    var ship = parseFloat(response.data.total);
+                    $('#btn_PhiShip_fake').val(formatMoney(ship)) ;
                     updatePaymentDetails()
                     
                 } else {
@@ -249,6 +301,24 @@ $(document).ready(function () {
                 return;
             }
         }
+        if ($('#city').val() == '' || $('#district').val() == '' || $('#ward').val() == '' || $('#street').val() == '' || $('#btn_SoDienThoai') == '' ) {
+            $.notify('Vui lòng điền đầy đủ địa chỉ, và số điện thoại!', 'error');
+                return;
+        }
+        if ($('#btn_SoDienThoai') != '') {
+            var phoneInput = $('#btn_SoDienThoai');
+            var phoneError = $('#phoneError');
+            var phoneNumber = phoneInput.val();
+
+            // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+            var phonePattern = /^0\d{9,10}$/;
+
+            // Kiểm tra tính hợp lệ của số điện thoại
+            if (!phonePattern.test(phoneNumber)) {
+                $.notify('Số điện thoại không hợp lệ', 'error');
+                return;
+            }
+        }
         if ((tt - kt >= 0) || tt == '' || tt == '' || tt == 0) {
             if ($('#btn_phuongthucthanhtoan').val() == 1) {
 
@@ -286,12 +356,62 @@ $(document).ready(function () {
             document.getElementById('ward').innerHTML = '<option value="' + xaPhuong + '">' + xaPhuong + '</option>';
             document.getElementById('street').value = cuThe; document.getElementById('btn_SoDienThoai').value = sodt;
         }
+        
         loadTinhThanh();
 
     });
+
+    $('body').on('click','#btn_chonspchitiet', function () {
+        
+        var button = $(this);
+        var sku = button.data('sku');
+        var tenSp = button.data('tensp');
+        var giaBan = parseFloat(button.data('giaban'));
+        var maSize = button.data('masize_');
+        var maMau = button.data('mamau_');
+        var maSP = button.data('masp');
+        var maKM = button.data('makm');
+        var img = button.data('img');
+        var dongia = parseFloat(button.data('dongia'));
+        var trangthai = parseInt(button.data('trangthai'));     
+        var soLuongKhaDungCell = button.closest('tr').find('.so-luong-kha-dung');
+        var slton = parseInt(soLuongKhaDungCell.text().match(/\d+/)[0]) - 1;
+        soLuongKhaDungCell.text("Số lượng khả dụng (" + slton + ")");
+
+        // Cập nhật thuộc tính data-soluongton mới của button
+        $(this).data('soluongton', slton);
+
+        var data = {
+            SKU: sku,
+            MaSp: maSP,
+            MaSize: maSize,
+            MaMau: maMau,
+            MaKhuyenMai: maKM,
+            UrlAnhSpct: img,
+            DonGia: dongia,
+            GiaBan: giaBan,
+            SoLuongTon: slton,
+            TrangThai: trangthai
+        }
+        $.ajax({
+            url: '/Update_soluongCTsanpham',
+            method: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify([data]),
+            success: function (re) {
+                if (re.status) {
+                
+                } else {
+                    console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                }
+            },
+            error: function () {
+                console.error('Có lỗi xảy ra khi gửi yêu cầu.');
+            }
+        });
+    })
 });
-
-
 // thanh toán chuyển khoản 
 function QRCODE_PAYMENT() {
     $('#pop_QR').modal('show');
@@ -433,20 +553,21 @@ function addSelectButtonEventListeners() {
             var tenSp = button.getAttribute('data-tensp');
             var giaBan = parseFloat(button.getAttribute('data-giaban'));
             var maSize = button.getAttribute('data-masize');
+            var maSize_ = button.getAttribute('data-masize_');
+            var maMau_ = button.getAttribute('data-mamau_');
             var maMau = button.getAttribute('data-mamau');
             var slton = parseInt(button.getAttribute('data-soluongton'));
-
-            //if (slton === 0) {
-            //    alert('Sản phẩm đã hết hàng, không thể thêm vào đơn hàng.');
-            //    return;
-            //}
-
-            addToInvoiceDetails(sku, tenSp, giaBan, maSize, maMau, slton);
+            var maSP = button.getAttribute('data-masp');
+            var maKM = button.getAttribute('data-makm');
+            var img = button.getAttribute('data-img');
+            var dongia = parseFloat(button.getAttribute('data-dongia'));
+            var trangthai = parseInt(button.getAttribute('data-trangthai'));
+            addToInvoiceDetails(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, maSP, maKM, img, dongia, trangthai);
         });
     });
 }
 
-function addToInvoiceDetails(sku, tenSp, giaBan, maSize, maMau, slton) {
+function addToInvoiceDetails(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, maSP, maKM, img, dongia, trangthai) {
     var table = document.getElementById("chitiethoadon_table");
     if (!table) return; // Kiểm tra table có tồn tại hay không
 
@@ -469,7 +590,6 @@ function addToInvoiceDetails(sku, tenSp, giaBan, maSize, maMau, slton) {
                     return;
                 }
                 soLuongInput.value = soLuongMua + 1;
-              
                 updateTotalPrice(soLuongInput, giaBan, slton);
                     updatePaymentDetails();
                 
@@ -479,12 +599,13 @@ function addToInvoiceDetails(sku, tenSp, giaBan, maSize, maMau, slton) {
     }
 
     // Nếu sản phẩm chưa tồn tại, thêm mới vào bảng
-    addNewRow(tbody, sku, tenSp, giaBan, maSize, maMau, slton);
+    addNewRow(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, maSP, maKM, img, dongia, trangthai);
     updatePaymentDetails();
 }
 
 // Function to add a new row to invoice details table
-function addNewRow(table, sku, tenSp, giaBan, maSize, maMau, slton) {
+function addNewRow( sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, maSP, maKM, img, dongia, trangthai) {
+    var table = document.getElementById("chitiethoadon_table").getElementsByTagName("tbody")[0];
     var newRow = table.insertRow();
     var skucell = newRow.insertCell(0);
     var tenSpCell = newRow.insertCell(1);
@@ -494,18 +615,188 @@ function addNewRow(table, sku, tenSp, giaBan, maSize, maMau, slton) {
     var giaBanCell = newRow.insertCell(5);
     var actionCell = newRow.insertCell(6);
 
+    var maMau_Cell = newRow.insertCell(7);
+    var maSize_Cell = newRow.insertCell(8);
+    var dongia_CELL = newRow.insertCell(9);
+    var giaban_Cell = newRow.insertCell(10);
+    var soluongtonCell = newRow.insertCell(11);
+    var MaSPCell = newRow.insertCell(12);
+    var MaKMCell = newRow.insertCell(13);
+    var IMGCell = newRow.insertCell(14);
+    var TTCell = newRow.insertCell(15);
+
     skucell.innerText = sku;
+    skucell.style.display = "none";
     tenSpCell.innerText = tenSp;
     maSizeCell.innerText = maSize;
     maMauCell.innerText = maMau;
-    soLuongCell.innerHTML = '<input type="number" value="1" min="1" class="form-control" oninput="updateTotalPrice(this, ' + giaBan + ', ' + slton + ')">';
+
+    // Tạo container cho input và button
+    var quantityContainer = document.createElement('div');
+    quantityContainer.classList.add('quantity-input');
+
+    // Tạo nút - (bên trái)
+    var minusButton = document.createElement('button');
+    minusButton.type = "button";
+    minusButton.classList.add("btn", "btn-danger", "minus");
+    minusButton.innerText = "-";
+    minusButton.addEventListener('click', function () {
+        var quantityInput = quantityContainer.querySelector('input');
+        var currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+            var button = $(this);
+            var row2 = $("#sanpham_table tbody tr").filter(function () {
+                return $(this).find("td:contains('" + sku + "')").length > 0;
+            });
+            var total;
+            if (row2.length > 0) {
+                   
+                var soLuongKhaDung = row2.find('.so-luong-kha-dung').text();
+                total = (parseInt(soLuongKhaDung.replace(/\D/g, '')) + 1);
+                row2.find('.so-luong-kha-dung').text("Số lượng khả dụng (" + total + ")");
+               
+            } else {
+                alert("Không tìm thấy sản phẩm với SKU: " + sku);
+            }
+            var data = {
+                SKU: sku,
+                MaSp: maSP,
+                MaSize: maSize_,
+                MaMau: maMau_,
+                MaKhuyenMai: maKM,
+                UrlAnhSpct: img,
+                DonGia: dongia,
+                GiaBan: giaBan,
+                SoLuongTon: total,
+                TrangThai: trangthai
+            };
+            $.ajax({
+                url: '/Update_soluongCTsanpham',
+                method: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify([data]),
+                success: function (re) {
+                    if (re.status) {
+
+                    } else {
+                        console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                    }
+                },
+                error: function () {
+                    console.error('Có lỗi xảy ra khi gửi yêu cầu.');
+                }
+            });
+
+            updateTotalPrice(quantityInput, giaBan, slton);
+        }
+    });
+    quantityContainer.appendChild(minusButton);
+
+    // Input số lượng
+    var quantityInput = document.createElement('input');
+    quantityInput.type = "number";
+    quantityInput.value = "1";
+    quantityInput.min = "1";
+    quantityInput.classList.add("form-control");
+    quantityInput.readOnly = true; // Chỉ cho phép thay đổi bằng các nút + và -
+    quantityContainer.appendChild(quantityInput);
+
+    // Tạo nút + (bên phải)
+    var plusButton = document.createElement('button');
+    plusButton.type = "button";
+    plusButton.classList.add("btn", "btn-success", "plus");
+    plusButton.innerText = "+";
+    plusButton.addEventListener('click', function () {
+        var quantityInput = quantityContainer.querySelector('input');
+        var currentValue = parseInt(quantityInput.value);
+        if (currentValue < slton) {
+            quantityInput.value = currentValue + 1;
+            var row2 = $("#sanpham_table tbody tr").filter(function () {
+                return $(this).find("td:contains('" + sku + "')").length > 0;
+            });
+            var total;
+            if (row2.length > 0) {
+
+                var soLuongKhaDung = row2.find('.so-luong-kha-dung').text();
+                total = (parseInt(soLuongKhaDung.replace(/\D/g, '')) - 1);
+                row2.find('.so-luong-kha-dung').text("Số lượng khả dụng (" + total + ")");
+
+            } else {
+                alert("Không tìm thấy sản phẩm với SKU: " + sku);
+            }
+            var data = {
+                SKU: sku,
+                MaSp: maSP,
+                MaSize: maSize_,
+                MaMau: maMau_,
+                MaKhuyenMai: maKM,
+                UrlAnhSpct: img,
+                DonGia: dongia,
+                GiaBan: giaBan,
+                SoLuongTon: total,
+                TrangThai: trangthai
+            };
+            $.ajax({
+                url: '/Update_soluongCTsanpham',
+                method: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify([data]),
+                success: function (re) {
+                    if (re.status) {
+
+                    } else {
+                        console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                    }
+                },
+                error: function () {
+                    console.error('Có lỗi xảy ra khi gửi yêu cầu.');
+                }
+            });
+            updateTotalPrice(quantityInput, giaBan, slton);
+        } else {
+            alert('Số lượng mua vượt quá số lượng khả dụng.');
+        }
+    });
+    quantityContainer.appendChild(plusButton);
+
+    // Thêm container vào ô số lượng
+    soLuongCell.appendChild(quantityContainer);
+
+   /* soLuongCell.innerHTML = '<input type="number" value="1" min="1" class="form-control" oninput="updateTotalPrice(this, ' + giaBan + ', ' + slton + ')">';*/
 
     giaBanCell.innerText = formatMoney(giaBan);
     actionCell.innerHTML = `<button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>`;
+
+    maMau_Cell.innerText = maMau_;
+    maMau_Cell.style.display = "none";
+
+    maSize_Cell.innerText = maSize_;
+    maSize_Cell.style.display = "none";
+    dongia_CELL.innerText = dongia;
+    dongia_CELL.style.display = "none";
+    giaban_Cell.innerText = giaBan;
+    giaban_Cell.style.display = "none";
+    soluongtonCell.innerText = slton;
+    soluongtonCell.style.display = "none";
+    MaSPCell.innerText = maSP;
+    MaSPCell.style.display = "none";
+    MaKMCell.innerText = maKM;
+    MaKMCell.style.display = "none";
+    IMGCell.innerText = img;
+    IMGCell.style.display = "none";
+    TTCell.innerText = trangthai;
+    TTCell.style.display = "none";
+
+
+
     updatePaymentDetails();
 }
 // Function to update total price based on quantity change
-function updateTotalPrice(input, giaBan, slton ) {
+
+function updateTotalPrice(input, giaBan, slton) {
     var row = input.closest('tr');
     if (!row) return; // Kiểm tra row có tồn tại hay không
     var soLuongMua = parseInt(input.value);
@@ -517,7 +808,7 @@ function updateTotalPrice(input, giaBan, slton ) {
     var totalPriceCell = row.cells[5];
     var soLuongInput = row.cells[4].querySelector('input'); // kiểm tra số lượng mua
     if (!totalPriceCell) return; // Kiểm tra totalPriceCell có tồn tại hay không
-    totalPriceCell.innerText = formatMoney(parseFloat(input.value) * giaBan);  
+    totalPriceCell.innerText = formatMoney(parseFloat(input.value) * giaBan);
     updatePaymentDetails();
 }
 
@@ -525,6 +816,63 @@ function updateTotalPrice(input, giaBan, slton ) {
 function removeRow(button) {
     var row = button.closest('tr');
     if (row) {
+        var sku = row.cells[0].innerText;
+        var maSp = row.cells[12].innerText;
+        var maSize = row.cells[8].innerText;
+        var maMau = row.cells[7].innerText;
+        var soluongmua = row.cells[4].querySelector('input').value;
+       
+        var giaBan = parseFloat(row.cells[10].innerText);
+      
+        var maKM = row.cells[13].innerText;
+        var img = row.cells[14].innerText;
+        var dongia = parseFloat(row.cells[9].innerText);
+        var trangthai = row.cells[15].innerText;
+        var total = 0;
+        var row2 = $("#sanpham_table tbody tr").filter(function () {
+            return $(this).find("td:contains('" + sku + "')").length > 0;
+        });
+        
+        if (row2.length > 0) {
+            // Lấy giá trị của .so-luong-kha-dung trong dòng tìm thấy       
+            var soLuongKhaDung = row2.find('.so-luong-kha-dung').text();
+             total = parseInt(soLuongKhaDung.replace(/\D/g, '')) + parseInt(soluongmua);
+            row2.find('.so-luong-kha-dung').text("Số lượng khả dụng (" + total + ")");
+            //soLuongKhaDung.text('Số lượng khả dụng (' + slton + ')');
+            //soluongkhadung_ =( parseInt(soLuongKhaDung) - parseInt(soluongmua))
+        } else {
+            alert("Không tìm thấy sản phẩm với SKU: " + sku);
+        }
+        // Chuẩn bị dữ liệu để gửi trong yêu cầu AJAX
+        var data = {
+            SKU: sku,
+            MaSp: maSp,
+            MaSize: maSize,
+            MaMau: maMau,
+            MaKhuyenMai: maKM,
+            UrlAnhSpct: img,
+            DonGia: dongia,
+            GiaBan: giaBan,
+            SoLuongTon: total,
+            TrangThai: trangthai
+        };
+        $.ajax({
+            url: '/Update_soluongCTsanpham',
+            method: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify([data]),
+            success: function (re) {
+                if (re.status) {
+
+                } else {
+                    console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                }
+            },
+            error: function () {
+                console.error('Có lỗi xảy ra khi gửi yêu cầu.');
+            }
+        });
         row.remove();
         updatePaymentDetails();
     }
@@ -640,6 +988,7 @@ function getdataHoaDon() {
         
     }                                           
 }
+
 function Thanhtoan() {
     var hoaDonChiTiets = getdataHoaDonChiTiet();
     var hoaD = getdataHoaDon();
@@ -737,4 +1086,34 @@ function AddLichsuhoadon() {
         }
 
     })
+}
+function renderCity(data) {
+    var citis = document.getElementById("city");
+    var districts = document.getElementById("district");
+    var wards = document.getElementById("ward");
+    for (const x of data) {
+        citis.options[citis.options.length] = new Option(x.Name, x.Name);
+    }
+    citis.onchange = function () {
+        districts.length = 1;
+        wards.length = 1;
+        if (this.value != "") {
+            const result = data.filter(n => n.Name === this.value);
+
+            for (const k of result[0].Districts) {
+                districts.options[districts.options.length] = new Option(k.Name, k.Name);
+            }
+        }
+    };
+    districts.onchange = function () {
+        wards.length = 1;
+        const dataCity = data.filter((n) => n.Name === citis.value);
+        if (this.value != "") {
+            const dataWards = dataCity[0].Districts.filter(n => n.Name === this.value)[0].Wards;
+
+            for (const w of dataWards) {
+                wards.options[wards.options.length] = new Option(w.Name, w.Name);
+            }
+        }
+    };
 }
