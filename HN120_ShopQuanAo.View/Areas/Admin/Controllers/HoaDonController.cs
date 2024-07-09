@@ -85,31 +85,25 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             {
                 var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var userName = HttpContext.User.Identity.Name; // Lấy tên người dùng
-
-                var emailClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                var email = emailClaim != null ? emailClaim.Value : "Email not found";
-
+                var token = Request.Cookies["Token"];
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var urluser = $"https://localhost:7197/api/User/GetUsersByRole?roleName=admin";
+                var responseuser = await _httpClient.GetAsync(urluser);
+                string apiDataUser = await responseuser.Content.ReadAsStringAsync();
+                var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
+                var fullname = ListUseradmin.FirstOrDefault(c=>c.Id == userId);
                 // Tạo một đối tượng view model để truyền thông tin đến view
                 var model = new UserInfoViewModel
                 {
                     UserId = userId,
-                    UserName = userName
+                    UserName = fullname.FullName
                 };
 
                 ViewBag.Model = model;
             }
-            else
-            {
-                return RedirectToAction("Login", "Home", new { area = "" });
-
-            }
-            var token = Request.Cookies["Token"];
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            //var urluser = $"https://localhost:7197/api/User/GetUsersByRole?roleName=admin";
-            //var responseuser = await _httpClient.GetAsync(urluser);
-            //string apiDataUser = await responseuser.Content.ReadAsStringAsync();
-            //var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
-            //ViewBag.ListUseradmin = ListUseradmin;
+            
+           
+         //   ViewBag.ListUseradmin = ListUseradmin;
 
 
             var urlusers = $"https://localhost:7197/api/UserAddress/GetAll";
@@ -219,7 +213,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                                  SoLuongTon = ctsp.SoLuongTon,
                                  TrangThai = ctsp.TrangThai,
                                  TenMau = ms.TenMau,
-                                 TenSize = sz.TenSize
+                                 TenSize = sz.TenSize,
+                                 Dongia = ctsp.DonGia
             };
             var litspctview = joinedData.ToList();
             ViewBag.JoinedData = litspctview;
@@ -232,6 +227,31 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
             return View(litspctview);
         }
+        [HttpPost, Route("Update_soluongCTsanpham")]
+        public async Task<IActionResult> Updatesoluongchitietsp([FromBody] List<ChiTietSp> ctsp)
+        {
+            //https://localhost:7197/api/CTSanPham/UpdateChiTietSp
+            var url = $"https://localhost:7197/api/CTSanPham/UpdateChiTietSp";
+            var content = new StringContent(JsonConvert.SerializeObject(ctsp), Encoding.UTF8, "application/json");
+            var respon = await _httpClient.PostAsync(url, content);
+            if (respon.IsSuccessStatusCode)
+            {
+                _stt = true;
+                _mess = "Cập nhật thành công!";
+
+            }
+            else
+            {
+                _stt = false;
+                _mess = "Cập nhật thât bại!";
+            }
+            return Json(new
+            {
+                status = _stt,
+                message = _mess
+            });
+        }
+        
         [HttpGet, Route("getkhachhang")]
         public async Task<IActionResult> GetallLstKhachHang()
         {
@@ -342,28 +362,26 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         public async Task<IActionResult> GetHoaDonByMa(string ma)
         {
             #region
+            var token = Request.Cookies["Token"];
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var urluser = $"https://localhost:7197/api/User/GetUsersByRole?roleName=admin";
+            var responseuser = await _httpClient.GetAsync(urluser);
+            string apiDataUser = await responseuser.Content.ReadAsStringAsync();
+            var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
+            ViewBag.ListUseradmin = ListUseradmin;
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var userName = HttpContext.User.Identity.Name; // Lấy tên người dùng
-
-                var emailClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                var email = emailClaim != null ? emailClaim.Value : "Email not found";
-
+                var fullname = ListUseradmin.FirstOrDefault(c => c.Id == userId);
                 // Tạo một đối tượng view model để truyền thông tin đến view
                 var model = new UserInfoViewModel
                 {
                     UserId = userId,
-                    UserName = userName
+                    UserName = fullname.FullName
                 };
 
                 ViewBag.Model = model;
-            }
-            else
-            {
-
-                return RedirectToAction("Login", "Home", new { area = "" });
-
             }
             var urlusers = $"https://localhost:7197/api/UserAddress/GetAll";
             var responseusers = await _httpClient.GetAsync(urlusers);
@@ -390,15 +408,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                        };
 
             ViewBag.user = user.ToList();
-
-            var token = Request.Cookies["Token"];
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var urluser = $"https://localhost:7197/api/User/GetUsersByRole?roleName=admin";
-            var responseuser = await _httpClient.GetAsync(urluser);
-            string apiDataUser = await responseuser.Content.ReadAsStringAsync();
-            var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
-            ViewBag.ListUseradmin = ListUseradmin;
-
             var apiThanhToan_hd = "https://localhost:7197/api/ThanhToanHoaDon/GetAllThanhToan_HoaDon";
             var responThanhToan_hd = await _httpClient.GetAsync(apiThanhToan_hd);
             string apidaThanhToan_hd = await responThanhToan_hd.Content.ReadAsStringAsync();
