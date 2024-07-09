@@ -10,5 +10,6 @@ namespace HN120_ShopQuanAo.API.IResponsitories
         Task<(bool Success, string ErrorMessage)> Create(DeliveryAddressModel item);
         Task<(bool Success, string ErrorMessage)> Delete(string id);
         Task<(bool Success, string ErrorMessage)> Update(string id,DeliveryAddressModel item);
+        Task<(bool Success, string ErrorMessage)> SetasDefault(string id);
     }
 }

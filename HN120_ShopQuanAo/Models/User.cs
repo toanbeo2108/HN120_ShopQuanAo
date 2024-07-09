@@ -10,8 +10,10 @@ namespace HN120_ShopQuanAo.Data.Models
 {
 	public class User : IdentityUser
 	{
+
 		public string? Avatar { get; set; } // Link ảnh đại diện
 		public string? FullName { get; set; }
+
 		public int? Gender { get; set; }// Giới tính
         public DateTime? Birthday { get; set; }
         public string? CardNumber { get; set; }

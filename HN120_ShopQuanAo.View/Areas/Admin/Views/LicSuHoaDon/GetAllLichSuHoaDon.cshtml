@@ -1,0 +1,83 @@
+﻿@model IEnumerable<HN120_ShopQuanAo.Data.Configurations.HoaDon_History>
+
+@{
+    ViewData["Title"] = "GetAllLichSuHoaDon";
+}
+
+<h1>GetAllLichSuHoaDon</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LichSuHoaDonID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaHoaDon)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NgayTaoDon)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NgayThayDoi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TongGiaTri)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HinhThucThanhToan)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChiTiet)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrangThai)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.LichSuHoaDonID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaHoaDon)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayTaoDon)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayThayDoi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TongGiaTri)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HinhThucThanhToan)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChiTiet)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrangThai)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

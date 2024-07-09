@@ -17,12 +17,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
             if (hd != null)
             {
                 throw new Exception("Hóa đơn đã tồn tại");
-            }
-            var vc = _context.Voucher.FirstOrDefault(c => c.MaVoucher == hoaDon.MaVoucher);
-            //if (vc == null)
-            //{
-            //    throw new Exception("Voucher không tồn tại");
-            //}
+            }          
             _context.HoaDon.Add(hoaDon);
             _context.SaveChanges();
         }
@@ -86,11 +81,12 @@ namespace HN120_ShopQuanAo.API.Responsitories
         public void UpdateHoaDon(HoaDon hoaDon)
         {
             var update = _context.HoaDon.FirstOrDefault(c => c.MaHoaDon == hoaDon.MaHoaDon);
+            var voucher = _context.Voucher.FirstOrDefault(c=>c.MaVoucher == hoaDon.MaVoucher);
             if (update == null)
             {
                 throw new Exception("Hóa đơn không tồn tại.");
             }
-           
+         
 
             update.UserID = hoaDon.UserID;
             update.MaVoucher = hoaDon.MaVoucher;
@@ -101,7 +97,12 @@ namespace HN120_ShopQuanAo.API.Responsitories
             update.TongGiaTriHangHoa = hoaDon.TongGiaTriHangHoa;
             update.PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;
             update.TrangThai = hoaDon.TrangThai;
-
+            update.PhanLoai = hoaDon.PhanLoai;
+            update.TinhThanh = hoaDon.TinhThanh;
+            update.QuanHuyen = hoaDon.QuanHuyen;
+            update.XaPhuong = hoaDon.XaPhuong;
+            update.Cuthe = hoaDon.Cuthe;
+            update.Ghichu = hoaDon.Ghichu;
             _context.SaveChanges();
         }
     }

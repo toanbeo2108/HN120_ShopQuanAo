@@ -1,0 +1,138 @@
+﻿@{
+   Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="tab-container" id="tabContainer">
+    <div class="tabs">
+        <div class="tab active" onclick="openTab(event, 'HoaDon1')">
+            Hóa đơn 1
+            <span class="close-btn" onclick="closeTab(event, 'HoaDon1')">&times;</span>
+        </div>
+    </div>
+    <button onclick="addTab()" class="btn btn-primary create-tab-btn">Tạo hóa đơn mới</button>
+</div>
+<div id="HoaDon1" class="tab-content active">
+    <iframe src="https://localhost:7060/admin/hoadon"></iframe>
+</div>
+
+<style>
+    .tab-container {
+        position: relative;
+        overflow-x: auto; /* Cho phép cuộn ngang */
+        white-space: nowrap; /* Ngăn các tab xuống dòng */
+        background-color: #f9f9f9;
+        padding: 10px 0;
+    }
+
+    .tabs {
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .tab {
+        display: inline-block;
+        padding: 10px 20px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        border-bottom: none;
+        position: relative;
+        background-color: #e0f7e9; /* Màu nền xanh lá cây nhạt */
+        margin-right: 5px;
+        border-radius: 10px 10px 0 0;
+        color: #2c6f2d;
+    }
+
+        .tab.active {
+            background-color: #fff;
+            border-color: #ddd;
+            box-shadow: 0 -2px 3px rgba(0,0,0,0.1);
+        }
+
+    .tab-content {
+        display: none;
+        padding: 20px;
+        border: 1px solid #ccc;
+        height: 800px; /* Đặt chiều cao cho iframe */
+        overflow: hidden;
+        border-radius: 0 0 10px 10px;
+    }
+
+        .tab-content.active {
+            display: block;
+        }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: red;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    var tabCount = 1;
+
+    function addTab() {
+        if (tabCount >= 5) {
+            $.notify('Chỉ có thể tạo tối đa 5 hóa đơn ', 'error');
+            return;
+        }
+
+        tabCount++;
+        var newTabId = 'HoaDon' + tabCount;
+        var newTabContent = '<div id="' + newTabId + '" class="tab-content">' +
+            '<iframe src="https://localhost:7060/admin/hoadon"></iframe>' +
+            '</div>';
+
+        $('.tabs').append(
+            '<div class="tab" onclick="openTab(event, \'' + newTabId + '\')">' +
+            'Hóa đơn ' + tabCount +
+            '<span class="close-btn" onclick="closeTab(event, \'' + newTabId + '\')">&times;</span>' +
+            '</div>'
+        );
+
+        $('#tabContainer').append(newTabContent);
+        // Cuộn đến tab mới được thêm
+        $('#tabContainer').animate({
+            scrollLeft: $('#tabContainer')[0].scrollWidth
+        }, 500);
+    }
+
+    function openTab(event, tabId) {
+        $('.tab').removeClass('active');
+        $(event.target).closest('.tab').addClass('active');
+
+        $('.tab-content').removeClass('active');
+        $('#' + tabId).addClass('active');
+    }
+
+    function closeTab(event, tabId) {
+        event.stopPropagation();
+
+        var tabToRemove = $('#' + tabId);
+        var wasActive = tabToRemove.hasClass('active');
+        tabToRemove.remove();
+        $(event.target).closest('.tab').remove();
+
+        // Cập nhật tabCount
+        tabCount--;
+
+        // Chuyển sang tab đầu tiên nếu tab đóng là tab đang hoạt động
+        if (wasActive && $('.tab').length > 0) {
+            var firstTabId = $('.tab:first').attr('onclick').match(/'(.*?)'/)[1];
+            openTab({ target: $('.tab:first')[0] }, firstTabId);
+        }
+    }
+</script>

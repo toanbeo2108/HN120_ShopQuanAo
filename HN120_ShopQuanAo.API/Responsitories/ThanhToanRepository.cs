@@ -19,7 +19,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 if (ma == null)
                 {
                     var count = _appDbContext.ThanhToan.Count();
-                    tt.MaPhuongThuc = "TT" + (count + 1);
+                    tt.MaPhuongThuc = (count + 1).ToString();
                     _appDbContext.Add(tt);
                     _appDbContext.SaveChanges();
                 }

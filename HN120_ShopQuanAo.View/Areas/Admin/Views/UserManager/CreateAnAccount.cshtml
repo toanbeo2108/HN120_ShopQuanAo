@@ -1,10 +1,18 @@
 ﻿@using HN120_ShopQuanAo.Data.ViewModels;
-@model HN120_ShopQuanAo.Data.ViewModels.NewAccountModel
+@model HN120_ShopQuanAo.Data.ViewModels.RegisterUser
 @{
     ViewData["Title"] = "CreateAnAccount";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 <form asp-controller="UserManager" asp-action="CreateAnAccount">
+    <p>
+        <label>Role<span>*</span></label>
+        <select name="role" class="form-control">
+            <option value="User">User</option>
+            <option value="Customer">Customer</option>
+            <option value="Admin">Customer</option>
+        </select>
+    </p>
     <p>
         <label>PhoneNumber<span>*</span></label>
         <input type="text" required asp-for="PhoneNumber">

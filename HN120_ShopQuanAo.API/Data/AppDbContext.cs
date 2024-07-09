@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HN120_ShopQuanAo.Data.Models;
 using System;
+using HN120_ShopQuanAo.Data.Configurations;
 
 namespace HN120_ShopQuanAo.API.Data
 {
@@ -21,7 +22,8 @@ namespace HN120_ShopQuanAo.API.Data
 		public virtual DbSet<GioHangChiTiet> GioHangChiTiet { get; set; }
 		public virtual DbSet<HoaDon> HoaDon { get; set; }
 		public virtual DbSet<HoaDonChiTiet> HoaDonChiTiet { get; set; }
-		public virtual DbSet<MauSac> MauSac { get; set; }
+		public virtual DbSet<HoaDon_History> HoaDon_History { get; set; }
+        public virtual DbSet<MauSac> MauSac { get; set; }
 		public virtual DbSet<SanPham> SanPham { get; set; }
 		public virtual DbSet<Size> Size { get; set; }
 		public virtual DbSet<TheLoai> TheLoai { get; set; }
@@ -54,7 +56,11 @@ namespace HN120_ShopQuanAo.API.Data
 			{
 
 
-				optionsBuilder.UseSqlServer("Data Source=LAPTOP-DAV1LO0Q\\SQLEXPRESS;Initial Catalog=ShopQuanAoOnline;Integrated Security=True;");
+
+
+				optionsBuilder.UseSqlServer("Data Source=DESKTOP-L5F3V70;Initial Catalog=ShopQuanAoOnline;Integrated Security=True;");
+
+
 
 
 			}

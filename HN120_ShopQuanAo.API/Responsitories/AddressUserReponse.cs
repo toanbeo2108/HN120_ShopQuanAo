@@ -28,14 +28,24 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 {
                     return (false, "UserID truyền vào không đúng.");
                 }
-                // Lấy tổng số lượng địa chỉ
-                var TongDiaChi = await _context.DeliveryAddress.CountAsync();
+                // Lấy ID lớn nhất hiện có trong cơ sở dữ liệu
+                var maxId = await _context.DeliveryAddress
+                    .OrderByDescending(a => a.DeliveryAddressID)
+                    .Select(a => a.DeliveryAddressID)
+                    .FirstOrDefaultAsync();
+
+                // Tạo ID mới
+                int newIdNumber = 1;
+                if (!string.IsNullOrEmpty(maxId) && maxId.Length > 2)
+                {
+                    newIdNumber = int.Parse(maxId.Substring(2)) + 1;
+                }
 
                 // Thêm mới địa chỉ giao hàng vào cơ sở dữ liệu
                 var newAddress = new DeliveryAddress
                 {
                     // Tạo id địa chỉ mới bằng cách thêm 1 vào tổng số lượng Địa chỉ và thêm tiền tố "HD"
-                    DeliveryAddressID = "Dc" + (TongDiaChi + 1),
+                    DeliveryAddressID = "Dc" + newIdNumber,
                     UserID = item.UserID,
                     Consignee = item.Consignee,
                     PhoneNumber = item.PhoneNumber,
@@ -43,7 +53,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
                     District = item.District,
                     Ward = item.Ward,
                     Street = item.Street,
-                    Status = item.Status,
+                    Status = 0,
                 };
 
                 _context.DeliveryAddress.Add(newAddress);
@@ -89,6 +99,41 @@ namespace HN120_ShopQuanAo.API.Responsitories
             return await _context.DeliveryAddress.FindAsync(id);
         }
 
+        public async Task<(bool Success, string ErrorMessage)> SetasDefault(string id)
+        {
+            try
+            {
+                // lấy địa chỉ
+                var address = await _context.DeliveryAddress.FindAsync(id);
+                if (address == null)
+                {
+                    return (false, "Không tìm thấy địa chỉ.");
+                }
+                
+
+                // lấy danh sách địa chỉ của người dùng
+                var listDc = _context.DeliveryAddress.Where(p => p.UserID == address.UserID);
+                // chạy vòng lặp chuyển trạng thái của các địa chỉ khác về 0
+                foreach (var item in listDc)
+                {
+                    item.Status = 0;
+                    _context.DeliveryAddress.Update(item);
+                }
+
+                // sau khi các địa chỉ khác về 0 thì cập nhật lại status địa chỉ ban đầu là 1
+                address.Status = 1;
+
+                // cập nhật:
+                _context.DeliveryAddress.Update(address);
+                await _context.SaveChangesAsync();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Đã xảy ra lỗi: {ex.Message}");
+            }
+        }
+
         public async Task<(bool Success, string ErrorMessage)> Update(string id,DeliveryAddressModel item)
         {
             try
@@ -104,7 +149,6 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 address.District = item.District;
                 address.Ward = item.Ward;
                 address.Street = item.Street;
-                address.Status = item.Status;
 
                 _context.DeliveryAddress.Update(address);
                 await _context.SaveChangesAsync();

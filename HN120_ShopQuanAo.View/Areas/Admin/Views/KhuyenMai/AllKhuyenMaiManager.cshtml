@@ -17,7 +17,9 @@
     </form>
 </div>
 <div>
+
     <a asp-action="CreateKhuyenMai" class="btn btn-primary">Thêm Khuyến Mại</a>
+
 </div>
 <table class="table">
     <thead>
@@ -38,6 +40,8 @@
                                 <td>@item.PhanTramGiam</td>
                                 <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
                             <td>
+
+
                                         <a asp-action="UpdateKhuyenMai" asp-route-id="@item.MaKhuyenMai" class="btn btn-warning">Cập Nhật</a>
                     @if (item.TrangThai == 1)
                     {

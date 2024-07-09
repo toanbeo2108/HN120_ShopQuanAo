@@ -5,7 +5,9 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+
 <h1>Sửa Khuyến Mại</h1>
+
 @if (TempData["errorMessage"] != null)
 {
                 <div class="alert alert-danger">
@@ -21,7 +23,9 @@
             <input type="hidden" asp-for="MaKhuyenMai" />
             
             <div class="form-group">
+
                 <label asp-for="TenKhuyenMai" class="control-label">Tên Khuyến Mại</label>
+
                 <input asp-for="TenKhuyenMai" class="form-control" />
                 <span asp-validation-for="TenKhuyenMai" class="text-danger"></span>
             </div>

@@ -5,7 +5,9 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+
 <h1>Quản Lý Thể Loại</h1>
+
 
 <div class="form-group">
     <form method="get" asp-action="AllTheLoaiManager" asp-controller="TheLoai" asp-area="Admin">
@@ -39,17 +41,21 @@
                             <td>@item.MoTa</td>
                                 <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
                             <td>
+
                                         <a asp-action="UpdateTheLoai" asp-route-id="@item.MaTheLoai" class="btn btn-warning">Cập Nhật</a>
                     @if (item.TrangThai == 1)
                     {
                                                         <form asp-action="UpdateStatusTheLoaiKKD" method="post" style="display:inline;">
+
                                                     <input type="hidden" name="id" value="@item.MaTheLoai" />
                                                     <button type="submit" class="btn btn-secondary">Tăt</button>
                                                 </form>
                     }
                     else
                     {
+
                                                         <form asp-action="UpdateStatusTheLoaiKD" method="post" style="display:inline;">
+
                                                     <input type="hidden" name="id" value="@item.MaTheLoai" />
                                                     <button type="submit" class="btn btn-success">Bật</button>
                                                 </form>

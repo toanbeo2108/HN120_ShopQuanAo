@@ -5,7 +5,9 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+
 <h1>Quản Lý Chất Liệu</h1>
+
 <div class="form-group">
     <form method="get" asp-action="AllChatLieuManager" asp-controller="ChatLieu" asp-area="Admin">
         <div class="row">
@@ -38,17 +40,21 @@
                         <td>@item.MoTa</td>
                             <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
                         <td>
+
                                     <a asp-action="UpdateChatLieu" asp-route-id="@item.MaChatLieu" class="btn btn-warning">Cập Nhật</a>
                     @if (item.TrangThai == 1)
                     {
                                                 <form asp-action="UpdateStatusChatLieuKKD" method="post" style="display:inline;">
+
                                             <input type="hidden" name="id" value="@item.MaChatLieu" />
                                             <button type="submit" class="btn btn-secondary">Tăt</button>
                                         </form>
                     }
                     else
                     {
+
                                                 <form asp-action="UpdateStatusChatLieuKD" method="post" style="display:inline;">
+
                                             <input type="hidden" name="id" value="@item.MaChatLieu" />
                                             <button type="submit" class="btn btn-success">Bật</button>
                                         </form>

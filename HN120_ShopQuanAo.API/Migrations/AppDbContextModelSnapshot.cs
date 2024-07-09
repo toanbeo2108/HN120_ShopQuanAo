@@ -213,8 +213,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("ChiTietSpsSKU")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal?>("DonGia")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("DonGia")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GioHangMaGioHang")
                         .HasColumnType("nvarchar(450)");
@@ -225,8 +225,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("SKU")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SoLuong")
-                        .HasColumnType("int");
+                    b.Property<string>("SoLuong")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenSp")
                         .HasColumnType("nvarchar(max)");
@@ -251,11 +251,20 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("MaHoaDon")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Cuthe")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ghichu")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("MaVoucher")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayTaoDon")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PhanLoai")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("PhiShip")
                         .HasColumnType("decimal(18,2)");
@@ -263,10 +272,16 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<int?>("PhuongThucThanhToan")
                         .HasColumnType("int");
 
+                    b.Property<string>("QuanHuyen")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SoDienThoai")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenKhachHang")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TinhThanh")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("TongGiaTriHangHoa")
@@ -279,7 +294,10 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("VoucherMaVoucher")
-                        .HasColumnType("nvarchar(40)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("XaPhuong")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaHoaDon");
 
@@ -574,7 +592,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("VoucherMaVoucher")
-                        .HasColumnType("nvarchar(40)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserVoucherID");
 
@@ -588,8 +606,7 @@ namespace HN120_ShopQuanAo.API.Migrations
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.Voucher", b =>
                 {
                     b.Property<string>("MaVoucher")
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal?>("GiaGiamToiDa")
                         .IsRequired()
@@ -628,7 +645,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(40)");
 
                     b.Property<int?>("TrangThai")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("MaVoucher");
@@ -672,7 +688,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("VoucherMaVoucher")
-                        .HasColumnType("nvarchar(40)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -710,22 +726,28 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "41d69360-300e-4d14-ba08-0272c0b5c87a",
-                            ConcurrencyStamp = "473b1016-cbaf-4fef-a451-fbd7d6249147",
+
+                            Id = "513c8897-5bc7-4396-935c-c38355df1e54",
+                            ConcurrencyStamp = "c1c4df94-b8d9-47f6-93a0-302bb980cc26",
+
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "349c793b-cc6d-47e5-a23d-5f0ac021c061",
-                            ConcurrencyStamp = "3ad11e5c-7969-41cb-b72b-9dc91c539083",
+
+                            Id = "e9b7928a-e12c-4bb9-a75f-a029afc0a8c1",
+                            ConcurrencyStamp = "17bc443f-5bc8-416c-8053-6909ce86dd58",
+
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "58fd3ef7-b2b9-48ea-8500-f78270ecf959",
-                            ConcurrencyStamp = "2e1d0151-823f-4d7e-9186-7b56d1f69f1e",
+
+                            Id = "0f627436-ca2a-4e22-9b7c-66f9c3e56fd9",
+                            ConcurrencyStamp = "0a7a53d4-3c52-4319-ae7c-50c80576e3e6",
+
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
