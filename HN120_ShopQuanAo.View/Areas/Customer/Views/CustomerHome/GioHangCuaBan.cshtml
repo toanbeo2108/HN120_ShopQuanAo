@@ -1,8 +1,9 @@
 ﻿@using HN120_ShopQuanAo.Data.Models;
+@using HN120_ShopQuanAo.View.Areas.Customer.Data;
 @model IEnumerable<HN120_ShopQuanAo.Data.Models.GioHangChiTiet>
 @{
     Layout = "~/Areas/Customer/Views/Shared/_LayoutCartCustomer.cshtml";
-    List<GioHangChiTiet> ListGioHangChiTietCuaBan = ViewBag.GHCB as List<GioHangChiTiet>;
+    List<GioHangChiTietView> ListGioHangChiTietCuaBan = ViewBag.JoinDataGH as List<GioHangChiTietView>;
 }
 
 <div class="shopping_cart_area">
@@ -17,6 +18,8 @@
                                     <th class="product_remove">Xóa</th>
                                     <th class="product_thumb">Ảnh</th>
                                     <th class="product_name">Tên Sản Phẩm</th>
+                                    <th class="product_name">Màu</th>
+                                    <th class="product_name">Size</th>
                                     <th class="product-price">Giá Bán</th>
                                     <th class="product_quantity">Số Lượng</th>
                                     <th class="product_total">Thành Tiền</th>
@@ -27,8 +30,10 @@
                                     @foreach(var item in ListGioHangChiTietCuaBan)
                                     {
                                         <td class="product_remove"><a href="#"><i class="fa fa-trash-o"></i></a></td>
-                                        <td class="product_thumb"><a href="#"><img src="~/img/product/@item.MaGioHangChiTiet" alt=""></a></td>
-                                        <td class="product_name"><a href="#">Handbag fringilla</a></td>
+                                        <td class="product_thumb"><a href="#"><img src="~/img/product/@item.UrlAnhSPCT" alt=""></a></td>
+                                        <td class="product_name"><a href="#">@item.TenSP</a></td>
+                                        <td class="product_name"><a href="#">@item.TenMau</a></td>
+                                        <td class="product_name"><a href="#">@item.TenSize</a></td>
                                         <td class="product-price">@item.DonGia</td>
                                         <td class="product_quantity"><input min="0" max="100" value="@item.SoLuong" type="number"></td>
                                         <td class="product_total">@item.ThanhTien</td>
