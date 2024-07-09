@@ -169,7 +169,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
         {
 
             var maND = Request.Cookies["UserId"];
-            var ApiurllstGioHangcuaban = "https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
+            var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
             var responseListGHCB = await _httpClient.GetAsync(ApiurllstGioHangcuaban);
             string apidataListGHCB = await responseListGHCB.Content.ReadAsStringAsync();
             var ListGHCB = JsonConvert.DeserializeObject<List<GioHang>>(apidataListGHCB);
@@ -180,7 +180,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
                 {
                     return BadRequest("Không có Mã ND nên Null là đúng");
                 }
-                var ApiurlGioHangcuaban = "https://localhost:7197/api/GioHangChiTiet/GetGHCTByMaGH/{Ghcb.MaGioHang}";
+                var ApiurlGioHangcuaban = $"https://localhost:7197/api/GioHangChiTiet/GetGHCTByMaGH/{Ghcb.MaGioHang}";
                 var responseGHCB = await _httpClient.GetAsync(ApiurlGioHangcuaban);
                 string apidataGHCB = await responseGHCB.Content.ReadAsStringAsync();
                 var GHCB = JsonConvert.DeserializeObject<List<GioHangChiTiet>>(apidataGHCB);
@@ -236,7 +236,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
         public async Task<IActionResult> DetailSanPham(string masp)
         {
             // lấy danh sách sản phẩm
-            var ApiurlSanPham = "https://localhost:7197/api/SanPham/GetAllSanPham";
+            var ApiurlSanPham = $"https://localhost:7197/api/SanPham/GetAllSanPham";
             var resposeSP = await _httpClient.GetAsync(ApiurlSanPham);
             string apidatasSP = await resposeSP.Content.ReadAsStringAsync();
             var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apidatasSP);
