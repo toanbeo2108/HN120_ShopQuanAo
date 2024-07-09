@@ -78,7 +78,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                ViewBag.Message = $"Lỗi không xác định: {ex.Message}";
+                return View();
             }
         }
 

@@ -195,12 +195,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("MaGioHang");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("GioHang");
                 });
@@ -1003,8 +998,10 @@ namespace HN120_ShopQuanAo.API.Migrations
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.GioHang", b =>
                 {
                     b.HasOne("HN120_ShopQuanAo.Data.Models.User", "User")
-                        .WithMany("GioHangs")
-                        .HasForeignKey("UserID");
+                        .WithOne("GioHang")
+                        .HasForeignKey("HN120_ShopQuanAo.Data.Models.GioHang", "MaGioHang")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1239,7 +1236,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                 {
                     b.Navigation("DeliveryAddress");
 
-                    b.Navigation("GioHangs");
+                    b.Navigation("GioHang");
 
                     b.Navigation("HoaDons");
 

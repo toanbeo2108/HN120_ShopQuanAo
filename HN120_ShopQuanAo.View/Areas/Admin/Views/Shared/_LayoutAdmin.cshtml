@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -193,26 +194,38 @@
                 <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                     <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
                         <li class="nav-item dropdown">
-                            <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
-                               aria-expanded="false">
-                                <img src="~/src/assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
+                            <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    var avatar = User.Claims.FirstOrDefault(c => c.Type == "Avatar")?.Value;
+                                    @if (avatar == null)
+                                    {
+                                        <img src="~/img/Avatar/AvatarDefault.png" alt="" width="35" height="35" style="object-fit: cover;" class="rounded-circle">
+                                    }
+                                    else
+                                    {
+                                        <img src="@Url.Content($"~/img/Avatar/{avatar}")" alt="" width="35" height="35" style="object-fit: cover;" class="rounded-circle">
+                                    }
+                                }
+                                else
+                                {
+                                    <img src="~/img/Avatar/AvatarDefault.png" alt="" width="35" height="35" class="rounded-circle">
+                                }
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                                 <div class="message-body">
-                                    <a class="d-flex align-items-center gap-2 dropdown-item">
+                                    <a class="d-flex align-items-center gap-2 dropdown-item" asp-controller="UserManager" asp-action="Update" asp-route-id="@User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value">
                                         <i class="ti ti-user fs-6"></i>
-                                        <p class="mb-0 fs-3">My Profile</p>
+                                        <p class="mb-0 fs-3">@User.Identity.Name</p>
                                     </a>
-                                    <a class="d-flex align-items-center gap-2 dropdown-item">
+                                    @* <a class="d-flex align-items-center gap-2 dropdown-item">
                                         <i class="ti ti-mail fs-6"></i>
                                         <p class="mb-0 fs-3">My Account</p>
                                     </a>
-
                                     <a class="d-flex align-items-center gap-2 dropdown-item">
-
                                         <i class="ti ti-list-check fs-6"></i>
                                         <p class="mb-0 fs-3">My Task</p>
-                                    </a>
+                                    </a> *@
                                     <a asp-action="Logout" asp-controller="AdminHome" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                                 </div>
                             </div>
@@ -221,20 +234,13 @@
                 </div>
             </nav>
 
-            </header>
-
             <!--  Header End -->
-
 
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
-
-
-
         </div>
     </div>
-    @* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
     <script src="~/src/assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="~/js/notify.js"></script>
     <script src="~/js/notify.min.js"></script>
