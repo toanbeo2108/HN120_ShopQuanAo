@@ -48,6 +48,46 @@
         </div>
         <div id="BanHangOnline_partialView" style="display:none">
             <partial name="BanHangOnline_partialView" />
-        </div>        
+        </div>
+
     </div>
 </div>
+@section scripts {
+    <script>
+        // Định dạng số tiền
+        function formatMoney(amount) {
+            if (!isNaN(amount) && amount !== null && amount !== '') {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+            } else {
+                return amount;
+            }
+        }
+       
+        // Duyệt qua các ô chứa số tiền và định dạng
+        $(document).ready(function () {
+           
+            $('.money').each(function () {
+                var amountText = $(this).text().trim(); // Lấy số tiền từ văn bản, loại bỏ dấu phân cách nếu có
+                var amountWithoutCommas = amountText.split(',')[0].replace(/,/g, ''); // Bỏ dấu phẩy và phần sau dấu phẩy
+                var amount = parseFloat(amountWithoutCommas);
+                if (!isNaN(amount)) {
+                    $(this).text(formatMoney(amount)); // Định dạng và gán lại vào văn bản
+                }
+            });
+            $('#btn_Loctheotrangthai').on('change', function () {
+                var selectedStatus = $(this).val();
+
+                $('table tbody tr').each(function () {
+                    var rowStatus = $(this).data('status');
+
+                    if (selectedStatus === "" || rowStatus == selectedStatus) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+           
+        });
+    </script>
+}

@@ -279,7 +279,7 @@ $(document).ready(function () {
 
         var date = 'HD' + today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         $('#btn_ma').val(date.toString());
-        $('#btn_Status').val(1)
+        $('#btn_Status').val(2)
 
         let tt = ($('#btn_tienkhachdua').val().replace(/\./g, '').replace(',', '.'));
         let kt = ($('#btn_tienkhachphaitra').val().replace(/\./g, '').replace(',', '.'));
@@ -376,7 +376,12 @@ $(document).ready(function () {
         var trangthai = parseInt(button.data('trangthai'));     
         var soLuongKhaDungCell = button.closest('tr').find('.so-luong-kha-dung');
         var slton = parseInt(soLuongKhaDungCell.text().match(/\d+/)[0]) - 1;
-        soLuongKhaDungCell.text("Số lượng khả dụng (" + slton + ")");
+        if (slton <= 0) {
+            soLuongKhaDungCell.text("Số lượng khả dụng (" + 0 + ")");
+        }
+        else {
+          soLuongKhaDungCell.text("Số lượng khả dụng (" + slton + ")");
+        }
 
         // Cập nhật thuộc tính data-soluongton mới của button
         $(this).data('soluongton', slton);
@@ -518,6 +523,14 @@ function validatePhoneNumber() {
 function formatMoney(amount) {
     return amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace('.', ',').replace(/(\d+),(\d+)$/, '$1,$2').replace(/,/g, '.').replace(/(\d+)\.(\d+)$/, '$1,$2')
 }
+//function formatMoney(amount) {
+//    if (!isNaN(amount) && amount !== null && amount !== '') {
+//        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+//    } else {
+//        return amount;
+//    }
+//}
+
 function filterFunction() {
     var searchInput = document.getElementById("search-input").value.toUpperCase();
     var selectedColor = document.getElementById("select-color").value;
@@ -586,7 +599,7 @@ function addToInvoiceDetails(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau,
             if (soLuongInput) {
                 var soLuongMua = parseInt(soLuongInput.value);
                 if (soLuongMua + 1 > slton) {
-                    alert('Số lượng mua vượt quá số lượng tồn kho.');
+                    $.notify('Số lượng mua vượt quá số lượng tồn kho!', 'error');
                     return;
                 }
                 soLuongInput.value = soLuongMua + 1;
@@ -757,7 +770,7 @@ function addNewRow( sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, m
             });
             updateTotalPrice(quantityInput, giaBan, slton);
         } else {
-            alert('Số lượng mua vượt quá số lượng khả dụng.');
+            $.notify('Số lượng mua vượt quá số lượng khả dụng!', 'error');
         }
     });
     quantityContainer.appendChild(plusButton);
@@ -1007,7 +1020,7 @@ function Thanhtoan() {
                             window.location.reload();
                           
                         }
-                        if ($('#btn_Status').val() == 1) {
+                        if ($('#btn_Status').val() == 2) {
                             AddThanhTOanHoaDon();
                             localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
                             window.location.reload();
@@ -1082,7 +1095,7 @@ function AddLichsuhoadon() {
 
         }
         else {
-            console.log('Lưu thanh toán hóa đơn thất bại');
+            console.log('Lưu Lịch sử hóa đơn thất bại');
         }
 
     })

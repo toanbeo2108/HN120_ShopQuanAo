@@ -12,7 +12,7 @@
 
 
 
-    <table class="table" id="page">
+    <table class="table tbsp" id="page">
         <thead>
             <tr>
 
@@ -51,12 +51,12 @@
 
             </tr>
         </thead>
-        <tbody>
+        <tbody class="data-table">
             @foreach (var item in Model)
             {
                 if (item.PhanLoai == "2")
                 {
-                    <tr>
+                    <tr data-status="@item.TrangThai">
 
                         <td style="text-align : center; margin-bottom : 20px">
                             @item.MaHoaDon

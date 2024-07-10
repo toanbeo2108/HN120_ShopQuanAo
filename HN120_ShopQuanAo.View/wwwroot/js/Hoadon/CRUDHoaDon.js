@@ -13,7 +13,7 @@ $(document).ready(function () {
     $('#HoaDonTaiQuayPartialView').hide();
     $('#BanHangOnline_partialView').hide();
     $('body').on('change','#btn_phanloaihoadon',function () {
-        if ($('#btn_phanloaihoadon').val() == null) {
+        if ($('#btn_phanloaihoadon').val() == '') {
             $('#GetAllHoaDon_partialView').show();
             $('#HoaDonTaiQuayPartialView').hide();
             $('#BanHangOnline_partialView').hide();
@@ -57,6 +57,31 @@ $(document).ready(function () {
         }
         $('#btn_TongGiaTriHangHoa').val(tongtiensaukhithaydoi);
         updatehoadon();   
+        var today = new Date();
+
+        var date = 'HD' + today.getDate() + (today.getMonth() + 1) + today.getFullYear() + today.getHours() + today.getMinutes() + today.getSeconds();
+        var tongtienhoadon = $('#btn_tonggiatrihd').val().replace(/\./g, '').split(',')[0];
+        var data = {
+            LichSuHoaDonID: date,
+            MaHoaDon: $('#btn_mahoadonls').val(),
+            UserID: $('#btn_UserName').val(),
+            NgayTaoDon: $('#btn_ngaytao').val(),
+            NgayThayDoi: $('#btn_ngaythaydoils').val(),
+            TongGiaTri: parseFloat(tongtienhoadon),
+            HinhThucThanhToan: $('#btn_httt').val(),
+            ChiTiet: $('#btn_ghichu').val(),
+            TrangThai: 7,
+        };
+
+        $.post('/Add-lichsuhoadon', { lshd: data }, function (re) {
+            if (re.status) {
+
+            }
+            else {
+
+            }
+
+        })
     }) 
 
     var token = '8fbfedf6-b458-11ee-b6f7-7a81157ff3b1';
@@ -304,6 +329,8 @@ function updateHoaDonChiTiet(datahdct) {
 }
 
 function updatehoadon() {
+    var hoadon = getdatahoadon();
+    console.log(hoadon);
     $.post('/Update-hoadon', { hd: getdatahoadon() }, function (re) {
 
         if (re.status) {
@@ -340,7 +367,7 @@ function setdata(data) {
 function getdatahoadon() {
     return {
         MaHoaDon: $('#btn_mahoadon').val(),
-        UserID: $('#btn_UserName').val(),
+        UserID: $('#btn_UserID').val(),
         MaVoucher: $('#btn_MaVoucher').val(),
         NgayTaoDon: $('#btn_NgayTaoDon').val(),
         TenKhachHang: $('#btn_TenKhachHang').val(),

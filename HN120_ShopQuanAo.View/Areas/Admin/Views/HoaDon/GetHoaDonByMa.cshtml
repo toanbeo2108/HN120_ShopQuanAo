@@ -179,6 +179,13 @@
                                     <p style="text-align:center">Hủy</p>
                                     <span style="word-wrap: break-word;">@item.NgayTaoDon</span>
                                 }
+                                    @if (item.TrangThai == 7)
+                                    {
+                                        <img src="~/Quanlydonhang/7.png" style="width: 100%; height: auto;" />
+                                        <br />
+                                        <p style="text-align:center">@user.UserName đã chỉnh sửa</p>
+                                        <span style="word-wrap: break-word;">@item.NgayTaoDon</span>
+                                    }
                             </td>
                         }
                     </tr>
@@ -188,7 +195,7 @@
 
     </div>
    <hr />
-        @if (Model.TrangThai == 1)
+        @if (Model.TrangThai == 1 && Model.PhanLoai == "2")
         {
             <div class="col-md-2">
                 <button class="btn btn-primary" id="btn_Xacnhandonhang">Xác nhận</button>
@@ -224,13 +231,27 @@
                 <button class="btn btn-danger" id="btn_huydon"> Hủy đơn</button>
             </div>
         }
-        @if (Model.TrangThai >=2  && Model.TrangThai <=3 )
+        @if (Model.PhanLoai == "1")
         {
-        <div class="col-md-2">
-            <button class="btn btn-danger" id="btn_back"> Quay lại</button>
-        </div>
-            
+            @if (Model.TrangThai == 3)
+            {
+                <div class="col-md-2">
+                    <button class="btn btn-danger" id="btn_back"> Quay lại</button>
+                </div>
+
+            }
         }
+        @if (Model.PhanLoai == "2")
+        {
+            @if (Model.TrangThai >= 2 && Model.TrangThai <= 3)
+            {
+                <div class="col-md-2">
+                    <button class="btn btn-danger" id="btn_back"> Quay lại</button>
+                </div>
+
+            }
+        }
+        
     
 </div>
 
@@ -322,13 +343,13 @@
                 <td style="text-align : center; margin-bottom : 20px">
                      @Model.TenKhachHang                      
                 </td>
-                <td style="text-align : center; margin-bottom : 20px">
+                    <td style="text-align : center; margin-bottom : 20px" >
                     @Model.SoDienThoai
                 </td>
-                <td style="text-align : center; margin-bottom : 20px">
+                    <td style="text-align : center; margin-bottom : 20px" class="money">
                     @Model.PhiShip
                 </td>
-                <td style="text-align : center; margin-bottom : 20px">
+                    <td style="text-align : center; margin-bottom : 20px" class="money">
                     @Model.TongGiaTriHangHoa
                 </td>
                 <td style="text-align : center; margin-bottom : 20px">
@@ -502,12 +523,12 @@
                         <td style="text-align : center; margin-bottom : 20px">  
                             <img src="~/photoSanPhamCT/@chiTietSPView.UrlAnhSpct" alt="Combo Image" width="100" height="100" />
                             </td>
-                        <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.SKU</td>
+                            <td style="text-align : center; margin-bottom : 20px" class="sku">@chiTietSPView?.SKU</td>
                         <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.TenSP</td>
                         <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.TenMau</td>
                         <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.TenSize</td>
                         <td style="text-align : center; margin-bottom : 20px">@item.SoLuongMua</td>
-                        <td style="text-align : center; margin-bottom : 20px">@item.DonGia</td>
+                        <td style="text-align : center; margin-bottom : 20px" class="money">@item.DonGia</td>
                         
                         @if (Model.TrangThai == 1 || Model.TrangThai == 2 || Model.TrangThai == 3)
                         {
@@ -515,13 +536,25 @@
                                 <button class="btn btn-outline-dange" id="btn_xoachitietsp" data-ma="@item.MaHoaDonChiTiet"><i class="fa-solid fa-trash" style="color: #f31212;"></i></button>
                             </td>
                         }
-                        <input type="hidden" class="maHoaDonChiTiet" value="@item.MaHoaDonChiTiet" />
-                        <input type="hidden" class="sku" value="@item.SKU" />
-                        <input type="hidden" class="maHoaDon" value="@item.MaHoaDon" />
-                        <input type="hidden" class="tenSp" value="@item.TenSp" />
-                        <input type="hidden" class="soLuongMua" value="@item.SoLuongMua" />
-                        <input type="hidden" class="donGia" value="@item.DonGia" />
-                        <input type="hidden" class="trangThai" value="@item.TrangThai" />
+                        <td>
+                            <input type="hidden" class="maHoaDonChiTiet" value="@item.MaHoaDonChiTiet" />
+                            <input type="hidden" class="sku" value="@item.SKU"/>
+                            <input type="hidden" id="btn_nhap"/>
+                            <input type="hidden" class="maHoaDon" value="@item.MaHoaDon"/>
+                            <input type="hidden" class="tenSp" value="@item.TenSp"/>
+                            <input type="hidden" class="soLuongMua" value="@item.SoLuongMua"/>
+                            <input type="hidden" class="donGia" value="@item.DonGia"/>
+                            <input type="hidden" class="trangThai" value="@item.TrangThai"/>
+                            <input type="hidden" class="masp" value="@chiTietSPView.MaSp"/>
+                            <input type="hidden" class="masz" value="@chiTietSPView.MaSize"/>
+                            <input type="hidden" class="MaMau" value="@chiTietSPView.MaMau"/>
+                            <input type="hidden" class="MaKhuyenMai" value="@chiTietSPView.MaKhuyenMai" />
+                            <input type="hidden" class="img" value="@chiTietSPView.UrlAnhSpct" />
+                            <input type="hidden" class="DonGia_" value="@chiTietSPView.Dongia" />
+                            <input type="hidden" class="GiaBan" value="@chiTietSPView.GiaBan" />
+                            <input type="hidden" class="SoLuongTon" value="@chiTietSPView.SoLuongTon" />
+                            <input type="hidden" class="tt" value="@chiTietSPView.TrangThai" />
+                         </td>
                     </tr>
                  
                 i++;
@@ -535,20 +568,19 @@
 @* modal danh sach sản phẩm *@
 
 <div class="modal fade" tabindex="-1" id="pop_sp">
-    <div class="modal-dialog  modal-xl">
+    <div class="modal-dialog  modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Danh sách sản phẩm</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="card-body" style="height: 630px; overflow-y: auto;">
+                <div class="card-body" style="height: 430px; overflow-y: auto;">
                     <partial name="SP_partial" />
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="btn_savecthd">Save changes</button>
+                
             </div>
         </div>
     </div>
@@ -586,7 +618,7 @@
                     </div>
                     <div style="display:none">
                         <label for="btn_tonggiatrihd">Tổng giá trị</label>
-                        <input type="text" id="btn_tonggiatrihd" value="@Model.TongGiaTriHangHoa" />
+                        <input class="money" type="text" id="btn_tonggiatrihd" value="@Model.TongGiaTriHangHoa" />
                     </div>
                     <div style="display:none">
                         <label for="btn_httt">Phương thức</label>
@@ -710,7 +742,7 @@
                     </div>
                     <div class="col-md-4">
                         <label for="btn_PhiShip">Phí ship</label>
-                        <input id="btn_PhiShip" class="form-control " type="text" />
+                        <input id="btn_PhiShip" class="form-control money" type="text" />
                        
                     </div>
                     <div class="col-md-12 text-center">
@@ -724,7 +756,7 @@
                     </div>
                     <div class="col-md-4" style="display:none">
                         <label for="btn_TongGiaTriHangHoa">Tổng tiền</label>
-                        <input id="btn_TongGiaTriHangHoa" class="form-control" type="text" />
+                        <input id="btn_TongGiaTriHangHoa" class="form-control money" type="text" />
                     </div>
                     <div class="col-md-4" style="display:none">
                         <label for="btn_PhuongTTT">Phương thức thanh toán</label>
@@ -756,7 +788,7 @@
            
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="btn_save">Save changes</button>
+                <button type="button" class="btn btn-primary" id="btn_save">Cập nhật</button>
             </div>
         </div>
     </div>
@@ -820,6 +852,11 @@
                                         <p>Hủy đơn hàng</p> <br />
                                         <p>Ghi chú: @item.ChiTiet</p>
                                     }
+                                    @if (item.TrangThai == 7)
+                                    {
+                                        <p>Chỉnh sửa hóa đơn</p> <br />
+                                        <p>Ghi chú: @item.ChiTiet</p>
+                                    }
                                 </td>
                            </tr>
                             a++;
@@ -863,3 +900,27 @@
     {
         <p>You are not logged in.</p>
     }
+@section scripts {
+    <script>
+        // Định dạng số tiền
+        function formatMoney(amount) {
+            if (!isNaN(amount) && amount !== null && amount !== '') {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+            } else {
+                return amount;
+            }
+        }
+
+        // Duyệt qua các ô chứa số tiền và định dạng
+        $(document).ready(function () {
+            $('.money').each(function () {
+                var amountText = $(this).text().trim(); // Lấy số tiền từ văn bản, loại bỏ dấu phân cách nếu có
+                var amountWithoutCommas = amountText.split(',')[0].replace(/,/g, ''); // Bỏ dấu phẩy và phần sau dấu phẩy
+                var amount = parseFloat(amountWithoutCommas);
+                if (!isNaN(amount)) {
+                    $(this).text(formatMoney(amount)); // Định dạng và gán lại vào văn bản
+                }
+            });
+        });
+    </script>
+}
