@@ -347,7 +347,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             string apiData = await respon.Content.ReadAsStringAsync();
             var lst = JsonConvert.DeserializeObject<List<HoaDon>>(apiData);
 
-            var sortedList = lst.OrderByDescending(hoaDon => hoaDon.MaHoaDon).ToList();
+            var sortedList = lst.OrderByDescending(hoaDon => hoaDon.NgayTaoDon).ToList();
 
 
             if (respon.IsSuccessStatusCode)
@@ -477,7 +477,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                                  SoLuongTon = ctsp.SoLuongTon,
                                  TrangThai = ctsp.TrangThai,
                                  TenMau = ms.TenMau,
-                                 TenSize = sz.TenSize
+                                 TenSize = sz.TenSize,
+                                 Dongia = ctsp.DonGia
                              };
             var litspctview = joinedData.ToList();
             ViewBag.JoinedData = litspctview;
