@@ -45,6 +45,7 @@ namespace HN120_ShopQuanAo.API.Controllers
                 MaSp = "SP_" + spcount.ToString(),
                 TenSP = model.TenSp,
                 MaThuongHieu = model.MaThuongHieu,
+                MaTheLoai = model.MaTheLoai,
                 MaChatLieu = model.MaChatLieu,
                 UrlAvatar = model.UrlAvatar,
                 NgayNhap = DateTime.Now,
