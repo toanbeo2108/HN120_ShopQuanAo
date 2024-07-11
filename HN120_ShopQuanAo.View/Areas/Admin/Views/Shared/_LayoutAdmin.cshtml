@@ -44,22 +44,31 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" aria-expanded="false" asp-area="Admin" asp-controller="UserManager" asp-action="GetAllAccount">
+                            <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                                 <span>
                                     <i class="bi bi-person-gear"></i>
                                 </span>
                                 <span class="hide-menu">Quản lý tài khoản</span>
                             </a>
+                            <ul aria-expanded="false" class="collapse first-level">
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-area="Admin" asp-controller="UserManager" asp-action="GetAllUser">
+                                        <span class="hide-menu">Quản lý người dùng</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-area="Admin" asp-controller="UserManager" asp-action="GetAllEmpolyee">
+                                        <span class="hide-menu">Quản lý nhân viên</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="nav-small-cap">
                             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                             <span class="hide-menu">Quản lý sản phẩm</span>
                         </li>
                         <li class="sidebar-item">
-
                             <a class="sidebar-link" asp-action="AllSanPhamManager" asp-controller="SanPham" asp-area="Admin">
-
-
                                 <span>
                                     <i class="ti ti-article"></i>
                                 </span>
@@ -67,9 +76,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-
                             <a class="sidebar-link" asp-action="AllMauSacManager" asp-controller="MauSac" asp-area="Admin">
-
                                 <span>
                                     <i class="ti ti-alert-circle"></i>
                                 </span>
@@ -77,9 +84,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-
                             <a class="sidebar-link" asp-action="AllSizeManager" asp-controller="Size" asp-area="Admin">
-
                                 <span>
                                     <i class="ti ti-cards"></i>
                                 </span>
@@ -87,9 +92,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-
                             <a class="sidebar-link" asp-action="AllChatLieuManager" asp-controller="ChatLieu" asp-area="Admin">
-
                                 <span>
                                     <i class="ti ti-file-description"></i>
                                 </span>
@@ -97,9 +100,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-
                             <a class="sidebar-link" asp-action="AllTheLoaiManager" asp-controller="TheLoai" asp-area="Admin">
-
                                 <span>
                                     <i class="ti ti-typography"></i>
                                 </span>
@@ -107,9 +108,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-
                             <a class="sidebar-link" asp-action="AllThuongHieuManager" asp-controller="ThuongHieu" asp-area="Admin">
-
                                 <span>
                                     <i class="ti ti-typography"></i>
                                 </span>
@@ -117,9 +116,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-
                             <a class="sidebar-link" asp-action="AllKhuyenMaiManager" asp-controller="KhuyenMai" asp-area="Admin">
-
                                 <span>
                                     <i class="ti ti-typography"></i>
                                 </span>
@@ -141,13 +138,11 @@
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="/admin/HoaDon/GetAllHoaDon">
-
                                 <span>
                                     <i class="ti ti-typography"></i>
                                 </span>
                                 <span class="hide-menu">Danh sách hóa đơn</span>
                             </a>
-
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="./authentication-register.html" aria-expanded="false">
@@ -191,7 +186,7 @@
                         </a>
                     </li>
                 </ul>
-                <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                <div class="collapse navbar-collapse justify-content-end px-0" id="navbarNav">
                     <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
                         <li class="nav-item dropdown">
                             <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
@@ -218,14 +213,10 @@
                                         <i class="ti ti-user fs-6"></i>
                                         <p class="mb-0 fs-3">@User.Identity.Name</p>
                                     </a>
-                                    @* <a class="d-flex align-items-center gap-2 dropdown-item">
-                                        <i class="ti ti-mail fs-6"></i>
-                                        <p class="mb-0 fs-3">My Account</p>
-                                    </a>
                                     <a class="d-flex align-items-center gap-2 dropdown-item">
                                         <i class="ti ti-list-check fs-6"></i>
                                         <p class="mb-0 fs-3">My Task</p>
-                                    </a> *@
+                                    </a>
                                     <a asp-action="Logout" asp-controller="AdminHome" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                                 </div>
                             </div>
@@ -241,6 +232,7 @@
             </main>
         </div>
     </div>
+
     <script src="~/src/assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="~/js/notify.js"></script>
     <script src="~/js/notify.min.js"></script>
