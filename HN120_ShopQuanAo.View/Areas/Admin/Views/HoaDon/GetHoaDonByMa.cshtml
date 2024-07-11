@@ -124,7 +124,7 @@
 <script src="~/js/Hoadon/CRUDHoaDon.js"></script>
 <script src="~/js/Hoadon/CapNhatChiTietHoaDon.js"></script>
 
-<div class="container">
+<div class="container mt-4">
 <div class="row">
     <div class="col-md-12">
         <div class="table-container" style="overflow-x: auto; height: 200px; overflow-y: hidden;">
@@ -203,7 +203,7 @@
         }
         @if (Model.TrangThai == 2)
         {
-            <div class="col-md-2">
+            <div class="col-md-4">
                 <button class="btn btn-primary" id="btn_ChoGiaoHang">Chờ giao hàng</button>
             </div>
         }
@@ -677,7 +677,7 @@
 
                     <div class="col-md-4">
                         
-                        <label for="btn_UserID">Tên nhân viên</label>
+                        <label for="btn_UserID">Người tạo</label>
                         <input id="btn_UserID" class="form-control" type="text" style="display:none" />
                         
                         @foreach (var nv in ListUseradmin)
@@ -786,7 +786,7 @@
             </div>
            
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="btn_close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="btn_save">Cập nhật</button>
             </div>
         </div>

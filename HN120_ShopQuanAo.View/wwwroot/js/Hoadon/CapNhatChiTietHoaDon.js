@@ -86,6 +86,14 @@
                         TrangThai: parseInt(trangThai),
 
                     }];
+                    let stthd = $('#stt_hoadon').val();
+                    let slspud;
+                    if (stthd == 2 || stthd == 3 ) {
+                        slspud = (parseInt(SoLuongTon) - soluong);
+                    }
+                    else {
+                        slspud = parseInt(SoLuongTon);
+                    }
                    var dt2 = {
                         SKU: sku,
                         MaSp: masp,
@@ -95,7 +103,7 @@
                         UrlAnhSpct: img,
                         Dongia: parseFloat(DonGia_),
                         GiaBan: parseFloat(GiaBan),
-                        SoLuongTon: (parseInt(SoLuongTon) - soluong),
+                       SoLuongTon: slspud,
                         TrangThai: parseInt(tt),
                     };
                     var datahoadon = getdatafake();
@@ -115,24 +123,27 @@
                         data: JSON.stringify(dt),
                         success: function (response) {
                             if (response.status) {
-                                $.ajax({
-                                    url: '/Update_soluongCTsanpham',
-                                    method: 'POST',
-                                    contentType: 'application/json',
-                                    dataType: 'json',
-                                    data: JSON.stringify([dt2]),
-                                    success: function (re) {
-                                        if (re.status) {
-                                            localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }));
-                                            window.location.reload();
-                                        } else {
-                                            console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                                
+                                    $.ajax({
+                                        url: '/Update_soluongCTsanpham',
+                                        method: 'POST',
+                                        contentType: 'application/json',
+                                        dataType: 'json',
+                                        data: JSON.stringify([dt2]),
+                                        success: function (re) {
+                                            if (re.status) {
+                                                localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }));
+                                                window.location.reload();
+                                            } else {
+                                                console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                                            }
+                                        },
+                                        error: function () {
+                                            console.error('Có lỗi xảy ra khi gửi yêu cầu.');
                                         }
-                                    },
-                                    error: function () {
-                                        console.error('Có lỗi xảy ra khi gửi yêu cầu.');
-                                    }
-                                });
+                                    });
+                              
+                                
                                 
                             } else {
                                 $.notify("Đã xảy ra lỗi: " + err, 'error');
@@ -151,6 +162,14 @@
                         DonGia: dg,
                         TrangThai: productData.tt,
                     };
+                    let stthd = $('#stt_hoadon').val();
+                    let slspud;
+                    if (stthd == 2 || stthd == 3) {
+                        slspud = (productData.SoLuongTon - soluong);
+                    }
+                    else {
+                        slspud = productData.SoLuongTon;
+                    }
                     var datasp = {
                         SKU: productData.sku,
                         MaSp: productData.masp,
@@ -160,7 +179,7 @@
                         UrlAnhSpct: productData.img,
                         DonGia: productData.DonGia_,
                         GiaBan: productData.GiaBan,
-                        SoLuongTon: (productData.SoLuongTon - soluong),
+                        SoLuongTon: slspud,
                         TrangThai: productData.tt
                     }
 
@@ -174,8 +193,8 @@
                                 var datahoadon = getdatafake();
                                 $.post('/Update-hoadon', { hd: datahoadon }, function (re) {
 
-                                    if (re.status) {
-                                        $.ajax({
+                                    if (re.status) {                                      
+                                         $.ajax({
                                             url: '/Update_soluongCTsanpham',
                                             method: 'POST',
                                             contentType: 'application/json',
@@ -194,7 +213,7 @@
                                                 console.error('Có lỗi xảy ra khi gửi yêu cầu.');
                                             }
                                         });
-                                        
+                                    
                                     }
                                     else {
                                         $.notify('Có lỗi sảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error')

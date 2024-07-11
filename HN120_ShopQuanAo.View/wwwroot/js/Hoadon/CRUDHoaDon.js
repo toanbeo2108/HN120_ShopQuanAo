@@ -47,7 +47,10 @@ $(document).ready(function () {
             }
         })
     }) 
-
+    $('body').on('click', '#btn_close', function(){
+        setdata(null);    
+         $('#pop_updatehoadon').modal('hide');
+    })
     $('body').on('click', '#btn_save', function () {
         let ship = parseFloat($('#btn_PhiShip').val());
         let ship_fake = parseFloat($('#btn_PhiShip_fake').val());
