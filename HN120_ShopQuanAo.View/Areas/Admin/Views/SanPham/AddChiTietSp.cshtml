@@ -1,4 +1,4 @@
-@using HN120_ShopQuanAo.Data.Models;
+@*@using HN120_ShopQuanAo.Data.Models;
 @model HN120_ShopQuanAo.Data.ViewModels.AddChiTietSpViewModel
 
 @{
@@ -220,7 +220,7 @@ form {
                     <td>
                         <input name="ChiTietSps[${count}].DonGia" required class="form-control" />
                     </td>
-                    
+
                     <td>
                         <input name="ChiTietSps[${count}].SoLuongTon" required class="form-control" />
                     </td>
@@ -266,5 +266,24 @@ form {
         updateOptions();
     }
 
+    function updateOptions() {
+        var selectedSizes = Array.from(document.querySelectorAll("#chiTietSpContainer tbody input[name*='MaSize']")).map(input => input.value);
+        var selectedColors = Array.from(document.querySelectorAll("#chiTietSpContainer tbody input[name*='MaMau']")).map(input => input.value);
 
-</script>
+        document.querySelectorAll("input[name='selectedSizes']").forEach(checkbox => {
+            if (selectedSizes.includes(checkbox.value)) {
+                checkbox.closest('.form-check').style.display = 'none';
+            } else {
+                checkbox.closest('.form-check').style.display = 'block';
+            }
+        });
+
+        document.querySelectorAll("input[name='selectedColors']").forEach(checkbox => {
+            if (selectedColors.includes(checkbox.value)) {
+                checkbox.closest('.form-check').style.display = 'none';
+            } else {
+                checkbox.closest('.form-check').style.display = 'block';
+            }
+        });
+    }
+</script>*@

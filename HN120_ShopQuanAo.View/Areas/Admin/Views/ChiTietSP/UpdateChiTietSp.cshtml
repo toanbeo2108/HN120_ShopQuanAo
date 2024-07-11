@@ -21,30 +21,19 @@
                 <input asp-for="MaSp" type="hidden" class="form-control" />
                 <input asp-for="MaSize" type="hidden" class="form-control" />
                 <input asp-for="MaMau" type="hidden" class="form-control" />
-            </div>
-
+            </div>      
             <div class="form-group">
-                <label asp-for="MaKhuyenMai" class="control-label"></label>
-                <select class="form-select" asp-for="MaKhuyenMai" aria-label="Default select example">
-                    <option value=""></option>
-                    @foreach (KhuyenMai item in lstkm)
-                    {
-                                 <option value="@item.MaKhuyenMai">@item.TenKhuyenMai</option>
-                    }
-                </select>
+                <label asp-for="UrlAnhSpct" class="control-label">Ảnh</label>
+                <input type="file" class="form-control" value="imagectspFile" name="imagectspFile"/>
+                <span asp-validation-for="UrlAnhSpct" class="text-danger" ></span>
             </div>
             <div class="form-group">
-                <label asp-for="UrlAnhSpct" class="control-label"></label>
-                <input asp-for="UrlAnhSpct" type="file"  class="form-control" />
-                <span asp-validation-for="UrlAnhSpct" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DonGia" class="control-label"></label>
+                <label asp-for="DonGia" class="control-label">Đơn Giá</label>
                 <input asp-for="DonGia" class="form-control" />
                 <span asp-validation-for="DonGia" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SoLuongTon" class="control-label"></label>
+                <label asp-for="SoLuongTon" class="control-label">Số Lượng</label>
                 <input asp-for="SoLuongTon" class="form-control" />
                 <span asp-validation-for="SoLuongTon" class="text-danger"></span>
             </div>
@@ -52,7 +41,7 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
 
-    <a asp-action="AllChiTietSpManager" asp-route-id="@Model.MaSp" class="btn btn-warning">Hủy</a>
+    <a asp-action="SanPhamDetail" asp-controller="SanPham" asp-route-id="@Model.MaSp" class="btn btn-warning">Hủy</a>
 
 
             </div>
