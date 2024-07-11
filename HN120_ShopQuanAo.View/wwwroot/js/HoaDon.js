@@ -54,7 +54,7 @@ $(document).ready(function () {
             //$('#btn_PhiShip_fake').val('');
             $('#btn_TenKhachHang').val('');
             $('#btn_SoDienThoai').val('');
-            $('#clear').click()
+            $('#clear').click();
         }
     })
     var token = '8fbfedf6-b458-11ee-b6f7-7a81157ff3b1';
@@ -82,6 +82,11 @@ $(document).ready(function () {
         if ($('#btn_phuongthucthanhtoan').val() == '4') {
 
             $.notify('Phương thức thanh toán chỉ áp dụng cho đặt hàng tại quầy', 'error');
+            return;
+        }
+        let tongtiensp = $('#btn_tongtien').val();
+        if (tongtiensp == '' || parseFloat(tongtiensp) <= 0) {
+            $.notify('Chưa chọn sản phẩm nào ', 'error');
             return;
         }
         if ($('#btn_TenKhachHang').val() != '' && $('#btn_SoDienThoai').val() == '') {
@@ -281,7 +286,11 @@ $(document).ready(function () {
         var date = 'HD' + today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         $('#btn_ma').val(date.toString());
         $('#btn_Status').val(2)
-
+        let tongtiensp = $('#btn_tongtien').val();
+        if (tongtiensp == '' || parseFloat(tongtiensp) <= 0) {
+            $.notify('Chưa chọn sản phẩm nào ', 'error');
+            return;
+        }
         let tt = ($('#btn_tienkhachdua').val().replace(/\./g, '').replace(',', '.'));
         let kt = ($('#btn_tienkhachphaitra').val().replace(/\./g, '').replace(',', '.'));
         if ($('#btn_TenKhachHang').val() != '' && $('#btn_SoDienThoai').val() == '') {
@@ -351,14 +360,17 @@ $(document).ready(function () {
         var xaPhuong = selectedOption.getAttribute('data-xaphuong');
         var cuThe = selectedOption.getAttribute('data-cuthe');
         var sodt = selectedOption.getAttribute('data-sodienthoai');
-        if ($('#btn_btn_TenKhachHang').val != '') {
+        if ($('#btn_btn_TenKhachHang').val() != '' || $('#btn_btn_TenKhachHang').val() != undefined) {
             document.getElementById('city').innerHTML = '<option value="' + tinhThanh + '">' + tinhThanh + '</option>';
             document.getElementById('district').innerHTML = '<option value="' + quanHuyen + '">' + quanHuyen + '</option>';
             document.getElementById('ward').innerHTML = '<option value="' + xaPhuong + '">' + xaPhuong + '</option>';
             document.getElementById('street').value = cuThe; document.getElementById('btn_SoDienThoai').value = sodt;
+            loadTinhThanh();
         }
-        
-        loadTinhThanh();
+        else {
+            $('#clear').click();
+        }
+       
 
     });
 
