@@ -28,7 +28,7 @@
                 </th>
                 <th style="text-align : center;">
                     Ngày tạo
-                </th>
+                </th> 
                 <th style="text-align : center;">
                     Tên khách hàng
                 </th>
@@ -108,7 +108,7 @@
                             }
                             @if (item.PhuongThucThanhToan == 3)
                             {
-                                <p>Thập cẩm</p>
+                                <p>Chuyển khoản + tiền mặt</p>
                             }
                             @if (item.PhuongThucThanhToan == 4)
                             {
@@ -152,7 +152,9 @@
                                 Hủy
                             </td>
                         }
-
+                        <td style="text-align : center;display:none">
+                            @item.NgayThayDoi ;
+                        </td>
                         <td>
                             <a href="@Url.Action("GetHoaDonByMa", "HoaDon", new { ma = item.MaHoaDon })" class="btn btn-primary">Chi tiết</a>
                         </td>
