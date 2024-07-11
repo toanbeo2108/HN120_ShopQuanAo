@@ -15,7 +15,8 @@ namespace HN120_ShopQuanAo.Data.Models
 		public string? UserID { get; set; }
 		public string? MaVoucher { get; set; }
 		public DateTime? NgayTaoDon { get; set; }
-		public string? TenKhachHang { get; set; }
+        public DateTime? NgayThayDoi {get; set;}
+        public string? TenKhachHang { get; set; }
 		public string? SoDienThoai { get; set; }
 		public decimal? PhiShip { get; set; }
 		public decimal? TongGiaTriHangHoa { get; set; }

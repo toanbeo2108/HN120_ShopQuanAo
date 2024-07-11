@@ -179,6 +179,13 @@
                                     <p style="text-align:center">Hủy</p>
                                     <span style="word-wrap: break-word;">@item.NgayTaoDon</span>
                                 }
+                                    @if (item.TrangThai == 7)
+                                    {
+                                        <img src="~/Quanlydonhang/7.png" style="width: 100%; height: auto;" />
+                                        <br />
+                                        <p style="text-align:center">@user.UserName đã chỉnh sửa</p>
+                                        <span style="word-wrap: break-word;">@item.NgayTaoDon</span>
+                                    }
                             </td>
                         }
                     </tr>
@@ -188,7 +195,7 @@
 
     </div>
    <hr />
-        @if (Model.TrangThai == 1)
+        @if (Model.TrangThai == 1 && Model.PhanLoai == "2")
         {
             <div class="col-md-2">
                 <button class="btn btn-primary" id="btn_Xacnhandonhang">Xác nhận</button>
@@ -212,25 +219,39 @@
                 <button class="btn btn-primary" id="btn_HoanThanh"> Hoàn thành</button>
             </div>
         }
-        @if (Model.TrangThai == 5)
+        @* @if (Model.TrangThai == 5)
         {          
             <div class="col-md-2">
                 <button class="btn btn-primary" id="btn_XacnhanThanh">Xác nhận hoàn thành</button>
             </div>
-        }
+        } *@
         @if (Model.TrangThai == 1 || Model.TrangThai == 2 || Model.TrangThai == 3)
         {
             <div class="col-md-2">
                 <button class="btn btn-danger" id="btn_huydon"> Hủy đơn</button>
             </div>
         }
-        @if (Model.TrangThai >=2  && Model.TrangThai <=3 )
+        @if (Model.PhanLoai == "1")
         {
-        <div class="col-md-2">
-            <button class="btn btn-danger" id="btn_back"> Quay lại</button>
-        </div>
-            
+            @if (Model.TrangThai == 3)
+            {
+                <div class="col-md-2">
+                    <button class="btn btn-danger" id="btn_back"> Quay lại</button>
+                </div>
+
+            }
         }
+        @if (Model.PhanLoai == "2")
+        {
+            @if (Model.TrangThai >= 2 && Model.TrangThai <= 3)
+            {
+                <div class="col-md-2">
+                    <button class="btn btn-danger" id="btn_back"> Quay lại</button>
+                </div>
+
+            }
+        }
+        
     
 </div>
 
@@ -322,13 +343,13 @@
                 <td style="text-align : center; margin-bottom : 20px">
                      @Model.TenKhachHang                      
                 </td>
-                <td style="text-align : center; margin-bottom : 20px">
+                    <td style="text-align : center; margin-bottom : 20px" >
                     @Model.SoDienThoai
                 </td>
-                <td style="text-align : center; margin-bottom : 20px">
+                    <td style="text-align : center; margin-bottom : 20px" class="money">
                     @Model.PhiShip
                 </td>
-                <td style="text-align : center; margin-bottom : 20px">
+                    <td style="text-align : center; margin-bottom : 20px" class="money">
                     @Model.TongGiaTriHangHoa
                 </td>
                 <td style="text-align : center; margin-bottom : 20px">
@@ -393,6 +414,7 @@
                         <button class="btn btn-danger" id="btn_update_hoadon" data-mahoadon="@Model.MaHoaDon" > Cập nhật</button>
                     </td>
                 }
+
                 <input type="hidden" id="stt_hoadon" value="@Model.TrangThai" />
             </tr>
         </tbody>
@@ -404,27 +426,20 @@
 <div>
     <h4>Thanh toán</h4>
     <hr />
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="tb_thanhtoan">
 
         <thead>
             <tr style="text-align : center; margin-bottom : 20px">
                 <th style="text-align : center;">
                     Phương thức thanh toán
                 </th>
-
                 <th style="text-align : center;">
                     Ngày tạo
                 </th>
                 <th style="text-align : center;">
                     Trạng thái
                 </th>
-                @foreach (var item in lstThanhToan_hd)
-                {
-                    @if (item.MaHoaDon == Model.MaHoaDon && item.TrangThai == 0)
-                    {
-                        <th style="text-align : center;">Hành dộng</th>
-                    }
-                }
+                
             </tr>
         </thead>
         <tbody>
@@ -434,9 +449,15 @@
                 {
                     var ten = lstt.FirstOrDefault(tt => tt.MaPhuongThuc == item.MaPhuongThuc);
                     <tr style="text-align : center; margin-bottom : 20px">
-                        <td style="text-align : center; margin-bottom : 20px">@ten.TenPhuongThuc</td>
-                        <td style="text-align : center; margin-bottom : 20px">@item.NgayTao</td>
-                        <td style="text-align : center; margin-bottom : 20px">
+                        <td style="text-align : center; margin-bottom : 20px;display:none" class="MaHoaDon_">@item.MaHoaDon</td>
+                        <td style="text-align : center; margin-bottom : 20px;display:none" class="MaPhuongThuc_">@item.MaPhuongThuc</td>
+                        <td style="text-align : center; margin-bottom : 20px;display:none" class="MaPhuongThuc_HoaDon_">@item.MaPhuongThuc_HoaDon</td>
+                        <td style="text-align : center; margin-bottom : 20px" class="TenPhuongThuc_">@ten.TenPhuongThuc</td>
+                        <td style="text-align : center; margin-bottom : 20px" class="NgayTao_">@item.NgayTao</td>
+                        <td style="text-align : center; margin-bottom : 20px;display:none">
+                            <input type="text" id="ngayupdate_tthd" />
+                        </td>
+                        <td style="text-align : center; margin-bottom : 20px" class="tt">
                             @if (@item.TrangThai == 1)
                             {
                                 <p>Đã thanh toán</p>
@@ -446,12 +467,7 @@
                                 <p>Chưa thanh toán</p>
                             }
                         </td>
-                        @if (item.TrangThai == 0)
-                        {
-                           <td>
-                                <button class="btn btn-danger" id="btn_taothanhtoan" data-mahoadon="@Model.MaHoaDon"> Thanh Toán</button>
-                           </td> 
-                        }
+                      
                     </tr>
                 }
             }
@@ -502,12 +518,12 @@
                         <td style="text-align : center; margin-bottom : 20px">  
                             <img src="~/photoSanPhamCT/@chiTietSPView.UrlAnhSpct" alt="Combo Image" width="100" height="100" />
                             </td>
-                        <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.SKU</td>
+                            <td style="text-align : center; margin-bottom : 20px" class="sku">@chiTietSPView?.SKU</td>
                         <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.TenSP</td>
                         <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.TenMau</td>
                         <td style="text-align : center; margin-bottom : 20px">@chiTietSPView?.TenSize</td>
                         <td style="text-align : center; margin-bottom : 20px">@item.SoLuongMua</td>
-                        <td style="text-align : center; margin-bottom : 20px">@item.DonGia</td>
+                        <td style="text-align : center; margin-bottom : 20px" class="money">@item.DonGia</td>
                         
                         @if (Model.TrangThai == 1 || Model.TrangThai == 2 || Model.TrangThai == 3)
                         {
@@ -515,13 +531,25 @@
                                 <button class="btn btn-outline-dange" id="btn_xoachitietsp" data-ma="@item.MaHoaDonChiTiet"><i class="fa-solid fa-trash" style="color: #f31212;"></i></button>
                             </td>
                         }
-                        <input type="hidden" class="maHoaDonChiTiet" value="@item.MaHoaDonChiTiet" />
-                        <input type="hidden" class="sku" value="@item.SKU" />
-                        <input type="hidden" class="maHoaDon" value="@item.MaHoaDon" />
-                        <input type="hidden" class="tenSp" value="@item.TenSp" />
-                        <input type="hidden" class="soLuongMua" value="@item.SoLuongMua" />
-                        <input type="hidden" class="donGia" value="@item.DonGia" />
-                        <input type="hidden" class="trangThai" value="@item.TrangThai" />
+                            <td type="hidden">
+                            <input  type="hidden" class="maHoaDonChiTiet" value="@item.MaHoaDonChiTiet" />
+                            <input  type="hidden" class="sku" value="@item.SKU"/>
+                            <input  type="hidden" id="btn_nhap"/>
+                            <input  type="hidden" class="maHoaDon" value="@item.MaHoaDon"/>
+                            <input  type="hidden" class="tenSp" value="@item.TenSp"/>
+                            <input  type="hidden" class="soLuongMua" value="@item.SoLuongMua"/>
+                            <input  type="hidden" class="donGia" value="@item.DonGia"/>
+                            <input  type="hidden" class="trangThai" value="@item.TrangThai"/>
+                            <input  type="hidden" class="masp" value="@chiTietSPView.MaSp"/>
+                            <input  type="hidden" class="masz" value="@chiTietSPView.MaSize"/>
+                            <input  type="hidden" class="MaMau" value="@chiTietSPView.MaMau"/>
+                            <input  type="hidden" class="MaKhuyenMai" value="@chiTietSPView.MaKhuyenMai" />
+                            <input  type="hidden" class="img" value="@chiTietSPView.UrlAnhSpct" />
+                            <input  type="hidden" class="DonGia_" value="@chiTietSPView.Dongia" />
+                            <input  type="hidden" class="GiaBan" value="@chiTietSPView.GiaBan" />
+                            <input  type="hidden" class="SoLuongTon" value="@chiTietSPView.SoLuongTon" />
+                            <input  type="hidden" class="tt" value="@chiTietSPView.TrangThai" />
+                         </td>
                     </tr>
                  
                 i++;
@@ -535,20 +563,19 @@
 @* modal danh sach sản phẩm *@
 
 <div class="modal fade" tabindex="-1" id="pop_sp">
-    <div class="modal-dialog  modal-xl">
+    <div class="modal-dialog  modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Danh sách sản phẩm</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="card-body" style="height: 630px; overflow-y: auto;">
+                <div class="card-body" style="height: 430px; overflow-y: auto;">
                     <partial name="SP_partial" />
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="btn_savecthd">Save changes</button>
+                
             </div>
         </div>
     </div>
@@ -586,7 +613,7 @@
                     </div>
                     <div style="display:none">
                         <label for="btn_tonggiatrihd">Tổng giá trị</label>
-                        <input type="text" id="btn_tonggiatrihd" value="@Model.TongGiaTriHangHoa" />
+                        <input class="money" type="text" id="btn_tonggiatrihd" value="@Model.TongGiaTriHangHoa" />
                     </div>
                     <div style="display:none">
                         <label for="btn_httt">Phương thức</label>
@@ -679,6 +706,10 @@
                         <input id="btn_NgayTaoDon" class="form-control" type="datetime" />
                     </div>
                     <div class="col-md-4">
+                        <label for="btn_Update">Ngày Update</label>
+                        <input id="btn_Update" class="form-control" type="text" />
+                    </div>
+                    <div class="col-md-4">
                         <label for="btn_TenKhachHang">Tên khách hàng</label>
                         <input id="btn_TenKhachHang" class="form-control"/> 
                     </div>
@@ -710,7 +741,7 @@
                     </div>
                     <div class="col-md-4">
                         <label for="btn_PhiShip">Phí ship</label>
-                        <input id="btn_PhiShip" class="form-control " type="text" />
+                        <input id="btn_PhiShip" class="form-control money" type="text" />
                        
                     </div>
                     <div class="col-md-12 text-center">
@@ -724,7 +755,7 @@
                     </div>
                     <div class="col-md-4" style="display:none">
                         <label for="btn_TongGiaTriHangHoa">Tổng tiền</label>
-                        <input id="btn_TongGiaTriHangHoa" class="form-control" type="text" />
+                        <input id="btn_TongGiaTriHangHoa" class="form-control money" type="text" />
                     </div>
                     <div class="col-md-4" style="display:none">
                         <label for="btn_PhuongTTT">Phương thức thanh toán</label>
@@ -756,7 +787,7 @@
            
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="btn_save">Save changes</button>
+                <button type="button" class="btn btn-primary" id="btn_save">Cập nhật</button>
             </div>
         </div>
     </div>
@@ -820,6 +851,11 @@
                                         <p>Hủy đơn hàng</p> <br />
                                         <p>Ghi chú: @item.ChiTiet</p>
                                     }
+                                    @if (item.TrangThai == 7)
+                                    {
+                                        <p>Chỉnh sửa hóa đơn</p> <br />
+                                        <p>Ghi chú: @item.ChiTiet</p>
+                                    }
                                 </td>
                            </tr>
                             a++;
@@ -834,11 +870,12 @@
     </div>
 </div>
 
-<div style="display:none" >
+<div style="display:none">
     <input id="btn_ma_fake" />
     <input id="btn_UserID_fake" />
     <input id="btn_MaVoucher_fake" />
     <input type="datetime" id="btn_NgayTaoDon_fake" />
+    <input type="datetime" id="btn_Update_fake" />
     <input id="btn_TenKhachHang_fake" />
     <input id="btn_SoDienThoai_fake" />
     <input id="btn_PhiShip_fake" />
@@ -852,6 +889,7 @@
     <input id="street_fake" />
     <input id="btn_ghichu_fake" />
     <input id="tongtiennew_fake" />
+    <input id="stthoadon_fake" />
 </div>
     @if (User.Identity.IsAuthenticated)
     {
@@ -863,3 +901,27 @@
     {
         <p>You are not logged in.</p>
     }
+@section scripts {
+    <script>
+        // Định dạng số tiền
+        function formatMoney(amount) {
+            if (!isNaN(amount) && amount !== null && amount !== '') {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+            } else {
+                return amount;
+            }
+        }
+
+        // Duyệt qua các ô chứa số tiền và định dạng
+        $(document).ready(function () {
+            $('.money').each(function () {
+                var amountText = $(this).text().trim(); // Lấy số tiền từ văn bản, loại bỏ dấu phân cách nếu có
+                var amountWithoutCommas = amountText.split(',')[0].replace(/,/g, ''); // Bỏ dấu phẩy và phần sau dấu phẩy
+                var amount = parseFloat(amountWithoutCommas);
+                if (!isNaN(amount)) {
+                    $(this).text(formatMoney(amount)); // Định dạng và gán lại vào văn bản
+                }
+            });
+        });
+    </script>
+}

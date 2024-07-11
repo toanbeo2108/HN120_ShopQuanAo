@@ -20,52 +20,52 @@
             <input asp-for="MaSp" type="hidden" />
 
             <div class="form-group">
-                <label asp-for="MaThuongHieu" class="control-label"></label>
+                <label asp-for="MaThuongHieu" class="control-label">Thương Hiệu</label>
                 <select class="form-select" asp-for="MaThuongHieu" aria-label="Default select example">
                     <option value=""></option>
                     @foreach (ThuongHieu item in lstTH)
                     {
-                                <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
+                                    <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
                     }
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="MaTheLoai" class="control-label"></label>
+                <label asp-for="MaTheLoai" class="control-label">Thể Loại</label>
                 <select class="form-select" asp-for="MaTheLoai" aria-label="Default select example">
                     <option value=""></option>
                     @foreach (TheLoai item in lstTL)
                     {
-                                <option value="@item.MaTheLoai">@item.TenTheLoai</option>
+                                    <option value="@item.MaTheLoai">@item.TenTheLoai</option>
                     }
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="MaChatLieu" class="control-label"></label>
+                <label asp-for="MaChatLieu" class="control-label">Chất Liệu</label>
                 <select class="form-select" asp-for="MaChatLieu" aria-label="Default select example">
                     <option value=""></option>
                     @foreach (ChatLieu item in lstCL)
                     {
-                                <option value="@item.MaChatLieu">@item.TenChatLieu</option>
+                                    <option value="@item.MaChatLieu">@item.TenChatLieu</option>
                     }
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="UrlAvatar" class="control-label"></label>
+                <label asp-for="UrlAvatar" class="control-label">Ảnh</label>
                 <input type="file" class="form-control" name="imageFile" />
                 <span asp-validation-for="UrlAvatar" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TenSP" class="control-label"></label>
+                <label asp-for="TenSP" class="control-label">Tên Sản Phẩm</label>
                 <input asp-for="TenSP" class="form-control" />
                 <span asp-validation-for="TenSP" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Mota" class="control-label"></label>
+                <label asp-for="Mota" class="control-label">Mô tả</label>
                 <input asp-for="Mota" class="form-control" />
                 <span asp-validation-for="Mota" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Lưu" class="btn btn-primary" />
                 <a asp-action="AllSanPhamManager" class="btn btn-warning">Hủy</a>
             </div>
         </form>

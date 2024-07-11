@@ -26,7 +26,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         .quantity-input input {
             border: none; /* Bỏ border của input */
-            width: 50px; /* Độ rộng của input */
+            width: 100px; /* Độ rộng của input */
             text-align: center; /* Căn giữa nội dung trong input */
         }
 
@@ -83,6 +83,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                             <label for="btn_NgayTaoDon">Ngày tạo hóa đơn</label>
                             <input id="btn_NgayTaoDon" class="form-control" type="datetime" />
                         </div>
+                        <div class="col-md-6" style="display:none">
+                            <label for="btn_Update">Ngày Update</label>
+                            <input id="btn_Update" class="form-control" type="datetime" />
+                        </div>
+
                       <div class="col-md-6" style="display:none">
                           <label for="btn_phanloai">PhanLoai</label>
                             <input id="btn_phanloai" class="form-control" type="number" value="1" />
@@ -109,7 +114,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                       </div>
                         <div class="col-md-4">
                             <label for="btn_SoDienThoai">Số điện thoại</label>
-                            <input id="btn_SoDienThoai" class="form-control" type="text" />
+                            <input id="btn_SoDienThoai" class="form-control" type="text" readonly style="display:block"/>
                             <div id="phoneError" style="color: red; display: none;">Số điện thoại không hợp lệ.</div>
                         </div>
                       <div class="col-md-4">
@@ -166,7 +171,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                           <th>Tên sản phẩm</th>
                                           <th>Size</th>
                                           <th>Màu</th>
-                                          <th style="width:120px">Số lượng mua</th>
+                                          <th style="width:200px">Số lượng mua</th>
                                           <th>Đơn giá</th>
                                           <th>Hành dộng</th>
                                           <th style="display:none">Mã màu</th>
