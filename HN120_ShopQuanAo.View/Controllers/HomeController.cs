@@ -90,7 +90,7 @@ namespace HN120_ShopQuanAo.View.Controllers
                 }
                 else if (roleClaims.Any(rc => rc.Value == "User"))
                 {
-                    return RedirectToAction("Index", "Home", new { area = "Customer" });
+                    return RedirectToAction("Index", "CustomerHomeController", new { area = "Customer" });
                 }
 
                 TempData["SuccessMessage"] = "Đăng nhập thành công!";

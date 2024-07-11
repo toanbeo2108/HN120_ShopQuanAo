@@ -21,17 +21,27 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
         // Quản lý tất cả tài khoản
         [HttpGet]
-        public async Task<IActionResult> GetAllAccount()
+        public async Task<IActionResult> GetAllUser()
         {
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var url = $"https://localhost:7197/api/User/GetAllAccount";
+            var url = $"https://localhost:7197/api/User/GetUsersByRole?roleName=User";
             var response = await _httpClient.GetAsync(url);
             string apiDataUser = await response.Content.ReadAsStringAsync();
             var ListUser = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
             return View(ListUser);
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetAllEmpolyee()
+        {
+            var token = Request.Cookies["Token"];
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var url = $"https://localhost:7197/api/User/GetUsersByRole?roleName=Employee";
+            var response = await _httpClient.GetAsync(url);
+            string apiDataUser = await response.Content.ReadAsStringAsync();
+            var ListUser = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
+            return View(ListUser);
+        }
         // Lọc tài khoản    
         [HttpGet]
         public async Task<IActionResult> FilterByRole(string roleName)
@@ -82,8 +92,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View();
             }
         }
-
-
 
         // Sửa trạng thái người dùng
         [HttpGet]
