@@ -46,7 +46,7 @@
                
 
                 let dg = soluong * productData.btn;
-                let tong = dg + parseInt($('#btn_TongGiaTriHangHoa_fake').val());
+                let tong = dg + parseFloat($('#btn_TongGiaTriHangHoa_fake').val());
                 $('#tongtiennew_fake').val(tong);
                 var skuToFind = $('#btn_nhap').val(); // Thay thế bằng mã SKU của bạn
                 var foundRow = null;
@@ -66,19 +66,16 @@
                     var soLuongMua = foundRow.find("input.soLuongMua").val();
                     var trangThai = foundRow.find("input.trangThai").val();
 
-                    var masp        = foundRow.find("input.masp").val();
-                    var masz        = foundRow.find("input.masz").val();
-                    var MaMau        = foundRow.find("input.MaMau").val();
+                    var masp = foundRow.find("input.masp").val();
+                    var masz = foundRow.find("input.masz").val();
+                    var MaMau = foundRow.find("input.MaMau").val();
                     var MaKhuyenMai = foundRow.find("input.MaKhuyenMai").val();
-                    var img         = foundRow.find("input.img").val();
-                    var DonGia_     = foundRow.find("input.DonGia_").val();
-                    var GiaBan      = foundRow.find("input.GiaBan").val();
-                    var SoLuongTon   = foundRow.find("input.SoLuongTon").val();
-                    var tt          = foundRow.find("input.tt").val();
+                    var img = foundRow.find("input.img").val();
+                    var DonGia_ = foundRow.find("input.DonGia_").val();
+                    var GiaBan = foundRow.find("input.GiaBan").val();
+                    var SoLuongTon = foundRow.find("input.SoLuongTon").val();
+                    var tt = foundRow.find("input.tt").val();
 
-
-
-                    var arrayhdct = [];
                     var dt = [{
                         MaHoaDonChiTiet: maHoaDonChiTiet,
                         SKU: sku,
@@ -101,6 +98,16 @@
                         SoLuongTon: (parseInt(SoLuongTon) - soluong),
                         TrangThai: parseInt(tt),
                     };
+                    var datahoadon = getdatafake();
+                    $.post('/Update-hoadon', { hd: datahoadon }, function (re) {
+
+                        if (re.status) {
+                            console.log('Cập nhật hóa đơn thành công')
+                        }
+                        else {
+                            $.notify('Có lỗi sảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error')
+                        }
+                    })
                     $.ajax({
                         url: '/Update-hoadonct',
                         type: 'POST',
