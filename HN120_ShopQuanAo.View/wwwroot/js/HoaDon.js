@@ -302,11 +302,11 @@ $(document).ready(function () {
                 return;
             }
         }
-        if ($('#city').val() == '' || $('#district').val() == '' || $('#ward').val() == '' || $('#street').val() == '' || $('#btn_SoDienThoai') == '' ) {
+        if ($('#city').val() == '' || $('#district').val() == '' || $('#ward').val() == '' || $('#street').val() == ''  ) {
             $.notify('Vui lòng điền đầy đủ địa chỉ, và số điện thoại!', 'error');
                 return;
         }
-        if ($('#btn_SoDienThoai') != '') {
+        if ($('#btn_SoDienThoai').val() != '') {
             var phoneInput = $('#btn_SoDienThoai');
             var phoneError = $('#phoneError');
             var phoneNumber = phoneInput.val();
@@ -982,7 +982,8 @@ function getdataHoaDon() {
     if (tenkhachhang == '') {
         tenkhachhang = 'Khách lẻ';
     }
-    var tongtienhoadon = $('#btn_tienkhachphaitra').val().replace(/\./g, '').split(',')[0];   
+    var tongtienhoadon = $('#btn_tienkhachphaitra').val().replace(/\./g, '').split(',')[0]; 
+    
     return {
         MaHoaDon: $('#btn_ma').val(),
         UserID: $('#btn_UserID').val(),
@@ -1008,6 +1009,11 @@ function getdataHoaDon() {
 function Thanhtoan() {
     var hoaDonChiTiets = getdataHoaDonChiTiet();
     var hoaD = getdataHoaDon();
+    let tt = $('#btn_tongtien').val();
+    if (tt == '' || parseFloat(tt) <= 0) {
+        $.notify('Chưa chọn sản phẩm nào ', 'error');
+        return;
+    }
     $.post('/Add-hoadon', { hd: hoaD }, function (re) {
         if (re.status) {
             $.ajax({
