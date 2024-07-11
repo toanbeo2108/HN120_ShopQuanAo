@@ -116,14 +116,7 @@ namespace HN120_ShopQuanAo.API.Controllers
                         existingCtsp.UrlAnhSpct = ctsp.UrlAnhSpct;
                         existingCtsp.MaKhuyenMai = ctsp.MaKhuyenMai;
 
-                        if (existingCtsp.MaKhuyenMai != null)
-                        {
-                            var km = await _iresponKM.GetByID(existingCtsp.MaKhuyenMai);
-                            if (km != null)
-                            {
-                                existingCtsp.GiaBan = existingCtsp.DonGia - (existingCtsp.DonGia * km.PhanTramGiam / 100);
-                            }
-                        }
+
 
                         await _iresponCTSP.UpdateItem(existingCtsp);
 
@@ -217,25 +210,15 @@ namespace HN120_ShopQuanAo.API.Controllers
 
             var ctsp = await _iresponCTSP.GetAll();
             var b = ctsp.FirstOrDefault(c => c.SKU == id);
-            var lstkm = await _iresponKM.GetAll();
-            var km = lstkm.FirstOrDefault(c => c.MaKhuyenMai == _ctsp.MaKhuyenMai);
-            decimal? ptkm = km.PhanTramGiam;
+
 
             if (b != null)
             {
-
-
                 b.MaKhuyenMai = _ctsp.MaKhuyenMai;
                 b.UrlAnhSpct = _ctsp.UrlAnhSpct;
                 b.DonGia = _ctsp.DonGia;
-                if (b.MaKhuyenMai == null || ptkm == 0)
-                {
-                    b.GiaBan = _ctsp.DonGia;
-                }
-                else
-                {
-                    b.GiaBan = _ctsp.DonGia - (_ctsp.DonGia * ptkm / 100);
-                }
+                b.GiaBan = _ctsp.DonGia;
+
                 b.SoLuongTon = _ctsp.SoLuongTon;
                 if (b.SoLuongTon == 0)
                 {
