@@ -107,9 +107,9 @@ else
 
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i];
-            var color = row.querySelector('[data-mamau]').getAttribute('data-mamau').trim();
-            var size = row.querySelector('[data-masize]').getAttribute('data-masize').trim();
-            var tenSp = row.querySelector('[data-tensp]').getAttribute('data-tensp').toUpperCase().trim();
+            var color = row.querySelector('[data-mamau_]').getAttribute('data-Tenmau_').trim();
+            var size = row.querySelector('[data-masize_]').getAttribute('data-tensz_').trim();
+            var tenSp = row.querySelector('[data-tensp_]').getAttribute('data-tensp_').toUpperCase().trim();
             if ((selectedColor === "Chọn màu" || color === selectedColor) &&
                 (selectedSize === "Chọn size" || size === selectedSize) &&
                 (tenSp.includes(searchInput))) {
