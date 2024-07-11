@@ -270,6 +270,7 @@ function setdatafake(data) {
     $('#btn_UserID_fake').val(data.userID);
     $('#btn_MaVoucher_fake').val(data.maVoucher);
     $('#btn_NgayTaoDon_fake').val(data.ngayTaoDon) != null ? $('#btn_NgayTaoDon').val(nt) : '';
+    $('#btn_Update_fake').val(moment().format('YYYY-MM-DD HH:mm:ss'));
     $('#btn_TenKhachHang_fake').val(data.tenKhachHang);
     $('#btn_SoDienThoai_fake').val(data.soDienThoai);
     $('#btn_PhiShip_fake').val(data.phiShip);
@@ -289,6 +290,7 @@ function getdatafake() {
         UserID: $('#btn_UserID_fake').val(),
         MaVoucher: $('#btn_MaVoucher_fake').val(),
         NgayTaoDon: $('#btn_NgayTaoDon_fake').val(),
+        NgayThayDoi: $('#btn_Update_fake').val(),
         TenKhachHang: $('#btn_TenKhachHang_fake').val(),
         SoDienThoai: $('#btn_SoDienThoai_fake').val(),
         PhiShip: $('#btn_PhiShip_fake').val(),
@@ -304,27 +306,26 @@ function getdatafake() {
     }
 }
 
-function getdataahoadonchitiet_() {
-    var hdctList = [];
-    $('#hoaDonctTable tbody tr').each(function () {
-        var maHoaDonChiTiet = $(this).find('.maHoaDonChiTiet').val();
-        var sku = $(this).find('.sku').val();
-        var maHoaDon = $(this).find('.maHoaDon').val();
-        var tenSp = $(this).find('.tenSp').val();
-        var donGia = parseFloat($(this).find('.donGia').val());
-        var soLuongMua = parseInt($(this).find('.soLuongMua').val());
-        var trangThai = parseInt($(this).find('.trangThai').val());
-
-        var dt = {
-            MaHoaDonChiTiet: maHoaDonChiTiet,
-            SKU: sku,
-            MaHoaDon: maHoaDon,
-            TenSp: tenSp,
-            DonGia: donGia,
-            SoLuongMua: soLuongMua,
-            TrangThai: trangThai
-        };
-        hdctList.push(dt);
-    });
-    return hdctList;
-}
+//function getdataahoadonchitiet_() {
+//    var hdctList = [];
+//    $('#hoaDonctTable tbody tr').each(function () {
+//        var maHoaDonChiTiet = $(this).find('.maHoaDonChiTiet').val();
+//        var sku = $(this).find('.sku').val();
+//        var maHoaDon = $(this).find('.maHoaDon').val();
+//        var tenSp = $(this).find('.tenSp').val();
+//        var donGia = parseFloat($(this).find('.donGia').val());
+//        var soLuongMua = parseInt($(this).find('.soLuongMua').val());
+//        var trangThai = parseInt($(this).find('.trangThai').val());
+//        var dt = {
+//            MaHoaDonChiTiet: maHoaDonChiTiet,
+//            SKU: sku,
+//            MaHoaDon: maHoaDon,
+//            TenSp: tenSp,
+//            DonGia: donGia,
+//            SoLuongMua: soLuongMua,
+//            TrangThai: trangThai
+//        };
+//        hdctList.push(dt);
+//    });
+//    return hdctList;
+//}

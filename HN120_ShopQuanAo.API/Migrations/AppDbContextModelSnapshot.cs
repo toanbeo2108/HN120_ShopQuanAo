@@ -208,8 +208,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("ChiTietSpsSKU")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DonGia")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("DonGia")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("GioHangMaGioHang")
                         .HasColumnType("nvarchar(450)");
@@ -220,8 +220,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("SKU")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SoLuong")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("SoLuong")
+                        .HasColumnType("int");
 
                     b.Property<string>("TenSp")
                         .HasColumnType("nvarchar(max)");
@@ -256,6 +256,9 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayTaoDon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayThayDoi")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PhanLoai")
@@ -721,28 +724,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-
-                            Id = "513c8897-5bc7-4396-935c-c38355df1e54",
-                            ConcurrencyStamp = "c1c4df94-b8d9-47f6-93a0-302bb980cc26",
-
+                            Id = "09508c5b-94d1-460c-82b6-d528d805f13b",
+                            ConcurrencyStamp = "7d72eb3c-4ea0-4ee7-8b2f-530ece5988fd",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-
-                            Id = "e9b7928a-e12c-4bb9-a75f-a029afc0a8c1",
-                            ConcurrencyStamp = "17bc443f-5bc8-416c-8053-6909ce86dd58",
-
+                            Id = "3504041d-4672-4a91-bdac-82b7dbeac2b8",
+                            ConcurrencyStamp = "5fb6ca91-3676-4b8e-b9fd-998e84d18dce",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-
-                            Id = "0f627436-ca2a-4e22-9b7c-66f9c3e56fd9",
-                            ConcurrencyStamp = "0a7a53d4-3c52-4319-ae7c-50c80576e3e6",
-
+                            Id = "0156c258-376a-485c-a457-d5d69f30c5a0",
+                            ConcurrencyStamp = "fc60e769-d63c-4023-a67a-6a6b3ed18b77",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });

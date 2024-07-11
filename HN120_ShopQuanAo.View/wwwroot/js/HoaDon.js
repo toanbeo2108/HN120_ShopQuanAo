@@ -77,6 +77,7 @@ $(document).ready(function () {
         }
     });
     $('#btn_NgayTaoDon').val(moment().format('YYYY-MM-DD HH:mm:ss'));
+    $('#btn_Update').val(moment().format('YYYY-MM-DD HH:mm:ss'));
     $('body').on('click', '#btn_thanhtoanhoadon', function () {
         if ($('#btn_phuongthucthanhtoan').val() == '4') {
 
@@ -557,6 +558,7 @@ function filterFunction() {
 
 
 // Function to add event listeners to select buttons
+// Function to add event listeners to select buttons
 function addSelectButtonEventListeners() {
     var selectButtons = document.querySelectorAll('#sanpham_table .btn_chonsp');
 
@@ -592,10 +594,10 @@ function addToInvoiceDetails(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau,
     // Kiểm tra nếu sản phẩm đã tồn tại trong bảng chi tiết hóa đơn
     for (var i = 0; i < rows.length; i++) {
         var row = rows[i];
-        if (row.cells.length > 0 && row.cells[0].innerText === sku && row.cells[1].innerText === tenSp && row.cells[2].innerText === maSize && row.cells[3].innerText === maMau) {
+        if (row.cells.length > 0 && row.cells[0].innerText === sku) {
             // Tăng số lượng mua
             var soLuongInput = row.cells[4].querySelector('input');
-            
+
             if (soLuongInput) {
                 var soLuongMua = parseInt(soLuongInput.value);
                 if (soLuongMua + 1 > slton) {
@@ -604,8 +606,8 @@ function addToInvoiceDetails(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau,
                 }
                 soLuongInput.value = soLuongMua + 1;
                 updateTotalPrice(soLuongInput, giaBan, slton);
-                    updatePaymentDetails();
-                
+                updatePaymentDetails();
+
             }
             return; // Dừng lại sau khi cập nhật
         }
@@ -617,7 +619,7 @@ function addToInvoiceDetails(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau,
 }
 
 // Function to add a new row to invoice details table
-function addNewRow( sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, maSP, maKM, img, dongia, trangthai) {
+function addNewRow(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, maSP, maKM, img, dongia, trangthai) {
     var table = document.getElementById("chitiethoadon_table").getElementsByTagName("tbody")[0];
     var newRow = table.insertRow();
     var skucell = newRow.insertCell(0);
@@ -664,11 +666,11 @@ function addNewRow( sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, m
             });
             var total;
             if (row2.length > 0) {
-                   
+
                 var soLuongKhaDung = row2.find('.so-luong-kha-dung').text();
                 total = (parseInt(soLuongKhaDung.replace(/\D/g, '')) + 1);
                 row2.find('.so-luong-kha-dung').text("Số lượng khả dụng (" + total + ")");
-               
+
             } else {
                 alert("Không tìm thấy sản phẩm với SKU: " + sku);
             }
@@ -778,7 +780,7 @@ function addNewRow( sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, m
     // Thêm container vào ô số lượng
     soLuongCell.appendChild(quantityContainer);
 
-   /* soLuongCell.innerHTML = '<input type="number" value="1" min="1" class="form-control" oninput="updateTotalPrice(this, ' + giaBan + ', ' + slton + ')">';*/
+    /* soLuongCell.innerHTML = '<input type="number" value="1" min="1" class="form-control" oninput="updateTotalPrice(this, ' + giaBan + ', ' + slton + ')">';*/
 
     giaBanCell.innerText = formatMoney(giaBan);
     actionCell.innerHTML = `<button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>`;
@@ -834,9 +836,9 @@ function removeRow(button) {
         var maSize = row.cells[8].innerText;
         var maMau = row.cells[7].innerText;
         var soluongmua = row.cells[4].querySelector('input').value;
-       
+
         var giaBan = parseFloat(row.cells[10].innerText);
-      
+
         var maKM = row.cells[13].innerText;
         var img = row.cells[14].innerText;
         var dongia = parseFloat(row.cells[9].innerText);
@@ -845,11 +847,11 @@ function removeRow(button) {
         var row2 = $("#sanpham_table tbody tr").filter(function () {
             return $(this).find("td:contains('" + sku + "')").length > 0;
         });
-        
+
         if (row2.length > 0) {
             // Lấy giá trị của .so-luong-kha-dung trong dòng tìm thấy       
             var soLuongKhaDung = row2.find('.so-luong-kha-dung').text();
-             total = parseInt(soLuongKhaDung.replace(/\D/g, '')) + parseInt(soluongmua);
+            total = parseInt(soLuongKhaDung.replace(/\D/g, '')) + parseInt(soluongmua);
             row2.find('.so-luong-kha-dung').text("Số lượng khả dụng (" + total + ")");
             //soLuongKhaDung.text('Số lượng khả dụng (' + slton + ')');
             //soluongkhadung_ =( parseInt(soLuongKhaDung) - parseInt(soluongmua))
@@ -902,11 +904,11 @@ function updatePaymentDetails() {
             total += giaBan;
         }
     });
-   
+
     var ship = ($('#btn_PhiShip').val() === '') ? 0 : parseFloat($('#btn_PhiShip').val());
     var selectedOption = $('#btn_MaVoucher').find(':selected');
     var giaTriGiam = selectedOption.val() !== '' ? parseFloat(selectedOption.data('giatrigiam').replace(/\./g, '').replace(',', '.')) : 0;
-   /* var tienkhachdua = ($('#btn_tienkhachdua').val() == '') ? 0 : parseFloat($('#btn_tienkhachdua').val());*/
+    /* var tienkhachdua = ($('#btn_tienkhachdua').val() == '') ? 0 : parseFloat($('#btn_tienkhachdua').val());*/
     var tongtienkhachphaitra = total + ship - giaTriGiam;
     var tongtien = total;
     if (tongtienkhachphaitra <= 0) {
@@ -914,7 +916,7 @@ function updatePaymentDetails() {
     }
     else {
         $('#btn_tienkhachphaitra').val(formatMoney(tongtienkhachphaitra));
-    }   
+    }
     $('#btn_tongtien').val(formatMoney(tongtien));
 }
 
@@ -986,6 +988,7 @@ function getdataHoaDon() {
         UserID: $('#btn_UserID').val(),
         MaVoucher: $('#btn_MaVoucher').val(), 
         NgayTaoDon: $('#btn_NgayTaoDon').val(),
+        NgayThayDoi: $('#btn_Update').val(),
         TenKhachHang: tenkhachhang,
         SoDienThoai: $('#btn_SoDienThoai').val(),
         PhiShip: $('#btn_PhiShip').val() != '' ? $('#btn_PhiShip').val() : 0,
@@ -1059,6 +1062,7 @@ function AddThanhTOanHoaDon() {
         MaHoaDon: $('#btn_ma').val(),
         MaPhuongThuc: $('#btn_phuongthucthanhtoan').val(),
         NgayTao: $('#btn_NgayTaoDon').val(),
+        NgayThayDoi: $('#btn_NgayTaoDon').val(),
         TrangThai:stt,
     };
    
@@ -1083,7 +1087,7 @@ function AddLichsuhoadon() {
         MaHoaDon: $('#btn_ma').val(),
         UserID: $('#btn_UserName').val(),
         NgayTaoDon: $('#btn_NgayTaoDon').val(),
-        NgayThayDoi: $('#btn_NgayTaoDon').val(),
+        NgayThayDoi: $('#btn_Update').val(),
         TongGiaTri: parseFloat(tongtienhoadon),
         HinhThucThanhToan: $('#btn_phuongthucthanhtoan').val(),
         ChiTiet: $('#btn_Status').val(),

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HN120_ShopQuanAo.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240708140813_123")]
-    partial class _123
+    [Migration("20240711024846_482")]
+    partial class _482
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -210,8 +210,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("ChiTietSpsSKU")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DonGia")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("DonGia")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("GioHangMaGioHang")
                         .HasColumnType("nvarchar(450)");
@@ -222,8 +222,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("SKU")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SoLuong")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("SoLuong")
+                        .HasColumnType("int");
 
                     b.Property<string>("TenSp")
                         .HasColumnType("nvarchar(max)");
@@ -258,6 +258,9 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayTaoDon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayThayDoi")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PhanLoai")
@@ -723,22 +726,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1c7c52bb-1060-464f-b80d-419798c92404",
-                            ConcurrencyStamp = "8ca47b3a-b83f-4b36-a587-e7e155e17044",
+                            Id = "09508c5b-94d1-460c-82b6-d528d805f13b",
+                            ConcurrencyStamp = "7d72eb3c-4ea0-4ee7-8b2f-530ece5988fd",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d93ca2e5-baa4-40e5-8a6c-3193b560c372",
-                            ConcurrencyStamp = "46900222-dea7-4141-bd47-5f3c12112b16",
+                            Id = "3504041d-4672-4a91-bdac-82b7dbeac2b8",
+                            ConcurrencyStamp = "5fb6ca91-3676-4b8e-b9fd-998e84d18dce",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "e3b83c66-64e4-465b-9e50-13fe28695256",
-                            ConcurrencyStamp = "4f79af9c-e870-42d5-944b-4cfe698ceb69",
+                            Id = "0156c258-376a-485c-a457-d5d69f30c5a0",
+                            ConcurrencyStamp = "fc60e769-d63c-4023-a67a-6a6b3ed18b77",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });

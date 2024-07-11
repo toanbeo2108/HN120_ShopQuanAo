@@ -347,7 +347,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             string apiData = await respon.Content.ReadAsStringAsync();
             var lst = JsonConvert.DeserializeObject<List<HoaDon>>(apiData);
 
-            var sortedList = lst.OrderByDescending(hoaDon => hoaDon.NgayTaoDon).ToList();
+            var sortedList = lst.OrderByDescending(hoaDon => hoaDon.NgayThayDoi).ToList();
 
 
             if (respon.IsSuccessStatusCode)
