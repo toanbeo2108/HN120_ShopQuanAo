@@ -41,7 +41,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> GianHangNguoiDung()
         {
-            var ApiurlSanPham = "https://localhost:7197/api/SanPham/GetAllSanPham";
+            var ApiurlSanPham = $"https://localhost:7197/api/SanPham/GetAllSanPham";
             var resposeSP = await _httpClient.GetAsync(ApiurlSanPham);
             string apidatasSP = await resposeSP.Content.ReadAsStringAsync();
             var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apidatasSP);
@@ -62,7 +62,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
         public async Task<IActionResult> GioHangCuaBan()
         {
             var maND = Request.Cookies["UserId"];
-            var ApiurllstGioHangcuaban = "https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
+            var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
             var responseListGHCB = await _httpClient.GetAsync(ApiurllstGioHangcuaban);
             string apidataListGHCB = await responseListGHCB.Content.ReadAsStringAsync();
             var ListGHCB = JsonConvert.DeserializeObject<List<GioHang>>(apidataListGHCB);
@@ -255,7 +255,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             // list sản phẩm có thể order thêm ở bên dưới (không quan trọng)
             var lstSP_CanOrder = lstSP_ok.OrderBy(x => x.NgayNhap).Take(5);
             ViewBag.lstSP_CanOrder = lstSP_CanOrder;
-            //lấy sản phẩm Detail
+            //lấy sản phẩm Detail   
             var SP = lstSP_ok.FirstOrDefault(x => x.MaSp == masp);
             if (SP == null)
             {
@@ -306,5 +306,52 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             return View();
            
         }
+        public void DeleteItemGioHang(List<GioHangChiTiet> lstSP)
+        {
+            foreach(var item in lstSP)
+            {
+                lstSP.Remove(item); 
+            }
+        }
+        [HttpDelete]
+        public async Task<IActionResult> XoaSPGioHang(string maSP)
+        {
+            var maND = Request.Cookies["UserId"];
+            var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
+            var responseListGHCB = await _httpClient.GetAsync(ApiurllstGioHangcuaban);
+            string apidataListGHCB = await responseListGHCB.Content.ReadAsStringAsync();
+            var ListGHCB = JsonConvert.DeserializeObject<List<GioHang>>(apidataListGHCB);
+            if (ListGHCB != null)
+            {
+                return BadRequest("Chưa lấy được thông tin người dùng");
+            }
+            else
+            {
+                var Ghcb = ListGHCB.FirstOrDefault(x => x.TrangThai == 1);
+                if (Ghcb == null)
+                {
+                    return BadRequest("Không có Mã ND nên Null là đúng");
+                }
+                var ApiurlGioHangcuaban = $"https://localhost:7197/api/GioHangChiTiet/GetGHCTByMaGH/{Ghcb.MaGioHang}";
+                var responseGHCB = await _httpClient.GetAsync(ApiurlGioHangcuaban);
+                string apidataGHCB = await responseGHCB.Content.ReadAsStringAsync();
+                var GHCB = JsonConvert.DeserializeObject<List<GioHangChiTiet>>(apidataGHCB);
+                GioHangChiTiet sp = GHCB.FirstOrDefault(x => x.MaGioHangChiTiet == maSP);
+                if(sp == null)
+                {
+                    return BadRequest("Không tìm thấy mã sản phẩm này để xóa, hoăc truyền sai mã rồi");
+                }
+                var url = $"https://localhost:7197/api/GioHangChiTiet/DeleteGHCT/{sp.MaGioHangChiTiet}";
+                var respon = await _httpClient.DeleteAsync(url);
+                if (respon.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("GioHangCuaBan", "CustomerHome", new { Areas = "Customer" });
+                }
+                return BadRequest("Không thể xóa sản phẩm này khỏi giỏ hàng, vui long kiểm tra lại");
+            }
+            //https://localhost:7197/api/GioHangChiTiet/DeleteGHCT/1
+        }
+
+        
     }
 }

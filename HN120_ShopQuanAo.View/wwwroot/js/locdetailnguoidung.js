@@ -66,6 +66,7 @@ function filterQuantity() {
 
     $('#total').text(totalQuantity + ' Sản Phẩm Còn Lại') ;
 }
+document.getElementById("actionForm").submit();
 function getdataSPCT() {
     
     //$('#tb_dataCTSP tbody tr').each(function () {

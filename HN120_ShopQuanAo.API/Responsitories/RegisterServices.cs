@@ -182,6 +182,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
                     TongTien = 0,
                     MoTa = null,
                     User = newUser,
+                    TrangThai = 1
                 };
 
                 // Add gioHang to DbContext and save changes
