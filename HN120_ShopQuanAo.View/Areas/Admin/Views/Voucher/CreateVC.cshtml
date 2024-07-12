@@ -7,90 +7,105 @@
 
 <h1>Thêm Voucher</h1>
 
-<h4>Voucher</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateVC">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label class="control-label">Mã Voucher</label>
-                <input asp-for="MaVoucher" class="form-control" value="VC" readonly />
-                <span asp-validation-for="MaVoucher" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Tên Voucher</label>
-                <input asp-for="Ten" class="form-control" />
-                <span asp-validation-for="Ten" class="text-danger"></span>
-                <span class="text-danger">@ViewData["Ten"]</span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Gía giảm tối thiểu</label>
-                <input asp-for="GiaGiamToiThieu" class="form-control" />
-                <span asp-validation-for="GiaGiamToiThieu" class="text-danger"></span>
-                <span class="text-danger">@ViewData["GiaGiamToiThieu"]</span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Gía giảm tối đa</label>
-                <input asp-for="GiaGiamToiDa" class="form-control" />
-                <span asp-validation-for="GiaGiamToiDa" class="text-danger"></span>
-                <span class="text-danger">@ViewData["GiaGiamToiDa"]</span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Ngày bắt đầu</label>
-                <input asp-for="NgayBatDau" id="NgayBatDau" class="form-control" />
-                <span asp-validation-for="NgayBatDau" class="text-danger"></span>
-                <span class="text-danger">@ViewData["NgayBatDau"]</span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Ngày kết thúc</label>
-                <input asp-for="NgayKetThuc" id="NgayKetThuc" class="form-control" />
-                <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
-                <span class="text-danger">@ViewData["NgayKetThuc"]</span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Kiểu giảm giá</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="kieugiamgia" value="0" asp-for="KieuGiamGia">
-                    <label class="form-check-label" for="flexRadioDefault1">
-                        Tiền mặt
-                    </label>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 border-right">
+            <h4>Voucher</h4>
+            <hr />
+            <form asp-action="CreateVC">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label class="control-label">Mã Voucher</label>
+                    <input asp-for="MaVoucher" class="form-control" value="VC" readonly />
+                    <span asp-validation-for="MaVoucher" class="text-danger"></span>
                 </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="kieugiamgia" value="1" asp-for="KieuGiamGia">
-                    <label class="form-check-label" for="flexRadioDefault2">
-                        Phần trăm
-                    </label>
+                <div class="form-group">
+                    <label class="control-label">Tên Voucher</label>
+                    <input asp-for="Ten" class="form-control" />
+                    <span asp-validation-for="Ten" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Giá giảm tối thiểu</label>
+                    <input asp-for="GiaGiamToiThieu" class="form-control" />
+                    <span asp-validation-for="GiaGiamToiThieu" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Giá giảm tối đa</label>
+                    <input asp-for="GiaGiamToiDa" class="form-control" />
+                    <span asp-validation-for="GiaGiamToiDa" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Ngày bắt đầu</label>
+                    <input asp-for="NgayBatDau" id="NgayBatDau" class="form-control" />
+                    <span asp-validation-for="NgayBatDau" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Ngày kết thúc</label>
+                    <input asp-for="NgayKetThuc" id="NgayKetThuc" class="form-control" />
+                    <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Kiểu giảm giá</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="kieugiamgia" value="1" asp-for="KieuGiamGia">
+                        <label class="form-check-label">
+                            Phần trăm
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="kieugiamgia" value="0" asp-for="KieuGiamGia">
+                        <label class="form-check-label">
+                            Tiền mặt
+                        </label>
+                    </div>
+                    <span class="text-danger">@ViewData["LGG"]</span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Giá trị giảm</label>
+                    <input asp-for="GiaTriGiam" class="form-control" value="0" />
+                    <span asp-validation-for="GiaTriGiam" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Số lượng</label>
+                    <input asp-for="SoLuong" class="form-control" />
+                    <span asp-validation-for="SoLuong" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Mô tả</label>
+                    <input asp-for="MoTa" class="form-control" />
+                    <span asp-validation-for="MoTa" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Trạng thái</label>
+                    <input asp-for="TrangThai" id="TrangThai" type="hidden" class="form-control" />
+                    <input type="text" id="TrangThaiText" class="form-control" readonly />
+                    <span asp-validation-for="TrangThai" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Thêm" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Xem Trước Mã</h4>
+            <hr />
+            <div id="voucher-preview" class="voucher-preview">
+                <div class="voucher-card">
+                    <div class="voucher-left">
+                        <p class="voucher-code"></p>
+                        <p>Điều Kiện: Áp dụng cho đơn hàng từ <span id="preview-gia-giam-toi-thieu"></span></p>
+                        <p>Tối Đa: <span id="preview-gia-giam-toi-da"></span></p>
+                        <p>Hạn Đến: <span id="preview-ngay-ket-thuc"></span></p>
+                        <p>Số Lượng: <span id="preview-so-luong"></span></p>
+                    </div>
+                    <div class="voucher-right">
+                        <p class="voucher-value"></p>
+                        <p>Phiếu Giảm Giá</p>
+                    </div>
                 </div>
             </div>
-            <span class="text-danger">@ViewData["LGG"]</span>
-            <div class="form-group">
-                <label class="control-label">Gía trị giảm</label>
-                <input asp-for="GiaTriGiam" class="form-control" />
-                <span asp-validation-for="GiaTriGiam" class="text-danger"></span>
-                <span class="text-danger">@ViewData["GiaTriGiam"]</span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Số lượng</label>
-                <input asp-for="SoLuong" class="form-control" />
-                <span asp-validation-for="SoLuong" class="text-danger"></span>
-                <span class="text-danger">@ViewData["SoLuong"]</span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Mô tả</label>
-                <input asp-for="MoTa" class="form-control" />
-                <span asp-validation-for="MoTa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Trạng thái</label>
-                <input asp-for="TrangThai" id="TrangThai" type="hidden" class="form-control" />
-                <input type="text" id="TrangThaiText" class="form-control" readonly />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Thêm" class="btn btn-success" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -136,5 +151,123 @@
             }
             updateTrangThai();
         });
+
+        $(function () {
+            $('#Ten, #GiaGiamToiThieu, #GiaGiamToiDa, #NgayBatDau, #NgayKetThuc, #GiaTriGiam, #SoLuong, #MoTa').on('input change', function () {
+                updateVoucherPreview();
+            });
+            $('input[name="kieugiamgia"][value="1"]').prop('checked', true);
+            $('input[name="kieugiamgia"]').on('change', function () {
+                updateVoucherPreview();
+            });
+
+            function updateVoucherPreview() {
+                var kieuGiamGia = $('input[name="kieugiamgia"]:checked').val();
+                var giaTriGiam = $('#GiaTriGiam').val();
+
+                $('.voucher-code').text(" " + $('#Ten').val());
+                $('#preview-ngay-ket-thuc').text(formatNgayKetThuc($('#NgayKetThuc').val()));
+
+                if ($('#GiaGiamToiThieu').val()) {
+                    $('#preview-gia-giam-toi-thieu').text(formatMoney($('#GiaGiamToiThieu').val()) + " đ");
+                } else {
+                    $('#preview-gia-giam-toi-thieu').text("0 đ");
+                }
+
+                if ($('#GiaGiamToiDa').val()) {
+                    $('#preview-gia-giam-toi-da').text(formatMoney($('#GiaGiamToiDa').val()) + " đ/Khách Hàng");
+                } else {
+                    $('#preview-gia-giam-toi-da').text("0 đ/Khách Hàng");
+                }
+
+                $('#preview-so-luong').text($('#SoLuong').val());
+
+                if (kieuGiamGia == 0) {
+                    $('.voucher-value').text(formatMoneyToK(giaTriGiam));
+                } else if (kieuGiamGia == 1) {
+                    if (giaTriGiam == 0) {
+                        $('.voucher-value').text("0%");
+                    } else {
+                        $('.voucher-value').text(giaTriGiam + "%");
+                    }
+                }
+            }
+
+            function formatNgayKetThuc(dateTimeStr) {
+                if (!dateTimeStr) return "";
+
+                var dateTime = new Date(dateTimeStr);
+                var day = dateTime.getDate();
+                var month = dateTime.getMonth() + 1;
+                var year = dateTime.getFullYear();
+                var hours = dateTime.getHours();
+                var minutes = dateTime.getMinutes();
+
+                var formattedDateTime = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ' ngày ' +
+                    day.toString().padStart(2, '0') + '/' +
+                    month.toString().padStart(2, '0') + '/' +
+                    year.toString();
+
+                return formattedDateTime;
+            }
+
+            function formatMoney(amount) {
+                return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }
+
+            function formatMoneyToK(amount) {
+                if (amount >= 1000) {
+                    return Math.floor(amount / 1000) + "K";
+                } else {
+                    return amount.toString();
+                }
+            }
+            updateVoucherPreview();
+        });
     </script>
+
+
+    <style>
+        .voucher-preview {
+            border: 1px solid #ccc;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+
+        .voucher-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        .voucher-left {
+            flex: 3;
+            padding-right: 10px;
+        }
+
+        .voucher-right {
+            flex: 1;
+            text-align: right;
+            padding-left: 10px;
+            border-left: 1px dashed #ccc;
+        }
+
+        .voucher-code {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .voucher-value {
+            font-size: 1.5em;
+            color: #e53935;
+            font-weight: bold;
+        }
+
+        .border-right {
+            border-right: 1px solid #ddd;
+        }
+    </style>
 }
