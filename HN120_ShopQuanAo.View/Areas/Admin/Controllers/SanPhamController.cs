@@ -32,19 +32,15 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         //https://localhost:7197/api/Size/add-SZ?Tensz=1&MoTa=1&TrangThai=1
         //    https://localhost:7197/api/Size/update-SZ
         [HttpGet]
-        public async Task<IActionResult> AllSanPhamManager(string searchString)
-
-
+        public async Task<IActionResult> AllSanPhamManager(string searchString, string maThuongHieu, string maTheLoai, string maChatLieu, int? trangThai)
         {
             var urlTL = $"https://localhost:7197/api/TheLoai/GetAllTheLoai";
-            //var httpClient = new HttpClient();
             var responTL = await _httpClient.GetAsync(urlTL);
             string apiDataTL = await responTL.Content.ReadAsStringAsync();
             var lstTL = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataTL);
             ViewBag.lstTL = lstTL;
 
             var urlTH = $"https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
-            //var httpClient = new HttpClient();
             var responTH = await _httpClient.GetAsync(urlTH);
             string apiDataTH = await responTH.Content.ReadAsStringAsync();
             var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
@@ -56,21 +52,41 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var lstCL = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataCL);
             ViewBag.lstCL = lstCL;
 
-
-            var urlBook = $"https://localhost:7197/api/SanPham/GetAllSanPham";
-
-            var responBook = await _httpClient.GetAsync(urlBook);
-            string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apiDataBook);
+            var urlSP = $"https://localhost:7197/api/SanPham/GetAllSanPham";
+            var responSP = await _httpClient.GetAsync(urlSP);
+            string apiDataSP = await responSP.Content.ReadAsStringAsync();
+            var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apiDataSP);
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 lstSP = lstSP.Where(x => x.TenSP.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
             }
+
+            if (!string.IsNullOrEmpty(maThuongHieu))
+            {
+                lstSP = lstSP.Where(x => x.MaThuongHieu == maThuongHieu).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(maTheLoai))
+            {
+                lstSP = lstSP.Where(x => x.MaTheLoai == maTheLoai).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(maChatLieu))
+            {
+                lstSP = lstSP.Where(x => x.MaChatLieu == maChatLieu).ToList();
+            }
+
+            if (trangThai.HasValue)
+            {
+                lstSP = lstSP.Where(x => x.TrangThai == trangThai.Value).ToList();
+            }
+
             lstSP = lstSP.OrderByDescending(x => x.NgayNhap).ToList();
             ViewData["CurrentFilter"] = searchString;
             return View(lstSP);
         }
+
 
 
         [HttpGet]
@@ -207,46 +223,38 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> UpdateSanPham(string id)
         {
-            var urlTL = $"https://localhost:7197/api/TheLoai/GetAllTheLoai";
-            //var httpClient = new HttpClient();
-            var responTL = await _httpClient.GetAsync(urlTL);
-            string apiDataTL = await responTL.Content.ReadAsStringAsync();
-            var lstTL = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataTL);
-            //var lstTL = lstTL1.Where(c => c.TrangThai == 1);
-            ViewBag.lstTL = lstTL;
+            await LoadDataForViewBag();
+            var urlsp = $"https://localhost:7197/api/SanPham/GetAllSanPham";
+            var responsp = await _httpClient.GetAsync(urlsp);
+            string apiDatasp = await responsp.Content.ReadAsStringAsync();
+            var lstsp = JsonConvert.DeserializeObject<List<SanPham>>(apiDatasp);
+            var sp = lstsp.FirstOrDefault(x => x.MaSp == id);
+            ViewBag.sp = sp;
 
-            var urlTH = $"https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
-            //var httpClient = new HttpClient();
-            var responTH = await _httpClient.GetAsync(urlTH);
-            string apiDataTH = await responTH.Content.ReadAsStringAsync();
-            var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
-            //var lstTH = lstTH1.Where(c => c.TrangThai == 1);
-            ViewBag.lstTH = lstTH;
+            var urlkm = "https://localhost:7197/api/KhuyenMai/GetAllKhuyenMai";
+            var responkm = await _httpClient.GetAsync(urlkm);
+            responkm.EnsureSuccessStatusCode();
+            string apiDatakm = await responkm.Content.ReadAsStringAsync();
+            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
+            ViewBag.lstkm = lstkm;
 
-            var urlCL = $"https://localhost:7197/api/ChatLieu/GetAllChatLieu";
-            var responCL = await _httpClient.GetAsync(urlCL);
-            string apiDataCL = await responCL.Content.ReadAsStringAsync();
-            var lstCL = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataCL);
-            //var lstCL = lstCL1.Where(c => c.TrangThai == 1);
-            ViewBag.lstCL = lstCL;
-            //var token = Request.Cookies["Token"];
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var urlBook = $"https://localhost:7197/api/SanPham/GetAllSanPham";
-            var responBook = await _httpClient.GetAsync(urlBook);
-            string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstBook = JsonConvert.DeserializeObject<List<SanPham>>(apiDataBook);
-            var Book = lstBook.FirstOrDefault(x => x.MaSp == id);
-            if (Book == null)
+            var urlctsp = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+            var responctsp = await _httpClient.GetAsync(urlctsp);
+            string apiDatactsp = await responctsp.Content.ReadAsStringAsync();
+            var lstctsp = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDatactsp);
+            var ctsp = lstctsp.Where(x => x.MaSp == id).ToList();
+            ViewBag.ctsp = ctsp;
+            if (sp == null)
             {
                 return BadRequest();
             }
             else
             {
-                return View(Book);
+                return View(sp);
             }
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateSanPham(string id, SanPham vc, IFormFile imageFile)
+        public async Task<IActionResult> UpdateSanPham( SanPham vc, IFormFile imageFile)
         {
             var urlTL = $"https://localhost:7197/api/TheLoai/GetAllTheLoai";
             var responTL = await _httpClient.GetAsync(urlTL);
@@ -266,11 +274,19 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var lstCL = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataCL);
             ViewBag.lstCL = lstCL;
 
-            if (await IsDuplicateSP(vc.TenSP, id))
+            if (await IsDuplicateSP(vc.TenSP, vc.MaSp))
             {
                 TempData["errorMessage"] = "Tên đã tồn tại.";
                 return View();
             }
+            var spUrl = $"https://localhost:7197/api/SanPham/GetSPById?id={vc.MaSp}";
+            var spResponse = await _httpClient.GetAsync(spUrl);
+            if (!spResponse.IsSuccessStatusCode)
+            {
+                return BadRequest("Không thể lấy thông tin sản phẩm");
+            }
+            string spData = await spResponse.Content.ReadAsStringAsync();
+            var ExsitSP = JsonConvert.DeserializeObject<SanPham>(spData);
 
             if (imageFile != null && imageFile.Length > 0)
             {
@@ -288,18 +304,31 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     await imageFile.CopyToAsync(stream);
                 }
 
-                vc.UrlAvatar = imageFile.FileName;
+                ExsitSP.UrlAvatar = imageFile.FileName;
+                ExsitSP.TenSP = vc.TenSP;
+                ExsitSP.MaTheLoai = vc.MaTheLoai;
+                ExsitSP.MaChatLieu = vc.MaChatLieu;
+                ExsitSP.MaThuongHieu = vc.MaThuongHieu;
+                ExsitSP.Mota = vc.Mota;
+            }
+            else
+            {
+                ExsitSP.TenSP = vc.TenSP;
+                ExsitSP.MaTheLoai = vc.MaTheLoai;
+                ExsitSP.MaThuongHieu = vc.MaThuongHieu;
+                ExsitSP.MaChatLieu = vc.MaChatLieu;
+                ExsitSP.Mota = vc.Mota;
             }
 
-            var urlBook = $"https://localhost:7197/api/SanPham/EditSP/{id}";
-            var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
+            var urlBook = $"https://localhost:7197/api/SanPham/EditSP";
+            var content = new StringContent(JsonConvert.SerializeObject(ExsitSP), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)
             {
                 return BadRequest();
             }
 
-            return RedirectToAction("AllSanPhamManager", "SanPham", new { area = "Admin" });
+            return RedirectToAction("UpdateSanPham", "SanPham", new { area = "Admin",id=vc.MaSp });
         }
 
         [HttpPost]

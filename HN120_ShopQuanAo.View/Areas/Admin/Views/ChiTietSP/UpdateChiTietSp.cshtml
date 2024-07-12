@@ -1,32 +1,100 @@
-﻿﻿@using HN120_ShopQuanAo.Data.Models;
+﻿@using HN120_ShopQuanAo.Data.Models;
 @model HN120_ShopQuanAo.Data.Models.ChiTietSp
 
 @{
     ViewData["Title"] = "UpdateChiTietSp";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
     List<KhuyenMai> lstkm = ViewBag.lstkm as List<KhuyenMai>;
-
 }
 
-<h1>UpdateChiTietSp</h1>
+<style>
+    .header h2 {
+        margin: 0;
+    }
 
-<h4>ChiTietSp</h4>
+    .btn-new-address {
+        background-color: #ff4500;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .address-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .address-item {
+        border-bottom: 1px solid #ddd;
+        padding: 15px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .address-item:last-child {
+        border-bottom: none;
+    }
+
+    .address-details {
+        flex-grow: 1;
+    }
+
+    .address-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .default-tag {
+        color: red;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+
+    .btn-update, .btn-delete, .btn-set-default {
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .btn-update:hover, .btn-delete:hover, .btn-set-default:hover {
+        background-color: #f0f0f0;
+    }
+</style>
+
+<h4>Sửa chi tiết</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="UpdateChiTietSp">
+        <form asp-action="UpdateChiTietSp" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <input asp-for="SKU" type="hidden" class="form-control" />
                 <input asp-for="MaSp" type="hidden" class="form-control" />
                 <input asp-for="MaSize" type="hidden" class="form-control" />
                 <input asp-for="MaMau" type="hidden" class="form-control" />
-            </div>      
-            <div class="form-group">
-                <label asp-for="UrlAnhSpct" class="control-label">Ảnh</label>
-                <input type="file" class="form-control" value="imagectspFile" name="imagectspFile"/>
-                <span asp-validation-for="UrlAnhSpct" class="text-danger" ></span>
             </div>
+
+            <div class="card mb-4 mb-xl-0">
+                <div class="card-header">Ảnh sản phẩm</div>
+                <div class="card-body text-center">
+                    @if (Model.UrlAnhSpct == null)
+                    {
+                                    <img class="img-account-profile rounded-circle mb-2" src="~/photoSanPhamCT/khongxacdinh_213x379.jpg" alt="avatar" style="width: 100px; height:100px; object-fit: cover">
+                    }
+                    else
+                    {
+                                <img class="img-account-profile rounded-circle mb-2" src="~/photoSanPhamCT/@Model.UrlAnhSpct" alt="ảnh sản phẩm" style="width: 100px; height:100px; object-fit: cover">
+                    }
+                    <div class="small font-italic text-muted mb-4">Ảnh sản phẩm</div>
+                    <input asp-for="UrlAnhSpct" class="form-control" type="file" name="imagectspFile" accept="image/*">
+                </div>
+            </div>
+
             <div class="form-group">
                 <label asp-for="DonGia" class="control-label">Đơn Giá</label>
                 <input asp-for="DonGia" class="form-control" />
@@ -40,22 +108,27 @@
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
-
-    <a asp-action="SanPhamDetail" asp-controller="SanPham" asp-route-id="@Model.MaSp" class="btn btn-warning">Hủy</a>
-
-
+                <a asp-action="UpdateSanPham" asp-controller="SanPham" asp-route-id="@Model.MaSp" class="btn btn-warning">Hủy</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-
-
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    }
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('input[type="file"]').change(function (e) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('.img-account-profile').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(e.target.files[0]);
+                });
+            });
+        </script>
+}
