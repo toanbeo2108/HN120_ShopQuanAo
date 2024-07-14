@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using System.Security.Policy;
 using System;
 using HN120_ShopQuanAo.Data.Configurations;
+using System.Net;
 
 
 namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
@@ -619,5 +620,102 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 var listhoaDon = hoaDon.Where(c => c.TrangThai == stt).ToList();
             return View(listhoaDon); 
         }
+        [HttpGet,Route("GetDanhSachVouCher/{check}")]
+        public async Task<IActionResult> GetAllVoucher(decimal check)
+        {
+            var apiVC = "https://localhost:7197/GetAllVoucher";
+            var responVC = await _httpClient.GetAsync(apiVC);
+            string apidaVC = await responVC.Content.ReadAsStringAsync();
+            var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apidaVC);
+            var listVckhadung = lstVC.Where(c => c.GiaGiamToiThieu <= check).ToList();
+
+            if (listVckhadung.Any())
+            {
+                return Ok(listVckhadung);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+        [HttpGet, Route("GetDanhSachUser")]
+        public async Task<IActionResult> GetAlluser()
+        {
+            var urlusers = $"https://localhost:7197/api/UserAddress/GetAll";
+            var responseusers = await _httpClient.GetAsync(urlusers);
+            string apiDataUsers = await responseusers.Content.ReadAsStringAsync();
+            var ListUsers = JsonConvert.DeserializeObject<List<DeliveryAddressModel>>(apiDataUsers);
+
+            var urluseraccout = $"https://localhost:7197/api/User/GetAllAccount";
+            var responaccout = await _httpClient.GetAsync(urluseraccout);
+            string apiDataaccout = await responaccout.Content.ReadAsStringAsync();
+            var Listaccout = JsonConvert.DeserializeObject<List<User>>(apiDataaccout);
+
+            var user = from us in Listaccout
+                       join ad in ListUsers on us.Id equals ad.UserID
+                       where ad.Status == 1
+                       select new
+                       {
+                           idUser = us.Id,
+                           Ten = us.FullName,
+                           tinhthanh = ad.City,
+                           quanhuyen = ad.District,
+                           xaphuong = ad.Ward,
+                           cuthe = ad.Street,
+                           sdt = ad.PhoneNumber,
+                           sdtnhanhhang = ad.PhoneNumber,
+                           ngnhanhang = ad.Consignee
+                       };
+
+            if (user.ToList().Any())
+            {
+                return Ok(user.ToList());
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+
+        [HttpPost, Route("Add_AdressFlash")]
+
+        public async Task<IActionResult> AddUserAddress(string sdt, string sdtnhanhang, DeliveryAddress delivery)
+        {
+            var token = Request.Cookies["Token"];
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            // lấy danh sach user => tìm ra id khách vừa thêm vừa thêm
+            var getalluserByroleUrl = "https://localhost:7197/api/User/GetUsersByRole?roleName=User";
+            var responuserByrole = await _httpClient.GetAsync(getalluserByroleUrl);
+            string apidatauserByrole = await responuserByrole.Content.ReadAsStringAsync();
+            var userByrole = JsonConvert.DeserializeObject<List<User>>(apidatauserByrole);
+            var name = userByrole.FirstOrDefault(c=>c.PhoneNumber ==  sdt);
+            string id = name.Id;
+            //  sau khi lấy được Id thêm địa chỉ người dùng
+            delivery.UserID = id;
+            var urlthemdiachi = $"https://localhost:7197/api/UserAddress/Create";
+            var content = new StringContent(JsonConvert.SerializeObject(delivery), Encoding.UTF8, "application/json");
+            var responsethemdiachi = await _httpClient.PostAsync(urlthemdiachi, content);
+
+            //  lấy danh sach địa chỉ khách vừa thêm => tìm DeliveryAddressID = sdt nhận hàng
+            var addressUrl = $"https://localhost:7197/api/UserAddress/GetByUserID?id={id}";
+            var addressResponse = await _httpClient.GetAsync(addressUrl);
+            string addressData = await addressResponse.Content.ReadAsStringAsync();
+            var userAddresses = JsonConvert.DeserializeObject<List<DeliveryAddress>>(addressData);
+            var sdtdiachivuathem = userAddresses.FirstOrDefault(c => c.PhoneNumber == sdtnhanhang);
+            var idnhanhang = sdtdiachivuathem.DeliveryAddressID;
+            // set defaut địa chỉ 
+            var urlsetdefau = $"https://localhost:7197/api/UserAddress/SetDefaultAddress/?id=" + idnhanhang;
+            var response = await _httpClient.PostAsync(urlsetdefau, null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Lỗi cài đặt địa chỉ mặc định" });
+            }
+        }
+
+
     }
 }
