@@ -8,6 +8,8 @@ $(document).ready(function () {
         localStorage.removeItem('notification');
     } 
     $('#thanhtoantaiquay').show();
+    $('#btn_khachletaiquay').show();
+   
     var Parameter = {
         url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
         method: "GET",
@@ -40,18 +42,38 @@ $(document).ready(function () {
 
     $('#btn_giaohang').change(function () {
         var isChecked = $(this).is(':checked');
-        if (isChecked ) {
-            $('#btn_thongtingiaohang').show();
+        if (isChecked) {
+            $('#btn_chondiachi').show();
             $('#dathangtaiquay').show();
             $('#thanhtoantaiquay').hide();
+            $('.cell_tienphip').show();
+            $('#btn_khachletaiquay').hide();
+            var tenkh = $('#btn_TenKhachHang')
+            var selectedOption = tenkh.find('option:selected');
+            var tinhThanh = selectedOption.data('tinh');
+            var quanHuyen = selectedOption.data('quanhuyen');
+            var xaPhuong = selectedOption.data('xaphuong');
+            var cuThe = selectedOption.data('cuthe');
+            var sodt = selectedOption.data('sodienthoai');
+            if ($('#btn_btn_TenKhachHang').val() != '' || $('#btn_btn_TenKhachHang').val() != undefined) {
+
+                document.getElementById('city').innerHTML = '<option value="' + tinhThanh + '">' + tinhThanh + '</option>';
+                document.getElementById('district').innerHTML = '<option value="' + quanHuyen + '">' + quanHuyen + '</option>';
+                document.getElementById('ward').innerHTML = '<option value="' + xaPhuong + '">' + xaPhuong + '</option>';
+                document.getElementById('street').value = cuThe; document.getElementById('btn_SoDienThoai').value = sodt;
+                loadTinhThanh();
+            }
+            if (tinhThanh == undefined && quanHuyen == undefined && xaPhuong == undefined && cuThe == undefined) {
+                $('#clear').click();
+            }
             
         } else {
-            $('#btn_thongtingiaohang').hide();
+            $('#btn_chondiachi').hide();
             $('#dathangtaiquay').hide();
             $('#thanhtoantaiquay').show();
-            //$('#btn_PhiShip').val(0);
-            //updatePaymentDetails();
-            //$('#btn_PhiShip_fake').val('');
+            $('#btn_khachletaiquay').show();
+          
+            $('.cell_tienphip').hide();
             $('#btn_TenKhachHang').val('');
             $('#btn_SoDienThoai').val('');
             $('#clear').click();
@@ -115,7 +137,7 @@ $(document).ready(function () {
 
         let tt = ($('#btn_tienkhachdua').val().replace(/\./g, '').replace(',', '.'));
         let kt = ($('#btn_tienkhachphaitra').val().replace(/\./g, '').replace(',', '.'));
-        
+       
         if ((tt - kt >= 0) || tt == '' || tt == '' || tt == 0) {
             if ($('#btn_phuongthucthanhtoan').val() =='1') {
                
@@ -128,6 +150,9 @@ $(document).ready(function () {
                
             }
                     
+        }
+        else {
+            $.notify('Tiền khách đưa chưa đủ', 'error')
         }
         if ( $('#btn_phuongthucthanhtoan').val() == '3') {
 
@@ -253,7 +278,15 @@ $(document).ready(function () {
     }
 
     $('#ward').change(function () {
-        loadTinhThanh();
+        if ($('#btn_giaohang').is(':checked') == true) {
+           
+            loadTinhThanh();
+            
+        }
+        else {
+            $('#btn_PhiShip').val(0);
+        }
+       
     })
     $('#btn_MaVoucher').change(function () {       
         updatePaymentDetails();  
@@ -276,7 +309,7 @@ $(document).ready(function () {
         updatePaymentDetails();
     });
     $('#btn_tienkhachdua').change(function () {
-
+        
         tienthua();
     });
     $('#btn_tienkhachdua').on('focus', handleTienKhachDuaFocus);
@@ -293,6 +326,7 @@ $(document).ready(function () {
         }
         let tt = ($('#btn_tienkhachdua').val().replace(/\./g, '').replace(',', '.'));
         let kt = ($('#btn_tienkhachphaitra').val().replace(/\./g, '').replace(',', '.'));
+       
         if ($('#btn_TenKhachHang').val() != '' && $('#btn_SoDienThoai').val() == '') {
             $.notify('Vui lòng nhập số điện thoại', 'error');
             return;
@@ -312,35 +346,38 @@ $(document).ready(function () {
             }
         }
         if ($('#city').val() == '' || $('#district').val() == '' || $('#ward').val() == '' || $('#street').val() == ''  ) {
-            $.notify('Vui lòng điền đầy đủ địa chỉ, và số điện thoại!', 'error');
+            $.notify('Vui lòng điền đầy đủ địa chỉ!', 'error');
                 return;
         }
-        if ($('#btn_SoDienThoai').val() != '') {
-            var phoneInput = $('#btn_SoDienThoai');
-            var phoneError = $('#phoneError');
-            var phoneNumber = phoneInput.val();
+        //if ($('#btn_SoDienThoai').val() != '') {
+        //    var phoneInput = $('#btn_SoDienThoai');
+        //    var phoneError = $('#phoneError');
+        //    var phoneNumber = phoneInput.val();
 
-            // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
-            var phonePattern = /^0\d{9,10}$/;
+        //    // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+        //    var phonePattern = /^0\d{9,10}$/;
 
-            // Kiểm tra tính hợp lệ của số điện thoại
-            if (!phonePattern.test(phoneNumber)) {
-                $.notify('Số điện thoại không hợp lệ', 'error');
-                return;
-            }
-        }
+        //    // Kiểm tra tính hợp lệ của số điện thoại
+        //    if (!phonePattern.test(phoneNumber)) {
+        //        $.notify('Số điện thoại không hợp lệ', 'error');
+        //        return;
+        //    }
+        //}
         if ((tt - kt >= 0) || tt == '' || tt == '' || tt == 0) {
             if ($('#btn_phuongthucthanhtoan').val() == 1) {
 
                 Thanhtoan();
                 AddLichsuhoadon();
-            }
+            } 
             if ($('#btn_phuongthucthanhtoan').val() == 2) {
 
                 QRCODE_PAYMENT();
               
             }
 
+        }
+        else {
+            $.notify('Tiền khách đưa chưa đủ', 'error')
         }
         if ($('#btn_phuongthucthanhtoan').val() == 3) {
 
@@ -360,14 +397,29 @@ $(document).ready(function () {
         var xaPhuong = selectedOption.getAttribute('data-xaphuong');
         var cuThe = selectedOption.getAttribute('data-cuthe');
         var sodt = selectedOption.getAttribute('data-sodienthoai');
+        var sdtnhanhhang = selectedOption.getAttribute('data-sodienthoainhanhang');
+        var ngnhanhang = selectedOption.getAttribute('data-ngnhanhang');
         if ($('#btn_btn_TenKhachHang').val() != '' || $('#btn_btn_TenKhachHang').val() != undefined) {
-            document.getElementById('city').innerHTML = '<option value="' + tinhThanh + '">' + tinhThanh + '</option>';
-            document.getElementById('district').innerHTML = '<option value="' + quanHuyen + '">' + quanHuyen + '</option>';
-            document.getElementById('ward').innerHTML = '<option value="' + xaPhuong + '">' + xaPhuong + '</option>';
-            document.getElementById('street').value = cuThe; document.getElementById('btn_SoDienThoai').value = sodt;
-            loadTinhThanh();
+            if ($('#btn_giaohang').is(':checked') == false) {
+                document.getElementById('city').innerHTML = '<option value="' + tinhThanh + '">' + tinhThanh + '</option>';
+                document.getElementById('district').innerHTML = '<option value="' + quanHuyen + '">' + quanHuyen + '</option>';
+                document.getElementById('ward').innerHTML = '<option value="' + xaPhuong + '">' + xaPhuong + '</option>';
+                document.getElementById('street').value = cuThe; document.getElementById('btn_SoDienThoai').value = sodt;
+                $('#btn_PhiShip').val(0);
+            } else {
+                    
+                document.getElementById('city').innerHTML = '<option value="' + tinhThanh + '">' + tinhThanh + '</option>';
+                document.getElementById('district').innerHTML = '<option value="' + quanHuyen + '">' + quanHuyen + '</option>';
+                document.getElementById('ward').innerHTML = '<option value="' + xaPhuong + '">' + xaPhuong + '</option>';
+                document.getElementById('street').value = cuThe;
+                document.getElementById('btn_SoDienThoai').value = sodt;
+                document.getElementById('sdtnhanhang_btn').value = sdtnhanhhang;
+                document.getElementById('ngnhanhang_btn').value = ngnhanhang;
+                loadTinhThanh();
+            }
         }
-        else {
+       
+        if (tinhThanh == undefined && quanHuyen == undefined && xaPhuong == undefined && cuThe == undefined) {
             $('#clear').click();
         }
        
@@ -375,7 +427,8 @@ $(document).ready(function () {
     });
 
     $('body').on('click','#btn_chonspchitiet', function () {
-        
+        /* $('#btn_MaVoucher').focus();*/
+        GetDanhSachVoucher();
         var button = $(this);
         var sku = button.data('sku');
         var tenSp = button.data('tensp');
@@ -428,6 +481,46 @@ $(document).ready(function () {
                 console.error('Có lỗi xảy ra khi gửi yêu cầu.');
             }
         });
+    })
+    $('body').on('click', '#btn_chondiachi', function () {
+        $('#pop_diachikhachhang').modal('show')
+        $('#foter_diachi').hide();
+    })
+    $('body').on('click', '#btn_themnhanhkhachhang', function () {
+        $('#pop_themkhachhang').modal('show')
+    })
+    $('#foter_diachi').hide();
+    $('body').on('click', '#themdiachi_btn', function () {
+        $('#pop_diachikhachhang').modal('show');
+        $('#foter_diachi').show();
+    })
+    $('body').on('click', '#nhaplaithongtin_cl', function () {
+        $('#pop_diachikhachhang').modal('hide')
+        $('#pop_themkhachhang').modal('show')
+        $('#foter_diachi').show()
+    })
+    $('body').on('click', '#themdiachi_btn', function () {
+        $('#pop_diachikhachhang').modal('show');
+        $('#pop_themkhachhang').modal('hide');
+        $('#foter_diachi').show();
+    })
+    $('body').on('click', '#huy_cl', function () {
+        $('#btn_fullname').val('');
+        $('#btn_sdtkh').val('');
+        $('#btn_Email').val('');
+        $('#btn_Password').val('');
+        $('#btn_ConfirmPassword').val('');
+        $('#btn_ghichu').val('');
+        $('#clear').click();
+    })
+    $('#btn_MaVoucher').focus(function () {
+        GetDanhSachVoucher();
+    });
+    $('#btn_TenKhachHang').focus(function () {
+        GetDanhSachUser();
+    });  
+    $('body').on('click', '#luukhachhangMoi_cl', function () {
+        themnhanhkhachhang();
     })
 });
 // thanh toán chuyển khoản 
@@ -498,8 +591,10 @@ function tienthua() {
         let tienthua = tienkhachdua - value2;
         if (tienkhachdua <= 0 || tienkhachdua < value2) {
             $('#btn_tienthua').val(0);
+            $('#btn_tienthua_error').show();
         } else {
             $('#btn_tienthua').val(formatMoney(tienthua));
+            $('#btn_tienthua_error').hide();
         }
     }
      if ($('#btn_phuongthucthanhtoan').val() == '3') {
@@ -668,6 +763,7 @@ function addNewRow(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, ma
     minusButton.classList.add("btn", "btn-danger", "minus");
     minusButton.innerText = "-";
     minusButton.addEventListener('click', function () {
+        
         var quantityInput = quantityContainer.querySelector('input');
         var currentValue = parseInt(quantityInput.value);
         if (currentValue > 1) {
@@ -717,6 +813,8 @@ function addNewRow(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, ma
             });
 
             updateTotalPrice(quantityInput, giaBan, slton);
+            // $('#btn_MaVoucher').focus();
+            GetDanhSachVoucher();
         }
     });
     quantityContainer.appendChild(minusButton);
@@ -783,6 +881,8 @@ function addNewRow(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, ma
                 }
             });
             updateTotalPrice(quantityInput, giaBan, slton);
+            // $('#btn_MaVoucher').focus();
+            GetDanhSachVoucher();
         } else {
             $.notify('Số lượng mua vượt quá số lượng khả dụng!', 'error');
         }
@@ -902,6 +1002,8 @@ function removeRow(button) {
         });
         row.remove();
         updatePaymentDetails();
+        // $('#btn_MaVoucher').focus();
+        GetDanhSachVoucher();
     }
 }
 // Function to update payment details (total, discount, customer payment, change)
@@ -914,12 +1016,13 @@ function updatePaymentDetails() {
 
         if (!isNaN(giaBan)) {
             total += giaBan;
+        
         }
     });
 
     var ship = ($('#btn_PhiShip').val() === '') ? 0 : parseFloat($('#btn_PhiShip').val());
     var selectedOption = $('#btn_MaVoucher').find(':selected');
-    var giaTriGiam = selectedOption.val() !== '' ? parseFloat(selectedOption.data('giatrigiam').replace(/\./g, '').replace(',', '.')) : 0;
+   var giaTriGiam = selectedOption.val() !== '' ? selectedOption.data('giatrigiam') : 0;
     /* var tienkhachdua = ($('#btn_tienkhachdua').val() == '') ? 0 : parseFloat($('#btn_tienkhachdua').val());*/
     var tongtienkhachphaitra = total + ship - giaTriGiam;
     var tongtien = total;
@@ -930,6 +1033,7 @@ function updatePaymentDetails() {
         $('#btn_tienkhachphaitra').val(formatMoney(tongtienkhachphaitra));
     }
     $('#btn_tongtien').val(formatMoney(tongtien));
+    //tongtienfake(tongtien);
 }
 
   
@@ -1014,7 +1118,6 @@ function getdataHoaDon() {
         XaPhuong: $('#ward').val(),
         Cuthe: $('#street').val(),
         Ghichu: $('#btn_ghichu').val(),
-        
     }                                           
 }
 
@@ -1151,4 +1254,152 @@ function renderCity(data) {
             }
         }
     };
+}
+function GetDanhSachVoucher() {
+    let dieukien = $('#btn_tongtien').val();
+    let processedValue = dieukien.replace(/\./g, '').split(',')[0];
+    let dk = parseFloat(processedValue)
+    $.ajax({
+        url: '/GetDanhSachVouCher/' + dk,
+        type: 'GET',
+        success: function (data) {
+            let select = $('#btn_MaVoucher');
+            if (data && data.length > 0) {
+                //if (true) {
+
+                //}
+                    console.log(data);
+                   
+                    select.empty(); // Xóa các tùy chọn hiện tại
+                    select.append('<option value="">Chọn Voucher</option>'); // Thêm tùy chọn mặc định
+
+                data.forEach(function (voucher) {
+                        if (voucher.kieuGiamGia == 1) {
+
+                            var ptgiam = (voucher.giaTriGiam / 100);
+                            var sotiendcgiam = parseFloat(dk) * ptgiam;
+                            if (sotiendcgiam >= voucher.giaGiamToiDa) {
+                                sotiendcgiam = voucher.giaGiamToiDa;
+                            }
+                            select.append('<option value="' + voucher.maVoucher + '" data-giatrigiam="' + sotiendcgiam + '"data-giatrigiam="' + voucher.kieuGiamGia +'">' + voucher.ten + '</option>');
+                        }
+                        else {
+                            select.append('<option value="' + voucher.maVoucher + '" data-giatrigiam="' + voucher.giaTriGiam + '"data-giatrigiam="' + voucher.kieuGiamGia + '">' + voucher.ten + '</option>');
+                        }
+                    });
+            } else {
+                select.empty(); // Xóa các tùy chọn hiện tại
+                select.append('<option value="" selected>Chọn Voucher</option>'); // Thêm tùy chọn mặc định
+                updatePaymentDetails();
+          }
+            
+        },
+        error: function () {
+            alert('Đã xảy ra lỗi khi lấy danh sách voucher.');
+        }
+    });
+}
+
+function GetDanhSachUser() {
+   
+    $.ajax({
+        url: '/GetDanhSachUser',
+        type: 'GET',
+        success: function (data) {
+            let select = $('#btn_TenKhachHang');
+            if (data && data.length > 0) {
+                //if (true) {
+
+                //}
+                console.log(data);
+
+                select.empty(); // Xóa các tùy chọn hiện tại
+                select.append('<option value="">Khách lẻ</option>'); // Thêm tùy chọn mặc định
+
+                data.forEach(function (item) {
+                    select.append('<option value="' + item.ten + '" data-tinh="' + item.tinhthanh + '" data-quanhuyen="' + item.quanhuyen + '" data-xaphuong="' + item.xaphuong + '" data-cuthe="' + item.cuthe + '" data-sodienthoai="' + item.sdt + '"data-sodienthoainhanhang="' + item.sdtnhanhhang + '" data-ngnhanhang="' + item.ngnhanhang +'">'+item.ten+'</option>');
+                    //}
+                    //else {
+
+                    //}
+                });
+            } else {
+                select.empty(); // Xóa các tùy chọn hiện tại
+                select.append('<option value="" selected>Khách lẻ</option>'); // Thêm tùy chọn mặc định
+                //updatePaymentDetails();
+            }
+
+        },
+        error: function () {
+            alert('Đã xảy ra lỗi khi lấy danh sách voucher.');
+        }
+    });
+}
+
+function themnhanhkhachhang() {
+    var roles = $('#btn_role').val();
+    var fullname = $('#btn_fullname').val();
+    var sdt = $('#btn_SoDienThoai').val();
+    var sdtnh = $('#sdtnhanhang_btn').val();
+    var ngnh = $('#ngnhanhang_btn').val();
+    var email = $('#btn_Email').val();
+    var password = $('#btn_Password').val();
+    var cfpassword = $('#btn_Password').val();
+    var tinh = $('#city').val();
+    var quan = $('#district').val();
+    var xa = $('#ward').val();
+    var cuthe = $('#street').val();
+    var data = {
+        fullName: fullname,
+        email: email,
+        phoneNumber: sdt,
+        password: password,
+        confirmPassword: cfpassword
+    }
+   
+    var data2 = {
+        Consignee: ngnh,
+        PhoneNumber: sdtnh,
+        City: tinh,
+        District: quan,
+        Ward: xa,
+        Street: cuthe,
+    }
+   
+
+    console.log(data)
+    $.ajax({
+        url: 'https://localhost:7197/api/Register?role=User',
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function (response) {
+            if (response) {
+                $.ajax({
+                    url: '/Add_AdressFlash',
+                    type: 'POST',
+                    data: {
+                        sdt: sdt,
+                        sdtnhanhang: sdtnh,
+                        delivery: data2
+                    },
+                    success: function (response) {
+                        $.notify('Thêm khách hàng thành công', 'success');
+                        $('#pop_diachikhachhang').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        // Xử lý lỗi nếu có
+                        $.notify('Đã xảy ra lỗi:', error);
+                        return;
+                    }
+                });
+            } else {
+                $.notify(re.message, 'error');
+            }
+        },
+        error: function (xhr, status, error) {
+            alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+            return;
+        }
+    });
 }
