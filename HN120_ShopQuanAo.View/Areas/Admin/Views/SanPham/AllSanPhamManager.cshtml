@@ -15,16 +15,6 @@
         margin: 0;
     }
 
-    .sp {
-        padding: 20px;
-        margin: 20px auto;
-        max-width: 1200px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        background-color: #f9f9f9;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
     .btn-new-address {
         background-color: #ff4500;
         color: white;
@@ -173,6 +163,43 @@
 <div class="sp">
     <h1>Quản Lý Sản Phẩm</h1>
     <div>
+        <form asp-action="AllSanPhamManager" method="get" class="form-inline mb-3">
+            <input type="text" name="searchString" class="form-control mr-2" placeholder="Tìm kiếm tên sản phẩm" value="@ViewData["CurrentFilter"]" />
+            <div class="row">
+
+            </div>
+            <select name="maThuongHieu" class="form-control mr-2">
+                <option value="">Chọn Thương Hiệu</option>
+                @foreach (var thuongHieu in lstTH)
+                {
+                    <option value="@thuongHieu.MaThuongHieu">@thuongHieu.TenThuongHieu</option>
+                }
+            </select>
+
+            <select name="maTheLoai" class="form-control mr-2">
+                <option value="">Chọn Thể Loại</option>
+                @foreach (var theLoai in lstTL)
+                {
+                    <option value="@theLoai.MaTheLoai">@theLoai.TenTheLoai</option>
+                }
+            </select>
+
+            <select name="maChatLieu" class="form-control mr-2">
+                <option value="">Chọn Chất Liệu</option>
+                @foreach (var chatLieu in lstCL)
+                {
+                    <option value="@chatLieu.MaChatLieu">@chatLieu.TenChatLieu</option>
+                }
+            </select>
+
+            <select name="trangThai" class="form-control mr-2">
+                <option value="">Chọn Trạng Thái</option>
+                <option value="1">Kinh Doanh</option>
+                <option value="0">Ngừng Kinh Doanh</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary">Lọc</button>
+        </form>
         <p>
             <a class="btn btn-primary" asp-action="CreateSanPham">Thêm Sản Phẩm</a>
         </p>
@@ -198,47 +225,65 @@
                 }
                 @foreach (var item in Model)
                 {
-                            <tr>
-                                <td>@i</td>
-                                <td>@item.MaSp</td>
-                                <td>@item.TenSP</td>
-                                <td>
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.MaSp</td>
+                        <td>@item.TenSP</td>
+                        <td>
                             @{
                                 var thuongHieu = lstTH.FirstOrDefault(th => th.MaThuongHieu == item.MaThuongHieu)?.TenThuongHieu ?? "Không có Thương Hiệu";
                             }
                             @thuongHieu
-                                </td>
-                                <td>
+                        </td>
+                        <td>
                             @{
                                 var theLoai = lstTL.FirstOrDefault(tl => tl.MaTheLoai == item.MaTheLoai)?.TenTheLoai ?? "Không có Thể Loại";
                             }
                             @theLoai
-                                </td>
-                                <td>
+                        </td>
+                        <td>
                             @{
                                 var chatlieu = lstCL.FirstOrDefault(tl => tl.MaChatLieu == item.MaChatLieu)?.TenChatLieu ?? "Không có Chất Liệu";
                             }
                             @chatlieu
-                                </td>
-                                <td>
+                        </td>
+                        <td>
+                            @if (item.UrlAvatar == null)
+                            {
+                               <img src="~/photoSP/khongxacdinh_213x379.jpg" alt="SanPham Image" width="100" height="100" />
+
+                            }
+                            else{
                                     <img src="~/photoSP/@item.UrlAvatar" alt="SanPham Image" width="100" height="100" />
-                                </td>
-                                <td>@item.Mota</td>
-                                <td>@Html.DisplayFor(modelItem => item.TongSoLuong)</td>
-                                <td>
-                                    <form asp-action="@((item.TrangThai == 1) ? "UpdateStatusSPKKD" : "UpdateStatusSPKD")" method="post" id="form-@item.MaSp">
-                                        <input type="hidden" name="id" value="@item.MaSp" />
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" class="status-toggle" data-form-id="form-@item.MaSp" @(item.TrangThai == 1 ? "checked" : "") onchange="document.getElementById('form-@item.MaSp').submit();" />
-                                            <span class="slider"></span>
-                                        </label>
-                                    </form>
-                                </td>
-                                <td style="text-align: center; margin-bottom: 20px">
-                                    <a asp-action="SanPhamDetail" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Chi Tiết</a>
-                                    <a asp-action="UpdateSanPham" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Sửa</a>
-                                </td>
-                            </tr>
+
+                            }
+                        </td>
+                        <td>@item.Mota
+                            @if (item.Mota == null)
+                            {
+                                <span>Không có mô tả</span>
+                            }
+                            else 
+                            {
+                                <span>@item.Mota</span>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.TongSoLuong)</td>
+                        <td>
+                            <form asp-action="@((item.TrangThai == 1) ? "UpdateStatusSPKKD" : "UpdateStatusSPKD")" method="post" id="form-@item.MaSp">
+                                <input type="hidden" name="id" value="@item.MaSp" />
+                                <label class="toggle-switch">
+                                    <input type="checkbox" class="status-toggle" data-form-id="form-@item.MaSp" @(item.TrangThai == 1 ? "checked" : "") onchange="document.getElementById('form-@item.MaSp').submit();" />
+                                    <span class="slider"></span>
+                                </label>
+                            </form>
+                        </td>
+                        <td style="text-align: center; margin-bottom: 20px">
+                            @*<a asp-action="SanPhamDetail" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Chi Tiết</a>*@
+                            
+                            <a asp-action="UpdateSanPham" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Chi Tiết</a>
+                            </td>
+                        </tr>
                     i++;
                 }
             </tbody>

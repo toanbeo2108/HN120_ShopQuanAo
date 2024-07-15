@@ -7,73 +7,255 @@
     List<ThuongHieu> lstTH = ViewBag.lstTH as List<ThuongHieu>;
     List<TheLoai> lstTL = ViewBag.lstTL as List<TheLoai>;
     List<ChatLieu> lstCL = ViewBag.lstCL as List<ChatLieu>;
+    var lstSZ = ViewBag.lstSZ as List<Size> ?? new List<Size>();
+    var lstms = ViewBag.lstms as List<MauSac> ?? new List<MauSac>();
+    var lstkm = ViewBag.lstkm as List<KhuyenMai>;
+    var sp = ViewBag.sp as SanPham;
+    var ctsp = ViewBag.ctsp as List<ChiTietSp>;
 }
 
-<h1>UpdateSanPham</h1>
+<style>
+    .header h2 {
+        margin: 0;
+    }
 
-<h4>SanPham</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="UpdateSanPham" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input asp-for="MaSp" type="hidden" />
+    .form-group {
+        margin-bottom: 15px;
+    }
 
-            <div class="form-group">
-                <label asp-for="MaThuongHieu" class="control-label">Thương Hiệu</label>
-                <select class="form-select" asp-for="MaThuongHieu" aria-label="Default select example">
-                    <option value=""></option>
-                    @foreach (ThuongHieu item in lstTH)
+    .form-control, .form-select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .btn-primary, .btn-warning {
+        margin-right: 10px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        color: black;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-warning:hover {
+        background-color: #e0a800;
+    }
+
+    .text-danger {
+        color: red;
+    }
+
+    .container-xl {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        padding: 10px 15px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-body label {
+        font-weight: bold;
+    }
+
+    .img-account-profile {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="container-xl px-4 mt-4">
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="UpdateSanPham" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                <input asp-for="MaSp" type="hidden" />
+                
+                <div class="form-group text-center">
+                    @if (Model.UrlAvatar == null)
                     {
-                                    <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
+                                <img class="img-account-profile" src="~/photoSP/default.png" alt="Product Image" />
                     }
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaTheLoai" class="control-label">Thể Loại</label>
-                <select class="form-select" asp-for="MaTheLoai" aria-label="Default select example">
-                    <option value=""></option>
-                    @foreach (TheLoai item in lstTL)
+                    else
                     {
-                                    <option value="@item.MaTheLoai">@item.TenTheLoai</option>
+                                <img class="img-account-profile" src="~/photoSP/@Model.UrlAvatar" alt="Product Image" />
                     }
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaChatLieu" class="control-label">Chất Liệu</label>
-                <select class="form-select" asp-for="MaChatLieu" aria-label="Default select example">
-                    <option value=""></option>
-                    @foreach (ChatLieu item in lstCL)
-                    {
-                                    <option value="@item.MaChatLieu">@item.TenChatLieu</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="UrlAvatar" class="control-label">Ảnh</label>
-                <input type="file" class="form-control" name="imageFile" />
-                <span asp-validation-for="UrlAvatar" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TenSP" class="control-label">Tên Sản Phẩm</label>
-                <input asp-for="TenSP" class="form-control" />
-                <span asp-validation-for="TenSP" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Mota" class="control-label">Mô tả</label>
-                <input asp-for="Mota" class="form-control" />
-                <span asp-validation-for="Mota" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Lưu" class="btn btn-primary" />
-                <a asp-action="AllSanPhamManager" class="btn btn-warning">Hủy</a>
-            </div>
-        </form>
+                </div>
+
+                
+                    <input type="file" class="form-control" name="imageFile" id="productImageFile" />
+                    
+                
+                <div class="form-group">
+                    <label asp-for="TenSP" class="control-label">Tên Sản Phẩm</label>
+                    <input asp-for="TenSP" class="form-control" />
+                    <span asp-validation-for="TenSP" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Mota" class="control-label">Mô tả</label>
+                    <input asp-for="Mota" class="form-control" />
+                    <span asp-validation-for="Mota" class="text-danger"></span>
+                </div>
+                </div>
+                <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="MaThuongHieu" class="control-label">Thương Hiệu</label>
+                    <select class="form-select" asp-for="MaThuongHieu" aria-label="Default select example">
+                        <option value=""></option>
+                        @foreach (ThuongHieu item in lstTH)
+                        {
+                                <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MaTheLoai" class="control-label">Thể Loại</label>
+                    <select class="form-select" asp-for="MaTheLoai" aria-label="Default select example">
+                        <option value=""></option>
+                        @foreach (TheLoai item in lstTL)
+                        {
+                                <option value="@item.MaTheLoai">@item.TenTheLoai</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MaChatLieu" class="control-label">Chất Liệu</label>
+                    <select class="form-select" asp-for="MaChatLieu" aria-label="Default select example">
+                        <option value=""></option>
+                        @foreach (ChatLieu item in lstCL)
+                        {
+                                <option value="@item.MaChatLieu">@item.TenChatLieu</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TrangThai" class="control-label">Trạng Thái:    </label>
+                            @if (sp.TrangThai == 0)
+                            {
+                                                    <span>Không Khả Dụng</span>
+                            }
+                            else if (sp.TrangThai == 1)
+                            {
+                                                    <span>Khả Dụng</span>
+                            }
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Sửa" class="btn btn-primary" />
+                    <a asp-action="AllSanPhamManager" class="btn btn-warning">Sản Phẩm</a>
+                </div>
+                </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
+<h1>Chi Tiết</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Size</th>
+            <th>Màu</th>
+            <th>Khuyến mại</th>
+            <th>Ảnh</th>
+            <th>Đơn Giá</th>
+            <th>Giá Bán</th>
+            <th>Số Lượng</th>
+            <th>Trạng Thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+        }
+        @foreach (var item in ctsp)
+        {
+                        <tr>
+                            <td>@i</td>
+                            <td>
+                    @{
+                        var size = lstSZ.FirstOrDefault(th => th.MaSize == item.MaSize)?.TenSize ?? "Lỗi Hiển Thị";
+                    }
+                    @size
+                            </td>
+                            <td>
+                    @{
+                        var mau = lstms.FirstOrDefault(th => th.MaMau == item.MaMau)?.TenMau ?? "Lỗi Hiển Thị";
+                    }
+                    @mau
+                            </td>
+                            <td>
+                    @{
+                        var khuyenmai = lstkm.FirstOrDefault(th => th.MaKhuyenMai == item.MaKhuyenMai)?.TenKhuyenMai ?? "Hiện không có đợt giảm giá nào";
+                    }
+                    @khuyenmai
+                            </td>
+                            <td>
+                                <img src="~/photoSanPhamCT/@item.UrlAnhSpct" alt="chi tiet sp Image" width="100" height="100" />
+                            </td>
+                            <td>@String.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.DonGia)</td>
+                            <td>@String.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.GiaBan)</td>
+                            <td>@item.SoLuongTon</td>
+                            <td>
+                    @if (item.TrangThai == 0)
+                    {
+                                                <span>Không Khả Dụng</span>
+                    }
+                    else if (item.TrangThai == 1)
+                    {
+                                                <span>Khả Dụng</span>
+                    }
+                            </td>
+                            <td style="text-align: center; margin-bottom: 20px">
+                                <a asp-action="UpdateChiTietSp" asp-controller="ChiTietSP" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.SKU">Sửa</a>
+                            </td>
+                        </tr>
+            i++;
+        }
+    </tbody>
+</table>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    }
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#productImageFile').change(function (e) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('.img-account-profile').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(e.target.files[0]);
+                });
+            });
+        </script>
+}

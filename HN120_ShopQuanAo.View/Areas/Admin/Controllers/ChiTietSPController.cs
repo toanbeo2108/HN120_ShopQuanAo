@@ -220,6 +220,14 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
             ViewBag.lstkm = lstkm;
 
+            var spUrl = $"https://localhost:7197/api/CTSanPham/GetCTSPById?id={id}";
+            var spResponse = await _httpClient.GetAsync(spUrl);
+            if (!spResponse.IsSuccessStatusCode)
+            {
+                return BadRequest("Không thể lấy thông tin sản phẩm");
+            }
+            string spData = await spResponse.Content.ReadAsStringAsync();
+            var ExsitSP = JsonConvert.DeserializeObject<ChiTietSp>(spData);
 
 
             if (imagectspFile != null && imagectspFile.Length > 0)
@@ -240,13 +248,15 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 }
 
                 // Cập nhật URL của ảnh vào thuộc tính
-                vc.UrlAnhSpct = imagectspFile.FileName;
+                ExsitSP.UrlAnhSpct = imagectspFile.FileName;
+                ExsitSP.DonGia = vc.DonGia;
+                ExsitSP.SoLuongTon = vc.SoLuongTon;
             }
 
 
             var urlBook = $"https://localhost:7197/api/CTSanPham/EditCTSP/{id}";
 
-            var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonConvert.SerializeObject(ExsitSP), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
             if (!respon.IsSuccessStatusCode)
             {
@@ -254,7 +264,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            return RedirectToAction("SanPhamDetail", "SanPham", new { area = "Admin", id = vc.MaSp });
+            return RedirectToAction("UpdateSanPham", "SanPham", new { area = "Admin", id = vc.MaSp });
 
         }
         private async Task<bool> IsDuplicateChiTietSP(string SKU)
