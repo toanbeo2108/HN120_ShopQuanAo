@@ -36,6 +36,38 @@ $(document).ready(function () {
         if (tongtiensaukhithaydoi <= 0) {
             tongtiensaukhithaydoi = 0;
         }
+        if ($('#btn_SoDienThoai').val() == '' || $('#btn_SoDienThoai').val() == undefined || $('#btn_SoDienThoai').val() == null) {
+            $.notify('Chưa nhập số điện thoại người nhận'); return;
+        }
+        else {
+            var phoneInput = $('#btn_SoDienThoai');
+            var phoneError = $('#phoneError');
+            var phoneNumber = phoneInput.val();
+
+            // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+            var phonePattern = /^0\d{9,10}$/;
+
+            // Kiểm tra tính hợp lệ của số điện thoại
+            if (!phonePattern.test(phoneNumber)) {
+                $.notify('Số điện thoại người nhận không hợp lệ'); return;
+            }
+        }
+        if ($('#city').val() == '' || $('#city').val() == undefined || $('#city').val() == null) {
+            $.notify('Chưa nhập tỉnh thành'); return;
+        }
+        
+        if ($('#district').val() == '' || $('#district').val() == undefined || $('#district').val() == null) {
+            $.notify('Chưa nhập quận huyện'); return;
+        }
+        
+        if ($('#ward').val() == '' || $('#ward').val() == undefined || $('#ward').val() == null) {
+            $.notify('Chưa nhập xã phường'); return;
+        }
+        
+        if ($('#street').val() == '' || $('#street').val() == undefined || $('#street').val() == null) {
+            $.notify('Chưa nhập địa chỉ cụ thể'); return;
+        }
+        
         $('#btn_TongGiaTriHangHoa').val(tongtiensaukhithaydoi);
         updatehoadon();   
         var today = new Date();
