@@ -110,46 +110,48 @@
                     $.post('/Update-hoadon', { hd: datahoadon }, function (re) {
 
                         if (re.status) {
-                            console.log('Cập nhật hóa đơn thành công')
+                            $.ajax({
+                                url: '/Update-hoadonct',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify(dt),
+                                success: function (response) {
+                                    if (response.status) {
+
+                                        $.ajax({
+                                            url: '/Update_soluongCTsanpham',
+                                            method: 'POST',
+                                            contentType: 'application/json',
+                                            dataType: 'json',
+                                            data: JSON.stringify([dt2]),
+                                            success: function (re) {
+                                                if (re.status) {
+                                                    AddLichsuhoadon(7)
+                                                    localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }));
+                                                    window.location.reload();
+                                                } else {
+                                                    console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                                                }
+                                            },
+                                            error: function () {
+                                                console.error('Có lỗi xảy ra khi gửi yêu cầu.');
+                                            }
+                                        });
+
+
+
+                                    } else {
+                                        $.notify("Đã xảy ra lỗi: " + err, 'error');
+                                    }
+                                }
+                            });
+                           
                         }
                         else {
                             $.notify('Có lỗi sảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error')
                         }
                     })
-                    $.ajax({
-                        url: '/Update-hoadonct',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(dt),
-                        success: function (response) {
-                            if (response.status) {
-                                
-                                    $.ajax({
-                                        url: '/Update_soluongCTsanpham',
-                                        method: 'POST',
-                                        contentType: 'application/json',
-                                        dataType: 'json',
-                                        data: JSON.stringify([dt2]),
-                                        success: function (re) {
-                                            if (re.status) {
-                                                localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }));
-                                                window.location.reload();
-                                            } else {
-                                                console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
-                                            }
-                                        },
-                                        error: function () {
-                                            console.error('Có lỗi xảy ra khi gửi yêu cầu.');
-                                        }
-                                    });
-                              
-                                
-                                
-                            } else {
-                                $.notify("Đã xảy ra lỗi: " + err, 'error');
-                            }
-                        }
-                    });
+                   
                 }
                 else {
                     let mahoadon = $('#btn_mahoadon').val();
@@ -204,6 +206,7 @@
                                                 if (re.status) {
                                                     localStorage.setItem('notification', JSON.stringify({ message: 'Thêm sản phẩm thành công', type: 'success' }))
                                                     $('#pop_soluongmua').modal('hide');
+                                                    AddLichsuhoadon(7)
                                                     window.location.reload();
                                                 } else {
                                                     console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
@@ -252,6 +255,7 @@
                     $.post('/Update-hoadon', { hd: datahoadon }, function (re) {
 
                         if (re.status) {
+                            AddLichsuhoadon(7);
                             localStorage.setItem('notification', JSON.stringify({ message: 'Đã xóa sản phẩm', type: 'success' }))
                             window.location.reload();
                         }
@@ -331,7 +335,40 @@ function getdatafake() {
         Ghichu: $('#btn_ghichu_fake').val(),
     }
 }
+function AddLichsuhoadon(status) {
+    var today = new Date();
 
+    var date = 'HD' + today.getDate() + (today.getMonth() + 1) + today.getFullYear() + today.getHours() + today.getMinutes() + today.getSeconds();
+    var tongtienhoadon = $('#btn_tonggiatrihd').val().replace(/\./g, '').split(',')[0];
+    var ghichu;
+    if (status == 7 ) {
+        ghichu = 'Chỉnh sửa đơn hàng';
+    }
+    else {
+        ghichu = status;
+    }
+    var data = {
+        LichSuHoaDonID: date,
+        MaHoaDon: $('#btn_mahoadonls').val(),
+        UserID: $('#btn_UserName').val(),
+        NgayTaoDon: $('#btn_ngaytao').val(),
+        NgayThayDoi: $('#btn_ngaythaydoils').val(),
+        TongGiaTri: parseFloat(tongtienhoadon),
+        HinhThucThanhToan: $('#btn_httt').val(),
+        ChiTiet: ghichu,
+        TrangThai: status,
+    };
+
+    $.post('/Add-lichsuhoadon', { lshd: data }, function (re) {
+        if (re.status) {
+
+        }
+        else {
+
+        }
+
+    })
+}
 //function getdataahoadonchitiet_() {
 //    var hdctList = [];
 //    $('#hoaDonctTable tbody tr').each(function () {

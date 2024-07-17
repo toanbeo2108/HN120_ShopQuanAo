@@ -11,30 +11,6 @@ $(document).ready(function () {
     $('#btn_Update').val(moment().format('YYYY-MM-DD HH:mm:ss'));
     $('#ngayupdate_tthd').val(moment().format('YYYY-MM-DD HH:mm:ss'));
     let ma = $('#btn_mahoadon').val();
-    $('#GetAllHoaDon_partialView').show();
-    $('#HoaDonTaiQuayPartialView').hide();
-    $('#BanHangOnline_partialView').hide();
-    $('body').on('change','#btn_phanloaihoadon',function () {
-        if ($('#btn_phanloaihoadon').val() == '') {
-            $('#GetAllHoaDon_partialView').show();
-            $('#HoaDonTaiQuayPartialView').hide();
-            $('#BanHangOnline_partialView').hide();
-        }
-        if ($('#btn_phanloaihoadon').val() == 1) {
-            $('#HoaDonTaiQuayPartialView').show();
-            $('#GetAllHoaDon_partialView').hide();
-            $('#BanHangOnline_partialView').hide();
-        }
-        if ($('#btn_phanloaihoadon').val() == 2) {
-            $('#BanHangOnline_partialView').show();
-            $('#GetAllHoaDon_partialView').hide();
-            $('#HoaDonTaiQuayPartialView').hide();  
-        }
-       
-    });
-    
-   
-
     $('body').on('click', '#btn_update_hoadon', function () {
         let ma = $('#btn_mahoadon').val();
         $.get('/Detail-hoadon/' + ma, function (re) {
@@ -60,6 +36,38 @@ $(document).ready(function () {
         if (tongtiensaukhithaydoi <= 0) {
             tongtiensaukhithaydoi = 0;
         }
+        if ($('#btn_SoDienThoai').val() == '' || $('#btn_SoDienThoai').val() == undefined || $('#btn_SoDienThoai').val() == null) {
+            $.notify('Chưa nhập số điện thoại người nhận'); return;
+        }
+        else {
+            var phoneInput = $('#btn_SoDienThoai');
+            var phoneError = $('#phoneError');
+            var phoneNumber = phoneInput.val();
+
+            // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+            var phonePattern = /^0\d{9,10}$/;
+
+            // Kiểm tra tính hợp lệ của số điện thoại
+            if (!phonePattern.test(phoneNumber)) {
+                $.notify('Số điện thoại người nhận không hợp lệ'); return;
+            }
+        }
+        if ($('#city').val() == '' || $('#city').val() == undefined || $('#city').val() == null) {
+            $.notify('Chưa nhập tỉnh thành'); return;
+        }
+        
+        if ($('#district').val() == '' || $('#district').val() == undefined || $('#district').val() == null) {
+            $.notify('Chưa nhập quận huyện'); return;
+        }
+        
+        if ($('#ward').val() == '' || $('#ward').val() == undefined || $('#ward').val() == null) {
+            $.notify('Chưa nhập xã phường'); return;
+        }
+        
+        if ($('#street').val() == '' || $('#street').val() == undefined || $('#street').val() == null) {
+            $.notify('Chưa nhập địa chỉ cụ thể'); return;
+        }
+        
         $('#btn_TongGiaTriHangHoa').val(tongtiensaukhithaydoi);
         updatehoadon();   
         var today = new Date();
@@ -460,50 +468,6 @@ function getdatahoadon() {
         Ghichu: $('#btn_ghichu').val(),
     }
 }
-//function getdataahoadonchitiet() { 
-//   var hdctList = [];
-//    $('#hoaDonctTable tbody tr').each(function () {
-//        var maHoaDonChiTiet = $(this).find('.maHoaDonChiTiet').val();
-//        var sku = $(this).find('.sku').val();
-//        var maHoaDon = $(this).find('.maHoaDon').val();
-//        var tenSp = $(this).find('.tenSp').val();
-//        var donGia = parseFloat($(this).find('.donGia').val());
-//        var soLuongMua =parseInt($(this).find('.soLuongMua').val());
-//        var trangThai = parseInt($(this).find('.trangThai').val());
-
-//        var masp = $(this).find('.masp').val();
-//        var masz = $(this).find('.masz').val();
-//        var MaMau = $(this).find('.MaMau').val();
-//        var MaKhuyenMai = $(this).find('.MaKhuyenMai').val();
-//        var img = $(this).find('.img').val();
-//        var DonGia_ = parseFloat($(this).find('.DonGia_').val());
-//        var GiaBan = parseFloat($(this).find('.GiaBan').val());
-//        var SoLuongTon = parseInt($(this).find('.SoLuongTon').val());
-//        var tt = parseInt($(this).find('.tt').val());
-
-//        var dt = {
-//            MaHoaDonChiTiet: maHoaDonChiTiet,
-//            SKU: sku,
-//            MaHoaDon: maHoaDon,
-//            TenSp: tenSp,
-//            DonGia: donGia,
-//            SoLuongMua: soLuongMua,
-//            TrangThai: trangThai,
-
-//            MaSp: masp,
-//            MaSize: masz,
-//            MaMau: MaMau,
-//            MaKhuyenMai: MaKhuyenMai,
-//            UrlAnhSpct: img,
-//            Dongia_: parseFloat(DonGia_),
-//            GiaBan: parseFloat(GiaBan),
-//            SoLuongTon: (parseInt(SoLuongTon) - soLuongMua),
-//            TrangThai: parseInt(tt),
-//        };
-//    hdctList.push(dt);
-//    });
-//    return hdctList;
-//}
 function getSanPhamChiTiet() {
     var SPCT = [];
     $('#hoaDonctTable tbody tr').each(function () {
@@ -607,4 +571,146 @@ function AddThanhToanHoaDon_() {
         }
 
     })
+}
+
+function In() {
+
+
+    // Lấy dữ liệu từ các ô nhập liệu
+    var khachhang = selectedOptionkh.text() != 'Khách lẻ' ? selectedOptionkh.text() : 'Khách lẻ';
+    var mahoadon = $('#btn_ma').val();
+    var tongtien = $('#btn_tongtien').val();
+    var ngaytao = $('#btn_NgayTaoDon').val();
+    var voucher = selectedOption.text() != 'Chọn Voucher' ? selectedOption.text() : '- 0 VNĐ';
+
+    var phiship = $('#btn_PhiShip_fake').val() != '' ? $('#btn_PhiShip_fake').val() : 0;
+    var tienkhachphaitra = $('#btn_tienkhachphaitra').val();
+    var khachdua = $('#btn_tienkhachdua').val() != '' ? $('#btn_tienkhachdua').val() : 0;
+    var tienthua = $('#btn_tienthua').val() != '' ? $('#btn_tienthua').val() : 0;
+    var nv = $('#btn_UserName').val();
+    var pt_thanhtoan = pt;
+    var trangthai = thanhtoan;
+
+
+    // Tạo nội dung cho cửa sổ in
+    var content = `
+        <html>
+            <head>
+               
+               <style>
+                    table {
+                        width: 100%;
+                        
+                    }
+                    th, td {
+                        padding: 12px;
+                       
+                    }
+                    th {
+                        text-align: left;
+                        width: 50px;
+                        padding-left: 0;
+                    }
+                     td {
+                        width: 150px;
+                    }
+                     h1 {
+                        text-align: left;
+                        font-weight: bold;
+                        margin-bottom: 20px;
+                    }
+                </style>
+                 
+            </head>
+            <body>
+             <h1>Phiếu thanh toán</h1>
+                <table id="phieuthanhtoan" class="info-table">
+                    <tr>
+                        <th><strong>Nhân viên: </strong></th>
+                        <td>${nv}</td>
+                    </tr>
+                    <tr>
+                        <th><strong>Khách hàng:</strong></th>
+                        <td>${khachhang}</td>
+                    </tr>
+                    <tr>
+                        <th><strong>Mã hóa đơn:</strong></th>
+                        <td>${mahoadon}</td>
+                    </tr>
+                    <tr>
+                        <th><strong>Ngày tạo:</strong></th>
+                        <td>${ngaytao}</td>
+                    </tr>
+                    <tr>
+                        <th><strong>Tổng tiền:</strong></th>
+                        <td>${tongtien} VNĐ</td>
+                       
+                    </tr>
+                    <tr>
+                        <th><strong>Voucher:</strong></th>
+                        <td>${voucher}</td>
+                        
+                    </tr>
+                    <tr>
+                        <th><strong>Phí ship:</strong></th>
+                        <td>${phiship} VNĐ</td>
+                        
+                    </tr>
+                    <tr>
+                        <th><strong>Tiền khách phải trả:</strong></th>
+                        <td>${tienkhachphaitra} VNĐ</td>
+                        
+                    </tr>
+                    <tr>
+                        <th><strong>Khách đưa:</strong></th>
+                        <td>${khachdua} VNĐ</td>
+                        
+                    </tr>
+                    <tr>
+                        <th><strong>Tiền thừa:</strong></th>
+                        <td>${tienthua} VNĐ</td><td></td>
+                    </tr>
+                    <tr>
+                        <th><strong>Phương thức thanh toán:</strong></th>
+                        <td>${pt_thanhtoan}</td>
+                    </tr>
+                    <tr>
+                        <th><strong>Trạng thanh toán:</strong></th>
+                        <td>${trangthai}</td>
+                    </tr>
+                </table>
+            </body>
+        </html>`;
+
+    // Mở cửa sổ mới và ghi nội dung vào đó
+    var printWindow = window.open('', '', `height=800px,width=800px`);
+    printWindow.document.write(content);
+    printWindow.document.close();
+
+    // Đợi nội dung được tải xong và gọi hàm in
+    printWindow.onload = function () {
+
+        printWindow.print();
+
+        printWindow.close();
+        if ($('#btn_Status').val() == 5) {
+            AddThanhTOanHoaDon();
+            localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
+            window.location.reload();
+
+        }
+        if ($('#btn_Status').val() == 2) {
+            AddThanhTOanHoaDon();
+            localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
+            window.location.reload();
+
+        }
+        if ($('#btn_Status').val() == 4) {
+            localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
+            AddThanhTOanHoaDon();
+        }
+
+    };
+
+
 }
