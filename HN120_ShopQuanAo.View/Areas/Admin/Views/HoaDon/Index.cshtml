@@ -24,6 +24,12 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         width: 120px; /* Độ rộng của input và button */
     }
 
+    .notification {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+    }
    .quantity-input input {
        border: none; /* Bỏ border của input */
        width: 100px; /* Độ rộng của input */
@@ -437,7 +443,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 </div>
 @*Modal thông tin địa chỉ khách hàng*@
 <div class="modal fade" tabindex="-1" id="pop_diachikhachhang">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content"> 
             <div class="modal-header">
                 <h5 class="modal-title">Thông tin địa chỉ khách hàng</h5>
