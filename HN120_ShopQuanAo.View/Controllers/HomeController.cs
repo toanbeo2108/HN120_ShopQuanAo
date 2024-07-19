@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using HN120_ShopQuanAo.API.EmailConfig.ViewModel;
 
 namespace HN120_ShopQuanAo.View.Controllers
 {
@@ -133,6 +134,39 @@ namespace HN120_ShopQuanAo.View.Controllers
             ViewBag.Message = $"Login failed: {errorResponse}";
             return View();
         }
+
+        [HttpGet]
+        public IActionResult RegisterEmail()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> RegisterEmail(RegisterWithEmail registerUser, string role)
+        {
+            // Convert registerUser to JSON
+            var registerUserJSON = JsonConvert.SerializeObject(registerUser);
+
+            // Convert to string content
+            var stringContent = new StringContent(registerUserJSON, Encoding.UTF8, "application/json");
+
+            // Add role to queryString
+            role = "User";
+            var queryString = $"?role={role}";
+
+            // Send request POST to register API
+            var response = await _httpClient.PostAsync($"https://localhost:7197/api/Account/register{queryString}", stringContent);
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessageRegister"] = "Đã gửi email!";
+                return RedirectToAction("Index", "Home");
+            }
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            ViewBag.Message = $"Register failed: {errorResponse}";
+            return View();
+        }
+
+
+
 
         public async Task<IActionResult> Logout()
         {
