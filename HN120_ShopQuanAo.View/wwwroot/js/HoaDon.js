@@ -565,11 +565,11 @@ $(document).ready(function () {
     });  
     $('body').on('click', '#luukhachhangMoi_cl', function () {
         if ($('#btn_fullname').val() == '' || $('#btn_fullname').val() == null || $('#btn_fullname').val() == undefined) {
-            alert('Nhập tên khách hàng ' );
+            $.notify('Nhập tên khách hàng ', 'error');
             return;
         }
         if ($('#btn_SoDienThoai_').val() == '' || $('#btn_SoDienThoai_').val() == null || $('#btn_SoDienThoai_').val() == undefined) {
-            alert('Nhập số điện thoại khách hàng ');
+            $.notify('Nhập số điện thoại khách hàng ', 'error');
             return;
         }
         if ($('#btn_SoDienThoai_').val() != '') {
@@ -581,29 +581,29 @@ $(document).ready(function () {
 
             // Kiểm tra tính hợp lệ của số điện thoại
             if (!phonePattern.test(phoneNumber)) {
-                alert('Số điện thoại khách hàng không hợp lệ');
+                $.notify('Số điện thoại khách hàng không hợp lệ', 'error');
                 return;
             }
            
         }
         if ($('#btn_Email').val() == '' || $('#btn_Email').val() == null || $('#btn_Email').val() == undefined) {
-            alert('Nhập email');
+            $.notify('Nhập email', 'error');
             return;
         }
         if ($('#btn_Password').val() == '' || $('#btn_Password').val() == null || $('#btn_Password').val() == undefined) {
-            alert('Nhập password');
+            $.notify('Nhập password', 'error');
             return;
         }
         if ($('#btn_ConfirmPassword').val() == '' || $('#btn_ConfirmPassword').val() == null || $('#btn_ConfirmPassword').val() == undefined) {
-            alert('Nhập lại password');
+            $.notify('Nhập lại password', 'error');
             return;
         }
         if ($('#btn_ConfirmPassword').val() != $('#btn_Password').val()) {
-            alert('Nhập lại password không đúng');
+            $.notify('Nhập lại password không đúng', 'error');
             return;
         }
         if ($('#sdtnhanhang_btn').val() == '' || $('#sdtnhanhang_btn').val() == null || $('#sdtnhanhang_btn').val() == undefined) {
-            alert('Nhập số điện thoại nhận hàng ');
+            $.notify('Nhập số điện thoại nhận hàng ', 'error');
             return;
         }
         if ($('#sdtnhanhang_btn').val() != '' ) {
@@ -615,28 +615,28 @@ $(document).ready(function () {
 
             // Kiểm tra tính hợp lệ của số điện thoại
             if (!phonePattern.test(phoneNumber)) {
-                alert('Số điện thoại nhận hàng không hợp lệ');
+                $.notify('Số điện thoại nhận hàng không hợp lệ', 'error');
                 return;
             }
         }
         if ($('#ngnhanhang_btn').val() == '' || $('#ngnhanhang_btn').val() == null || $('#ngnhanhang_btn').val() == undefined) {
-            alert('Nhập tên nhận hàng ');
+            $.notify('Nhập tên nhận hàng ', 'error');
             return;
         }
         if ($('#city').val() == '' || $('#city').val() == null || $('#city').val() == undefined) {
-            alert('Nhập tỉnh thành');
+            $.notify('Nhập tỉnh thành', 'error');
             return;
         }
         if ($('#district').val() == '' || $('#district').val() == null || $('#district').val() == undefined) {
-            alert('Nhập quận huyện');
+            $.notify('Nhập quận huyện', 'error');
             return;
         }
         if ($('#ward').val() == '' || $('#ward').val() == null || $('#ward').val() == undefined) {
-            alert('Nhập xã phường');
+            $.notify('Nhập xã phường', 'error');
             return;
         }
         if ($('#street').val() == '' || $('#street').val() == null || $('#street').val() == undefined) {
-            alert('Nhập địa chỉ cụ thể');
+            $.notify('Nhập địa chỉ cụ thể','error');
             return;
         }
         themnhanhkhachhang();
@@ -1504,7 +1504,9 @@ function themnhanhkhachhang() {
             }
         },
         error: function (xhr, status, error) {
-            alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+       
+            $.notify(xhr.responseText);
+           
             return;
         }
     });
