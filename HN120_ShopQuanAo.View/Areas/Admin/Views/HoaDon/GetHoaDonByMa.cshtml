@@ -181,13 +181,13 @@
                                     <p style="text-align:center">Hủy</p>
                                     <span style="word-wrap: break-word;">@item.NgayTaoDon</span>
                                 }
-                                    @if (item.TrangThai == 7)
-                                    {
-                                        <img src="~/Quanlydonhang/7.png" style="width: 100%; height: auto;" />
-                                        <br />
-                                        <p style="text-align:center">@user.UserName đã chỉnh sửa</p>
-                                        <span style="word-wrap: break-word;">@item.NgayTaoDon</span>
-                                    }
+                                @if (item.TrangThai == 7)
+                                {
+                                    <img src="~/Quanlydonhang/7.png" style="width: 100%; height: auto;" />
+                                    <br />
+                                    <p style="text-align:center">@user.UserName đã chỉnh sửa</p>
+                                    <span style="word-wrap: break-word;">@item.NgayTaoDon</span>
+                                }
                             </td>
                         }
                     </tr>
@@ -197,6 +197,7 @@
 
     </div>
    <hr />
+   <div
         @if (Model.TrangThai == 1 && Model.PhanLoai == "2")
         {
             <div class="col-md-2">
@@ -227,9 +228,9 @@
             <div class="col-md-2">
                 <button class="btn btn-danger" id="btn_huydon"> Hủy đơn</button>
             </div>
-            <div class="col-md-2">
+            @* <div class="col-md-2">
                 <button class="btn btn-danger" id="btn_inphieu"> In phiếu giao hàng</button>
-            </div>
+            </div> *@
         }
         @if (Model.PhanLoai == "1")
         {
@@ -251,9 +252,9 @@
 
             }
         }
-        
-    
-</div>
+   </div>
+
+    </div>
 <hr />
 <div>
     <div class="row">
@@ -266,7 +267,7 @@
     </div>
     <input style="display:none" id="btn_mahoadon" value="@Model.MaHoaDon" />
     <hr />
-        <table class="table table-bordered" id="table_hoadon" style="overflow-x: auto;width:600px; height:200px">
+        <table class="table table-bordered" id="table_hoadon">
 
         <thead>
         <tr>
@@ -303,18 +304,6 @@
                 </th>
                 <th style="text-align : center;">
                     Trạng thái
-                </th>
-                <th style="text-align : center;">
-                    Tỉnh thành
-                </th>
-                <th style="text-align : center;">
-                    Quận huyện
-                </th>
-                <th style="text-align : center;">
-                    Xã phường
-                </th>
-                <th style="text-align : center;">
-                  Địa chỉ cụ thể
                 </th>
                 @if (Model.TrangThai == 1 || Model.TrangThai == 2 || Model.TrangThai == 3)
                 {
@@ -435,18 +424,6 @@
                         Hủy
                     </td>
                 }
-                <td style="text-align : center; margin-bottom : 20px">
-                    @Model.TinhThanh
-                </td>
-                <td style="text-align : center; margin-bottom : 20px">
-                    @Model.QuanHuyen
-                </td>
-                <td style="text-align : center; margin-bottom : 20px">
-                    @Model.XaPhuong
-                </td>
-                <td style="text-align : center; margin-bottom : 20px">
-                    @Model.Cuthe
-                </td>
                 @if (Model.TrangThai <= 3)
                 {
                     <td>
@@ -459,7 +436,8 @@
         </tbody>
         
     </table>
-    <p>Ghi chú: @Model.Ghichu</p>
+        <p><strong>Địa chỉ giao hàng: </strong> @Model.TinhThanh - @Model.QuanHuyen - @Model.XaPhuong - @Model.Cuthe</p>
+        <p><strong>Ghi chú: </strong>@Model.Ghichu</p>
     <hr />
 </div>
 <div>
@@ -570,7 +548,7 @@
                                 <button class="btn btn-outline-dange" id="btn_xoachitietsp" data-ma="@item.MaHoaDonChiTiet"><i class="fa-solid fa-trash" style="color: #f31212;"></i></button>
                             </td>
                         }
-                            <td type="hidden">
+                            <td style="display:none">
                             <input  type="hidden" class="maHoaDonChiTiet" value="@item.MaHoaDonChiTiet" />
                             <input  type="hidden" class="sku" value="@item.SKU"/>
                             <input  type="hidden" id="btn_nhap"/>

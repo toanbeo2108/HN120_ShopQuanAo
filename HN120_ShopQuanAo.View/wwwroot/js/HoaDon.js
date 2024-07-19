@@ -522,6 +522,7 @@ $(document).ready(function () {
     $('body').on('click', '#btn_chondiachi', function () {
         $('#pop_diachikhachhang').modal('show')
         $('#foter_diachi').hide();
+        $('#btn_ghichu').val('');
     })
     $('body').on('click', '#btn_themnhanhkhachhang', function () {
         $('#pop_themkhachhang').modal('show')
@@ -563,14 +564,83 @@ $(document).ready(function () {
         GetDanhSachUser();
     });  
     $('body').on('click', '#luukhachhangMoi_cl', function () {
+        if ($('#btn_fullname').val() == '' || $('#btn_fullname').val() == null || $('#btn_fullname').val() == undefined) {
+            alert('Nhập tên khách hàng ' );
+            return;
+        }
+        if ($('#btn_SoDienThoai_').val() == '' || $('#btn_SoDienThoai_').val() == null || $('#btn_SoDienThoai_').val() == undefined) {
+            alert('Nhập số điện thoại khách hàng ');
+            return;
+        }
+        if ($('#btn_SoDienThoai_').val() != '') {
+            var phoneInput = $('#btn_SoDienThoai_');
+            var phoneNumber = phoneInput.val();
+
+            // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+            var phonePattern = /^0\d{9,10}$/;
+
+            // Kiểm tra tính hợp lệ của số điện thoại
+            if (!phonePattern.test(phoneNumber)) {
+                alert('Số điện thoại khách hàng không hợp lệ');
+                return;
+            }
+           
+        }
+        if ($('#btn_Email').val() == '' || $('#btn_Email').val() == null || $('#btn_Email').val() == undefined) {
+            alert('Nhập email');
+            return;
+        }
+        if ($('#btn_Password').val() == '' || $('#btn_Password').val() == null || $('#btn_Password').val() == undefined) {
+            alert('Nhập password');
+            return;
+        }
+        if ($('#btn_ConfirmPassword').val() == '' || $('#btn_ConfirmPassword').val() == null || $('#btn_ConfirmPassword').val() == undefined) {
+            alert('Nhập lại password');
+            return;
+        }
+        if ($('#btn_ConfirmPassword').val() != $('#btn_Password').val()) {
+            alert('Nhập lại password không đúng');
+            return;
+        }
+        if ($('#sdtnhanhang_btn').val() == '' || $('#sdtnhanhang_btn').val() == null || $('#sdtnhanhang_btn').val() == undefined) {
+            alert('Nhập số điện thoại nhận hàng ');
+            return;
+        }
+        if ($('#sdtnhanhang_btn').val() != '' ) {
+            var phoneInput = $('#sdtnhanhang_btn');
+            var phoneNumber = phoneInput.val();
+
+            // Biểu thức chính quy kiểm tra số điện thoại bắt đầu bằng 0 và có độ dài từ 10 đến 11 ký tự
+            var phonePattern = /^0\d{9,10}$/;
+
+            // Kiểm tra tính hợp lệ của số điện thoại
+            if (!phonePattern.test(phoneNumber)) {
+                alert('Số điện thoại nhận hàng không hợp lệ');
+                return;
+            }
+        }
+        if ($('#ngnhanhang_btn').val() == '' || $('#ngnhanhang_btn').val() == null || $('#ngnhanhang_btn').val() == undefined) {
+            alert('Nhập tên nhận hàng ');
+            return;
+        }
+        if ($('#city').val() == '' || $('#city').val() == null || $('#city').val() == undefined) {
+            alert('Nhập tỉnh thành');
+            return;
+        }
+        if ($('#district').val() == '' || $('#district').val() == null || $('#district').val() == undefined) {
+            alert('Nhập quận huyện');
+            return;
+        }
+        if ($('#ward').val() == '' || $('#ward').val() == null || $('#ward').val() == undefined) {
+            alert('Nhập xã phường');
+            return;
+        }
+        if ($('#street').val() == '' || $('#street').val() == null || $('#street').val() == undefined) {
+            alert('Nhập địa chỉ cụ thể');
+            return;
+        }
         themnhanhkhachhang();
     })
-    $('body').on('click', '#btn_inphieu', function () {
-    //    InPhieuThanhToan();
-        In();
-        //$('#pop_Phieuthnahtoan').modal('show')
-    })
-
 });
 // thanh toán chuyển khoản 
 function QRCODE_PAYMENT() {
@@ -1390,8 +1460,7 @@ function themnhanhkhachhang() {
         Ward: xa,
         Street: cuthe,
     }
-   
-
+  
     console.log(data)
     $.ajax({
         url: 'https://localhost:7197/api/Register?role=User',
@@ -1417,7 +1486,7 @@ function themnhanhkhachhang() {
                          $('#ngnhanhang_btn').val('');
                          $('#btn_Email').val('');
                          $('#btn_Password').val('');
-                         $('#btn_Password').val('');
+                        $('#btn_ConfirmPassword').val('');
                          $('#city').val('');
                          $('#district').val('');
                          $('#ward').val('');
