@@ -1,8 +1,8 @@
 ﻿@using HN120_ShopQuanAo.Data.Configurations
 @using HN120_ShopQuanAo.Data.Models
 @using HN120_ShopQuanAo.View.Areas.Admin.Data
-@model IEnumerable<HN120_ShopQuanAo.View.Areas.Admin.Data.HoaDonWithDetailsViewModel>
-
+@* @model IEnumerable<HN120_ShopQuanAo.View.Areas.Admin.Data.HoaDonWithDetailsViewModel> *@
+@model IEnumerable<HN120_ShopQuanAo.Data.Models.HoaDon> 
 @{
     ViewData["Title"] = "QuanLyHoaDon";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
@@ -99,86 +99,101 @@
     @foreach (var item in Model) {
             <tr>
                 <td>
-                   @item.MaHoaDon_
+                   @item.MaHoaDon
                 </td>
                 <td>
-                   @item.tennhanhvien
+                    @foreach (var item2 in Listaccout)
+                    {
+                        @if (item2.Id == item.UserID)
+                        {
+                            @item2.FullName
+                        }
+                    }
+                 @*   @item.UserID *@
                 </td>
                 <td>
-                   @foreach (var vc in lstVC)
+                            @item.MaVoucher
+                  @*  @foreach (var vc in lstVC)
                    {
                        if (vc.MaVoucher == item.MaVC)
                        {
                            <p>@vc.Ten</p>
                        }
-                   }
+                   } *@
                 </td>
                 <td>
-                   @item.NgayTao
+                   @item.NgayTaoDon
                 </td>
                 <td>
-                   @item.tenkhachhang
+                            @foreach (var item2 in Listaccout)
+                            {
+                                @if (item2.Id == item.TenKhachHang)
+                                {
+                                    @item2.FullName
+                                }
+                            }
+                   @* @item.TenKhachHang *@
                 </td>
                 <td>
-                     @item.sdtkhhang
+                     @item.SoDienThoai
                 </td>
                  <td class="money">
-                     @item.PhiShip_
+                     @item.PhiShip
                 </td>
                 <td class="money">
-                     @item.Tonggiatri
+                     @item.TongGiaTriHangHoa
                 </td>
                 <td>
-                     @if (item.pttt == 1)
+                     @if (item.PhuongThucThanhToan == 1)
                      {
                      <p>Tiền mặt</p>
                      }
-                     @if (item.pttt == 2)
+                            @if (item.PhuongThucThanhToan == 2)
                      {
                      <p>Chuyển khoản</p>
 
                      }
-                     @if (item.pttt == 3)
+                            @if (item.PhuongThucThanhToan == 3)
                      {
                      <p>Chuyển khoản + tiền mặt</p>
                      }
-                     @if (item.pttt == 4)
+                            @if (item.PhuongThucThanhToan == 4)
                      {
                      <p>Thanh toán khi nhận hàng</p>
                      }
                 </td>
                 <td class="tt">
-                     @if (item.tt == 1)
+                     @if (item.TrangThai == 1)
                      {
                 
                       <p> Chờ xác nhận</p>
                 
                      }
-                     @if (item.tt == 2)
+                            @if (item.TrangThai == 2)
                      {
                 
                        <p> Đã xác nhận</p>
                 
                      }
-                     @if (item.tt == 3)
+                            @if (item.TrangThai == 3)
                      {
                 
                       <p>Chờ giao hàng</p>
                 
                      }
-                     @if (item.tt == 4)
+                            @if (item.TrangThai == 4)
                      {
                 
                       <p>Đang giao</p>
                 
                      }
-                     @if (item.tt == 5)
+                            @if (item.TrangThai == 5)
                      {
                 
                         <p> Hoàn thành</p>
                 
                      }
-                     @if (item.tt == 6)
+                            @if (item.TrangThai == 6)
                      {
                 
                      <p> Hủy</p>
@@ -186,8 +201,8 @@
                      }
                 </td>
                 <td>
-                        <a href="@Url.Action("GetHoaDonByMa", "HoaDon", new { ma = item.MaHoaDon_ })" class="btn btn-primary"
-                           data-tenkh="@item.tenkhachhang" data-sdt="@item.sdtkhhang" data-phanloai="@item.phanloai" data-status="@item.tt">Chi tiết</a>
+                        <a href="@Url.Action("GetHoaDonByMa", "HoaDon", new { ma = item.MaHoaDon })" class="btn btn-primary"
+                           data-tenkh="@item.TenKhachHang" data-sdt="@item.SoDienThoai" data-phanloai="@item.PhanLoai" data-status="@item.TrangThai">Chi tiết</a>
                 </td>
             </tr>
     }
@@ -195,7 +210,7 @@
     </table>
    
 </div>
-<nav aria-label="Page navigation example">
+@* <nav aria-label="Page navigation example">
     <ul class="pagination">
         @if (ViewBag.CurrentPage > 1)
         {
@@ -210,7 +225,7 @@
             <li class="page-item"><a class="page-link" href="@Url.Action("QuanLyHoaDon", new { pageNumber = ViewBag.CurrentPage + 1, pageSize = ViewBag.PageSize })">Next</a></li>
         }
     </ul>
-</nav>
+</nav> *@
 @section scripts {
     <script>
         // Định dạng số tiền
