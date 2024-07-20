@@ -15,6 +15,7 @@ namespace HN120_ShopQuanAo.API.Controllers
     {
         private readonly IAllResponsitories<GioHang> _response;
         private readonly IAllResponsitories<GioHangChiTiet> _responses;
+        private readonly IGioHangReponsitory _reponsitory;
         private readonly UserManager<User> _userManager;
         private readonly AppDbContext _context;
         public GioHangController(AppDbContext context, UserManager<User> userManager)
@@ -23,6 +24,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             _userManager = userManager;
             _response = new AllResponsitories<GioHang>(_context, _context.GioHang);
             _responses = new AllResponsitories<GioHangChiTiet>(_context, _context.GioHangChiTiet);
+            _reponsitory = new GioHangResponse();
         }
         // Thêm phương thức mới để lấy Giỏ Hàng theo UserId
         [HttpGet("GetGioHangByUserId/{userId}")]
@@ -73,28 +75,14 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
         }
 
-        [HttpPut("UpdateGHCT/{MaGH}")]
-        public async Task<bool> UpdateGH(string MaGH, [FromBody] GioHang GH)
+        [HttpPut("[Action]/{MaGH}")]
+        public async Task<bool> UpdateGH(string MaGH, decimal? tongtien, int trangthai)
         {
             var gh = await _context.GioHang.FindAsync(MaGH);
             if (gh != null)
             {
-                // Lấy thông tin user từ UserManager
-                var user = await _userManager.FindByIdAsync(GH.User.Id);
-                if (user != null)
-                {
-                    gh.User = user;
-                    gh.TongTien = GH.TongTien;
-                    gh.MoTa = GH.MoTa;
-                    gh.TrangThai = GH.TrangThai;
-
-                    return await _response.UpdateItem(gh);
-                }
-                else
-                {
-                    // Xử lý khi không tìm thấy user
-                    return false;
-                }
+                await _reponsitory.UpdateGioHang(MaGH, tongtien, trangthai);
+                return true;
             }
             else
             {

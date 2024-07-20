@@ -38,6 +38,11 @@ builder.Services.AddScoped<IThanhToanRepository, ThanhToanRepository>();
 builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
 builder.Services.AddScoped<LichSuHoaDon_Irepository, LichSuHoaDon_Repository>();
 builder.Services.AddScoped<LichSuHoaDon_IService, LichSuHoaDon_Service>();
+builder.Services.AddScoped<IGHCTResponse, GHCTResponse>();
+builder.Services.AddScoped<IHoaDonChiTietResponse, HoaDonChiTietResponse>();
+
+
+
 builder.Services.AddScoped<RegisterUserEmailService>();
 builder.Services.AddTransient<EmailService>();
 builder.Services.AddSingleton<IUrlHelper>(provider =>
@@ -46,6 +51,7 @@ builder.Services.AddSingleton<IUrlHelper>(provider =>
     return new UrlHelper(actionContext);
 });
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
 
 
 // Add Identity
