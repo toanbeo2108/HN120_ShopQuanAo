@@ -83,11 +83,43 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
 
             lstSP = lstSP.OrderByDescending(x => x.NgayNhap).ToList();
-            ViewData["CurrentFilter"] = searchString;
+
             return View(lstSP);
         }
 
+        // Action xử lý yêu cầu lọc sản phẩm
+        [HttpGet]
+        public async Task<IActionResult> FilterSanPham(string maThuongHieu, string maTheLoai, string maChatLieu, int? trangThai)
+        {
+            var urlSP = $"https://localhost:7197/api/SanPham/GetAllSanPham";
+            var responSP = await _httpClient.GetAsync(urlSP);
+            string apiDataSP = await responSP.Content.ReadAsStringAsync();
+            var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apiDataSP);
 
+            if (!string.IsNullOrEmpty(maThuongHieu))
+            {
+                lstSP = lstSP.Where(x => x.MaThuongHieu == maThuongHieu).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(maTheLoai))
+            {
+                lstSP = lstSP.Where(x => x.MaTheLoai == maTheLoai).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(maChatLieu))
+            {
+                lstSP = lstSP.Where(x => x.MaChatLieu == maChatLieu).ToList();
+            }
+
+            if (trangThai.HasValue)
+            {
+                lstSP = lstSP.Where(x => x.TrangThai == trangThai.Value).ToList();
+            }
+
+            lstSP = lstSP.OrderByDescending(x => x.NgayNhap).ToList();
+            await LoadDataForViewBag();
+            return PartialView("_SanPhamList", lstSP);
+        }
 
         [HttpGet]
         public async Task<IActionResult> CreateSanPham()
@@ -133,7 +165,35 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             TempData["errorMessage"] = "Thêm thất bại";
 
             // Lấy lại dữ liệu cho ViewBag nếu ModelState không hợp lệ
-            await LoadDataForViewBag();
+            var urlTL = "https://localhost:7197/api/TheLoai/GetAllTheLoai";
+            var responTL = await httpClient.GetAsync(urlTL);
+            string apiDataTL = await responTL.Content.ReadAsStringAsync();
+            var lstTL = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataTL);
+            ViewBag.lstTL = lstTL;
+
+            var urlTH = "https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
+            var responTH = await httpClient.GetAsync(urlTH);
+            string apiDataTH = await responTH.Content.ReadAsStringAsync();
+            var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
+            ViewBag.lstTH = lstTH;
+
+            var urlCL = "https://localhost:7197/api/ChatLieu/GetAllChatLieu";
+            var responCL = await httpClient.GetAsync(urlCL);
+            string apiDataCL = await responCL.Content.ReadAsStringAsync();
+            var lstCL = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataCL);
+            ViewBag.lstCL = lstCL;
+
+            var urlSZ = "https://localhost:7197/api/Size/GetAllSize";
+            var responSZ = await httpClient.GetAsync(urlSZ);
+            string apiDataSZ = await responSZ.Content.ReadAsStringAsync();
+            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDataSZ);
+            ViewBag.lstSZ = lstSZ;
+
+            var urlMS = "https://localhost:7197/api/MauSac/GetAllMauSac";
+            var responMS = await httpClient.GetAsync(urlMS);
+            string apiDataMS = await responMS.Content.ReadAsStringAsync();
+            var lstMS = JsonConvert.DeserializeObject<List<MauSac>>(apiDataMS);
+            ViewBag.lstMS = lstMS;
 
             return View(model);
         }
@@ -330,6 +390,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
             return RedirectToAction("UpdateSanPham", "SanPham", new { area = "Admin",id=vc.MaSp });
         }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateStatusSPKD(string id)

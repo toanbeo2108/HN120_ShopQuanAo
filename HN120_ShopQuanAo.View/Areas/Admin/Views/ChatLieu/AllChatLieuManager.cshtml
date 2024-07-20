@@ -5,7 +5,6 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-
 <h1>Quản Lý Chất Liệu</h1>
 
 <div class="form-group">
@@ -14,53 +13,97 @@
             <div class="col-md-6">
                 <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Tìm kiếm tên chất liệu" value="@ViewData["CurrentFilter"]" onchange="this.form.submit()" />
             </div>
-
         </div>
     </form>
 </div>
 <div>
-    <a asp-action="CreateChatLieu" class="btn btn-primary">Thêm Chất Liệu</a>
+    <button class="btn btn-primary" id="btn_add">Thêm Chất Liệu</button>
 </div>
 <table class="table">
     <thead>
         <tr>
             <th>Mã Chất Liệu</th>
             <th>Tên Chất Liệu</th>
-            <th>Mô Tả</th>
-            <th>Trạng Thái</th>
             <th>Hành Động</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-                    <tr>
-                        <td>@item.MaChatLieu</td>
-                        <td>@item.TenChatLieu</td>
-                        <td>@item.MoTa</td>
-                            <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
-                        <td>
+                <tr>
+                    <td>@item.MaChatLieu</td>
+                    <td>@item.TenChatLieu</td>
+                    <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
 
-                                    <a asp-action="UpdateChatLieu" asp-route-id="@item.MaChatLieu" class="btn btn-warning">Cập Nhật</a>
+                    <td>
+                        <a asp-action="UpdateChatLieu" asp-route-id="@item.MaChatLieu" class="btn btn-warning">Cập Nhật</a>
                     @if (item.TrangThai == 1)
                     {
-                                                <form asp-action="UpdateStatusChatLieuKKD" method="post" style="display:inline;">
-
-                                            <input type="hidden" name="id" value="@item.MaChatLieu" />
-                                            <button type="submit" class="btn btn-secondary">Tăt</button>
-                                        </form>
+                                <form asp-action="UpdateStatusChatLieuKKD" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.MaChatLieu" />
+                                    <button type="submit" class="btn btn-secondary">Tắt</button>
+                                </form>
                     }
                     else
                     {
-
-                                                <form asp-action="UpdateStatusChatLieuKD" method="post" style="display:inline;">
-
-                                            <input type="hidden" name="id" value="@item.MaChatLieu" />
-                                            <button type="submit" class="btn btn-success">Bật</button>
-                                        </form>
+                                <form asp-action="UpdateStatusChatLieuKD" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.MaChatLieu" />
+                                    <button type="submit" class="btn btn-success">Bật</button>
+                                </form>
                     }
-                        </td>
-                    </tr>
+                    </td>
+                </tr>
         }
     </tbody>
 </table>
+
+<div class="modal fade" tabindex="-1" id="pp_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm Chất Liệu Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Tên Chất Liệu</label>
+                    <input type="text" class="form-control" id="name">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn_save">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function () {
+    // Hiển thị modal thêm chất liệu mới
+    $('#btn_add').on('click', function () {
+        setdata(null);
+        $('#pp_modal').modal('show');
+    });
+
+    // Lưu chất liệu mới
+    $('#btn_save').on('click', function () {
+        $.post('/Admin/ChatLieu/CreateChatLieu', { TenChatLieu: $('#name').val() }, function (response) {
+            if (response) {
+                alert("Thêm thành công!");
+                $('#pp_modal').modal('hide');
+                window.location.reload();
+            } else {
+                alert("Thêm thất bại. Vui lòng thử lại.");
+            }
+        });
+    });
+});
+
+// Thiết lập dữ liệu cho modal
+function setdata(data) {
+    $('#name').val('');
+}
+</script>

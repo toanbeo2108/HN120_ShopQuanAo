@@ -64,6 +64,48 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
         }
         [HttpPut("[Action]/{id}")]
+        public async Task<bool> AddSanPhamCTKM(string id, string idKM)
+        {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(idKM))
+            {
+                return false;
+            }
+
+            try
+            {
+                // Fetch the product by id
+                var product = await _iresponCTSP.GetByID(id);
+                if (product == null)
+                {
+                    return false;
+                }
+
+                // Fetch the promotion by id
+                var khuyenmai = await _irespon.GetByID(idKM);
+                if (khuyenmai == null)
+                {
+                    return false;
+                }
+
+                // Update the promotion code and discount percentage for the product
+                product.MaKhuyenMai = idKM;
+                
+
+                // Calculate the new selling price
+                product.GiaBan = product.DonGia * (1 - khuyenmai.PhanTramGiam / 100);
+
+                // Save the changes to the database
+                return await _iresponCTSP.UpdateItem(product);
+
+                
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors
+                return false;
+            }
+        }
+        [HttpPut("[Action]/{id}")]
         public async Task<bool> UpdateStatusKhuyenMai(string id, int? _ctsp)
         {
             var ctsp = await _irespon.GetAll();
