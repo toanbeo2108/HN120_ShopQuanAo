@@ -14,10 +14,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<div style="height: 600px; overflow-y: auto;" >
+<div style="height: 600px; overflow-y: auto;" id="kkk" >
 
 
-    <table class="table" id="page">
+    <table class="table tbsp" id="page">
         <thead>
             <tr>
 
@@ -56,10 +56,10 @@
 
             </tr>
         </thead>
-        <tbody>
+        <tbody class="data-table">
             @foreach (var item in Model)
             {
-                <tr>
+                <tr data-status="@item.TrangThai">
 
                     <td style="text-align : center; margin-bottom : 20px">
                         @item.MaHoaDon
@@ -109,7 +109,7 @@
                         }
                         @if (item.PhuongThucThanhToan == 3)
                         {
-                            <p>Thập cẩm</p>
+                            <p>Chuyển khoản + tiền mặt</p>
                         }
                         @if (item.PhuongThucThanhToan == 4)
                         {
@@ -163,21 +163,5 @@
             }
         </tbody>
     </table>
-</div>
-@section scripts {
-    <script>
-        // Định dạng số tiền
-        function formatMoney(amount) {
-            // Sử dụng Intl.NumberFormat để định dạng số tiền thành định dạng tiền tệ với locale hiện tại của trình duyệt
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-        }
 
-        // Duyệt qua các ô chứa số tiền và định dạng
-        $(document).ready(function () {
-            $('.money').each(function () {
-                var amount = parseFloat($(this).text().replace(/,/g, '')); // Lấy số tiền từ văn bản, loại bỏ dấu phân cách nếu có
-                $(this).text(formatMoney(amount)); // Định dạng và gán lại vào văn bản
-            });
-        });
-    </script>
-}
+</div>

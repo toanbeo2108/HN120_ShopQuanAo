@@ -1,22 +1,60 @@
 ﻿$(document).ready(function () {
     filterQuantity();
+
+    //$('#minmaxx').show();
+    //$('#giaban').hide();
     $('body').on('click', '#add-to-card', function () {
+        filterQuantity();
         var sku = '';
-        $('#tb_dataCTSP tbody tr').each(function () {
+        var dongia  ;
+       
+        var mamau = '';
+        var masize = '';
+        $('#tb_dataCTSP tbody tr:visible').each(function () {
             if ($(this).find('td').length > 0) {
                 sku = $(this).find('td:eq(0)').text().trim();
+                dongia = $(this).find('td:eq(5)').text().trim().replace(/\./g, '').split(',')[0];
+                mamau = $(this).find('td:eq(1)').text().trim();
+                masize = $(this).find('td:eq(2)').text().trim();
             }
         });
-        
-        var sl = $('#quantity_input').val();
+        var magh = $('#maGH_input').val();
+        var tensp = $('#tenSP_input').val();
+
+        var sl = $('#quantity_input').val().replace(/\./g, '').split(',')[0];
+        var trangthai = 1;
+        var dongia_ = parseFloat(dongia);
+        var sl_ = parseInt(sl);
+        var thanhtien = dongia_ * sl_;
+
+        var ghct = {
+            MaGioHang: magh,
+            SKU: sku,
+            TenSp: tensp,
+            DonGia: dongia_,
+            SoLuong: sl_,
+            ThanhTien: thanhtien,
+            TrangThai: trangthai
+        };
+
+  //      public string MaGioHangChiTiet { get; set; }
+		//public string ? MaGioHang { get; set; }
+		//public string ? SKU { get; set; }
+		//public string ? TenSp { get; set; }
+		//public decimal ? DonGia { get; set; }
+		//public int ? SoLuong { get; set; }
+		//public decimal ? ThanhTien	{ get; set; }
+		//public int ? TrangThai { get; set; }
+        //$('#giaban').show();
+        //
+       /* var tensp = $()*/
         // Gửi yêu cầu AJAX tới controller
         $.ajax({
             url: '/CustomerHome/AddToCart', // Thay 'ControllerName' bằng tên controller của bạn
             type: 'POST',
-            data: {
-                maSPCT: sku,
-                soluong: sl
-            },
+            data: 
+                ghct
+            ,
             success: function (response) {
                 // Xử lý phản hồi từ server nếu cần
                 alert('Sản phẩm đã được thêm vào giỏ hàng');
@@ -38,13 +76,20 @@
             $('#quantity-error').hide();
         }
     });
-
+    let dt = getdulieu();
+    console.log(dt);
 })
+function getdulieu() {
+    return {
 
+        SoLuong: $('#quantity_input').val()
+    }
+}
 function filterQuantity() {
     var selectedColor = document.getElementById("group_2").value;
     var selectedSize = document.getElementById("group_1").value;
     var table = document.getElementById("tb_dataCTSP");
+   
     var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
 
     var totalQuantity = 0;
@@ -53,18 +98,22 @@ function filterQuantity() {
         var row = rows[i];
         var color = row.querySelector('[data-mamau]').getAttribute('data-mamau').trim();
         var size = row.querySelector('[data-masize]').getAttribute('data-masize').trim();
+        var dg = row.querySelector('[data-masize]').getAttribute('data-madg').trim();
         var quantity = parseInt(row.querySelector('[data-soluong]').getAttribute('data-soluong').trim());
-
         if ((selectedColor === '' || color === selectedColor) &&
             (selectedSize === '' || size === selectedSize)) {
             row.style.display = "";
             totalQuantity += quantity;
+            $("#minmaxx").html(`<h1>Giá: ${dg}</h1>`);
+            
         } else {
             row.style.display = "none";
         }
+       
     }
 
-    $('#total').text(totalQuantity + ' Sản Phẩm Còn Lại') ;
+    $('#total').text(totalQuantity + ' Sản Phẩm Còn Lại');
+
 }
 document.getElementById("actionForm").submit();
 function getdataSPCT() {

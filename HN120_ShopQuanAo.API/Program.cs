@@ -33,6 +33,8 @@ builder.Services.AddScoped<IThanhToanRepository, ThanhToanRepository>();
 builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
 builder.Services.AddScoped<LichSuHoaDon_Irepository, LichSuHoaDon_Repository>();
 builder.Services.AddScoped<LichSuHoaDon_IService, LichSuHoaDon_Service>();
+builder.Services.AddScoped<IGHCTResponse, GHCTResponse>();
+builder.Services.AddScoped<IHoaDonChiTietResponse, HoaDonChiTietResponse>();
 
 
 

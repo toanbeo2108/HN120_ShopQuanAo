@@ -13,10 +13,12 @@ namespace HN120_ShopQuanAo.API.Controllers
     public class GioHangChiTietController : ControllerBase
     {
         private readonly IAllResponsitories<GioHangChiTiet> _response;
-        AppDbContext _context = new AppDbContext();
+        private readonly IGHCTResponse _iresponse;
+         AppDbContext _context = new AppDbContext() ;
         public GioHangChiTietController()
         {
             _response = new AllResponsitories<GioHangChiTiet>(_context, _context.GioHangChiTiet);
+            _iresponse = new GHCTResponse();
         }
         [HttpGet("[Action]")]
         public async Task<IEnumerable<GioHangChiTiet>> AllGioHangChiTiet()
@@ -29,7 +31,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return await _context.GioHangChiTiet.Where(x => x.MaGioHang == MaGH).ToListAsync();
         }
         [HttpPost("[Action]")]
-        public async Task<bool> CreateGioHangChiTiet( string? MaGH,string? SKU, string? TenSP,decimal? DonGia,int? SoLuong,decimal? ThanhTien,int? TrangThai)
+        public async Task<bool> CreateGioHangChiTiet( string? MaGH,string? SKU, string? TenSP,decimal? DonGia,int? SoLuong,int? TrangThai)
         {
             GioHangChiTiet GHCT = new GioHangChiTiet();
             GHCT.MaGioHangChiTiet = Guid.NewGuid().ToString();
@@ -38,13 +40,13 @@ namespace HN120_ShopQuanAo.API.Controllers
             GHCT.TenSp = TenSP;
             GHCT.DonGia = DonGia;
             GHCT.SoLuong = SoLuong;
-            GHCT.ThanhTien = ThanhTien;
+            GHCT.ThanhTien = DonGia*SoLuong;
             GHCT.TrangThai = TrangThai;
             return await _response.CreateItem(GHCT);
         }
 
-        [HttpPut("UpdateGHCT/{MaGHCT}")]
-        public async Task<bool> UptdateGHCT(string MaGHCT, [FromBody] GioHangChiTiet GHCT)
+        [HttpPut("[Action]/{MaGHCT}")]
+        public async Task<bool> UptdateGHCTAll(string MaGHCT, [FromBody] GioHangChiTiet GHCT)
         {
             var listGHCT = await _response.GetAll();
             var ghct = listGHCT.FirstOrDefault(x => x.MaGioHangChiTiet == MaGHCT);
@@ -63,6 +65,11 @@ namespace HN120_ShopQuanAo.API.Controllers
             {
                 return false;
             }
+        }
+        [HttpPut("[Action]/{MaGHCT}")]
+        public async Task<bool> UpdateGHCT(string MaGHCT, int? soluong)
+        {
+           return await _iresponse.UpdateGHCT(MaGHCT, soluong);
         }
         [HttpDelete("[Action]/{MaGHCT}")]
 

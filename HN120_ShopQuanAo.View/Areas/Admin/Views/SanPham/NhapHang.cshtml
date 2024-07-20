@@ -1,4 +1,4 @@
-﻿@using HN120_ShopQuanAo.Data.Models;
+﻿@*@using HN120_ShopQuanAo.Data.Models;
 @model HN120_ShopQuanAo.Data.ViewModels.AddChiTietSpViewModel
 
 <style>
@@ -110,7 +110,7 @@
                         <td>@Model.ChiTietSps[i].MaSize <input type="hidden" asp-for="ChiTietSps[i].MaSize" /></td>
                         <td>@Model.ChiTietSps[i].MaMau <input type="hidden" asp-for="ChiTietSps[i].MaMau" /></td>
                         <td><input asp-for="ChiTietSps[i].DonGia" class="input-field" /></td>
-                        @*<td><input asp-for="ChiTietSps[i].GiaBan" class="input-field" /></td>*@
+
                         <td><input asp-for="ChiTietSps[i].SoLuongTon" class="input-field" /></td>
                         <td>
                             <img src="~/photoSanPhamCT/@Model.ChiTietSps[i].UrlAnhSpct" class="img-thumbnail" />
@@ -132,3 +132,4 @@
 
     <button type="submit" class="submit-button">Cập Nhật</button>
 </form>
+*@

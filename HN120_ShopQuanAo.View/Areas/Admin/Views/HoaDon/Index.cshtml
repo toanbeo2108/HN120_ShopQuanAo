@@ -24,29 +24,56 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         width: 120px; /* Độ rộng của input và button */
     }
 
-        .quantity-input input {
-            border: none; /* Bỏ border của input */
-            width: 50px; /* Độ rộng của input */
-            text-align: center; /* Căn giữa nội dung trong input */
-        }
+   .quantity-input input {
+       border: none; /* Bỏ border của input */
+       width: 100px; /* Độ rộng của input */
+       text-align: center; /* Căn giữa nội dung trong input */
+   }
 
-        .quantity-input button {
-            width: 30px; /* Độ rộng của button */
-            height: 30px; /* Chiều cao của button */
-            cursor: pointer;
-            border: none;
-            border-radius: 3px;
-        }
+   .quantity-input button {
+       width: 30px; /* Độ rộng của button */
+       height: 30px; /* Chiều cao của button */
+       cursor: pointer;
+       border: none;
+       border-radius: 3px;
+   }
 
-            .quantity-input button.minus {
-                background-color: #dc3545; /* Màu đỏ cho nút - */
-                color: white;
-            }
+    .quantity-input button.minus {
+        background-color: #dc3545; /* Màu đỏ cho nút - */
+        color: white;
+    }
 
-            .quantity-input button.plus {
-                background-color: #28a745; /* Màu xanh lá cây cho nút + */
-                color: white;
-            }
+    .quantity-input button.plus {
+        background-color: #28a745; /* Màu xanh lá cây cho nút + */
+        color: white;
+    }
+
+    #btn_phuongthucthanhtoan {
+        display: none;
+    }
+
+    .section {
+        height: 50%;
+    }
+    .section_ {
+        height: 10%;
+    }
+    .section__ {
+        height: 10%;
+    }
+
+    .section-table {
+        overflow-y: auto;
+    }
+
+    #btn_phuongthucthanhtoan {
+        margin-top: 20px;
+    }
+
+    .payment-button {
+        height: 50px;
+       
+    }
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
@@ -57,7 +84,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.css" />
 
 <script src="~/js/HoaDon.js"></script>
-<div class="container">
+
     <div class="card">
         <div class="card-header">
            <div class="col-md-12">
@@ -83,6 +110,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                             <label for="btn_NgayTaoDon">Ngày tạo hóa đơn</label>
                             <input id="btn_NgayTaoDon" class="form-control" type="datetime" />
                         </div>
+                        <div class="col-md-6" style="display:none">
+                            <label for="btn_Update">Ngày Update</label>
+                            <input id="btn_Update" class="form-control" type="datetime" />
+                        </div>
+
                       <div class="col-md-6" style="display:none">
                           <label for="btn_phanloai">PhanLoai</label>
                             <input id="btn_phanloai" class="form-control" type="number" value="1" />
@@ -109,7 +141,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                       </div>
                         <div class="col-md-4">
                             <label for="btn_SoDienThoai">Số điện thoại</label>
-                            <input id="btn_SoDienThoai" class="form-control" type="text" />
+                            <input id="btn_SoDienThoai" class="form-control" type="text" readonly style="display:block"/>
                             <div id="phoneError" style="color: red; display: none;">Số điện thoại không hợp lệ.</div>
                         </div>
                       <div class="col-md-4">
@@ -135,6 +167,17 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                             <input type="text" class="form-control" name="Street" id="street">
                       </div>
                        <div class="col-md-4">
+                            <label for="btn_MaVoucher">chọn Voucher</label>
+                            <select id="btn_MaVoucher" class="form-select" style="color:brown;border:none">
+                                <option value="">Chọn Voucher</option>
+                                @foreach (var item in lstvc)
+                                {
+                                    <option value="@item.MaVoucher" data-giatrigiam="@item.GiaTriGiam">@item.MaVoucher (giảm @item.GiaTriGiam VNĐ)"</option>
+                                }
+                            </select>
+                      </div>
+                       
+                       <div class="col-md-4">
                             <label for="street">Phí ship</label>
                             <input id="btn_PhiShip_fake" class="form-control" type="text" min="0" placeholder="Nhập phí vậnchuyển" style="color:brown;border:none" />
                             <input id="btn_PhiShip" class="form-control" type="number" min="0" placeholder="Nhập phí vậnchuyển" style="color:brown;border:none;display:none" />
@@ -142,7 +185,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 
                       <div class="col-md-4">
                             <label for="clear"></label>
-                            <button type="text" class="form-control w-50 d-grid gap-2 col-6 mx-auto mt-4" name="clear" id="clear">Reset địa chỉ</button>
+                            <button type="text" class="form-control w-50 d-grid gap-2 col-6 mx-auto mt-4" name="clear" id="clear">Chọn lại địa chỉ</button>
                       </div>
                         <div class="col-md-4">
                             <label for="btn_ghichu">Ghi chú</label>
@@ -166,7 +209,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                           <th>Tên sản phẩm</th>
                                           <th>Size</th>
                                           <th>Màu</th>
-                                          <th style="width:120px">Số lượng mua</th>
+                                          <th style="width:200px">Số lượng mua</th>
                                           <th>Đơn giá</th>
                                           <th>Hành dộng</th>
                                           <th style="display:none">Mã màu</th>
@@ -289,7 +332,87 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     </div>
                 </div>
 
+
                 <div class="col-md-4 border border-5" style="height: 670px;">
+
+                    <!-- Phần Chi Tiết Hóa Đơn -->
+                    <div class="row section section-table">
+                        <div class="col-md-12 mb-3">
+                            <h2>Chi tiết thanh toán</h2>
+                        </div>
+                        <div class="col-md-12">
+                            <table class="info-table">
+                                <tr>
+                                    <th style="width: 130px; padding: 12px">Giao hàng</th>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" id="btn_giaohang">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 130px; padding: 12px">Tổng số tiền sản phẩm</th>
+                                    <td>
+                                        <input id="btn_tongtien" style="color:brown; border:none" class="form-control w-100" type="text">
+                                    </td>
+                                    <td>VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 130px; padding: 12px">Tiền khách phải trả</th>
+                                    <td>
+                                        <input id="btn_tienkhachphaitra" style="color:brown; border:none" class="form-control w-100" type="text">
+                                    </td>
+                                    <td>VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 130px; padding: 12px">Tiền khách đưa</th>
+                                    <td>
+                                        <input id="btn_tienkhachdua" style="color:brown; border:none" class="form-control w-100" type="text">
+                                    </td>
+                                    <td>VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 130px; padding: 12px">Tiền thừa</th>
+                                    <td>
+                                        <input id="btn_tienthua" style="color:brown; border:none" class="form-control w-100" type="text">
+                                    </td>
+                                    <td>VNĐ</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Phần Chọn Phương Thức Thanh Toán -->
+                    <div class="row section_ align-items-center">
+                        <div class="col-md-12">
+                            <label for="btn_phuongthucthanhtoan" id="label_phuongthucthanhtoan">
+                                <i class="fa-brands fa-cc-amazon-pay fa-shake fa-2xl" style="color: #63E6BE;"></i>
+                            </label>
+                        <select id="btn_phuongthucthanhtoan" class="form-select">
+                                @foreach (var item in lstThanhToan)
+                                {
+                                    <option value="@item.MaPhuongThuc">@item.TenPhuongThuc</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Phần Thanh Toán -->
+                    <div class="row section__ align-items-center">
+                        <div class="col-md-12" id="thanhtoantaiquay" style="display: none;">
+                            <button type="button" class="btn btn-info w-100 payment-button" id="btn_thanhtoanhoadon">
+                                <i class="fa-solid fa-coins fa-2xl" style="color: #de0d0d;"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-12" id="dathangtaiquay" style="display: none; position: relative;">
+                            <button type="button" class="btn btn-outline-success w-100 payment-button" id="btn_dathang">
+                                <i class="fa-solid fa-truck-arrow-right fa-xl" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                @* <div class="col-md-4 border border-5" style="height: 670px;">
                     <div class="row" style="height: 60%;">
                         <div class="co-md-12" style="height:100px;">
                             <h2>Chi tiết thanh toán</div>
@@ -310,28 +433,6 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                     <td><input id="btn_tongtien" style="color:brown;border:none" class="form-control w-100" type="text"></td>
                                     <td>VNĐ</td>
                                 </tr>
-                                <tr>
-                                    <th style="width:130px;padding: 12px"> Chọn voucher</th>
-                                    <td>
-                                   
-                                        <select id="btn_MaVoucher" class="form-select" style="color:brown;border:none">
-                                            <option value="">Chọn Voucher</option>
-                                            @foreach (var item in lstvc)
-                                            {
-                                                <option value="@item.MaVoucher" data-giatrigiam="@item.GiaTriGiam">@item.MaVoucher (giảm @item.GiaTriGiam VNĐ)"</option>
-                                            }
-                                        </select>
-                                    </td>
-                               
-                                </tr>
-                              @*   <tr style="display:none" id="tr_phiship">
-                                
-                                    <th style="width:130px;padding: 12px"> Phí ship</th>
-                                    <td>
-                                        <input id="btn_PhiShip" class="form-control" type="number" min="0" placeholder="Nhập phí vậnchuyển" style="color:brown;border:none" />
-                                     </td>
-                                    <td>VNĐ</td>
-                                </tr> *@
                                     <th style="width:130px;padding: 12px"> Tiền khách phải trả</th>
                                     <td><input id="btn_tienkhachphaitra" style="color:brown;border:none" class="form-control w-100" type="text"></td>
                                     <td>VNĐ</td>
@@ -346,24 +447,35 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                     <td><input id="btn_tienthua" style="color:brown;border:none" class="form-control w-100" type="text"></td>
                                     <td>VNĐ</td>
                                 </tr>
+                                <tr>
+                                    
+                                    <td>
+                                        <label for="btn_phuongthucthanhtoan" id="label_phuongthucthanhtoan"><i class="fa-brands fa-cc-amazon-pay fa-shake fa-2xl" style="color: #63E6BE;"></i></label>
+                                        <select id="btn_phuongthucthanhtoan" class="btn btn-outline-warning w-100">
+                                            @foreach (var item in lstThanhToan)
+                                            {
+                                                <option value="@item.MaPhuongThuc">@item.TenPhuongThuc</option>
+
+                                            }
+
+                                        </select>
+                                    </td>
+                                  
+                                    
+                                </tr>
                             </table>               
                         </div>
+                        <div class="col-md-12">
+                            
+
+                        </div>
                         <hr />
-                        <div class="col-md-12" style="height:40%;">
-                            <div class="form-container">
-                                <div class="row">
-                                <div class="col-md-4">
-
-                                    <select id="btn_phuongthucthanhtoan" class="btn btn-outline-warning w-100" style="height:100%">
-                                        @foreach (var item in lstThanhToan)
-                                        {
-                                         <option value="@item.MaPhuongThuc">@item.TenPhuongThuc</option>
-                                       
-                                        }
-                                      
-                                    </select>
-
-                                </div>
+                      
+                    </div>
+                    <div class="row" style="height:40%;">
+                        <div class="form-container">
+                            <div class="row">
+                               
                                 <div class="col-md-8">
 
                                     <div class="col-md-12" id="thanhtoantaiquay" style="display:none">
@@ -377,18 +489,16 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                             <i class="fa-solid fa-truck-arrow-right fa-xl" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
                                         </button>
                                     </div>
-                                    </div>
-
                                 </div>
-                               
-                               
+
                             </div>
-                           
+
 
                         </div>
 
+
                     </div>
-                </div>
+                </div> *@
 
 
                
@@ -428,3 +538,14 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
          </div>
     </div>
 </div>
+<script>
+    document.getElementById('label_phuongthucthanhtoan').addEventListener('click', function () {
+        var selectElement = document.getElementById('btn_phuongthucthanhtoan');
+        selectElement.style.display = 'block'; // Hiển thị select khi nhấn vào label
+        selectElement.focus(); // Focus vào select để người dùng có thể chọn ngay
+    });
+
+    document.getElementById('btn_phuongthucthanhtoan').addEventListener('blur', function () {
+        this.style.display = 'none'; // Ẩn select khi mất focus
+    });
+</script>
