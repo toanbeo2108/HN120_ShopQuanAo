@@ -47,27 +47,29 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateSize(Size bk)
+        public async Task<IActionResult> CreateSize(string TenSize)
         {
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //bk.CreateDate = DateTime.Now;
+            var bk = new Size { TenSize = TenSize };
+
             if (await IsDuplicateSize(bk.TenSize))
             {
                 TempData["errorMessage"] = "Tên đã tồn tại.";
                 return View();
             }
             var urlBook = $"https://localhost:7197/api/Size/AddSZ?Tensz={bk.TenSize}&MoTa={bk.MoTa}";
-            var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
-            var respon = await httpClient.PostAsync(urlBook, content);
+            var respon = await _httpClient.PostAsync(urlBook, content);
+
             if (respon.IsSuccessStatusCode)
             {
-                return RedirectToAction("AllSizeManager", "Size", new { area = "Admin" });
+                return Json(true);
             }
-            TempData["erro message"] = "thêm thất bại";
-            return View();
+
+            return Json(false);
         }
         [HttpGet]
         public async Task<IActionResult> SizeDetail(string id)

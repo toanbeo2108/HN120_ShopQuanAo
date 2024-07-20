@@ -43,29 +43,24 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View(lstBook);
         }
 
-        [HttpGet]
-        public IActionResult CreateChatLieu()
-        {
-            return View();
-        }
-
         [HttpPost]
-        public async Task<IActionResult> CreateChatLieu(ChatLieu bk)
+        public async Task<IActionResult> CreateChatLieu(string TenChatLieu)
         {
+            var bk = new ChatLieu { TenChatLieu = TenChatLieu};
             if (await IsDuplicateChatLieu(bk.TenChatLieu))
             {
-                TempData["errorMessage"] = "Tên chất liệu đã tồn tại.";
-                return View();
+                return Json(false);
             }
-            var urlBook = $"https://localhost:7197/api/ChatLieu/AddChatLieu?TenChatLieu={bk.TenChatLieu}&MoTa={bk.MoTa}";
+            var urlBook = $"https://localhost:7197/api/ChatLieu/AddChatLieu?TenChatLieu={bk.TenChatLieu}";
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PostAsync(urlBook, content);
+
             if (respon.IsSuccessStatusCode)
             {
-                return RedirectToAction("AllChatLieuManager", "ChatLieu", new { area = "Admin" });
+                return Json(true);
             }
-            TempData["errorMessage"] = "Thêm thất bại";
-            return View();
+
+            return Json(false);
         }
 
         [HttpGet]

@@ -80,7 +80,7 @@
             </div>
 
             <div class="card mb-4 mb-xl-0">
-                <div class="card-header">Ảnh sản phẩm</div>
+                @*<div class="card-header">Ảnh sản phẩm</div>*@
                 <div class="card-body text-center">
                     @if (Model.UrlAnhSpct == null)
                     {
@@ -90,18 +90,18 @@
                     {
                                 <img class="img-account-profile rounded-circle mb-2" src="~/photoSanPhamCT/@Model.UrlAnhSpct" alt="ảnh sản phẩm" style="width: 100px; height:100px; object-fit: cover">
                     }
-                    <div class="small font-italic text-muted mb-4">Ảnh sản phẩm</div>
+                    @*<div class="small font-italic text-muted mb-4">Ảnh sản phẩm</div>*@
                     <input asp-for="UrlAnhSpct" class="form-control" type="file" name="imagectspFile" accept="image/*">
                 </div>
             </div>
 
             <div class="form-group">
-                <label asp-for="DonGia" class="control-label">Đơn Giá</label>
+                <label asp-for="DonGia" class="control-label">Đơn giá</label>
                 <input asp-for="DonGia" class="form-control" />
                 <span asp-validation-for="DonGia" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SoLuongTon" class="control-label">Số Lượng</label>
+                <label asp-for="SoLuongTon" class="control-label">Số lượng</label>
                 <input asp-for="SoLuongTon" class="form-control" />
                 <span asp-validation-for="SoLuongTon" class="text-danger"></span>
             </div>

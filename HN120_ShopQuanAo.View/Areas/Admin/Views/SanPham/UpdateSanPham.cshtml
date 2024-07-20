@@ -114,7 +114,7 @@
                     
                 
                 <div class="form-group">
-                    <label asp-for="TenSP" class="control-label">Tên Sản Phẩm</label>
+                    <label asp-for="TenSP" class="control-label">Tên sản phẩm</label>
                     <input asp-for="TenSP" class="form-control" />
                     <span asp-validation-for="TenSP" class="text-danger"></span>
                 </div>
@@ -126,7 +126,7 @@
                 </div>
                 <div class="col-md-4">
                 <div class="form-group">
-                    <label asp-for="MaThuongHieu" class="control-label">Thương Hiệu</label>
+                    <label asp-for="MaThuongHieu" class="control-label">Thương hiệu</label>
                     <select class="form-select" asp-for="MaThuongHieu" aria-label="Default select example">
                         <option value=""></option>
                         @foreach (ThuongHieu item in lstTH)
@@ -136,7 +136,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label asp-for="MaTheLoai" class="control-label">Thể Loại</label>
+                    <label asp-for="MaTheLoai" class="control-label">Thể loại</label>
                     <select class="form-select" asp-for="MaTheLoai" aria-label="Default select example">
                         <option value=""></option>
                         @foreach (TheLoai item in lstTL)
@@ -146,7 +146,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label asp-for="MaChatLieu" class="control-label">Chất Liệu</label>
+                    <label asp-for="MaChatLieu" class="control-label">Chất liệu</label>
                     <select class="form-select" asp-for="MaChatLieu" aria-label="Default select example">
                         <option value=""></option>
                         @foreach (ChatLieu item in lstCL)
@@ -156,14 +156,14 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label asp-for="TrangThai" class="control-label">Trạng Thái:    </label>
+                    <label asp-for="TrangThai" class="control-label">Trạng thái:    </label>
                             @if (sp.TrangThai == 0)
                             {
-                                                    <span>Không Khả Dụng</span>
+                                                    <span>Không hoạt động</span>
                             }
                             else if (sp.TrangThai == 1)
                             {
-                                                    <span>Khả Dụng</span>
+                                                    <span>Hoạt động</span>
                             }
                 </div>
                 <div class="form-group">
@@ -176,7 +176,7 @@
         </div>
     </div>
 </div>
-<h1>Chi Tiết</h1>
+<h1>Chi tiết</h1>
 <table class="table">
     <thead>
         <tr>
@@ -185,10 +185,10 @@
             <th>Màu</th>
             <th>Khuyến mại</th>
             <th>Ảnh</th>
-            <th>Đơn Giá</th>
-            <th>Giá Bán</th>
-            <th>Số Lượng</th>
-            <th>Trạng Thái</th>
+            <th>Đơn giá</th>
+            <th>Giá bán</th>
+            <th>Số lượng</th>
+            <th>Trạng thái</th>
             <th></th>
         </tr>
     </thead>
@@ -227,11 +227,11 @@
                             <td>
                     @if (item.TrangThai == 0)
                     {
-                                                <span>Không Khả Dụng</span>
+                                                <span>Không hoạt động</span>
                     }
                     else if (item.TrangThai == 1)
                     {
-                                                <span>Khả Dụng</span>
+                                                <span>Hoạt động</span>
                     }
                             </td>
                             <td style="text-align: center; margin-bottom: 20px">

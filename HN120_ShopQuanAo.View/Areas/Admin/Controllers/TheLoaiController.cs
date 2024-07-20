@@ -46,8 +46,10 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateTheLoai(TheLoai bk)
+        public async Task<IActionResult> CreateTheLoai(string TenTheLoai)
         {
+            var bk = new TheLoai { TenTheLoai = TenTheLoai };
+
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             if (await IsDuplicateTheLoai(bk.TenTheLoai))
@@ -57,15 +59,15 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
             //bk.CreateDate = DateTime.Now;
             var urlBook = $"https://localhost:7197/api/TheLoai/AddTL?Tentl={bk.TenTheLoai}&MoTa={bk.MoTa}";
-            var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
-            var respon = await httpClient.PostAsync(urlBook, content);
+            var respon = await _httpClient.PostAsync(urlBook, content);
+
             if (respon.IsSuccessStatusCode)
             {
-                return RedirectToAction("AllTheLoaiManager", "TheLoai", new { area = "Admin" });
+                return Json(true);
             }
-            TempData["erro message"] = "thêm thất bại";
-            return View();
+
+            return Json(false);
         }
         [HttpGet]
         public async Task<IActionResult> TheLoaiDetail(string id)

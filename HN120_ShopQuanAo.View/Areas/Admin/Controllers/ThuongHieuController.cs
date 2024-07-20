@@ -45,8 +45,10 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateThuongHieu(ThuongHieu bk)
+        public async Task<IActionResult> CreateThuongHieu(string TenthuongHieu)
         {
+            var bk = new ThuongHieu { TenThuongHieu = TenthuongHieu };
+
             if (await IsDuplicateThuongHieu(bk.TenThuongHieu))
             {
                 ViewData["ErrorMessage"] = "Tên thương hiệu đã tồn tại.";
@@ -54,15 +56,15 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
 
             var urlBook = $"https://localhost:7197/api/ThuongHieu/AddThuongHieu?Tenth={bk.TenThuongHieu}&MoTa={bk.MoTa}";
-            var httpClient = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
-            var respon = await httpClient.PostAsync(urlBook, content);
+            var respon = await _httpClient.PostAsync(urlBook, content);
+
             if (respon.IsSuccessStatusCode)
             {
-                return RedirectToAction("AllThuongHieuManager", "ThuongHieu", new { area = "Admin" });
+                return Json(true);
             }
-            TempData["ErrorMessage"] = "Thêm thất bại.";
-            return View();
+
+            return Json(false);
         }
 
         [HttpGet]

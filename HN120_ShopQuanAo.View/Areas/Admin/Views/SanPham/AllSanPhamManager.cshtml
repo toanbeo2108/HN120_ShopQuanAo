@@ -4,115 +4,13 @@
 @{
     ViewData["Title"] = "AllSanPhamManager";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
-    List<SanPham> lstSP = ViewBag.lstSP as List<SanPham>;
     List<ThuongHieu> lstTH = ViewBag.lstTH as List<ThuongHieu>;
     List<TheLoai> lstTL = ViewBag.lstTL as List<TheLoai>;
     List<ChatLieu> lstCL = ViewBag.lstCL as List<ChatLieu>;
 }
 
 <style>
-    .header h2 {
-        margin: 0;
-    }
-
-    .btn-new-address {
-        background-color: #ff4500;
-        color: white;
-        padding: 10px 20px;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .address-list {
-        list-style: none;
-        padding: 0;
-    }
-
-    .address-item {
-        border-bottom: 1px solid #ddd;
-        padding: 15px 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .address-item:last-child {
-        border-bottom: none;
-    }
-
-    .address-details {
-        flex-grow: 1;
-    }
-
-    .address-actions {
-        display: flex;
-        gap: 10px;
-    }
-
-    .default-tag {
-        color: red;
-        font-weight: bold;
-        margin-left: 10px;
-    }
-
-    .btn-update, .btn-delete, .btn-set-default {
-        background-color: white;
-        border: 1px solid #ddd;
-        padding: 5px 10px;
-        cursor: pointer;
-    }
-
-    .btn-update:hover, .btn-delete:hover, .btn-set-default:hover {
-        background-color: #f0f0f0;
-    }
-
-    h1 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .row {
-        margin-bottom: 15px;
-    }
-
-    dt {
-        font-weight: bold;
-    }
-
-    img {
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .table {
-        width: 100%;
-        margin-bottom: 20px;
-        border-collapse: collapse;
-    }
-
-    .table th, .table td {
-        padding: 10px;
-        text-align: center;
-        border: 1px solid #ddd;
-    }
-
-    .table th {
-        background-color: #f4f4f4;
-    }
-
-    .table tbody tr:nth-child(odd) {
-        background-color: #f9f9f9;
-    }
-
-    .btn-primary {
-        margin-right: 10px;
-    }
-
-    .btn-warning {
-        margin-top: 20px;
-    }
+    /* Existing styles */
 
     /* Toggle Switch CSS */
     .toggle-switch {
@@ -155,6 +53,7 @@
     input:checked + .slider {
         background-color: #2196F3;
     }
+
     input:checked + .slider:before {
         transform: translateX(26px);
     }
@@ -162,48 +61,51 @@
 
 <div class="sp">
     <h1>Quản Lý Sản Phẩm</h1>
+    
     <div>
-        <form asp-action="AllSanPhamManager" method="get" class="form-inline mb-3">
-            <input type="text" name="searchString" class="form-control mr-2" placeholder="Tìm kiếm tên sản phẩm" value="@ViewData["CurrentFilter"]" />
+        <form class="form-inline mb-3">
             <div class="row">
-
+                <div class="col-md-3">
+                    <select id="filterThuongHieu" class="form-control">
+                        <option value="">Chọn Thương Hiệu</option>
+                        @foreach (var th in lstTH)
+                        {
+                                <option value="@th.MaThuongHieu">@th.TenThuongHieu</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="filterTheLoai" class="form-control">
+                        <option value="">Chọn Thể Loại</option>
+                        @foreach (var tl in lstTL)
+                        {
+                                <option value="@tl.MaTheLoai">@tl.TenTheLoai</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="filterChatLieu" class="form-control">
+                        <option value="">Chọn Chất Liệu</option>
+                        @foreach (var cl in lstCL)
+                        {
+                                <option value="@cl.MaChatLieu">@cl.TenChatLieu</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="filterTrangThai" class="form-control">
+                        <option value="">Chọn Trạng Thái</option>
+                        <option value="1">Hoạt Động</option>
+                        <option value="0">Ngừng Hoạt Động</option>
+                    </select>
+                </div>
             </div>
-            <select name="maThuongHieu" class="form-control mr-2">
-                <option value="">Chọn Thương Hiệu</option>
-                @foreach (var thuongHieu in lstTH)
-                {
-                    <option value="@thuongHieu.MaThuongHieu">@thuongHieu.TenThuongHieu</option>
-                }
-            </select>
-
-            <select name="maTheLoai" class="form-control mr-2">
-                <option value="">Chọn Thể Loại</option>
-                @foreach (var theLoai in lstTL)
-                {
-                    <option value="@theLoai.MaTheLoai">@theLoai.TenTheLoai</option>
-                }
-            </select>
-
-            <select name="maChatLieu" class="form-control mr-2">
-                <option value="">Chọn Chất Liệu</option>
-                @foreach (var chatLieu in lstCL)
-                {
-                    <option value="@chatLieu.MaChatLieu">@chatLieu.TenChatLieu</option>
-                }
-            </select>
-
-            <select name="trangThai" class="form-control mr-2">
-                <option value="">Chọn Trạng Thái</option>
-                <option value="1">Kinh Doanh</option>
-                <option value="0">Ngừng Kinh Doanh</option>
-            </select>
-
-            <button type="submit" class="btn btn-primary">Lọc</button>
         </form>
-        <p>
-            <a class="btn btn-primary" asp-action="CreateSanPham">Thêm Sản Phẩm</a>
-        </p>
-        <table class="table">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+        <input type="text" id="searchString" class="form-control" placeholder="Tìm kiếm tên sản phẩm" style="width: 300px;" />
+        <a class="btn btn-primary" asp-action="CreateSanPham">Thêm Sản Phẩm</a>
+    </div>
+        <table class="table" id="sanPhamList">
             <thead>
                 <tr>
                     <th>STT</th>
@@ -225,63 +127,51 @@
                 }
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>@i</td>
-                        <td>@item.MaSp</td>
-                        <td>@item.TenSP</td>
-                        <td>
+                        <tr data-thuonghieu="@item.MaThuongHieu" data-theloai="@item.MaTheLoai" data-chatlieu="@item.MaChatLieu" data-trangthai="@item.TrangThai">
+                            <td>@i</td>
+                            <td>@item.MaSp</td>
+                            <td>@item.TenSP</td>
+                            <td>
                             @{
                                 var thuongHieu = lstTH.FirstOrDefault(th => th.MaThuongHieu == item.MaThuongHieu)?.TenThuongHieu ?? "Không có Thương Hiệu";
                             }
                             @thuongHieu
-                        </td>
-                        <td>
+                            </td>
+                            <td>
                             @{
                                 var theLoai = lstTL.FirstOrDefault(tl => tl.MaTheLoai == item.MaTheLoai)?.TenTheLoai ?? "Không có Thể Loại";
                             }
                             @theLoai
-                        </td>
-                        <td>
+                            </td>
+                            <td>
                             @{
                                 var chatlieu = lstCL.FirstOrDefault(tl => tl.MaChatLieu == item.MaChatLieu)?.TenChatLieu ?? "Không có Chất Liệu";
                             }
                             @chatlieu
-                        </td>
-                        <td>
+                            </td>
+                            <td>
                             @if (item.UrlAvatar == null)
                             {
-                               <img src="~/photoSP/khongxacdinh_213x379.jpg" alt="SanPham Image" width="100" height="100" />
-
+                                        <img src="~/photoSP/khongxacdinh_213x379.jpg" alt="SanPham Image" width="100" height="100" />
                             }
-                            else{
-                                    <img src="~/photoSP/@item.UrlAvatar" alt="SanPham Image" width="100" height="100" />
-
-                            }
-                        </td>
-                        <td>@item.Mota
-                            @if (item.Mota == null)
+                            else
                             {
-                                <span>Không có mô tả</span>
+                                        <img src="~/photoSP/@item.UrlAvatar" alt="SanPham Image" width="100" height="100" />
                             }
-                            else 
-                            {
-                                <span>@item.Mota</span>
-                            }
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.TongSoLuong)</td>
-                        <td>
-                            <form asp-action="@((item.TrangThai == 1) ? "UpdateStatusSPKKD" : "UpdateStatusSPKD")" method="post" id="form-@item.MaSp">
-                                <input type="hidden" name="id" value="@item.MaSp" />
-                                <label class="toggle-switch">
-                                    <input type="checkbox" class="status-toggle" data-form-id="form-@item.MaSp" @(item.TrangThai == 1 ? "checked" : "") onchange="document.getElementById('form-@item.MaSp').submit();" />
-                                    <span class="slider"></span>
-                                </label>
-                            </form>
-                        </td>
-                        <td style="text-align: center; margin-bottom: 20px">
-                            @*<a asp-action="SanPhamDetail" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Chi Tiết</a>*@
-                            
-                            <a asp-action="UpdateSanPham" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Chi Tiết</a>
+                            </td>
+                            <td>@item.Mota</td>
+                            <td>@Html.DisplayFor(modelItem => item.TongSoLuong)</td>
+                                <td>
+                                <form asp-action="@((item.TrangThai == 1) ? "UpdateStatusSPKKD" : "UpdateStatusSPKD")" method="post" id="form-@item.MaSp">
+                                    <input type="hidden" name="id" value="@item.MaSp" />
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" class="status-toggle" data-form-id="form-@item.MaSp" @(item.TrangThai == 1 ? "checked" : "") onchange="document.getElementById('form-@item.MaSp').submit();" />
+                                        <span class="slider"></span>
+                                    </label>
+                                </form>
+                            </td>
+                            <td style="text-align: center; margin-bottom: 20px">
+                                <a asp-action="UpdateSanPham" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Chi Tiết</a>
                             </td>
                         </tr>
                     i++;
@@ -290,3 +180,40 @@
         </table>
     </div>
 </div>
+
+@section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                function filterProducts() {
+                    var searchString = $.trim($('#searchString').val().toLowerCase());
+                    var thuongHieu = $('#filterThuongHieu').val();
+                    var theLoai = $('#filterTheLoai').val();
+                    var chatLieu = $('#filterChatLieu').val();
+                    var trangThai = $('#filterTrangThai').val();
+
+                    $('#sanPhamList tbody tr').each(function () {
+                        var tenSP = $.trim($(this).find('td:eq(2)').text().toLowerCase());
+                        var spThuongHieu = $(this).data('thuonghieu');
+                        var spTheLoai = $(this).data('theloai');
+                        var spChatLieu = $(this).data('chatlieu');
+                        var spTrangThai = $(this).data('trangthai').toString();
+
+                        var isMatch = tenSP.includes(searchString) &&
+                                      (thuongHieu === "" || thuongHieu == spThuongHieu) &&
+                                      (theLoai === "" || theLoai == spTheLoai) &&
+                                      (chatLieu === "" || chatLieu == spChatLieu) &&
+                                      (trangThai === "" || trangThai == spTrangThai);
+
+                        if (isMatch) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                }
+
+                $('#searchString, #filterThuongHieu, #filterTheLoai, #filterChatLieu, #filterTrangThai').on('input change', filterProducts);
+            });
+        </script>
+}
