@@ -343,81 +343,81 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             string apiData = await respon.Content.ReadAsStringAsync();
             var lst = JsonConvert.DeserializeObject<List<HoaDon>>(apiData);
 
-            var getallhoadon = from hd in (
-                               from h in lst
-                               join us in Listaccout on h.UserID equals us.Id
-                               select new
-                               {
-                                   h.MaHoaDon,
-                                   h.UserID,
-                                   us.FullName,
-                                   h.MaVoucher,
-                                   h.NgayTaoDon,
-                                   h.NgayThayDoi,
-                                   h.SoDienThoai,
-                                   h.PhiShip,
-                                   h.TongGiaTriHangHoa,
-                                   h.PhuongThucThanhToan,
-                                   h.PhanLoai,
-                                   h.TrangThai
-                               }
-                               )
-                               join ttkh in (
-                               from h in lst
-                               join us in Listaccout on h.TenKhachHang equals us.Id
-                               select new
-                               {
-                                   h.MaHoaDon,
-                                   h.TenKhachHang,
-                                   us.FullName,
-                                   us.PhoneNumber
-                               }
+            //var getallhoadon = from hd in (
+            //                   from h in lst
+            //                   join us in Listaccout on h.UserID equals us.Id
+            //                   select new
+            //                   {
+            //                       h.MaHoaDon,
+            //                       h.UserID,
+            //                       us.FullName,
+            //                       h.MaVoucher,
+            //                       h.NgayTaoDon,
+            //                       h.NgayThayDoi,
+            //                       h.SoDienThoai,
+            //                       h.PhiShip,
+            //                       h.TongGiaTriHangHoa,
+            //                       h.PhuongThucThanhToan,
+            //                       h.PhanLoai,
+            //                       h.TrangThai
+            //                   }
+            //                   )
+            //                   join ttkh in (
+            //                   from h in lst
+            //                   join us in Listaccout on h.TenKhachHang equals us.Id
+            //                   select new
+            //                   {
+            //                       h.MaHoaDon,
+            //                       h.TenKhachHang,
+            //                       us.FullName,
+            //                       us.PhoneNumber
+            //                   }
 
-                               ) on hd.MaHoaDon equals ttkh.MaHoaDon
-                               select new HoaDonWithDetailsViewModel
-                               {
+            //                   ) on hd.MaHoaDon equals ttkh.MaHoaDon
+            //                   select new HoaDonWithDetailsViewModel
+            //                   {
 
-                                   MaHoaDon_ = hd.MaHoaDon,
-                                   tennhanhvien = hd.FullName,
-                                   MaVC = hd.MaVoucher,
-                                   NgayTao = hd.NgayTaoDon,
-                                   Ngayupdate = hd.NgayThayDoi,
-                                   tenkhachhang  = ttkh.FullName ,
-                                   sdtkhhang = ttkh.PhoneNumber ,
-                                   sdtnhahang = hd.SoDienThoai ,
-                                   PhiShip_ = hd.PhiShip,
-                                   Tonggiatri = hd.TongGiaTriHangHoa,
-                                   tt = hd.TrangThai,
-                                   phanloai = hd.PhanLoai,
-                                   pttt = hd.PhuongThucThanhToan
-                               };
+            //                       MaHoaDon_ = hd.MaHoaDon,
+            //                       tennhanhvien = hd.FullName,
+            //                       MaVC = hd.MaVoucher,
+            //                       NgayTao = hd.NgayTaoDon,
+            //                       Ngayupdate = hd.NgayThayDoi,
+            //                       tenkhachhang  = ttkh.FullName ,
+            //                       sdtkhhang = ttkh.PhoneNumber ,
+            //                       sdtnhahang = hd.SoDienThoai ,
+            //                       PhiShip_ = hd.PhiShip,
+            //                       Tonggiatri = hd.TongGiaTriHangHoa,
+            //                       tt = hd.TrangThai,
+            //                       phanloai = hd.PhanLoai,
+            //                       pttt = hd.PhuongThucThanhToan
+            //                   };
 
-            if (!string.IsNullOrEmpty(sdt))
-            {
-                getallhoadon = getallhoadon.Where(hd => hd.sdtnhahang.Contains(sdt) || hd.sdtkhhang.Contains(sdt));
-            }
-            if (trangthai != 0) // Assuming 0 means all statuses
-            {
-                getallhoadon = getallhoadon.Where(hd => hd.tt == trangthai);
-            }
-            if (!string.IsNullOrEmpty(phanLoai))
-            {
-                getallhoadon = getallhoadon.Where(hd => hd.phanloai == phanLoai);
-            }
-            var sortedList = getallhoadon.OrderByDescending(hoaDon => hoaDon.Ngayupdate);
+            //if (!string.IsNullOrEmpty(sdt))
+            //{
+            //    lst = getallhoadon.Where(hd => hd.sdtnhahang.Contains(sdt) || hd.sdtkhhang.Contains(sdt));
+            //}
+            //if (trangthai != 0) // Assuming 0 means all statuses
+            //{
+            //    getallhoadon = getallhoadon.Where(hd => hd.tt == trangthai);
+            //}
+            //if (!string.IsNullOrEmpty(phanLoai))
+            //{
+            //    getallhoadon = getallhoadon.Where(hd => hd.phanloai == phanLoai);
+            //}
+            var sortedList = lst.OrderByDescending(hoaDon => hoaDon.NgayThayDoi);
 
             // Apply pagination
             var pagedResult = sortedList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             if (respon.IsSuccessStatusCode)
             {
-                ViewBag.CurrentPage = pageNumber;
-                ViewBag.PageSize = pageSize;
-                ViewBag.TotalPages = (int)Math.Ceiling((double)sortedList.Count() / pageSize);
-                ViewBag.TrangThai = trangthai;
-                ViewBag.PhanLoai = phanLoai;
-                ViewBag.SDT = sdt;
-                return View(pagedResult);
+                //ViewBag.CurrentPage = pageNumber;
+                //ViewBag.PageSize = pageSize;
+                //ViewBag.TotalPages = (int)Math.Ceiling((double)sortedList.Count() / pageSize);
+                //ViewBag.TrangThai = trangthai;
+                //ViewBag.PhanLoai = phanLoai;
+                //ViewBag.SDT = sdt;
+                return View(sortedList);
             }
             else
             {
