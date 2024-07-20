@@ -1,0 +1,43 @@
+﻿@model HN120_ShopQuanAo.API.EmailConfig.ViewModel.RegisterWithEmail;
+
+@{
+    ViewData["Title"] = "RegisterEmail";
+}
+
+<hr />
+<div class="customer_login container">
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <div class="account_form">
+                <h2>Register</h2>
+                @if (ViewBag.Message != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.Message</div>
+                }
+                <form asp-controller="Home" asp-action="RegisterEmail">
+                    <p>
+                        <label>PhoneNumber<span>*</span></label>
+                        <input type="text" required asp-for="PhoneNumber">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </p>
+                    <p>
+                        <label>Email<span>*</span></label>
+                        <input type="email" required asp-for="Email">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </p>
+                    <p>
+                        <label>FullName<span>*</span></label>
+                        <input type="text" required asp-for="FullName">
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </p>
+                    <div class="login_submit">
+                        <button type="submit">Submit</button>
+                        <a asp-controller="Home" asp-action="Login">You have an account?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

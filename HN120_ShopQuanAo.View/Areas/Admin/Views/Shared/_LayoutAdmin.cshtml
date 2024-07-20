@@ -11,6 +11,30 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HN120_ShopQuanAo.View.styles.css" asp-append-version="true" />
+    <style>
+        .sidebar-item .dropdown-menu {
+            padding: 0;
+            margin: 0;
+            border: none;
+            box-shadow: none;
+        }
+
+            .sidebar-item .dropdown-menu .sidebar-item {
+                padding: 10px 20px;
+            }
+
+            .sidebar-item .dropdown-menu .sidebar-link {
+                color: #333;
+                padding: 8px 15px;
+                display: block;
+                text-decoration: none;
+            }
+
+                .sidebar-item .dropdown-menu .sidebar-link:hover {
+                    background-color: #f8f9fa;
+                    color: #000;
+                }
+    </style>
 </head>
 <body>
 
@@ -59,13 +83,33 @@
                                 <span class="hide-menu">Quản lý người dùng</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" asp-area="Admin" asp-controller="UserManager" asp-action="GetAllEmpolyee">
+
+                        <li class="sidebar-item dropdown">
+                            <a class="sidebar-link dropdown-toggle" href="#" id="accountManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
                                 <span>
                                     <i class="bi bi-person-badge"></i>
                                 </span>
                                 <span class="hide-menu">Quản lý nhân viên</span>
                             </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="accountManagementDropdown">
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-area="Admin" asp-controller="UserManager" asp-action="GetAllUser">
+                                        <span class="hide-menu">Quản lý người dùng</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-area="Admin" asp-controller="UserManager" asp-action="GetAllEmpolyee">
+                                        <span class="hide-menu">Quản lý nhân viên</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            <span class="hide-menu">Quản lý sản phẩm</span>
+
                         </li>
                     </ul>
                 </li>
@@ -129,6 +173,54 @@
                                 <span class="hide-menu">Thương hiệu</span>
                             </a>
                         </li>
+
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" asp-action="AllKhuyenMaiManager" asp-controller="KhuyenMai" asp-area="Admin">
+                                <span>
+                                    <i class="ti ti-typography"></i>
+                                </span>
+                                <span class="hide-menu">Khuyến mại</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            <a class="sidebar-link" href="/admin/HoaDon/BanHangTaiQuayView">
+                                <span>
+                                    <i class="ti ti-typography"></i>
+                                </span>
+                                <span class="hide-menu">Bán hàng tại quầy</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            <span class="hide-menu">Quản lý hóa đơn</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="/admin/HoaDon/QuanLyHoaDon">
+                                <span>
+                                    <i class="ti ti-typography"></i>
+                                </span>
+                                <span class="hide-menu">Danh sách hóa đơn</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./authentication-register.html" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-user-plus"></i>
+                                </span>
+                                <span class="hide-menu">Lịch sử hóa đơn</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            <span class="hide-menu">Giảm giá</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" asp-action="AllVoucherManager" asp-controller="Voucher" asp-area="Admin">
+                                <span class="hide-menu">Danh sách Voucher</span>
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
                 <li class="nav-small-cap">
