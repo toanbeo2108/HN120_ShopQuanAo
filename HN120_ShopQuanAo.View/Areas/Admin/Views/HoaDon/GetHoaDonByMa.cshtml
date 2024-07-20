@@ -15,6 +15,8 @@
     IEnumerable<ThanhToan_HoaDon> lstThanhToan_hd = ViewBag.lstThanhToan_hd as IEnumerable<ThanhToan_HoaDon>;
     IEnumerable<HoaDon_History> ListLSHD = ViewBag.ListLSHD as IEnumerable<HoaDon_History>;
     var user = ViewBag.Model;
+    IEnumerable<HoaDonWithDetailsViewModel> getallhoadon = ViewBag.getallhoadon as IEnumerable<HoaDonWithDetailsViewModel>;
+
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -179,13 +181,13 @@
                                     <p style="text-align:center">Hủy</p>
                                     <span style="word-wrap: break-word;">@item.NgayTaoDon</span>
                                 }
-                                    @if (item.TrangThai == 7)
-                                    {
-                                        <img src="~/Quanlydonhang/7.png" style="width: 100%; height: auto;" />
-                                        <br />
-                                        <p style="text-align:center">@user.UserName đã chỉnh sửa</p>
-                                        <span style="word-wrap: break-word;">@item.NgayTaoDon</span>
-                                    }
+                                @if (item.TrangThai == 7)
+                                {
+                                    <img src="~/Quanlydonhang/7.png" style="width: 100%; height: auto;" />
+                                    <br />
+                                    <p style="text-align:center">@user.UserName đã chỉnh sửa</p>
+                                    <span style="word-wrap: break-word;">@item.NgayTaoDon</span>
+                                }
                             </td>
                         }
                     </tr>
@@ -195,6 +197,7 @@
 
     </div>
    <hr />
+   <div
         @if (Model.TrangThai == 1 && Model.PhanLoai == "2")
         {
             <div class="col-md-2">
@@ -219,17 +222,15 @@
                 <button class="btn btn-primary" id="btn_HoanThanh"> Hoàn thành</button>
             </div>
         }
-        @* @if (Model.TrangThai == 5)
-        {          
-            <div class="col-md-2">
-                <button class="btn btn-primary" id="btn_XacnhanThanh">Xác nhận hoàn thành</button>
-            </div>
-        } *@
+       
         @if (Model.TrangThai == 1 || Model.TrangThai == 2 || Model.TrangThai == 3)
         {
             <div class="col-md-2">
                 <button class="btn btn-danger" id="btn_huydon"> Hủy đơn</button>
             </div>
+            @* <div class="col-md-2">
+                <button class="btn btn-danger" id="btn_inphieu"> In phiếu giao hàng</button>
+            </div> *@
         }
         @if (Model.PhanLoai == "1")
         {
@@ -251,17 +252,14 @@
 
             }
         }
-        
-    
-</div>
+   </div>
 
+    </div>
 <hr />
-
-
 <div>
     <div class="row">
         <div class="col-md-4">
-            <h4>@Model.MaHoaDon</h4>
+                <h4>@Model.MaHoaDon</h4>
         </div>
         <div class="col-md-8 d-flex justify-content-end align-items-center">
             <button class="btn btn-danger" id="btn_xemlichsu" style="margin-right: 20px;">Lịch sử</button>
@@ -269,9 +267,9 @@
     </div>
     <input style="display:none" id="btn_mahoadon" value="@Model.MaHoaDon" />
     <hr />
-    <table class="table table-bordered" id="table_hoadon">
+        <table class="table table-bordered" id="table_hoadon">
 
-    <thead>
+        <thead>
         <tr>
                 <th style="text-align : center;">
                     Mã hóa đơn
@@ -292,6 +290,9 @@
                 <th style="text-align : center;">
                     Số điện thoại
                 </th>
+                 <th style="text-align : center;">
+                     Số điện thoại nhận hàng
+                 </th>
                 <th style="text-align : center;">
                     Phí ship
                 </th>
@@ -318,14 +319,14 @@
                     @Model.MaHoaDon
                 </td>
                 <td style="text-align : center; margin-bottom : 20px">
-                    @foreach (var nv in ListUseradmin)
-                    {
-                        if (nv.Id == Model.UserID)
+                        @foreach (var nv in ListUseradmin)
                         {
-                            @nv.FullName
-                            ;
+                            if (nv.Id == Model.UserID)
+                            {
+                                @nv.FullName
+                                ;
+                            }
                         }
-                    }
                 </td>
                 <td style="text-align : center; margin-bottom : 20px">
                     @foreach (var vc in lstVC)
@@ -333,7 +334,7 @@
                         if (vc.MaVoucher == Model.MaVoucher)
                         {
                             @vc.Ten
-                            ;
+                            
                         }
                     }
                 </td>
@@ -341,12 +342,27 @@
                     @Model.NgayTaoDon
                 </td>
                 <td style="text-align : center; margin-bottom : 20px">
-                     @Model.TenKhachHang                      
+                     @foreach (var item in getallhoadon)
+                     {
+                       if (Model.TenKhachHang == item.IDkh)
+                       {
+                          @item.tenkhachhang
+                       }
+                     }
                 </td>
-                    <td style="text-align : center; margin-bottom : 20px" >
-                    @Model.SoDienThoai
+                <td style="text-align : center; margin-bottom : 20px" >
+                        @foreach (var item in getallhoadon)
+                        {
+                            if (Model.TenKhachHang == item.IDkh)
+                            {
+                                @item.sdtkhhang
+                            }
+                        }
                 </td>
-                    <td style="text-align : center; margin-bottom : 20px" class="money">
+                <td style="text-align : center; margin-bottom : 20px">
+                        @Model.SoDienThoai
+                 </td>
+                <td style="text-align : center; margin-bottom : 20px" class="money">
                     @Model.PhiShip
                 </td>
                     <td style="text-align : center; margin-bottom : 20px" class="money">
@@ -414,15 +430,16 @@
                         <button class="btn btn-danger" id="btn_update_hoadon" data-mahoadon="@Model.MaHoaDon" > Cập nhật</button>
                     </td>
                 }
-
+               
                 <input type="hidden" id="stt_hoadon" value="@Model.TrangThai" />
             </tr>
         </tbody>
-
+        
     </table>
+        <p><strong>Địa chỉ giao hàng: </strong> @Model.TinhThanh - @Model.QuanHuyen - @Model.XaPhuong - @Model.Cuthe</p>
+        <p><strong>Ghi chú: </strong>@Model.Ghichu</p>
     <hr />
 </div>
-
 <div>
     <h4>Thanh toán</h4>
     <hr />
@@ -531,7 +548,7 @@
                                 <button class="btn btn-outline-dange" id="btn_xoachitietsp" data-ma="@item.MaHoaDonChiTiet"><i class="fa-solid fa-trash" style="color: #f31212;"></i></button>
                             </td>
                         }
-                            <td type="hidden">
+                            <td style="display:none">
                             <input  type="hidden" class="maHoaDonChiTiet" value="@item.MaHoaDonChiTiet" />
                             <input  type="hidden" class="sku" value="@item.SKU"/>
                             <input  type="hidden" id="btn_nhap"/>
@@ -560,6 +577,7 @@
     <hr />
 </div>
 </div>
+
 @* modal danh sach sản phẩm *@
 
 <div class="modal fade" tabindex="-1" id="pop_sp">
@@ -703,18 +721,26 @@
                     </div>
                     <div class="col-md-4">
                         <label for="btn_NgayTaoDon">Ngày tạo</label>
-                        <input id="btn_NgayTaoDon" class="form-control" type="datetime" />
+                        <input id="btn_NgayTaoDon" class="form-control" type="datetime" readonly style="display:block" />
                     </div>
                     <div class="col-md-4">
                         <label for="btn_Update">Ngày Update</label>
-                        <input id="btn_Update" class="form-control" type="text" />
+                        <input id="btn_Update" class="form-control" type="text" readonly style="display:block" />
                     </div>
                     <div class="col-md-4">
                         <label for="btn_TenKhachHang">Tên khách hàng</label>
-                        <input id="btn_TenKhachHang" class="form-control"/> 
+                        @foreach (var item in getallhoadon)
+                        {
+                            if (Model.TenKhachHang == item.IDkh)
+                            {
+                                <input id="btn_TenKhachHang_" class="form-control" value="@item.tenkhachhang" readonly style="display:block" />
+                                <input id="btn_TenKhachHang" class="form-control" value="@item.tenkhachhang" style="display:none" />
+                            }
+                        }
+                       
                     </div>
                     <div class="col-md-4">
-                        <label for="btn_SoDienThoai">Số điện thoại</label>
+                        <label for="btn_SoDienThoai">Số điện thoại nhận hàng</label>
                         <input id="btn_SoDienThoai" class="form-control" type="text" />
                     </div>
                     <div class="col-md-4">

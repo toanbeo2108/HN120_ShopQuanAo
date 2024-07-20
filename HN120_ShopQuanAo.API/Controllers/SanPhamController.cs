@@ -28,7 +28,7 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             return await _irespon.GetAll();
         }
-        [HttpGet("[Action]/{id}")]
+        [HttpGet("[Action]")]
         public async Task<SanPham> GetSPById(string id)
         {
             return await _irespon.GetByID(id);
@@ -81,18 +81,19 @@ namespace HN120_ShopQuanAo.API.Controllers
         }
 
 
-        [HttpPut("[Action]/{id}")]
-        public async Task<bool> EditSP(string id, [FromBody] SanPham _sp)
+        [HttpPut("[Action]")]
+        public async Task<bool> EditSP( SanPham _sp)
         {
 
             var sp = await _irespon.GetAll();
-            var b = sp.FirstOrDefault(c => c.MaSp == id);
+            var b = sp.FirstOrDefault(c => c.MaSp == _sp.MaSp);
             if (b != null)
             {
 
                 b.TenSP = _sp.TenSP;
                 b.MaTheLoai = _sp.MaTheLoai;
                 b.MaThuongHieu = _sp.MaThuongHieu;
+                b.ChatLieu = _sp.ChatLieu;
                 b.UrlAvatar = _sp.UrlAvatar;
                 b.Mota = _sp.Mota;
                 return await _irespon.UpdateItem(b);

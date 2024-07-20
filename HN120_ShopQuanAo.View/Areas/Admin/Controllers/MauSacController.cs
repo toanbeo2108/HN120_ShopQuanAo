@@ -47,23 +47,25 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateMauSac(MauSac bk)
+        public async Task<IActionResult> CreateMauSac(string Tenmausac)
         {
+            var bk = new MauSac { TenMau = Tenmausac };
+
             if (await IsDuplicateMauSac(bk.TenMau))
             {
                 TempData["errorMessage"] = "Tên đã tồn tại.";
                 return View();
             }
-            var urlBook = $"https://localhost:7197/api/MauSac/AddMS?TenMau={bk.TenMau}&MoTa={bk.MoTa}";
-            var httpClient = new HttpClient();
+            var urlBook = $"https://localhost:7197/api/MauSac/AddMS?TenMau={bk.TenMau}";
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
-            var respon = await httpClient.PostAsync(urlBook, content);
+            var respon = await _httpClient.PostAsync(urlBook, content);
+
             if (respon.IsSuccessStatusCode)
             {
-                return RedirectToAction("AllMauSacManager", "MauSac", new { area = "Admin" });
+                return Json(true);
             }
-            TempData["erro message"] = "thêm thất bại";
-            return View();
+
+            return Json(false);
         }
         [HttpGet]
         public async Task<IActionResult> MauSacDetail(string id)

@@ -5,9 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using HN120_ShopQuanAo.API.Data;
 
 namespace HN120_ShopQuanAo.API.Responsitories

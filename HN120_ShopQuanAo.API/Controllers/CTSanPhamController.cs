@@ -158,7 +158,7 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             return await _iresponCTSP.GetAll();
         }
-        [HttpGet("[Action]/{id}")]
+        [HttpGet("[Action]")]
         public async Task<ChiTietSp> GetCTSPById(string id)
         {
             return await _iresponCTSP.GetByID(id);
@@ -205,7 +205,7 @@ namespace HN120_ShopQuanAo.API.Controllers
             return check;
         }
         [HttpPut("[Action]/{id}")]
-        public async Task<bool> EditCTSP(string id, [FromBody] ChiTietSp _ctsp)
+        public async Task<bool> EditCTSP(string id, ChiTietSp _ctsp)
         {
 
             var ctsp = await _iresponCTSP.GetAll();
