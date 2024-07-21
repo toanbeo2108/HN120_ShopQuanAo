@@ -84,31 +84,25 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
             {
                 var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var userName = HttpContext.User.Identity.Name; // Lấy tên người dùng
-
-                var emailClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                var email = emailClaim != null ? emailClaim.Value : "Email not found";
-
+                var token = Request.Cookies["Token"];
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var urluser = $"https://localhost:7197/api/User/GetUsersByRole?roleName=admin";
+                var responseuser = await _httpClient.GetAsync(urluser);
+                string apiDataUser = await responseuser.Content.ReadAsStringAsync();
+                var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
+                var fullname = ListUseradmin.FirstOrDefault(c => c.Id == userId);
                 // Tạo một đối tượng view model để truyền thông tin đến view
                 var model = new UserInfoViewModel
                 {
                     UserId = userId,
-                    UserName = userName
+                    UserName = fullname.FullName
                 };
 
                 ViewBag.Model = model;
             }
-            else
-            {
-                return RedirectToAction("Login", "Home", new { area = "" });
 
-            }
-            var token = Request.Cookies["Token"];
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            //var urluser = $"https://localhost:7197/api/User/GetUsersByRole?roleName=admin";
-            //var responseuser = await _httpClient.GetAsync(urluser);
-            //string apiDataUser = await responseuser.Content.ReadAsStringAsync();
-            //var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
-            //ViewBag.ListUseradmin = ListUseradmin;
+
+            //   ViewBag.ListUseradmin = ListUseradmin;
 
 
             var urlusers = $"https://localhost:7197/api/UserAddress/GetAll";
@@ -219,7 +213,8 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
                                  SoLuongTon = ctsp.SoLuongTon,
                                  TrangThai = ctsp.TrangThai,
                                  TenMau = ms.TenMau,
-                                 TenSize = sz.TenSize
+                                 TenSize = sz.TenSize,
+                                 Dongia = ctsp.DonGia
                              };
             var litspctview = joinedData.ToList();
             ViewBag.JoinedData = litspctview;
@@ -232,6 +227,31 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
 
             return View(litspctview);
         }
+        [HttpPost, Route("Update_soluongCTsanpham")]
+        public async Task<IActionResult> Updatesoluongchitietsp([FromBody] List<ChiTietSp> ctsp)
+        {
+            //https://localhost:7197/api/CTSanPham/UpdateChiTietSp
+            var url = $"https://localhost:7197/api/CTSanPham/UpdateChiTietSp";
+            var content = new StringContent(JsonConvert.SerializeObject(ctsp), Encoding.UTF8, "application/json");
+            var respon = await _httpClient.PostAsync(url, content);
+            if (respon.IsSuccessStatusCode)
+            {
+                _stt = true;
+                _mess = "Cập nhật thành công!";
+
+            }
+            else
+            {
+                _stt = false;
+                _mess = "Cập nhật thât bại!";
+            }
+            return Json(new
+            {
+                status = _stt,
+                message = _mess
+            });
+        }
+
         [HttpGet, Route("getkhachhang")]
         public async Task<IActionResult> GetallLstKhachHang()
         {
@@ -293,15 +313,10 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
         }
         // Quản lý hóa đơn
         [HttpGet]
-        public async Task<IActionResult> GetAllHoaDon()
+        public async Task<IActionResult> QuanLyHoaDon(string sdt, int trangthai, string phanLoai, int pageNumber = 1, int pageSize = 6)
         {
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var urluser = $"https://localhost:7197/api/User/GetUsersByRole?roleName=admin";
-            var responseuser = await _httpClient.GetAsync(urluser);
-            string apiDataUser = await responseuser.Content.ReadAsStringAsync();
-            var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
-            ViewBag.ListUseradmin = ListUseradmin;
 
             var apiVC = "https://localhost:7197/GetAllVoucher";
             var responVC = await _httpClient.GetAsync(apiVC);
@@ -327,11 +342,80 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
             string apiData = await respon.Content.ReadAsStringAsync();
             var lst = JsonConvert.DeserializeObject<List<HoaDon>>(apiData);
 
-            var sortedList = lst.OrderByDescending(hoaDon => hoaDon.MaHoaDon).ToList();
+            //var getallhoadon = from hd in (
+            //                   from h in lst
+            //                   join us in Listaccout on h.UserID equals us.Id
+            //                   select new
+            //                   {
+            //                       h.MaHoaDon,
+            //                       h.UserID,
+            //                       us.FullName,
+            //                       h.MaVoucher,
+            //                       h.NgayTaoDon,
+            //                       h.NgayThayDoi,
+            //                       h.SoDienThoai,
+            //                       h.PhiShip,
+            //                       h.TongGiaTriHangHoa,
+            //                       h.PhuongThucThanhToan,
+            //                       h.PhanLoai,
+            //                       h.TrangThai
+            //                   }
+            //                   )
+            //                   join ttkh in (
+            //                   from h in lst
+            //                   join us in Listaccout on h.TenKhachHang equals us.Id
+            //                   select new
+            //                   {
+            //                       h.MaHoaDon,
+            //                       h.TenKhachHang,
+            //                       us.FullName,
+            //                       us.PhoneNumber
+            //                   }
 
+            //                   ) on hd.MaHoaDon equals ttkh.MaHoaDon
+            //                   select new HoaDonWithDetailsViewModel
+            //                   {
+
+            //                       MaHoaDon_ = hd.MaHoaDon,
+            //                       tennhanhvien = hd.FullName,
+            //                       MaVC = hd.MaVoucher,
+            //                       NgayTao = hd.NgayTaoDon,
+            //                       Ngayupdate = hd.NgayThayDoi,
+            //                       tenkhachhang  = ttkh.FullName ,
+            //                       sdtkhhang = ttkh.PhoneNumber ,
+            //                       sdtnhahang = hd.SoDienThoai ,
+            //                       PhiShip_ = hd.PhiShip,
+            //                       Tonggiatri = hd.TongGiaTriHangHoa,
+            //                       tt = hd.TrangThai,
+            //                       phanloai = hd.PhanLoai,
+            //                       pttt = hd.PhuongThucThanhToan
+            //                   };
+
+            //if (!string.IsNullOrEmpty(sdt))
+            //{
+            //    lst = getallhoadon.Where(hd => hd.sdtnhahang.Contains(sdt) || hd.sdtkhhang.Contains(sdt));
+            //}
+            //if (trangthai != 0) // Assuming 0 means all statuses
+            //{
+            //    getallhoadon = getallhoadon.Where(hd => hd.tt == trangthai);
+            //}
+            //if (!string.IsNullOrEmpty(phanLoai))
+            //{
+            //    getallhoadon = getallhoadon.Where(hd => hd.phanloai == phanLoai);
+            //}
+            var sortedList = lst.OrderByDescending(hoaDon => hoaDon.NgayThayDoi);
+
+            // Apply pagination
+            var pagedResult = sortedList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             if (respon.IsSuccessStatusCode)
             {
+                //ViewBag.CurrentPage = pageNumber;
+                //ViewBag.PageSize = pageSize;
+                //ViewBag.TotalPages = (int)Math.Ceiling((double)sortedList.Count() / pageSize);
+                //ViewBag.TrangThai = trangthai;
+                //ViewBag.PhanLoai = phanLoai;
+                //ViewBag.SDT = sdt;
                 return View(sortedList);
             }
             else
@@ -342,55 +426,6 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
         public async Task<IActionResult> GetHoaDonByMa(string ma)
         {
             #region
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var userName = HttpContext.User.Identity.Name; // Lấy tên người dùng
-
-                var emailClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                var email = emailClaim != null ? emailClaim.Value : "Email not found";
-
-                // Tạo một đối tượng view model để truyền thông tin đến view
-                var model = new UserInfoViewModel
-                {
-                    UserId = userId,
-                    UserName = userName
-                };
-
-                ViewBag.Model = model;
-            }
-            else
-            {
-
-                return RedirectToAction("Login", "Home", new { area = "" });
-
-            }
-            var urlusers = $"https://localhost:7197/api/UserAddress/GetAll";
-            var responseusers = await _httpClient.GetAsync(urlusers);
-            string apiDataUsers = await responseusers.Content.ReadAsStringAsync();
-            var ListUsers = JsonConvert.DeserializeObject<List<DeliveryAddressModel>>(apiDataUsers);
-
-            var urluseraccout = $"https://localhost:7197/api/User/GetAllAccount";
-            var responaccout = await _httpClient.GetAsync(urluseraccout);
-            string apiDataaccout = await responaccout.Content.ReadAsStringAsync();
-            var Listaccout = JsonConvert.DeserializeObject<List<User>>(apiDataaccout);
-            ViewBag.Listaccout = Listaccout;
-            var user = from us in Listaccout
-                       join ad in ListUsers on us.Id equals ad.UserID
-                       where ad.Status > 0
-                       select new
-                       {
-                           idUser = us.Id,
-                           Ten = us.FullName,
-                           tinhthanh = ad.City,
-                           quanhuyen = ad.District,
-                           xaphuong = ad.Ward,
-                           cuthe = ad.Street,
-                           //  sdt = ad.PhoneNumber
-                       };
-
-            ViewBag.user = user.ToList();
-
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var urluser = $"https://localhost:7197/api/User/GetUsersByRole?roleName=admin";
@@ -398,7 +433,94 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
             string apiDataUser = await responseuser.Content.ReadAsStringAsync();
             var ListUseradmin = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
             ViewBag.ListUseradmin = ListUseradmin;
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userName = HttpContext.User.Identity.Name; // Lấy tên người dùng
+                var fullname = ListUseradmin.FirstOrDefault(c => c.Id == userId);
+                // Tạo một đối tượng view model để truyền thông tin đến view
+                var model = new UserInfoViewModel
+                {
+                    UserId = userId,
+                    UserName = fullname.FullName
+                };
 
+                ViewBag.Model = model;
+            }
+            var apiurlhoadon = "https://localhost:7197/api/HoaDon/GetAllHoaDon";
+
+            var responhoadon = await _httpClient.GetAsync(apiurlhoadon);
+            string apiDatahoadon = await responhoadon.Content.ReadAsStringAsync();
+            var lsthoadon = JsonConvert.DeserializeObject<List<HoaDon>>(apiDatahoadon);
+
+            //var urlusers = $"https://localhost:7197/api/UserAddress/GetAll";
+            //var responseusers = await _httpClient.GetAsync(urlusers);
+            //string apiDataUsers = await responseusers.Content.ReadAsStringAsync();
+            //var ListUsers = JsonConvert.DeserializeObject<List<DeliveryAddressModel>>(apiDataUsers);
+
+            var urluseraccout = $"https://localhost:7197/api/User/GetAllAccount";
+            var responaccout = await _httpClient.GetAsync(urluseraccout);
+            string apiDataaccout = await responaccout.Content.ReadAsStringAsync();
+            var Listaccout = JsonConvert.DeserializeObject<List<User>>(apiDataaccout);
+            ViewBag.Listaccout = Listaccout;
+            var getallhoadon = from hd in (
+                             from h in lsthoadon
+                             join us in Listaccout on h.UserID equals us.Id
+                             select new
+                             {
+                                 h.MaHoaDon,
+                                 h.UserID,
+                                 h.SoDienThoai,
+                                 //h.PhiShip,
+                                 //h.TongGiaTriHangHoa,
+                                 //h.PhuongThucThanhToan,
+                                 //h.PhanLoai,
+                                 //h.TrangThai,
+                                 //h.TinhThanh,
+                                 //h.QuanHuyen,
+                                 //h.XaPhuong,
+                                 //h.Cuthe,
+                                 //h.Ghichu
+                             }
+                             )
+                               join ttkh in (
+                               from h in lsthoadon
+                               join us in Listaccout on h.TenKhachHang equals us.Id
+                               select new
+                               {
+                                   h.MaHoaDon,
+                                   h.TenKhachHang,
+                                   us.FullName,
+                                   us.PhoneNumber
+                               }
+
+                               ) on hd.MaHoaDon equals ttkh.MaHoaDon
+                               where hd.MaHoaDon == ma
+                               select new HoaDonWithDetailsViewModel
+                               {
+
+                                   MaHoaDon_ = hd.MaHoaDon,
+                                   IDkh = ttkh.TenKhachHang,
+                                   //tennhanhvien = hd.FullName,
+                                   //MaVC = hd.MaVoucher,
+                                   //NgayTao = hd.NgayTaoDon,
+                                   //Ngayupdate = hd.NgayThayDoi,
+                                   tenkhachhang = ttkh.FullName,
+                                   sdtkhhang = ttkh.PhoneNumber,
+                                   //sdtnhahang = hd.SoDienThoai,
+                                   // PhiShip_ = hd.PhiShip,
+                                   // Tonggiatri = hd.TongGiaTriHangHoa,
+                                   // tt = hd.TrangThai,
+                                   // phanloai = hd.PhanLoai,
+                                   // pttt = hd.PhuongThucThanhToan,
+                                   // tinhthanh_=hd.TinhThanh,
+                                   // quanhuyen=hd.QuanHuyen,
+                                   //xaphuong =hd.XaPhuong,
+                                   //cuthe =hd.Cuthe,
+                                   // ghichu=hd.Ghichu
+                               };
+
+            ViewBag.getallhoadon = getallhoadon;
             var apiThanhToan_hd = "https://localhost:7197/api/ThanhToanHoaDon/GetAllThanhToan_HoaDon";
             var responThanhToan_hd = await _httpClient.GetAsync(apiThanhToan_hd);
             string apidaThanhToan_hd = await responThanhToan_hd.Content.ReadAsStringAsync();
@@ -468,7 +590,8 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
                                  SoLuongTon = ctsp.SoLuongTon,
                                  TrangThai = ctsp.TrangThai,
                                  TenMau = ms.TenMau,
-                                 TenSize = sz.TenSize
+                                 TenSize = sz.TenSize,
+                                 Dongia = ctsp.DonGia
                              };
             var litspctview = joinedData.ToList();
             ViewBag.JoinedData = litspctview;
@@ -536,14 +659,18 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
         [HttpGet, Route("Detail-hoadon/{ma}")]
         public async Task<IActionResult> GetHoaDonByMahd(string ma)
         {
-
             var apiurl = $"https://localhost:7197/api/HoaDon/GetAllHoaDonMa/{ma}";
             var respon = await _httpClient.GetAsync(apiurl);
             string apiData = await respon.Content.ReadAsStringAsync();
             HoaDon detail = null;
             if (respon.StatusCode == System.Net.HttpStatusCode.OK)
             {
+                var urluseraccout = $"https://localhost:7197/api/User/GetAllAccount";
+                var responaccout = await _httpClient.GetAsync(urluseraccout);
+                string apiDataaccout = await responaccout.Content.ReadAsStringAsync();
+                var Listaccout = JsonConvert.DeserializeObject<List<User>>(apiDataaccout);
                 detail = JsonConvert.DeserializeObject<HoaDon>(apiData);
+
                 if (detail == null)
                 {
                     _stt = false;
@@ -569,6 +696,7 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
                 message = _mess,
                 data = _data
             });
+
         }
 
         [HttpGet, Route("Xoa/{ma}")]
@@ -609,5 +737,102 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
             var listhoaDon = hoaDon.Where(c => c.TrangThai == stt).ToList();
             return View(listhoaDon);
         }
+        [HttpGet, Route("GetDanhSachVouCher/{check}")]
+        public async Task<IActionResult> GetAllVoucher(decimal check)
+        {
+            var apiVC = "https://localhost:7197/GetAllVoucher";
+            var responVC = await _httpClient.GetAsync(apiVC);
+            string apidaVC = await responVC.Content.ReadAsStringAsync();
+            var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apidaVC);
+            var listVckhadung = lstVC.Where(c => c.GiaGiamToiThieu <= check).ToList();
+
+            if (listVckhadung.Any())
+            {
+                return Ok(listVckhadung);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+        [HttpGet, Route("GetDanhSachUser")]
+        public async Task<IActionResult> GetAlluser()
+        {
+            var urlusers = $"https://localhost:7197/api/UserAddress/GetAll";
+            var responseusers = await _httpClient.GetAsync(urlusers);
+            string apiDataUsers = await responseusers.Content.ReadAsStringAsync();
+            var ListUsers = JsonConvert.DeserializeObject<List<DeliveryAddressModel>>(apiDataUsers);
+
+            var urluseraccout = $"https://localhost:7197/api/User/GetAllAccount";
+            var responaccout = await _httpClient.GetAsync(urluseraccout);
+            string apiDataaccout = await responaccout.Content.ReadAsStringAsync();
+            var Listaccout = JsonConvert.DeserializeObject<List<User>>(apiDataaccout);
+
+            var user = from us in Listaccout
+                       join ad in ListUsers on us.Id equals ad.UserID
+                       where ad.Status == 1
+                       select new
+                       {
+                           idUser = us.Id,
+                           Ten = us.FullName,
+                           tinhthanh = ad.City,
+                           quanhuyen = ad.District,
+                           xaphuong = ad.Ward,
+                           cuthe = ad.Street,
+                           sdt = us.PhoneNumber,
+                           sdtnhanhhang = ad.PhoneNumber,
+                           ngnhanhang = ad.Consignee
+                       };
+
+            if (user.ToList().Any())
+            {
+                return Ok(user.ToList());
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+
+        [HttpPost, Route("Add_AdressFlash")]
+
+        public async Task<IActionResult> AddUserAddress(string sdt, string sdtnhanhang, DeliveryAddress delivery)
+        {
+            var token = Request.Cookies["Token"];
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            // lấy danh sach user => tìm ra id khách vừa thêm vừa thêm
+            var getalluserByroleUrl = "https://localhost:7197/api/User/GetUsersByRole?roleName=User";
+            var responuserByrole = await _httpClient.GetAsync(getalluserByroleUrl);
+            string apidatauserByrole = await responuserByrole.Content.ReadAsStringAsync();
+            var userByrole = JsonConvert.DeserializeObject<List<User>>(apidatauserByrole);
+            var name = userByrole.FirstOrDefault(c => c.PhoneNumber == sdt);
+            string id = name.Id;
+            //  sau khi lấy được Id thêm địa chỉ người dùng
+            delivery.UserID = id;
+            var urlthemdiachi = $"https://localhost:7197/api/UserAddress/Create";
+            var content = new StringContent(JsonConvert.SerializeObject(delivery), Encoding.UTF8, "application/json");
+            var responsethemdiachi = await _httpClient.PostAsync(urlthemdiachi, content);
+
+            //  lấy danh sach địa chỉ khách vừa thêm => tìm DeliveryAddressID = sdt nhận hàng
+            var addressUrl = $"https://localhost:7197/api/UserAddress/GetByUserID?id={id}";
+            var addressResponse = await _httpClient.GetAsync(addressUrl);
+            string addressData = await addressResponse.Content.ReadAsStringAsync();
+            var userAddresses = JsonConvert.DeserializeObject<List<DeliveryAddress>>(addressData);
+            var sdtdiachivuathem = userAddresses.FirstOrDefault(c => c.PhoneNumber == sdtnhanhang);
+            var idnhanhang = sdtdiachivuathem.DeliveryAddressID;
+            // set defaut địa chỉ 
+            var urlsetdefau = $"https://localhost:7197/api/UserAddress/SetDefaultAddress/?id=" + idnhanhang;
+            var response = await _httpClient.PostAsync(urlsetdefau, null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Lỗi cài đặt địa chỉ mặc định" });
+            }
+        }
+
+
     }
 }

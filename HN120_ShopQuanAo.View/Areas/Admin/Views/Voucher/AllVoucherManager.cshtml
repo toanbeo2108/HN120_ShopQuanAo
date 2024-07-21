@@ -241,17 +241,18 @@
                             }
                         </td>
                         <td>
-                            <div style="color:green">@item.NgayBatDau</div>
+                            <div style="color:green">
+                                @(item.NgayBatDau.HasValue ? item.NgayBatDau.Value.ToString("dd/MM/yyyy hh:mm tt") : "N/A")
+                            </div>
                         </td>
                         <td>
-                            @if (item.NgayKetThuc >= DateTime.Now)
-                            {
-                                <div style="color:green">@item.NgayKetThuc</div>
+                            @{
+                                var color = item.TrangThai == 2 || item.TrangThai == 3 ? "red" : "green";
                             }
-                            else
-                            {
-                                <div style="color:red">@item.NgayKetThuc</div>
-                            }
+                            <div style="color:@color">
+                                @(item.NgayKetThuc.HasValue ? item.NgayKetThuc.Value.ToString("dd/MM/yyyy hh:mm tt") : "N/A")
+                            </div>
+
                         </td>
                         <td>
                             <div>@item.SoLuong</div>
@@ -279,7 +280,7 @@
                                 }
                                 else if (item.TrangThai == 3)
                                 {
-                                    <span class="text-warning">Kết thúc sớm</span>
+                                    <span class="text-danger">Kết thúc sớm</span>
                                 }
                             }
                         </td>
@@ -298,120 +299,53 @@
         </tbody>
     </table>
 
-
     <script>
-        // lọc mã
         function searchVoucher() {
-            var input, filter, table, tr, td, i, txtValue;
-            input = document.getElementById("searchBox");
-            filter = input.value.toUpperCase().replace(/\s+/g, ' ').trim();
-            table = document.getElementById("voucherTableBody");
-            tr = table.getElementsByTagName("tr");
-
-            for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[0]; 
-                if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    txtValue = txtValue.toUpperCase().replace(/\s+/g, ' ').trim();
-                    if (txtValue.indexOf(filter) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
+            var searchBox = document.getElementById('searchBox').value;
+            var rows = document.getElementById('voucherTableBody').getElementsByTagName('tr');
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName('td');
+                var found = false;
+                for (var j = 0; j < cells.length; j++) {
+                    if (cells[j].innerText.includes(searchBox)) {
+                        found = true;
+                        break;
                     }
                 }
+                rows[i].style.display = found ? '' : 'none';
             }
         }
 
-
-
-        // Lọc Trạng thái
         function filterByStatus() {
-            var status = document.getElementById("statusFilter").value;
-            var table = document.getElementById("voucherTableBody");
-            var tr = table.getElementsByTagName("tr");
-
-            for (var i = 0; i < tr.length; i++) {
-                var td = tr[i].getElementsByTagName("td")[10]; 
-                if (td) {
-                    var statusText = td.textContent.trim();
-                    if (status === "" ||
-                        (status === "SapDienRa" && statusText === "Sắp diễn ra") ||
-                        (status === "DangHoatDong" && statusText === "Đang hoạt động") ||
-                        (status === "DaKetThuc" && statusText === "Đã kết thúc") ||
-                        (status === "KetThucSom" && statusText === "Kết thúc sớm")) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
-                }
+            var statusFilter = document.getElementById('statusFilter').value;
+            var rows = document.getElementById('voucherTableBody').getElementsByTagName('tr');
+            for (var i = 0; i < rows.length; i++) {
+                var statusCell = rows[i].getElementsByTagName('td')[10];
+                rows[i].style.display = statusFilter === '' || statusCell.innerText.includes(statusFilter) ? '' : 'none';
             }
         }
 
-
-
-        // Lọc ngày
         function filterByDateRange() {
-            var status = document.getElementById("statusFilter").value;
-            var startDate = document.getElementById("startDateFilter").value;
-            var endDate = document.getElementById("endDateFilter").value;
-
-            var startDateObj = startDate ? new Date(startDate) : null;
-            var endDateObj = endDate ? new Date(endDate) : null;
-
-            if (endDateObj) {
-                endDateObj.setHours(23);
-                endDateObj.setMinutes(59);
-                endDateObj.setSeconds(59);
-            }
-
-            var table = document.getElementById("voucherTableBody");
-            var rows = table.getElementsByTagName("tr");
+            var startDateFilter = document.getElementById('startDateFilter').value;
+            var endDateFilter = document.getElementById('endDateFilter').value;
+            var rows = document.getElementById('voucherTableBody').getElementsByTagName('tr');
 
             for (var i = 0; i < rows.length; i++) {
-                var row = rows[i];
+                var startDateCell = rows[i].getElementsByTagName('td')[6].innerText;
+                var endDateCell = rows[i].getElementsByTagName('td')[7].innerText;
 
-                var startDateCell = new Date(row.getElementsByTagName("td")[6].textContent); 
-                var endDateCell = new Date(row.getElementsByTagName("td")[7].textContent); 
-                var statusCell = row.getElementsByTagName("td")[10].textContent; 
+                if (startDateFilter && endDateFilter) {
+                    var startDate = new Date(startDateCell);
+                    var endDate = new Date(endDateCell);
+                    var filterStartDate = new Date(startDateFilter);
+                    var filterEndDate = new Date(endDateFilter);
 
-                if (endDateCell) {
-                    endDateCell.setHours(23);
-                    endDateCell.setMinutes(59);
-                    endDateCell.setSeconds(59);
-                }
-
-                var meetsStatusCriteria = (status === "" || status === statusCell);
-                var meetsDateCriteria = (startDateObj === null || endDateObj === null ||
-                    (startDateCell >= startDateObj && endDateCell <= endDateObj));
-
-                if (meetsStatusCriteria && meetsDateCriteria) {
-                    row.style.display = "";
+                    rows[i].style.display = (startDate >= filterStartDate && endDate <= filterEndDate) ? '' : 'none';
                 } else {
-                    row.style.display = "none";
+                    rows[i].style.display = '';
                 }
             }
         }
-
-        // // Hàm load trạng thái
-        function checkAndReloadIfMinuteChanged() {
-            var currentDateTime = new Date();
-            var currentMinute = currentDateTime.getMinutes();
-
-            setTimeout(function () {
-                var newDateTime = new Date();
-                var newMinute = newDateTime.getMinutes();
-
-                if (newMinute !== currentMinute) {
-                    location.reload();
-                } else {
-                    checkAndReloadIfMinuteChanged();
-                }
-            }, 1000);
-        }
-        window.onload = function () {
-            checkAndReloadIfMinuteChanged();
-        };
     </script>
 </body>
 </html>
-
