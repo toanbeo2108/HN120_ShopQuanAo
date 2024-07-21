@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using HN120_ShopQuanAo.Data.Models;
 using System;
 using HN120_ShopQuanAo.Data.Configurations;
+using System.Reflection.Emit;
 
 namespace HN120_ShopQuanAo.API.Data
 {
@@ -39,10 +40,14 @@ namespace HN120_ShopQuanAo.API.Data
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
-			base.OnModelCreating(builder);
+            builder.Entity<GioHang>()
+                .HasOne(g => g.User)
+                .WithOne(u => u.GioHang)
+                .HasForeignKey<GioHang>(g => g.MaGioHang);
+            base.OnModelCreating(builder);
 			CreateRoles(builder);
-		}
-		private void CreateRoles(ModelBuilder builder)
+        }
+        private void CreateRoles(ModelBuilder builder)
 		{
 			builder.Entity<IdentityRole>().HasData(
 					new IdentityRole() { Name = "Admin", NormalizedName = "ADMIN" },
@@ -55,11 +60,7 @@ namespace HN120_ShopQuanAo.API.Data
 			if (!optionsBuilder.IsConfigured)
 			{
 
-
-
-				optionsBuilder.UseSqlServer("Data Source=DESKTOP-L5F3V70;Initial Catalog=ShopQuanAoOnline;Integrated Security=True;");
-
-
+				optionsBuilder.UseSqlServer("Data Source=DESKTOP-QQ18T65\\SQLEXPRESS;Initial Catalog=ShopQuanAoOnline2;Integrated Security=True;");
 
 			}
 		}

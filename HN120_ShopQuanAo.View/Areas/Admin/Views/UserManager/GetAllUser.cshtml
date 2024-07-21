@@ -1,23 +1,49 @@
 ﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.User>
 
 @{
-    ViewData["Title"] = "GetAllAccount";
+    ViewData["Title"] = "GetAllUser";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 
 }
+<style>
+    .filter-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+        .filter-form label {
+            margin-right: 10px;
+        }
+
+        .filter-form select, .filter-form button, .add-account-btn {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #f8f9fa;
+        }
+
+        .filter-form button, .add-account-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+            .filter-form button:hover, .add-account-btn:hover {
+                background-color: #0056b3;
+            }
+
+    .add-account-btn {
+        margin-left: 20px;
+    }
+</style>
 
 <!-- Form hoặc nút lọc -->
-<form asp-action="FilterByRole" method="get">
-    <label>Select Role:</label>
-    <select name="roleName">
-        <option value="Admin">Admin</option>
-        <option value="User">User</option>
-        <option value="Employee">Employee</option>
-        <!-- Thêm các vai trò khác nếu cần -->
-    </select>
-    <button type="submit">Filter</button>
-</form>
-<a class="btn btn-primary" asp-controller="UserManager" asp-action="CreateAnAccount">+ Thêm mới tài khoản</a>
+<div class="filter-form">
+    <a class="add-account-btn btn btn-primary" asp-controller="UserManager" asp-action="CreateAnAccount">+ Thêm mới tài khoản</a>
+</div>
 
 <table id="tble_ajax" class="table" enctype="multipart/form-data">
     <thead>
@@ -26,30 +52,25 @@
 
             </th>
             <th>
-                UserName
-            </th>
-            <th>
-                FullName
+                Họ Tên
             </th>
             <th>
                 Email
             </th>
             <th>
-                PhoneNumber
+                Số điện thoại
             </th>
             <th>
-                Gender
+                Giới tính
             </th>
             <th>
-                Birthday
+                Sinh nhật
             </th>
             <th>
-
-                Status
+                Trạng thái
             </th>
             <th>
-
-                Action
+                Hành Động
             </th>
         </tr>
     </thead>
@@ -70,12 +91,7 @@
                     }
                 </td>
                 <td>
-                    @items.UserName
-                </td>
-                <td>
-
                     @items.FullName
-
                 </td>
                 <td>
                     @items.Email
@@ -106,7 +122,7 @@
 
                 </td>
                 <td>
-                    @items.Birthday
+                    @(items.Birthday.HasValue ? items.Birthday.Value.ToString("dd/MM/yyyy") : "N/A")
                 </td>
                 <td>
 

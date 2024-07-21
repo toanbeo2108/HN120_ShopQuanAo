@@ -1,11 +1,18 @@
-﻿using HN120_ShopQuanAo.API.Data;
+
+using HN120_ShopQuanAo.API.Data;
+using HN120_ShopQuanAo.API.EmailConfig.Services;
+
 using HN120_ShopQuanAo.API.IResponsitories;
 using HN120_ShopQuanAo.API.Responsitories;
 using HN120_ShopQuanAo.API.Service.IServices;
 using HN120_ShopQuanAo.API.Service.Services;
+using HN120_ShopQuanAo.API.Services;
 using HN120_ShopQuanAo.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -33,7 +40,19 @@ builder.Services.AddScoped<IThanhToanRepository, ThanhToanRepository>();
 builder.Services.AddScoped<IThanhToanServices, ThanhToanServices>();
 builder.Services.AddScoped<LichSuHoaDon_Irepository, LichSuHoaDon_Repository>();
 builder.Services.AddScoped<LichSuHoaDon_IService, LichSuHoaDon_Service>();
+builder.Services.AddScoped<IGHCTResponse, GHCTResponse>();
+builder.Services.AddScoped<IHoaDonChiTietResponse, HoaDonChiTietResponse>();
 
+
+
+builder.Services.AddScoped<RegisterUserEmailService>();
+builder.Services.AddTransient<EmailService>();
+builder.Services.AddSingleton<IUrlHelper>(provider =>
+{
+    var actionContext = provider.GetRequiredService<IActionContextAccessor>().ActionContext;
+    return new UrlHelper(actionContext);
+});
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
 
 
@@ -89,7 +108,7 @@ builder.Services.AddSwaggerGen(c =>
 				});
 });
 builder.Services.AddHttpClient();
-
+builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

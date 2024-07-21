@@ -91,6 +91,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
             update.UserID = hoaDon.UserID;
             update.MaVoucher = hoaDon.MaVoucher;
             update.NgayTaoDon = hoaDon.NgayTaoDon;
+            update.NgayThayDoi = hoaDon.NgayThayDoi;
             update.TenKhachHang = hoaDon.TenKhachHang;
             update.SoDienThoai = hoaDon.SoDienThoai;
             update.PhiShip = hoaDon.PhiShip;

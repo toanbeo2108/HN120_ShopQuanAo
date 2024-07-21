@@ -20,7 +20,7 @@
 </div>
 <div>
 
-    <a asp-action="CreateMauSac" class="btn btn-primary">Thêm Màu Săc</a>
+    <a class="btn btn-primary" id="btn_add">Thêm Màu Săc</a>
 
 </div>
 <table class="table">
@@ -36,15 +36,15 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.MaMau</td>
-                <td>@item.TenMau</td>
-                <td>@item.MoTa</td>
-                <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
-                <td>
 
+          <tr>
+               <td>@item.MaMau</td>
+               <td>@item.TenMau</td>
+               <td>@item.MoTa</td>
+               <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
+          <td>
+                <a asp-action="UpdateMauSac" asp-route-id="@item.MaMau" class="btn btn-warning">Cập Nhật</a>
 
-                    <a asp-action="UpdateMauSac" asp-route-id="@item.MaMau" class="btn btn-warning">Cập Nhật</a>
                     @if (item.TrangThai == 1)
                     {
                         <form asp-action="UpdateStatusMauSacKKD" method="post" style="display:inline;">
@@ -54,13 +54,65 @@
                     }
                     else
                     {
-                        <form asp-action="UpdateStatusMauSacKD" method="post" style="display:inline;">
+
+                       <form asp-action="UpdateStatusMauSacKD" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="@item.MaMau" />
                             <button type="submit" class="btn btn-success">Bật</button>
-                        </form>
+                      </form>
                     }
-                </td>
-            </tr>
+                    </td>
+                    </tr>
+
         }
     </tbody>
 </table>
+<div class="modal fade" tabindex="-1" id="pp_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm Màu Sắc Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Tên Màu</label>
+                    <input type="text" class="form-control" id="name">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn_save">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function () {
+    // Hiển thị modal thêm chất liệu mới
+    $('#btn_add').on('click', function () {
+        setdata(null);
+        $('#pp_modal').modal('show');
+    });
+
+    // Lưu chất liệu mới
+    $('#btn_save').on('click', function () {
+        $.post('/Admin/MauSac/CreateMauSac', { TenMau: $('#name').val() }, function (response) {
+            if (response) {
+                alert("Thêm thành công!");
+                $('#pp_modal').modal('hide');
+                window.location.reload();
+            } else {
+                alert("Thêm thất bại. Vui lòng thử lại.");
+            }
+        });
+    });
+});
+
+// Thiết lập dữ liệu cho modal
+function setdata(data) {
+    $('#name').val('');
+}
+</script>

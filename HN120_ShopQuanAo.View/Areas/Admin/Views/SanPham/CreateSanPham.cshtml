@@ -1,78 +1,338 @@
-@using HN120_ShopQuanAo.Data.Models;
-@model HN120_ShopQuanAo.Data.Models.SanPham
+@using HN120_ShopQuanAo.Data.ViewModels
+@using HN120_ShopQuanAo.Data.Models
+@model AddSpViewModel
 
 @{
-    ViewData["Title"] = "CreateSanPham";
+    ViewData["Title"] = "Create and Add Details for Product";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    var lstSZ = ViewBag.lstSZ as List<Size> ?? new List<Size>();
+    var lstms = ViewBag.lstms as List<MauSac> ?? new List<MauSac>();
     List<ThuongHieu> lstTH = ViewBag.lstTH as List<ThuongHieu>;
     List<TheLoai> lstTL = ViewBag.lstTL as List<TheLoai>;
     List<ChatLieu> lstCL = ViewBag.lstCL as List<ChatLieu>;
 }
+<style>
+    /* CSS cho modal và thẻ tag */
+    .modal-body .form-check {
+        display: inline-block;
+        margin: 5px;
+    }
 
-<h1>CreateSanPham</h1>
+    .modal-body .form-check-input {
+        display: none;
+    }
 
-<h4>SanPham</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateSanPham" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    .modal-body .form-check-label {
+        display: inline-block;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: border-color 0.3s, background-color 0.3s;
+    }
 
+    .modal-body .form-check-input:checked + .form-check-label {
+        border-color: yellow;
+        background-color: black;
+        color: white;
+    }
+
+    .badge-tag {
+        background-color: #007bff;
+        color: white;
+        margin-right: 5px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        display: inline-block;
+        cursor: pointer;
+        margin-bottom: 5px;
+    }
+
+        .badge-tag:hover {
+            background-color: #0056b3;
+        }
+
+    .form-group img {
+        max-width: 100%;
+        height: auto;
+        margin-top: 10px;
+    }
+</style>
+
+<h1>Thêm Sản Phẩm</h1>
+
+<form id="createProductForm" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Bên trái -->
             <div class="form-group">
-                <label asp-for="MaThuongHieu" class="control-label"></label>
-                <select class="form-select" asp-for="MaThuongHieu" aria-label="Default select example">
-                    <option value=""></option>
-                    @foreach (ThuongHieu item in lstTH)
-                    {
+                <label>Ảnh Đại Diện:</label>
+                <input type="file" class="form-control" id="imageSP" name="imageSP" onchange="previewImage(event)" />
+                <img id="previewImg" src="#" alt="Ảnh sản phẩm" style="display:none;" />
+            </div>
+        </div>
+        <div class="col-md-8">
+            <!-- Bên phải -->
+            <div class="form-group">
+                <label>Tên Sản Phẩm:</label>
+                <input class="form-control" id="TenSP" name="TenSP" />
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Thương Hiệu:</label>
+                        <select class="form-select" id="MaThuongHieu" name="MaThuongHieu">
+                            <option value=""></option>
+                            @foreach (var item in lstTH)
+                            {
                                 <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaTheLoai" class="control-label"></label>
-                <select class="form-select" asp-for="MaTheLoai" aria-label="Default select example">
-                    <option value=""></option>
-                    @foreach (TheLoai item in lstTL)
-                    {
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Thể Loại:</label>
+                        <select class="form-select" id="MaTheLoai" name="MaTheLoai">
+                            <option value=""></option>
+                            @foreach (var item in lstTL)
+                            {
                                 <option value="@item.MaTheLoai">@item.TenTheLoai</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaChatLieu" class="control-label"></label>
-                <select class="form-select" asp-for="MaChatLieu" aria-label="Default select example">
-                    <option value=""></option>
-                    @foreach (ChatLieu item in lstCL)
-                    {
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Chất Liệu:</label>
+                        <select class="form-select" id="MaChatLieu" name="MaChatLieu">
+                            <option value=""></option>
+                            @foreach (var item in lstCL)
+                            {
                                 <option value="@item.MaChatLieu">@item.TenChatLieu</option>
-                    }
-                </select>
+                            }
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="UrlAvatar" class="control-label"></label>
-                <input asp-for="UrlAvatar" type="file" class="form-control" name="imageFile" />
-                <span asp-validation-for="UrlAvatar" class="text-danger"></span>
+                <label>Mô Tả:</label>
+                <textarea class="form-control" id="Mota" name="Mota"></textarea>
             </div>
-            <div class="form-group">
-                <label asp-for="TenSP" class="control-label"></label>
-                <input asp-for="TenSP" class="form-control" />
-                <span asp-validation-for="TenSP" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Mota" class="control-label"></label>
-                <input asp-for="Mota" class="form-control" />
-                <span asp-validation-for="Mota" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="AllSanPhamManager" class="btn btn-warning">Hủy</a>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+
+    <!-- Phần chọn màu sắc và kích cỡ -->
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Màu Sắc:</label>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#colorModal">+</button>
+                <div id="selectedColors" class="tag-container"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Size:</label>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#sizeModal">+</button>
+                <div id="selectedSizes" class="tag-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal chọn màu sắc -->
+    <div class="modal fade" id="colorModal" tabindex="-1" aria-labelledby="colorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="colorModalLabel">Chọn Màu Sắc</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @foreach (var mau in lstms)
+                    {
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="color_@mau.MaMau" value="@mau.MaMau">
+                            <label class="form-check-label" for="color_@mau.MaMau">@mau.TenMau</label>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="addColors()">Chọn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal chọn size -->
+    <div class="modal fade" id="sizeModal" tabindex="-1" aria-labelledby="sizeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sizeModalLabel">Chọn Size</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @foreach (var size in lstSZ)
+                    {
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="size_@size.MaSize" value="@size.MaSize">
+                            <label class="form-check-label" for="size_@size.MaSize">@size.TenSize</label>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="addSizes()">Chọn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary mt-3" onclick="addChiTietSp()">Thêm chi tiết sản phẩm</button>
+
+    <div id="chiTietSpContainer" class="table-responsive" style="display:none;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Size</th>
+                    <th>Màu</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng tồn</th>
+                    <th>URL Ảnh</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Các chi tiết sản phẩm sẽ được thêm vào đây -->
+            </tbody>
+        </table>
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu</button>
+</form>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    }
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('previewImg');
+                output.src = reader.result;
+                output.style.display = 'block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function addColors() {
+            var selectedColorsContainer = document.getElementById('selectedColors');
+            var selectedColors = document.querySelectorAll("#colorModal input[type='checkbox']:checked");
+
+            selectedColors.forEach(color => {
+                if (!selectedColorsContainer.querySelector(`span[data-value='${color.value}']`)) {
+                    var tag = document.createElement('span');
+                    tag.className = 'badge-tag';
+                    tag.innerText = color.nextElementSibling.innerText;
+                    tag.dataset.value = color.value;
+                    tag.onclick = function () {
+                        this.remove();
+                        document.getElementById(`color_${color.value}`).checked = false;
+                        document.getElementById(`color_${color.value}`).nextElementSibling.classList.remove('selected');
+                    };
+                    selectedColorsContainer.appendChild(tag);
+                    document.getElementById(`color_${color.value}`).nextElementSibling.classList.add('selected');
+                }
+            });
+
+            $('#colorModal').modal('hide');
+        }
+
+        function addSizes() {
+            var selectedSizesContainer = document.getElementById('selectedSizes');
+            var selectedSizes = document.querySelectorAll("#sizeModal input[type='checkbox']:checked");
+
+            selectedSizes.forEach(size => {
+                if (!selectedSizesContainer.querySelector(`span[data-value='${size.value}']`)) {
+                    var tag = document.createElement('span');
+                    tag.className = 'badge-tag';
+                    tag.innerText = size.nextElementSibling.innerText;
+                    tag.dataset.value = size.value;
+                    tag.onclick = function () {
+                        this.remove();
+                        document.getElementById(`size_${size.value}`).checked = false;
+                        document.getElementById(`size_${size.value}`).nextElementSibling.classList.remove('selected');
+                    };
+                    selectedSizesContainer.appendChild(tag);
+                    document.getElementById(`size_${size.value}`).nextElementSibling.classList.add('selected');
+                }
+            });
+
+            $('#sizeModal').modal('hide');
+        }
+
+        function addChiTietSp() {
+            var sizeTags = document.querySelectorAll("#selectedSizes span");
+            var colorTags = document.querySelectorAll("#selectedColors span");
+            var container = document.querySelector("#chiTietSpContainer tbody");
+            var count = container.children.length;
+
+            if (sizeTags.length > 0 && colorTags.length > 0) {
+                document.getElementById("chiTietSpContainer").style.display = "block";
+            }
+
+            sizeTags.forEach(sizeTag => {
+                var size = sizeTag.dataset.value;
+                var sizeText = sizeTag.innerText;
+
+                colorTags.forEach(colorTag => {
+                    var color = colorTag.dataset.value;
+                    var colorText = colorTag.innerText;
+
+                    var existingRow = Array.from(container.children).find(row => {
+                        var existingSize = row.querySelector(`input[name*='MaSize'][value='${size}']`);
+                        var existingColor = row.querySelector(`input[name*='MaMau'][value='${color}']`);
+                        return existingSize && existingColor;
+                    });
+
+                    if (!existingRow) {
+                        var newChiTietSpRow = document.createElement("tr");
+                        newChiTietSpRow.innerHTML = `
+                                    <td>
+                                        <input type="hidden" name="ChiTietSps[${count}].MaSize" value="${size}" />
+                                        ${sizeText}
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="ChiTietSps[${count}].MaMau" value="${color}" />
+                                        ${colorText}
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control" name="ChiTietSps[${count}].DonGia" required />
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control" name="ChiTietSps[${count}].SoLuongTon" required />
+                                    </td>
+                                    <td>
+                                        <input type="file" class="form-control" name="imagechitietsp" />
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger" onclick="removeRow(this)">Xóa</button>
+                                    </td>
+                                `;
+                        container.appendChild(newChiTietSpRow);
+                        count++;
+                    }
+                });
+            });
+        }
+
+        function removeRow(button) {
+            var row = button.closest("tr");
+            row.parentNode.removeChild(row);
+        }
+
+        $(document).ready(function () {
+            $('#btn_them').on('click', function () {
+                $('#btn_luu').show();
+            });
+        });
+    </script>
+}

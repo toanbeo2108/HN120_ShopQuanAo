@@ -1,4 +1,6 @@
-﻿using HN120_ShopQuanAo.API.Service.IServices;
+﻿using HN120_ShopQuanAo.API.IResponsitories;
+using HN120_ShopQuanAo.API.Responsitories;
+using HN120_ShopQuanAo.API.Service.IServices;
 using HN120_ShopQuanAo.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +12,12 @@ namespace HN120_ShopQuanAo.API.Controllers
     public class ChiTietHoaDonController : ControllerBase
     {
         private readonly IChiTietHoaDonService _sv;
+        private readonly IHoaDonResponse _iresponse;
+        private readonly IHoaDonChiTietResponse _iresponses;
         public ChiTietHoaDonController(IChiTietHoaDonService sv)
         {
+            _iresponse = new HoaDonResponse();
+            _iresponses = new HoaDonChiTietResponse();
             _sv = sv;
         }
         [HttpGet("[Action]")]
@@ -77,5 +83,16 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
         }
 
+        [HttpGet("[Action]")]
+        public async Task<IEnumerable<HoaDonChiTiet>> GetAllHoaChiTietByMaHD(string maHD)
+        {
+            return await _iresponse.GetAllItemHoaDon(maHD);
+        }
+
+        [HttpPost("[Action]")]
+        public async Task<bool> CreateHoaDonCT(string? sku, string? maHD, string? tenSP, decimal? donGia, int? soluong)
+        {
+            return await _iresponses.CreateHoaDonChiTiet(sku,  maHD, tenSP, donGia, soluong);
+        }
     }
 }

@@ -1,74 +1,268 @@
-﻿@model HN120_ShopQuanAo.Data.Models.SanPham
+﻿@using HN120_ShopQuanAo.Data.Models
+@model HN120_ShopQuanAo.Data.Models.SanPham
 
 @{
     ViewData["Title"] = "SanPhamDetail";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    var lstSZ = ViewBag.lstSZ as List<Size> ?? new List<Size>();
+    var lstms = ViewBag.lstms as List<MauSac> ?? new List<MauSac>();
+    var lstkm = ViewBag.lstkm as List<KhuyenMai>;
+    var lstTH = ViewBag.lstTH as List<ThuongHieu>;
+    var lstTL = ViewBag.lstTL as List<TheLoai>;
+    var lstCL = ViewBag.lstCL as List<ChatLieu>;
+    var sp = ViewBag.sp as SanPham;
+    var ctsp = ViewBag.ctsp as List<ChiTietSp>;
 }
 
-<h1>SanPhamDetail</h1>
+<style>
+    .header h2 {
+        margin: 0;
+    }
 
-<div>
-    <h4>SanPham</h4>
-    <hr />
+    .sp {
+        padding: 20px;
+        margin: 20px auto;
+        max-width: 1200px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-new-address {
+        background-color: #ff4500;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .address-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .address-item {
+        border-bottom: 1px solid #ddd;
+        padding: 15px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .address-item:last-child {
+        border-bottom: none;
+    }
+
+    .address-details {
+        flex-grow: 1;
+    }
+
+    .address-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .default-tag {
+        color: red;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+
+    .btn-update, .btn-delete, .btn-set-default {
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .btn-update:hover, .btn-delete:hover, .btn-set-default:hover {
+        background-color: #f0f0f0;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .row {
+        margin: 0 200px;
+    }
+
+    dt {
+        font-weight: bold;
+    }
+
+    img {
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+    }
+
+    .table th, .table td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #f4f4f4;
+    }
+
+    .table tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .btn-primary {
+        margin-right: 10px;
+    }
+
+    .btn-warning {
+        margin-top: 20px;
+    }
+</style>
+    <a style="margin-left: 20px" asp-action="AllSanPhamManager" class="btn btn-warning">Danh Sách Sản Phẩm</a>
+
+<div class="sp">
+    <h1>Sản Phẩm</h1>
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaSp)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaSp)
+        <dt class="col-sm-6">Mã Sản Phẩm:</dt>
+        <dd class="col-sm-6">@sp.MaSp</dd>
+
+        <dt class="col-sm-6">Thương Hiệu:</dt>
+        <dd class="col-sm-6">
+            @{
+                var thuongHieu = lstTH.FirstOrDefault(th => th.MaThuongHieu == sp.MaThuongHieu)?.TenThuongHieu ?? "Không có Thương Hiệu";
+            }
+            @thuongHieu
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaThuongHieu)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaThuongHieu)
+
+        <dt class="col-sm-6">Thể Loại:</dt>
+        <dd class="col-sm-6">
+            @{
+                var theLoai = lstTL.FirstOrDefault(tl => tl.MaTheLoai == sp.MaTheLoai)?.TenTheLoai ?? "Không có Thể Loại";
+            }
+            @theLoai
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaTheLoai)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaTheLoai)
+
+        <dt class="col-sm-6">Chất Liệu:</dt>
+        <dd class="col-sm-6">
+            @{
+                var chatlieu = lstCL.FirstOrDefault(tl => tl.MaChatLieu == sp.MaChatLieu)?.TenChatLieu ?? "Không có Chất Liệu";
+            }
+            @chatlieu
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaChatLieu)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaChatLieu)
+
+        <dt class="col-sm-6">Ảnh Sản Phẩm:</dt>
+        <dd class="col-sm-6">
+            <img src="~/photoSP/@sp.UrlAvatar" alt="SanPham Image" width="100" height="100" />
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UrlAvatar)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UrlAvatar)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TenSP)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TenSP)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Mota)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Mota)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TongSoLuong)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TongSoLuong)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TrangThai)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TrangThai)
+
+        <dt class="col-sm-6">Tên Sản Phẩm:</dt>
+        <dd class="col-sm-6">@sp.TenSP</dd>
+
+        <dt class="col-sm-6">Mô tả:</dt>
+        <dd class="col-sm-6">
+            @if (sp.Mota == null)
+            {
+                            <span>Sản Phẩm ko có mô tả </span>
+            }
+            else if (sp.Mota != null)
+            {
+                                <span>@sp.Mota</span>
+            }</dd>
+
+        <dt class="col-sm-6">Tổng Số Lượng:</dt>
+        <dd class="col-sm-6">@sp.TongSoLuong</dd>
+
+        <dt class="col-sm-6">Trạng Thái:</dt>
+        <dd class="col-sm-6">
+            @if (sp.TrangThai == 0)
+            {
+                        <span>Không Khả Dụng</span>
+            }
+            else if (sp.TrangThai == 1)
+            {
+                        <span>Khả Dụng</span>
+            }
         </dd>
     </dl>
 </div>
-<div>
 
-    <a asp-action="AllSanPhamManager" class="btn btn-warning">Hủy</a>
+<hr />
 
-</div>
+<h1>Chi Tiết</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Size</th>
+            <th>Màu</th>
+            <th>Khuyến mại</th>
+            <th>Ảnh</th>
+            <th>Đơn Giá</th>
+            <th>Giá Bán</th>
+            <th>Số Lượng</th>
+            <th>Trạng Thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+        }
+        @foreach (var item in ctsp)
+        {
+                    <tr>
+                        <td>@i</td>
+                        <td>
+                    @{
+                        var size = lstSZ.FirstOrDefault(th => th.MaSize == item.MaSize)?.TenSize ?? "Lỗi Hiển Thị";
+                    }
+                    @size
+                        </td>
+                        <td>
+                    @{
+                        var mau = lstms.FirstOrDefault(th => th.MaMau == item.MaMau)?.TenMau ?? "Lỗi Hiển Thị";
+                    }
+                    @mau
+                        </td>
+                        <td>
+                    @{
+                        var khuyenmai = lstkm.FirstOrDefault(th => th.MaKhuyenMai == item.MaKhuyenMai)?.TenKhuyenMai ?? "Hiện không có đợt giảm giá nào";
+                    }
+                    @khuyenmai
+                        </td>
+                        <td>
+                            <img src="~/photoSanPhamCT/@item.UrlAnhSpct" alt="chi tiet sp Image" width="100" height="100" />
+                        </td>
+                        <td>@String.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.DonGia)</td>
+                        <td>@String.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.GiaBan)</td>
+                        <td>@item.SoLuongTon</td>
+                        <td>
+                    @if (item.TrangThai == 0)
+                    {
+                                        <span>Không Khả Dụng</span>
+                    }
+                    else if (item.TrangThai == 1)
+                    {
+                                        <span>Khả Dụng</span>
+                    }
+                        </td>
+                        <td style="text-align: center; margin-bottom: 20px">
+                            <a asp-action="UpdateChiTietSp" asp-controller="ChiTietSP" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.SKU">Sửa</a>
+                        </td>
+                    </tr>
+            i++;
+        }
+    </tbody>
+</table>
+
+

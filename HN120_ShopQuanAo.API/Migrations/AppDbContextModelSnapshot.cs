@@ -98,19 +98,15 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaKhuyenMai")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaMau")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaSize")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaSp")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MauSacMaMau")
@@ -129,7 +125,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UrlAnhSpct")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SKU");
@@ -195,12 +190,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("MaGioHang");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("GioHang");
                 });
@@ -213,8 +203,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("ChiTietSpsSKU")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DonGia")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("DonGia")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("GioHangMaGioHang")
                         .HasColumnType("nvarchar(450)");
@@ -225,8 +215,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.Property<string>("SKU")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SoLuong")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("SoLuong")
+                        .HasColumnType("int");
 
                     b.Property<string>("TenSp")
                         .HasColumnType("nvarchar(max)");
@@ -261,6 +251,9 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayTaoDon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayThayDoi")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PhanLoai")
@@ -398,28 +391,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaChatLieu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaTheLoai")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaThuongHieu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Mota")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayNhap")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TenSP")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TheLoaiMaTheLoai")
                         .HasColumnType("nvarchar(450)");
@@ -434,7 +421,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UrlAvatar")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaSp");
@@ -726,22 +712,28 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "513c8897-5bc7-4396-935c-c38355df1e54",
-                            ConcurrencyStamp = "c1c4df94-b8d9-47f6-93a0-302bb980cc26",
+
+                            Id = "82a0b057-4955-421f-a25f-c83a6d5913f0",
+                            ConcurrencyStamp = "d09301de-e87f-4401-9bfc-0f04ac929ed1",
+
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e9b7928a-e12c-4bb9-a75f-a029afc0a8c1",
-                            ConcurrencyStamp = "17bc443f-5bc8-416c-8053-6909ce86dd58",
+
+                            Id = "b72d617a-f0be-4bfd-bfb6-56988eac617e",
+                            ConcurrencyStamp = "ca7e9073-1be2-48f8-81f4-da0d8ef208ed",
+
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "0f627436-ca2a-4e22-9b7c-66f9c3e56fd9",
-                            ConcurrencyStamp = "0a7a53d4-3c52-4319-ae7c-50c80576e3e6",
+
+                            Id = "205db25c-0048-4bab-8767-c9681b3f46f0",
+                            ConcurrencyStamp = "728cb71d-b010-4977-9dd4-188ffed0c7cd",
+
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -997,8 +989,10 @@ namespace HN120_ShopQuanAo.API.Migrations
             modelBuilder.Entity("HN120_ShopQuanAo.Data.Models.GioHang", b =>
                 {
                     b.HasOne("HN120_ShopQuanAo.Data.Models.User", "User")
-                        .WithMany("GioHangs")
-                        .HasForeignKey("UserID");
+                        .WithOne("GioHang")
+                        .HasForeignKey("HN120_ShopQuanAo.Data.Models.GioHang", "MaGioHang")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1233,7 +1227,7 @@ namespace HN120_ShopQuanAo.API.Migrations
                 {
                     b.Navigation("DeliveryAddress");
 
-                    b.Navigation("GioHangs");
+                    b.Navigation("GioHang");
 
                     b.Navigation("HoaDons");
 

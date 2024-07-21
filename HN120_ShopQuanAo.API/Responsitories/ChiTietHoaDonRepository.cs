@@ -45,11 +45,6 @@ namespace HN120_ShopQuanAo.API.Responsitories
                     }
                     else
                     {
-                        if (hoadon.TrangThai > 1 )
-                        {
-                            ctsanpham.SoLuongTon -= hd.SoLuongMua;
-                            sanpham.TongSoLuong -= hd.SoLuongMua;
-                        }
                         _appDbContext.HoaDonChiTiet.Add(hd);
                     }
                 }

@@ -1,153 +1,219 @@
-﻿﻿@using HN120_ShopQuanAo.Data.Models;
+﻿@using HN120_ShopQuanAo.Data.Models;
 @model IEnumerable<HN120_ShopQuanAo.Data.Models.SanPham>
 
 @{
     ViewData["Title"] = "AllSanPhamManager";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
-    List<SanPham> lstSP = ViewBag.lstSP as List<SanPham>;
     List<ThuongHieu> lstTH = ViewBag.lstTH as List<ThuongHieu>;
     List<TheLoai> lstTL = ViewBag.lstTL as List<TheLoai>;
     List<ChatLieu> lstCL = ViewBag.lstCL as List<ChatLieu>;
-
 }
 
-<div style="background : #fff;">
+<style>
+    /* Existing styles */
 
-<h1 style="text-align: center">Quản Lý Sản Phẩm</h1>
-<div>
-<p>
-    <a class="btn btn-primary" asp-action="CreateSanPham">Thêm Sản Phẩm</a>
+    /* Toggle Switch CSS */
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
 
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <tr>
-            <th>
-                STT
-            </th>
-            <th>
-               Mã SP 
-            </th>
-            <th>
-               Tên 
-            </th>
-            <th>
-              Thương Hiệu
-            </th>
-            <th>
-               Thể Loại
-            </th>
-            <th>
-               Chất Liệu
-            </th>
-            <th>
-                Ảnh
-            </th>
-            <th>
-               Mô Tả 
-            </th>
-            <th>
-                Số Lượng
-            </th>
-            <th>
-               Trạng Thái 
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+</style>
+
+<div class="sp">
+    <h1>Quản Lý Sản Phẩm</h1>
+    
+    <div>
+        <form class="form-inline mb-3">
+            <div class="row">
+                <div class="col-md-3">
+                    <select id="filterThuongHieu" class="form-control">
+                        <option value="">Chọn Thương Hiệu</option>
+                        @foreach (var th in lstTH)
+                        {
+                                <option value="@th.MaThuongHieu">@th.TenThuongHieu</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="filterTheLoai" class="form-control">
+                        <option value="">Chọn Thể Loại</option>
+                        @foreach (var tl in lstTL)
+                        {
+                                <option value="@tl.MaTheLoai">@tl.TenTheLoai</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="filterChatLieu" class="form-control">
+                        <option value="">Chọn Chất Liệu</option>
+                        @foreach (var cl in lstCL)
+                        {
+                                <option value="@cl.MaChatLieu">@cl.TenChatLieu</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="filterTrangThai" class="form-control">
+                        <option value="">Chọn Trạng Thái</option>
+                        <option value="1">Hoạt Động</option>
+                        <option value="0">Ngừng Hoạt Động</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+        <input type="text" id="searchString" class="form-control" placeholder="Tìm kiếm tên sản phẩm" style="width: 300px;" />
+        <a class="btn btn-primary" asp-action="CreateSanPham">Thêm Sản Phẩm</a>
+    </div>
+        <table class="table" id="sanPhamList">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Mã SP</th>
+                    <th>Tên</th>
+                    <th>Thương Hiệu</th>
+                    <th>Thể Loại</th>
+                    <th>Chất Liệu</th>
+                    <th>Ảnh</th>
+                    <th>Mô Tả</th>
+                    <th>Số Lượng</th>
+                    <th>Trạng Thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
                 @{
-
                     int i = 1;
                 }
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>
-                            @i
-                        </td>
+                        <tr data-thuonghieu="@item.MaThuongHieu" data-theloai="@item.MaTheLoai" data-chatlieu="@item.MaChatLieu" data-trangthai="@item.TrangThai">
+                            <td>@i</td>
+                            <td>@item.MaSp</td>
+                            <td>@item.TenSP</td>
                             <td>
-                            @item.MaSp
+                            @{
+                                var thuongHieu = lstTH.FirstOrDefault(th => th.MaThuongHieu == item.MaThuongHieu)?.TenThuongHieu ?? "Không có Thương Hiệu";
+                            }
+                            @thuongHieu
                             </td>
                             <td>
-                            @item.TenSP
-                        </td>
-                        <td>
-                                @{
-                                    var thuongHieu = lstTH.FirstOrDefault(th => th.MaThuongHieu == item.MaThuongHieu)?.TenThuongHieu ?? "N/A";
-                                }
-                                @thuongHieu
-                        </td>
-                        <td>
                             @{
-                                var theLoai = lstTL.FirstOrDefault(tl => tl.MaTheLoai == item.MaTheLoai)?.TenTheLoai ?? "N/A";
+                                var theLoai = lstTL.FirstOrDefault(tl => tl.MaTheLoai == item.MaTheLoai)?.TenTheLoai ?? "Không có Thể Loại";
                             }
                             @theLoai
-                        </td>
+                            </td>
                             <td>
                             @{
-                                var chatlieu = lstCL.FirstOrDefault(tl => tl.MaChatLieu == item.MaChatLieu)?.TenChatLieu ?? "N/A";
+                                var chatlieu = lstCL.FirstOrDefault(tl => tl.MaChatLieu == item.MaChatLieu)?.TenChatLieu ?? "Không có Chất Liệu";
                             }
                             @chatlieu
                             </td>
-                        <td >
-
-                                    <img src="~/photoSP/@item.UrlAvatar" alt="SanPham Image" width="100" height="100" />
-                            @*<img src="~/photoBooks/@item.MainPhoto" class="rounded float-start" alt="...">*@
-                        </td>
                             <td>
-                            @item.Mota
+                            @if (item.UrlAvatar == null)
+                            {
+                                        <img src="~/photoSP/khongxacdinh_213x379.jpg" alt="SanPham Image" width="100" height="100" />
+                            }
+                            else
+                            {
+                                        <img src="~/photoSP/@item.UrlAvatar" alt="SanPham Image" width="100" height="100" />
+                            }
                             </td>
-
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TongSoLuong)
-                        </td>
-                        <td>
-                            @{
-
-                                var trangThai = item.TrangThai == 1 && item.TongSoLuong == 0 ? "Hết Hàng" :
-                                                item.TrangThai == 0 ? "Không Khả Dụng" : "Khả Dụng";
-
-                            }
-                            @trangThai
-                        </td>
-                        <td style="text-align : center; margin-bottom : 20px">
-                            @if (item.TrangThai == 0)
-                            {
-
-                                                <form asp-action="UpdateStatusSPKD" method="post" style="display:inline;">
-
-                                                            <input type="hidden" name="id" value="@item.MaSp" />
-                                                            <button type="submit" class="btn btn-secondary">Bật</button>
-                                                </form>
-                            }
-                            @if (item.TrangThai == 1)
-                            {
-
-                                                           <form asp-action="UpdateStatusSPKKD" method="post" style="display:inline;">
-
-                                                            <input type="hidden" name="id" value="@item.MaSp" />
-                                                    <button type="submit" class="btn btn-secondary">Tăt</button>
-                                                </form>
-                            }
-
-                                    <a asp-action="SanPhamDetail" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Chi Tiết</a>
-                                    <a asp-action="UpdateSanPham" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Sửa</a>    
-
-                                    <a asp-action="AllChiTietSpManager" asp-controller="ChiTietSP" asp-area="Admin" id="btn_chitiet_detail" class="btn btn-primary" type="button" asp-route-id="@item.MaSp"> All Chi Tiết</a>
-                                        <a asp-action="CreateChiTietSp" asp-controller="ChiTietSP" asp-area="Admin" id="btn_chitiet_detail" class="btn btn-primary" type="button" asp-route-id="@item.MaSp"> Them 1 </a>
-                                    <a asp-action="AddChiTietSp" asp-route-id="@item.MaSp" class="btn btn-primary">Thêm Nhiều</a>
-                                            <a asp-action="NhapHang" asp-route-id="@item.MaSp" class="btn btn-primary">Thêm Nhiều</a>
-
-
-
-                        </td>
-                    </tr>
+                            <td>@item.Mota</td>
+                            <td>@Html.DisplayFor(modelItem => item.TongSoLuong)</td>
+                                <td>
+                                <form asp-action="@((item.TrangThai == 1) ? "UpdateStatusSPKKD" : "UpdateStatusSPKD")" method="post" id="form-@item.MaSp">
+                                    <input type="hidden" name="id" value="@item.MaSp" />
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" class="status-toggle" data-form-id="form-@item.MaSp" @(item.TrangThai == 1 ? "checked" : "") onchange="document.getElementById('form-@item.MaSp').submit();" />
+                                        <span class="slider"></span>
+                                    </label>
+                                </form>
+                            </td>
+                            <td style="text-align: center; margin-bottom: 20px">
+                                <a asp-action="UpdateSanPham" asp-controller="SanPham" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.MaSp">Chi Tiết</a>
+                            </td>
+                        </tr>
                     i++;
                 }
-    </tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-</table>
-</div>
-</div>
+@section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                function filterProducts() {
+                    var searchString = $.trim($('#searchString').val().toLowerCase());
+                    var thuongHieu = $('#filterThuongHieu').val();
+                    var theLoai = $('#filterTheLoai').val();
+                    var chatLieu = $('#filterChatLieu').val();
+                    var trangThai = $('#filterTrangThai').val();
+
+                    $('#sanPhamList tbody tr').each(function () {
+                        var tenSP = $.trim($(this).find('td:eq(2)').text().toLowerCase());
+                        var spThuongHieu = $(this).data('thuonghieu');
+                        var spTheLoai = $(this).data('theloai');
+                        var spChatLieu = $(this).data('chatlieu');
+                        var spTrangThai = $(this).data('trangthai').toString();
+
+                        var isMatch = tenSP.includes(searchString) &&
+                                      (thuongHieu === "" || thuongHieu == spThuongHieu) &&
+                                      (theLoai === "" || theLoai == spTheLoai) &&
+                                      (chatLieu === "" || chatLieu == spChatLieu) &&
+                                      (trangThai === "" || trangThai == spTrangThai);
+
+                        if (isMatch) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                }
+
+                $('#searchString, #filterThuongHieu, #filterTheLoai, #filterChatLieu, #filterTrangThai').on('input change', filterProducts);
+            });
+        </script>
+}

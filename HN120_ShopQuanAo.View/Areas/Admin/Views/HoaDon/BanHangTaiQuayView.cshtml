@@ -81,15 +81,9 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
     var tabCount = 1;
 
     function addTab() {
-        if (tabCount >= 5) {
-            $.notify('Chỉ có thể tạo tối đa 5 hóa đơn ', 'error');
-            return;
-        }
-
         tabCount++;
         var newTabId = 'HoaDon' + tabCount;
         var newTabContent = '<div id="' + newTabId + '" class="tab-content">' +
@@ -108,23 +102,30 @@
         $('#tabContainer').animate({
             scrollLeft: $('#tabContainer')[0].scrollWidth
         }, 500);
+
+        // Đặt hẹn giờ đóng tab sau 30 giây
+        setTimeout(function () {
+            closeTab(null, newTabId);
+        }, 600000); // 30000 milliseconds = 30 seconds
     }
 
     function openTab(event, tabId) {
         $('.tab').removeClass('active');
-        $(event.target).closest('.tab').addClass('active');
+        $(event ? event.target : $('.tab[onclick*="' + tabId + '"]')).closest('.tab').addClass('active');
 
         $('.tab-content').removeClass('active');
         $('#' + tabId).addClass('active');
     }
 
     function closeTab(event, tabId) {
-        event.stopPropagation();
+        if (event) {
+            event.stopPropagation();
+        }
 
         var tabToRemove = $('#' + tabId);
         var wasActive = tabToRemove.hasClass('active');
         tabToRemove.remove();
-        $(event.target).closest('.tab').remove();
+        $('.tab[onclick*="' + tabId + '"]').remove();
 
         // Cập nhật tabCount
         tabCount--;
@@ -136,3 +137,4 @@
         }
     }
 </script>
+
