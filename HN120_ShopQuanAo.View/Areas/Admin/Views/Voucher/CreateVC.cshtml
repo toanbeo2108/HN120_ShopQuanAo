@@ -5,13 +5,21 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Thêm Voucher</h1>
+<div>
+    <h1>Thêm Voucher</h1>
+</div>
 
 <div class="container">
     <div class="row">
         <div class="col-md-6 border-right">
             <h4>Voucher</h4>
             <hr />
+            @if (TempData["error message"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["error message"]
+                </div>
+            }
             <form asp-action="CreateVC">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
@@ -25,7 +33,7 @@
                     <span asp-validation-for="Ten" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Giá giảm tối thiểu</label>
+                    <label class="control-label">Đơn giá tối thiểu</label>
                     <input asp-for="GiaGiamToiThieu" class="form-control" />
                     <span asp-validation-for="GiaGiamToiThieu" class="text-danger"></span>
                 </div>
@@ -76,9 +84,7 @@
                     <span asp-validation-for="MoTa" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Trạng thái</label>
                     <input asp-for="TrangThai" id="TrangThai" type="hidden" class="form-control" />
-                    <input type="text" id="TrangThaiText" class="form-control" readonly />
                     <span asp-validation-for="TrangThai" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -109,8 +115,8 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="AllVoucherManager">Quay Lại</a>
+<div class="col-md-6">
+    <a asp-action="AllVoucherManager" class="btn btn-secondary">Quay Lại</a>
 </div>
 
 @section Scripts {
@@ -153,6 +159,27 @@
         });
 
         $(function () {
+            var charLimit = 40;
+            function checkAndReset() {
+                var inputs = $('#GiaGiamToiThieu, #GiaGiamToiDa, #GiaTriGiam, #SoLuong');
+                var exceeded = false;
+
+                inputs.each(function () {
+                    if ($(this).val().length > charLimit) {
+                        exceeded = true;
+                    }
+                });
+
+                if (exceeded) {
+                    alert("bạn đã nhập vượt quá kí tự cho phép hệ thống cho phép , trang này sẽ load lại");
+                    location.reload();
+                }
+            }
+
+            $('#Ten, #GiaGiamToiThieu, #GiaGiamToiDa, #GiaTriGiam, #SoLuong, #MoTa').on('keyup', function () {
+                checkAndReset();
+            });
+
             $('#Ten, #GiaGiamToiThieu, #GiaGiamToiDa, #NgayBatDau, #NgayKetThuc, #GiaTriGiam, #SoLuong, #MoTa').on('input change', function () {
                 updateVoucherPreview();
             });
@@ -225,7 +252,6 @@
             updateVoucherPreview();
         });
     </script>
-
 
     <style>
         .voucher-preview {

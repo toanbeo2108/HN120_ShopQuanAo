@@ -167,6 +167,7 @@
                 <option value="SapDienRa">Sắp diễn ra</option>
                 <option value="DangHoatDong">Đang hoạt động</option>
                 <option value="DaKetThuc">Đã kết thúc</option>
+                <option value="KetThucSom">Kết thúc sớm</option>
             </select>
             <button class="btn btn-outline-secondary" type="button" onclick="filterByStatus()">
                 <i class="fa fa-filter"></i> Lọc
@@ -192,11 +193,10 @@
     <table class="table table-bordered">
         <thead class="thead-dark">
             <tr>
-                <th>STT</th>
                 <th>Mã Voucher</th>
                 <th>Tên Voucher</th>
                 <th>Kiểu Giảm Giá</th>
-                <th>Giá Giảm Tối Thiểu</th>
+                <th>Đơn giá tối thiểu</th>
                 <th>Giá Giảm Tối Đa</th>
                 <th>Giá Trị Giảm</th>
                 <th>Ngày Bắt Đầu</th>
@@ -209,11 +209,9 @@
         </thead>
         <tbody id="voucherTableBody">
             @{
-                var index = 1;
                 foreach (var item in Model)
                 {
                     <tr>
-                        <td>@index</td>
                         <td>@Html.DisplayFor(modelItem => item.MaVoucher)</td>
                         <td>@Html.DisplayFor(modelItem => item.Ten)</td>
                         <td>
@@ -230,7 +228,7 @@
                             <div>@($"{item.GiaGiamToiThieu:n0} VND")</div>
                         </td>
                         <td>
-                            <div >@($"{item.GiaGiamToiDa:n0} VND")</div>
+                            <div>@($"{item.GiaGiamToiDa:n0} VND")</div>
                         </td>
                         <td>
                             @if (item.KieuGiamGia == 0)
@@ -256,7 +254,7 @@
                             }
                         </td>
                         <td>
-                            <div >@item.SoLuong</div>
+                            <div>@item.SoLuong</div>
                         </td>
                         <td>
                             <div style="color:black">@item.MoTa</div>
@@ -281,25 +279,25 @@
                                 }
                                 else if (item.TrangThai == 3)
                                 {
-                                    <span class="text-warning">kết thúc sớm</span>
+                                    <span class="text-warning">Kết thúc sớm</span>
                                 }
                             }
                         </td>
                         <td>
                             @Html.ActionLink("Sửa", "UpdateVC", new { id = item.MaVoucher }, new { @class = "btn btn-success btn-sm" })
-                                @if (item.TrangThai == 1 && item.NgayKetThuc > DateTime.Now)
-                                {
-                                <form asp-action="UpdateStatusVCKKD" asp-route-id="@item.MaVoucher">
-                                    <button type="submit" class="btn btn-warning btn-sm">Kết thúc sớm</button>
+                            @if (item.TrangThai == 1)
+                            {
+                                <form method="post" asp-action="EndEarly" asp-controller="Voucher" asp-route-id="@item.MaVoucher" style="display:inline;">
+                                    <button type="submit" class="btn btn-warning btn-sm">Kết thúc </button>
                                 </form>
-                                }
-
+                            }
+                        </td>
                     </tr>
-                    index++;
                 }
             }
         </tbody>
     </table>
+
 
     <script>
         // lọc mã
@@ -311,7 +309,7 @@
             tr = table.getElementsByTagName("tr");
 
             for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[1];
+                td = tr[i].getElementsByTagName("td")[0]; 
                 if (td) {
                     txtValue = td.textContent || td.innerText;
                     txtValue = txtValue.toUpperCase().replace(/\s+/g, ' ').trim();
@@ -325,6 +323,7 @@
         }
 
 
+
         // Lọc Trạng thái
         function filterByStatus() {
             var status = document.getElementById("statusFilter").value;
@@ -332,13 +331,14 @@
             var tr = table.getElementsByTagName("tr");
 
             for (var i = 0; i < tr.length; i++) {
-                var td = tr[i].getElementsByTagName("td")[11];
+                var td = tr[i].getElementsByTagName("td")[10]; 
                 if (td) {
                     var statusText = td.textContent.trim();
                     if (status === "" ||
                         (status === "SapDienRa" && statusText === "Sắp diễn ra") ||
                         (status === "DangHoatDong" && statusText === "Đang hoạt động") ||
-                        (status === "DaKetThuc" && statusText === "Đã kết thúc")) {
+                        (status === "DaKetThuc" && statusText === "Đã kết thúc") ||
+                        (status === "KetThucSom" && statusText === "Kết thúc sớm")) {
                         tr[i].style.display = "";
                     } else {
                         tr[i].style.display = "none";
@@ -347,16 +347,16 @@
             }
         }
 
+
+
         // Lọc ngày
         function filterByDateRange() {
             var status = document.getElementById("statusFilter").value;
             var startDate = document.getElementById("startDateFilter").value;
             var endDate = document.getElementById("endDateFilter").value;
 
-
             var startDateObj = startDate ? new Date(startDate) : null;
             var endDateObj = endDate ? new Date(endDate) : null;
-
 
             if (endDateObj) {
                 endDateObj.setHours(23);
@@ -364,25 +364,21 @@
                 endDateObj.setSeconds(59);
             }
 
-
             var table = document.getElementById("voucherTableBody");
             var rows = table.getElementsByTagName("tr");
 
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
 
-
-                var startDateCell = new Date(row.getElementsByTagName("td")[7].textContent);
-                var endDateCell = new Date(row.getElementsByTagName("td")[8].textContent);
-                var statusCell = row.getElementsByTagName("td")[11].textContent;
-
+                var startDateCell = new Date(row.getElementsByTagName("td")[6].textContent); 
+                var endDateCell = new Date(row.getElementsByTagName("td")[7].textContent); 
+                var statusCell = row.getElementsByTagName("td")[10].textContent; 
 
                 if (endDateCell) {
                     endDateCell.setHours(23);
                     endDateCell.setMinutes(59);
                     endDateCell.setSeconds(59);
                 }
-
 
                 var meetsStatusCriteria = (status === "" || status === statusCell);
                 var meetsDateCriteria = (startDateObj === null || endDateObj === null ||
@@ -395,7 +391,8 @@
                 }
             }
         }
-        // Hàm load trạng thái 
+
+        // // Hàm load trạng thái
         function checkAndReloadIfMinuteChanged() {
             var currentDateTime = new Date();
             var currentMinute = currentDateTime.getMinutes();
@@ -405,11 +402,11 @@
                 var newMinute = newDateTime.getMinutes();
 
                 if (newMinute !== currentMinute) {
-                    location.reload(); 
+                    location.reload();
                 } else {
-                    checkAndReloadIfMinuteChanged(); 
+                    checkAndReloadIfMinuteChanged();
                 }
-            }, 1000); 
+            }, 1000);
         }
         window.onload = function () {
             checkAndReloadIfMinuteChanged();
