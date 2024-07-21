@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-select Dropdown với Custom Input</title>
+    <!-- Bao gồm Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <input id="btn_masp" value="SP1" />
+    </div>
+    <div id="product-details">
+        <div class="product-detail">
+            <label for="size">Chọn size mới:</label>
+            <select class="size" name="size[]" multiple="multiple" style="width: 300px;">
+                <option value="1">S</option>
+                <option value="2">M</option>
+                <option value="3">L</option>
+            </select>
+
+            <label for="color">Chọn màu sắc hoặc nhập mới:</label>
+            <select class="color" name="color[]" multiple="multiple" style="width: 300px;">
+                <option value="den">Đen</option>
+                <option value="vang_sang_trong">Vàng Sang Trọng</option>
+                <option value="bac">Bạc</option>
+                <option value="xanh">Xanh</option>
+            </select>
+
+            <label for="khuyen-mai">Chọn khuyến mãi:</label>
+            <select class="khuyen-mai" name="khuyenMai[]" multiple="multiple" style="width: 300px;">
+                <option value="km1">Khuyến mãi 1</option>
+                <option value="km2">Khuyến mãi 2</option>
+            </select>
+
+            <label for="chat-lieu">Chọn chất liệu:</label>
+            <select class="chat-lieu" name="chatLieu[]" multiple="multiple" style="width: 300px;">
+                <option value="cl1">Chất liệu 1</option>
+                <option value="cl2">Chất liệu 2</option>
+            </select>
+
+            <label for="url-anh">URL Ảnh:</label>
+            <input type="text" class="url-anh" name="urlAnh[]" />
+
+            <label for="gia-ban">Giá bán:</label>
+            <input type="text" class="gia-ban" name="giaBan[]" />
+
+            <label for="so-luong">Số lượng:</label>
+            <input type="text" class="so-luong" name="soLuong[]" />
+        </div>
+    </div>
+    <button id="add-more" type="button">Thêm chi tiết sản phẩm khác</button>
+    <button id="submit" type="submit">Hoàn tất</button>
+
+    <!-- Bao gồm jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bao gồm Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        let ctspList = [];
+
+        $(document).ready(function() {
+            $('.size, .color, .khuyen-mai, .chat-lieu').select2({
+                tags: true,
+                tokenSeparators: [',', ' ']
+            });
+
+            $('#add-more').click(function() {
+                $('.product-detail').each(function() {
+                    let maSp = $('#btn_masp').val();
+                    let maSize = $(this).find('.size').val().join(',');
+                    let maMau = $(this).find('.color').val().join(',');
+                    let maKhuyenMai = $(this).find('.khuyen-mai').val().join(',');
+                    let maChatLieu = $(this).find('.chat-lieu').val().join(',');
+                    let urlAnhSpct = $(this).find('.url-anh').val();
+                    let giaBan = $(this).find('.gia-ban').val();
+                    let soLuongTon = $(this).find('.so-luong').val();
+
+                    ctspList.push({
+                        MaSp: maSp,
+                        MaSize: maSize,
+                        MaMau: maMau,
+                        MaKhuyenMai: maKhuyenMai,
+                        MaChatLieu: maChatLieu,
+                        UrlAnhSpct: urlAnhSpct,
+                        GiaBan: parseFloat(giaBan),
+                        SoLuongTon: parseInt(soLuongTon)
+                    });
+                });
+
+                let newDetail = $('.product-detail:first').clone();
+                newDetail.find('select').select2('destroy');
+                newDetail.find('input').val('');
+                newDetail.appendTo('#product-details');
+                newDetail.find('select').select2({
+                    tags: true,
+                    tokenSeparators: [',', ' ']
+                });
+
+                alert('Chi tiết sản phẩm đã được thêm vào danh sách tạm thời.');
+            });
+
+            $('#submit').click(function() {
+                ctspList.forEach(function(ctsp) {
+                    let apiurlcr = `https://localhost:7197/api/CTSanPham/AddCTSP` +
+                                   `?MaSp=${ctsp.MaSp}` +
+                                   `&MaSize=${ctsp.MaSize}` +
+                                   `&MaMau=${ctsp.MaMau}` +
+                                   `&MaKhuyenMai=${ctsp.MaKhuyenMai}` +
+                                   `&MaChatLieu=${ctsp.MaChatLieu}` +
+                                   `&UrlAnhSpct=${ctsp.UrlAnhSpct}` +
+                                   `&GiaBan=${ctsp.GiaBan}` +
+                                   `&SoLuongTon=${ctsp.SoLuongTon}`;
+
+                    $.post(apiurlcr, function(response) {
+                        alert(response.message);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

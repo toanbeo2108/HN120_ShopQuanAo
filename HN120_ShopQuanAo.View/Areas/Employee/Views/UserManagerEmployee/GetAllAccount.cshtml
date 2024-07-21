@@ -1,0 +1,153 @@
+﻿@model IEnumerable<HN120_ShopQuanAo.Data.Models.User>
+
+@{
+    ViewData["Title"] = "GetAllAccount";
+    Layout = "~/Areas/Employee/Views/Shared/_LayoutEmployee.cshtml";
+
+}
+
+<!-- Form hoặc nút lọc -->
+<form asp-action="FilterByRole" method="get">
+@*     <label>Select Role:</label>
+    <select name="roleName">
+        <option value="User">User</option>
+        <!-- Thêm các vai trò khác nếu cần -->
+    </select>
+    <button type="submit">Filter</button> *@
+</form>
+<a class="btn btn-primary" asp-controller="UserManagerEmployee" asp-action="CreateAnAccount">+ Thêm mới tài khoản</a>
+
+<table id="tble_ajax" class="table" enctype="multipart/form-data">
+    <thead>
+        <tr>
+            <th>
+
+            </th>
+            <th>
+                UserName
+            </th>
+            <th>
+                FullName
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                PhoneNumber
+            </th>
+            <th>
+                Gender
+            </th>
+            <th>
+                Birthday
+            </th>
+            <th>
+
+                Status
+            </th>
+            <th>
+
+                Action
+            </th>
+        </tr>
+    </thead>
+
+    <tbody id="userTableBody">
+
+        @foreach (var items in Model)
+        {
+            <tr>
+                <td>
+                    @if (items.Avatar == null)
+                    {
+                        <img src="~/img/Avatar/AvatarDefault.png" class="rounded-circle" style="width : 50px; height:50px;object-fit: cover" alt="Error Image">
+                    }
+                    else
+                    {
+                        <img src="~/img/Avatar/@items.Avatar" class="rounded-circle" style="width : 50px; height:50px;object-fit: cover" alt="Error Image">
+                    }
+                </td>
+                <td>
+                    @items.UserName
+                </td>
+                <td>
+
+                    @items.FullName
+
+                </td>
+                <td>
+                    @items.Email
+                </td>
+                <td>
+                    @items.PhoneNumber
+                </td>
+                <td>
+
+                    @if (items.Gender == null)
+                    {
+                        <p>Chưa có cập nhật giới tính</p >
+                    }else
+                    {
+                        if (items.Gender == 1)
+                        {
+                            <p>Nam</p>
+                        }
+                        else if (items.Gender == 2)
+                        {
+                            <p>Nữ</p>
+                        }else
+                        {
+                            <p>Khác</p>
+                        }
+                    }
+                    
+
+                </td>
+                <td>
+                    @items.Birthday
+                </td>
+                <td>
+
+                    @if (items.Status == 1)
+                    {
+                        <span style="color:green">Khả dụng</span>
+                    }
+                    else if (items.Status == 0)
+                    {
+                        <span style="color:red">Đã khóa</span>
+                    }
+                </td>
+                <td>
+                    <a asp-controller="UserManagerEmployee" asp-action="Update" asp-route-id="@items.Id" class="btn btn-primary">
+                        <i class="bi bi-gear-fill"></i>
+                    </a>
+                    @if (items.Status == 1)
+                    {
+                        <a asp-controller="UserManagerEmployee" asp-action="UpdateStatusUser" asp-route-id="@items.Id" asp-route-status="0" class="btn btn-danger"><i class="bi bi-lock"></i></a>
+                    }
+                    else if (items.Status == 0)
+                    {
+                        <a asp-controller="UserManagerEmployee" asp-action="UpdateStatusUser" asp-route-id="@items.Id" asp-route-status="1" class="btn btn-success"><i class="bi bi-key"></i></a>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@*Link datatable*@
+<link href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+@section scripts
+    {
+    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Khởi tạo DataTable
+            var dataTable = $('#tble_ajax').DataTable();
+        });
+    </script>
+
+}
+

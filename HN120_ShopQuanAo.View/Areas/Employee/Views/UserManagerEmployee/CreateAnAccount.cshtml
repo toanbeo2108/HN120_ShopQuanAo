@@ -1,0 +1,43 @@
+﻿@using HN120_ShopQuanAo.Data.ViewModels;
+@model HN120_ShopQuanAo.Data.ViewModels.RegisterUser
+@{
+    ViewData["Title"] = "CreateAnAccount";
+    Layout = "~/Areas/Employee/Views/Shared/_LayoutEmployee.cshtml";
+}
+<form asp-controller="UserManager" asp-action="CreateAnAccount">
+    <p>
+        <label>Role<span>*</span></label>
+        <select name="role" class="form-control">
+            <option value="User">User</option>
+            <option value="Customer">Customer</option>
+        </select>
+    </p>
+    <p>
+        <label>PhoneNumber<span>*</span></label>
+        <input type="text" required asp-for="PhoneNumber">
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </p>
+    <p>
+        <label>Email<span>*</span></label>
+        <input type="email" required asp-for="Email">
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </p>
+    <p>
+        <label>FullName<span>*</span></label>
+        <input type="text" required asp-for="FullName">
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </p>
+    <p>
+        <label>Passwords <span>*</span></label>
+        <input type="password" required asp-for="Password">
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </p>
+    <p>
+        <label>ConfirmPassword <span>*</span></label>
+        <input type="password" required asp-for="ConfirmPassword">
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </p>
+    <div class="login_submit">
+        <button type="submit">Submit</button>
+    </div>
+</form>

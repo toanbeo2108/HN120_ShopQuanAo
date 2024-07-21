@@ -15,13 +15,60 @@
         }
 
         h1 {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filters-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
 
         .input-group {
-            max-width: 400px;
-            margin-bottom: 20px;
+            display: flex;
+            margin-right: 10px;
         }
+
+            .input-group input,
+            .input-group select {
+                margin-right: 5px;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            border-radius: 0.2rem;
+            text-decoration: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #004085;
+            }
+
+        .btn-outline-secondary {
+            color: #6c757d;
+            background-color: transparent;
+            border-color: #6c757d;
+        }
+
+            .btn-outline-secondary:hover {
+                color: #fff;
+                background-color: #6c757d;
+                border-color: #6c757d;
+            }
 
         .table {
             width: 100%;
@@ -70,34 +117,6 @@
             border-radius: 0.2rem;
         }
 
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: #fff;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            border-radius: 0.2rem;
-        }
-
-            .btn-primary:hover {
-                background-color: #0056b3;
-                border-color: #004085;
-            }
-
-        .btn-danger {
-            background-color: #dc3545;
-            border-color: #dc3545;
-            color: #fff;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            border-radius: 0.2rem;
-        }
-
-            .btn-danger:hover {
-                background-color: #c82333;
-                border-color: #bd2130;
-            }
-
         .btn-success {
             background-color: #28a745;
             border-color: #28a745;
@@ -112,68 +131,72 @@
                 border-color: #1e7e34;
             }
 
-        .btn-outline-secondary {
-            color: #6c757d;
-            background-color: transparent;
-            background-image: none;
-            border-color: #6c757d;
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 1rem 0;
         }
 
-            .btn-outline-secondary:hover {
-                color: #fff;
-                background-color: #6c757d;
-                border-color: #6c757d;
-            }
+        .page-item {
+            margin: 0 5px;
+        }
 
+        .page-link {
+            color: #007bff;
+            text-decoration: none;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+        }
+
+            .page-link:hover {
+                background-color: #e9ecef;
+            }
     </style>
 </head>
 <body>
-    <h1>Quản lý Voucher</h1>
-
-    <p>
+    <div class="header">
+        <h1>Quản lý Voucher</h1>
         <a asp-action="CreateVC" class="btn btn-primary">Thêm mới</a>
-    </p>
+    </div>
 
-    <div class="input-group mb-3">
-        <select class="form-control" id="statusFilter">
-            <option value="">Tất cả trạng thái</option>
-            <option value="SapDienRa">Sắp diễn ra</option>
-            <option value="DangHoatDong">Đang hoạt động</option>
-            <option value="DaKetThuc">Đã kết thúc</option>
-        </select>
-        <div class="input-group-append">
+    <div class="filters-container">
+        <div class="input-group">
+            <select class="form-control" id="statusFilter">
+                <option value="">Tất cả trạng thái</option>
+                <option value="SapDienRa">Sắp diễn ra</option>
+                <option value="DangHoatDong">Đang hoạt động</option>
+                <option value="DaKetThuc">Đã kết thúc</option>
+                <option value="KetThucSom">Kết thúc sớm</option>
+            </select>
             <button class="btn btn-outline-secondary" type="button" onclick="filterByStatus()">
                 <i class="fa fa-filter"></i> Lọc
             </button>
         </div>
-    </div>
 
-
-    <div class="input-group mb-3">
-        <input type="date" class="form-control" id="startDateFilter">
-        <input type="date" class="form-control" id="endDateFilter">
-        <div class="input-group-append">
+        <div class="input-group">
+            <input type="date" class="form-control" id="startDateFilter">
+            <input type="date" class="form-control" id="endDateFilter">
             <button class="btn btn-outline-secondary" type="button" onclick="filterByDateRange()">
                 <i class="fa fa-calendar"></i> Lọc theo ngày
             </button>
         </div>
-    </div>
 
-    <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Tìm kiếm Voucher theo mã" aria-label="Tìm kiếm Voucher theo mã" aria-describedby="button-addon2" id="searchBox">
-        <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="searchVoucher()">
-            <i class="fa fa-search"></i> Tìm kiếm
-        </button>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Tìm kiếm Voucher theo mã" aria-label="Tìm kiếm Voucher theo mã" aria-describedby="button-addon2" id="searchBox">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="searchVoucher()">
+                <i class="fa fa-search"></i> Tìm kiếm
+            </button>
+        </div>
     </div>
 
     <table class="table table-bordered">
         <thead class="thead-dark">
             <tr>
-                <th>STT</th>
                 <th>Mã Voucher</th>
                 <th>Tên Voucher</th>
                 <th>Kiểu Giảm Giá</th>
-                <th>Giá Giảm Tối Thiểu</th>
+                <th>Đơn giá tối thiểu</th>
                 <th>Giá Giảm Tối Đa</th>
                 <th>Giá Trị Giảm</th>
                 <th>Ngày Bắt Đầu</th>
@@ -186,11 +209,9 @@
         </thead>
         <tbody id="voucherTableBody">
             @{
-                var index = 1;
                 foreach (var item in Model)
                 {
                     <tr>
-                        <td>@index</td>
                         <td>@Html.DisplayFor(modelItem => item.MaVoucher)</td>
                         <td>@Html.DisplayFor(modelItem => item.Ten)</td>
                         <td>
@@ -204,19 +225,19 @@
                             }
                         </td>
                         <td>
-                            <div style="color:green">@($"{item.GiaGiamToiThieu:n0} VND")</div>
+                            <div>@($"{item.GiaGiamToiThieu:n0} VND")</div>
                         </td>
                         <td>
-                            <div style="color:green">@($"{item.GiaGiamToiDa:n0} VND")</div>
+                            <div>@($"{item.GiaGiamToiDa:n0} VND")</div>
                         </td>
                         <td>
                             @if (item.KieuGiamGia == 0)
                             {
-                                <div style="color:red">@($"{item.GiaTriGiam:n0} VND")</div>
+                                <div>@($"{item.GiaTriGiam:n0} VND")</div>
                             }
                             else
                             {
-                                <div style="color:red">@($"{item.GiaTriGiam:n0} %")</div>
+                                <div>@($"{item.GiaTriGiam:n0} %")</div>
                             }
                         </td>
                         <td>
@@ -233,12 +254,11 @@
                             }
                         </td>
                         <td>
-                            <div style="color:red">@item.SoLuong</div>
+                            <div>@item.SoLuong</div>
                         </td>
                         <td>
                             <div style="color:black">@item.MoTa</div>
                         </td>
-
                         <td>
                             @{
                                 if (item.NgayKetThuc < DateTime.Now || item.SoLuong <= 0)
@@ -257,13 +277,22 @@
                                 {
                                     <span class="text-warning">Đã kết thúc</span>
                                 }
+                                else if (item.TrangThai == 3)
+                                {
+                                    <span class="text-warning">Kết thúc sớm</span>
+                                }
                             }
                         </td>
                         <td>
                             @Html.ActionLink("Sửa", "UpdateVC", new { id = item.MaVoucher }, new { @class = "btn btn-success btn-sm" })
+                            @if (item.TrangThai == 1)
+                            {
+                                <form method="post" asp-action="EndEarly" asp-controller="Voucher" asp-route-id="@item.MaVoucher" style="display:inline;">
+                                    <button type="submit" class="btn btn-warning btn-sm">Kết thúc </button>
+                                </form>
+                            }
                         </td>
                     </tr>
-                    index++;
                 }
             }
         </tbody>
@@ -280,7 +309,7 @@
             tr = table.getElementsByTagName("tr");
 
             for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[1];
+                td = tr[i].getElementsByTagName("td")[0]; 
                 if (td) {
                     txtValue = td.textContent || td.innerText;
                     txtValue = txtValue.toUpperCase().replace(/\s+/g, ' ').trim();
@@ -294,6 +323,7 @@
         }
 
 
+
         // Lọc Trạng thái
         function filterByStatus() {
             var status = document.getElementById("statusFilter").value;
@@ -301,13 +331,14 @@
             var tr = table.getElementsByTagName("tr");
 
             for (var i = 0; i < tr.length; i++) {
-                var td = tr[i].getElementsByTagName("td")[11];
+                var td = tr[i].getElementsByTagName("td")[10]; 
                 if (td) {
                     var statusText = td.textContent.trim();
                     if (status === "" ||
                         (status === "SapDienRa" && statusText === "Sắp diễn ra") ||
                         (status === "DangHoatDong" && statusText === "Đang hoạt động") ||
-                        (status === "DaKetThuc" && statusText === "Đã kết thúc")) {
+                        (status === "DaKetThuc" && statusText === "Đã kết thúc") ||
+                        (status === "KetThucSom" && statusText === "Kết thúc sớm")) {
                         tr[i].style.display = "";
                     } else {
                         tr[i].style.display = "none";
@@ -316,16 +347,16 @@
             }
         }
 
+
+
         // Lọc ngày
         function filterByDateRange() {
             var status = document.getElementById("statusFilter").value;
             var startDate = document.getElementById("startDateFilter").value;
             var endDate = document.getElementById("endDateFilter").value;
 
-
             var startDateObj = startDate ? new Date(startDate) : null;
             var endDateObj = endDate ? new Date(endDate) : null;
-
 
             if (endDateObj) {
                 endDateObj.setHours(23);
@@ -333,25 +364,21 @@
                 endDateObj.setSeconds(59);
             }
 
-
             var table = document.getElementById("voucherTableBody");
             var rows = table.getElementsByTagName("tr");
 
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
 
-
-                var startDateCell = new Date(row.getElementsByTagName("td")[7].textContent);
-                var endDateCell = new Date(row.getElementsByTagName("td")[8].textContent);
-                var statusCell = row.getElementsByTagName("td")[11].textContent;
-
+                var startDateCell = new Date(row.getElementsByTagName("td")[6].textContent); 
+                var endDateCell = new Date(row.getElementsByTagName("td")[7].textContent); 
+                var statusCell = row.getElementsByTagName("td")[10].textContent; 
 
                 if (endDateCell) {
                     endDateCell.setHours(23);
                     endDateCell.setMinutes(59);
                     endDateCell.setSeconds(59);
                 }
-
 
                 var meetsStatusCriteria = (status === "" || status === statusCell);
                 var meetsDateCriteria = (startDateObj === null || endDateObj === null ||
@@ -364,25 +391,23 @@
                 }
             }
         }
-        // Hàm để lấy thời gian hiện tại và kiểm tra khi nào đến mỗi phút mới
+
+        // // Hàm load trạng thái
         function checkAndReloadIfMinuteChanged() {
             var currentDateTime = new Date();
             var currentMinute = currentDateTime.getMinutes();
 
-            // Tự động làm mới trang khi đồng hồ sang mỗi phút mới
             setTimeout(function () {
                 var newDateTime = new Date();
                 var newMinute = newDateTime.getMinutes();
 
                 if (newMinute !== currentMinute) {
-                    location.reload(); // Làm mới trang
+                    location.reload();
                 } else {
-                    checkAndReloadIfMinuteChanged(); // Kiểm tra lại sau 1 giây nếu chưa sang phút mới
+                    checkAndReloadIfMinuteChanged();
                 }
-            }, 1000); // Kiểm tra sau mỗi 1 giây
+            }, 1000);
         }
-
-        // Gọi hàm kiểm tra khi trang được load
         window.onload = function () {
             checkAndReloadIfMinuteChanged();
         };
