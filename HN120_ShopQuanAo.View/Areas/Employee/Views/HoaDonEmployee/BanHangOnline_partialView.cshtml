@@ -12,7 +12,7 @@
 
 
 
-    <table class="table" id="page">
+    <table class="table tbsp" id="page">
         <thead>
             <tr>
 
@@ -28,7 +28,7 @@
                 </th>
                 <th style="text-align : center;">
                     Ngày tạo
-                </th>
+                </th> 
                 <th style="text-align : center;">
                     Tên khách hàng
                 </th>
@@ -51,12 +51,12 @@
 
             </tr>
         </thead>
-        <tbody>
+        <tbody class="data-table">
             @foreach (var item in Model)
             {
                 if (item.PhanLoai == "2")
                 {
-                    <tr>
+                    <tr data-status="@item.TrangThai">
 
                         <td style="text-align : center; margin-bottom : 20px">
                             @item.MaHoaDon
@@ -108,7 +108,7 @@
                             }
                             @if (item.PhuongThucThanhToan == 3)
                             {
-                                <p>Thập cẩm</p>
+                                <p>Chuyển khoản + tiền mặt</p>
                             }
                             @if (item.PhuongThucThanhToan == 4)
                             {
@@ -152,7 +152,9 @@
                                 Hủy
                             </td>
                         }
-
+                        <td style="text-align : center;display:none">
+                            @item.NgayThayDoi ;
+                        </td>
                         <td>
                             <a href="@Url.Action("GetHoaDonByMa", "HoaDon", new { ma = item.MaHoaDon })" class="btn btn-primary">Chi tiết</a>
                         </td>

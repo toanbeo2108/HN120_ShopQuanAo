@@ -16,7 +16,7 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
         }
         // Quản lý tất cả tài khoản
         [HttpGet]
-        public async Task<IActionResult> GetAllAccount()
+        public async Task<IActionResult> GetAllUser()
         {
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -26,7 +26,17 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
             var ListUser = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
             return View(ListUser);
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetAllEmpolyee()
+        {
+            var token = Request.Cookies["Token"];
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var url = $"https://localhost:7197/api/User/GetUsersByRole?roleName=Employee";
+            var response = await _httpClient.GetAsync(url);
+            string apiDataUser = await response.Content.ReadAsStringAsync();
+            var ListUser = JsonConvert.DeserializeObject<List<User>>(apiDataUser);
+            return View(ListUser);
+        }
         // Lọc tài khoản    
         [HttpGet]
         public async Task<IActionResult> FilterByRole(string roleName)
@@ -73,11 +83,10 @@ namespace HN120_ShopQuanAo.View.Areas.Employee.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                ViewBag.Message = $"Lỗi không xác định: {ex.Message}";
+                return View();
             }
         }
-
-
 
         // Sửa trạng thái người dùng
         [HttpGet]

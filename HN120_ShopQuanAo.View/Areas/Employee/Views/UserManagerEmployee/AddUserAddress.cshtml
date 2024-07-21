@@ -4,47 +4,80 @@
     ViewData["Title"] = "Thêm địa chỉ mới";
     Layout = "~/Areas/Employee/Views/Shared/_LayoutEmployee.cshtml";
 }
-
-<form asp-action="AddUserAddress" method="post">
-    <div class="form-group">
-        <label for="Consignee">Họ và tên</label>
-        <input type="text" class="form-control" asp-for="Consignee" name="Consignee" required>
-        <span asp-validation-for="Consignee" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="PhoneNumber">Số điện thoại</label>
-        <input type="text" class="form-control" asp-for="PhoneNumber" name="PhoneNumber" required>
-        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="City">Tỉnh/Thành phố</label>
-        <select class="form-control" asp-for="City" id="city" name="City" required>
-            <option value="" selected>Chọn tỉnh thành</option>
-        </select>
-        <span asp-validation-for="City" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="District">Quận/Huyện</label>
-        <select class="form-control" asp-for="District" id="district" name="District" required>
-            <option value="" selected>Chọn quận huyện</option>
-        </select>
-        <span asp-validation-for="District" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="Ward">Phường/Xã</label>
-        <select class="form-control" asp-for="Ward" id="ward" name="Ward" required>
-            <option value="" selected>Chọn phường xã</option>
-        </select>
-        <span asp-validation-for="Ward" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="SpecificAddress">Địa chỉ cụ thể</label>
-        <input type="text" class="form-control" asp-for="Street" name="Street" required>
-        <span asp-validation-for="Street" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Hoàn thành</button>
-    <button type="button" class="btn btn-secondary" onclick="window.history.back()">Trở lại</button>
-</form>
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .form-container .form-group {
+        margin-bottom: 15px;
+    }
+    .form-container label {
+        font-weight: bold;
+    }
+    .form-container .form-control {
+        border-radius: 4px;
+    }
+    .form-container .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .form-container .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+    .form-container .text-danger {
+        font-size: 0.875em;
+        margin-top: 5px;
+    }
+</style>
+<div class="form-container">
+    <form asp-action="AddUserAddress" method="post">
+        <div class="form-group">
+            <label for="Consignee">Họ và tên</label>
+            <input type="text" class="form-control" asp-for="Consignee" name="Consignee" required>
+            <span asp-validation-for="Consignee" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="PhoneNumber">Số điện thoại</label>
+            <input type="text" class="form-control" asp-for="PhoneNumber" name="PhoneNumber" required>
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="City">Tỉnh/Thành phố</label>
+            <select class="form-control" asp-for="City" id="city" name="City" required>
+                <option value="" selected>Chọn tỉnh thành</option>
+            </select>
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="District">Quận/Huyện</label>
+            <select class="form-control" asp-for="District" id="district" name="District" required>
+                <option value="" selected>Chọn quận huyện</option>
+            </select>
+            <span asp-validation-for="District" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Ward">Phường/Xã</label>
+            <select class="form-control" asp-for="Ward" id="ward" name="Ward" required>
+                <option value="" selected>Chọn phường xã</option>
+            </select>
+            <span asp-validation-for="Ward" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="SpecificAddress">Địa chỉ cụ thể</label>
+            <input type="text" class="form-control" asp-for="Street" name="Street" required>
+            <span asp-validation-for="Street" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Hoàn thành</button>
+        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Trở lại</button>
+    </form>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
@@ -54,7 +87,6 @@
         $.notify(notification.message, notification.type);
         localStorage.removeItem('notification');
     }
-
 
     var citis = document.getElementById("city");
     var districts = document.getElementById("district");
@@ -96,5 +128,4 @@
             }
         };
     }
-    
 </script>

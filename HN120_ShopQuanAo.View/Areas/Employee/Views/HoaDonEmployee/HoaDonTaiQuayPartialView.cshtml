@@ -12,7 +12,7 @@
 
 
 
-    <table class="table" id="page">
+    <table class="table tbsp" id="page">
         <thead>
             <tr>
 
@@ -51,12 +51,12 @@
 
             </tr>
         </thead>
-        <tbody>
+        <tbody class="data-table">
             @foreach (var item in Model)
             {
                 if (item.PhanLoai == "1")
                 {
-                    <tr>
+                    <tr data-status="@item.TrangThai">
 
                         <td style="text-align : center; margin-bottom : 20px">
                             @item.MaHoaDon
@@ -91,10 +91,10 @@
                         <td style="text-align : center; margin-bottom : 20px">
                             @item.SoDienThoai
                         </td>
-                        <td style="text-align : center; margin-bottom : 20px">
+                        <td style="text-align : center; margin-bottom : 20px" class="money">
                             @item.PhiShip
                         </td>
-                        <td style="text-align : center; margin-bottom : 20px">
+                        <td style="text-align : center; margin-bottom : 20px" class="money">
                             @item.TongGiaTriHangHoa 
                         </td>
                         <td style="text-align : center; margin-bottom : 20px">
@@ -109,7 +109,7 @@
                             }
                             @if (item.PhuongThucThanhToan == 3)
                             {
-                                <p>Thập cẩm</p>
+                                <p>Chuyển khoản + tiền mặt</p>
                             }
                             @if (item.PhuongThucThanhToan == 4)
                             {
