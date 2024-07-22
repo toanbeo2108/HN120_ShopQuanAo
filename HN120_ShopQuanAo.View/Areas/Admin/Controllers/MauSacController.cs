@@ -47,9 +47,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateMauSac(string Tenmausac)
+        public async Task<IActionResult> CreateMauSac(string TenMau)
         {
-            var bk = new MauSac { TenMau = Tenmausac };
+            var bk = new MauSac { TenMau = TenMau };
 
             if (await IsDuplicateMauSac(bk.TenMau))
             {
