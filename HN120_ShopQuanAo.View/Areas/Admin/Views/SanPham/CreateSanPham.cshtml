@@ -10,6 +10,8 @@
     List<ThuongHieu> lstTH = ViewBag.lstTH as List<ThuongHieu>;
     List<TheLoai> lstTL = ViewBag.lstTL as List<TheLoai>;
     List<ChatLieu> lstCL = ViewBag.lstCL as List<ChatLieu>;
+    List<SanPham> lstSP = ViewBag.lstSP as List<SanPham>;
+
 }
 <style>
     /* CSS cho modal và thẻ tag */
@@ -48,14 +50,27 @@
         margin-bottom: 5px;
     }
 
-        .badge-tag:hover {
-            background-color: #0056b3;
-        }
+    .badge-tag:hover {
+        background-color: #0056b3;
+    }
 
     .form-group img {
-        max-width: 100%;
-        height: auto;
-        margin-top: 10px;
+        max-width: 180px;
+        height: 180px;
+        margin: 10px auto;
+        display: block;
+    }
+
+    .chontt{
+        display: flex;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .modal-content {
+        padding: 1rem;
     }
 </style>
 
@@ -81,30 +96,38 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Thương Hiệu:</label>
-                        <select class="form-select" id="MaThuongHieu" name="MaThuongHieu">
+                        <div class="chontt">
+                            <select class="form-select" id="MaThuongHieu" name="MaThuongHieu">
                             <option value=""></option>
-                            @foreach (var item in lstTH)
-                            {
-                                <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
-                            }
+                                @foreach (var item in lstTH)
+                                {
+                                    <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
+                                }
                         </select>
+                         <button type="button" class="btn btn-secondary btn-add" id="btn_addThuongHieu">+</button>
                     </div>
+                  </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Thể Loại:</label>
-                        <select class="form-select" id="MaTheLoai" name="MaTheLoai">
+                        <div class="chontt">
+                            <select class="form-select" id="MaTheLoai" name="MaTheLoai">
                             <option value=""></option>
-                            @foreach (var item in lstTL)
-                            {
-                                <option value="@item.MaTheLoai">@item.TenTheLoai</option>
-                            }
+                                @foreach (var item in lstTL)
+                                {
+                                    <option value="@item.MaTheLoai">@item.TenTheLoai</option>
+                                }
                         </select>
+                        <button type="button" class="btn btn-secondary" id="btn_addTheLoai">+</button>
+                        </div>
+                        
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Chất Liệu:</label>
+                        <div class="chontt">
                         <select class="form-select" id="MaChatLieu" name="MaChatLieu">
                             <option value=""></option>
                             @foreach (var item in lstCL)
@@ -112,7 +135,9 @@
                                 <option value="@item.MaChatLieu">@item.TenChatLieu</option>
                             }
                         </select>
+                        <button type="button" class="btn btn-secondary" id="btn_addChatLieu">+</button>
                     </div>
+                  </div>
                 </div>
             </div>
             <div class="form-group">
@@ -206,10 +231,73 @@
                 <!-- Các chi tiết sản phẩm sẽ được thêm vào đây -->
             </tbody>
         </table>
+            <button type="submit" class="btn btn-success">Lưu</button>
     </div>
 
-    <button type="submit" class="btn btn-success">Lưu</button>
+    
 </form>
+
+<div class="modal fade" id="thuongHieuModal" tabindex="-1" aria-labelledby="thuongHieuModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="thuongHieuModalLabel">Thêm Thương Hiệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="TenThuongHieu">Tên Thương Hiệu:</label>
+                    <input type="text" class="form-control" id="TenThuongHieu" name="TenThuongHieu" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="addThuongHieu()">Thêm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thêm Thể Loại -->
+<div class="modal fade" id="theLoaiModal" tabindex="-1" aria-labelledby="theLoaiModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="theLoaiModalLabel">Thêm Thể Loại</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="TenTheLoai">Tên Thể Loại:</label>
+                    <input type="text" class="form-control" id="TenTheLoai" name="TenTheLoai" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="addTheLoai()">Thêm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thêm Chất Liệu -->
+<div class="modal fade" id="chatLieuModal" tabindex="-1" aria-labelledby="chatLieuModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chatLieuModalLabel">Thêm Chất Liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="TenChatLieu">Tên Chất Liệu:</label>
+                    <input type="text" class="form-control" id="TenChatLieu" name="TenChatLieu" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="addChatLieu()">Thêm</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
@@ -268,6 +356,41 @@
 
             $('#sizeModal').modal('hide');
         }
+            var existingProducts = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP).ToList()));
+
+            function validateFields() {
+                var imageSP = document.getElementById('imageSP').value;
+                var tenSP = document.getElementById('TenSP').value;
+                var maThuongHieu = document.getElementById('MaThuongHieu').value;
+                var maTheLoai = document.getElementById('MaTheLoai').value;
+                var maChatLieu = document.getElementById('MaChatLieu').value;
+
+                if (!imageSP) {
+                    alert('Vui lòng chọn ảnh đại diện.');
+                    return false;
+                }
+                if (!tenSP.trim()) {
+                    alert('Vui lòng nhập tên sản phẩm.');
+                    return false;
+                }
+                if (existingProducts.includes(tenSP.trim())) {
+                    alert('Tên sản phẩm đã tồn tại.');
+                    return false;
+                }
+                if (!maThuongHieu) {
+                    alert('Vui lòng chọn thương hiệu.');
+                    return false;
+                }
+                if (!maTheLoai) {
+                    alert('Vui lòng chọn thể loại.');
+                    return false;
+                }
+                if (!maChatLieu) {
+                    alert('Vui lòng chọn chất liệu.');
+                    return false;
+                }
+                return true;
+            }
 
         function addChiTietSp() {
             var sizeTags = document.querySelectorAll("#selectedSizes span");
@@ -275,6 +398,12 @@
             var container = document.querySelector("#chiTietSpContainer tbody");
             var count = container.children.length;
 
+                if (!validateFields()) {
+                    event.preventDefault();
+                }
+                    if (sizeTags.length == 0 && colorTags.length == 0) {
+                        alert('Hãy chọn ít nhất 1 màu và 1 size');
+                }
             if (sizeTags.length > 0 && colorTags.length > 0) {
                 document.getElementById("chiTietSpContainer").style.display = "block";
             }
@@ -304,14 +433,14 @@
                                         <input type="hidden" name="ChiTietSps[${count}].MaMau" value="${color}" />
                                         ${colorText}
                                     </td>
+                                        <td>
+                                    <input type="number" class="form-control" name="ChiTietSps[${count}].DonGia" required min="0" max="900000000" onblur="checkDonGia(this)" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" name="ChiTietSps[${count}].SoLuongTon" required min="0" max="999" onblur="checkSoLuongTon(this)" />
+                                </td>
                                     <td>
-                                        <input type="number" class="form-control" name="ChiTietSps[${count}].DonGia" required />
-                                    </td>
-                                    <td>
-                                        <input type="number" class="form-control" name="ChiTietSps[${count}].SoLuongTon" required />
-                                    </td>
-                                    <td>
-                                        <input type="file" class="form-control" name="imagechitietsp" />
+                                        <input type="file" class="form-control" name="imagechitietsp" required/>
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-danger" onclick="removeRow(this)">Xóa</button>
@@ -323,7 +452,21 @@
                 });
             });
         }
+                function checkDonGia(input) {
+                if (input.value > 900000000) {
+                    input.value = 900000000;
+                } else if (input.value < 0) {
+                    input.value = 0;
+                }
+            }
 
+            function checkSoLuongTon(input) {
+                if (input.value > 999) {
+                    input.value = 999;
+                } else if (input.value < 0) {
+                    input.value = 0;
+                }
+            }
         function removeRow(button) {
             var row = button.closest("tr");
             row.parentNode.removeChild(row);
@@ -334,5 +477,60 @@
                 $('#btn_luu').show();
             });
         });
+            function addThuongHieu() {
+                    var tenThuongHieu = document.getElementById('TenThuongHieu').value;
+                    if (!tenThuongHieu.trim()) {
+                        alert('Vui lòng nhập tên thương hiệu.');
+                        return;
+                    }
+                    // Thêm option mới vào dropdown Thương Hiệu
+                    var select = document.getElementById('MaThuongHieu');
+                    var option = document.createElement('option');
+                    option.value = tenThuongHieu; // Sử dụng tên làm value, có thể thay đổi
+                    option.innerText = tenThuongHieu;
+                    select.appendChild(option);
+                    $('#thuongHieuModal').modal('hide');
+                }
+
+                function addTheLoai() {
+                    var tenTheLoai = document.getElementById('TenTheLoai').value;
+                    if (!tenTheLoai.trim()) {
+                        alert('Vui lòng nhập tên thể loại.');
+                        return;
+                    }
+                    // Thêm option mới vào dropdown Thể Loại
+                    var select = document.getElementById('MaTheLoai');
+                    var option = document.createElement('option');
+                    option.value = tenTheLoai; // Sử dụng tên làm value, có thể thay đổi
+                    option.innerText = tenTheLoai;
+                    select.appendChild(option);
+                    $('#theLoaiModal').modal('hide');
+                }
+
+                function addChatLieu() {
+                    var tenChatLieu = document.getElementById('TenChatLieu').value;
+                    if (!tenChatLieu.trim()) {
+                        alert('Vui lòng nhập tên chất liệu.');
+                        return;
+                    }
+                    // Thêm option mới vào dropdown Chất Liệu
+                    var select = document.getElementById('MaChatLieu');
+                    var option = document.createElement('option');
+                    option.value = tenChatLieu; // Sử dụng tên làm value, có thể thay đổi
+                    option.innerText = tenChatLieu;
+                    select.appendChild(option);
+                    $('#chatLieuModal').modal('hide');
+                }
+
+                // Gán sự kiện hiển thị modal cho các nút +
+                document.getElementById('btn_addThuongHieu').onclick = function () {
+                    $('#thuongHieuModal').modal('show');
+                };
+                document.getElementById('btn_addTheLoai').onclick = function () {
+                    $('#theLoaiModal').modal('show');
+                };
+                document.getElementById('btn_addChatLieu').onclick = function () {
+                    $('#chatLieuModal').modal('show');
+                };
     </script>
 }
