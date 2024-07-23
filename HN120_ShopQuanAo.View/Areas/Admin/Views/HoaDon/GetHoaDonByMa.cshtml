@@ -319,7 +319,7 @@
                     @Model.MaHoaDon
                 </td>
                 <td style="text-align : center; margin-bottom : 20px">
-                        @foreach (var nv in ListUseradmin)
+                        @foreach (var nv in Listaccout)
                         {
                             if (nv.Id == Model.UserID)
                             {
@@ -341,24 +341,36 @@
                 <td style="text-align : center; margin-bottom : 20px">
                     @Model.NgayTaoDon
                 </td>
-                <td style="text-align : center; margin-bottom : 20px">
-                     @foreach (var item in getallhoadon)
-                     {
-                       if (Model.TenKhachHang == item.IDkh)
-                       {
-                          @item.tenkhachhang
-                       }
-                     }
-                </td>
-                <td style="text-align : center; margin-bottom : 20px" >
-                        @foreach (var item in getallhoadon)
-                        {
-                            if (Model.TenKhachHang == item.IDkh)
-                            {
-                                @item.sdtkhhang
-                            }
+
+                @if (Model.TenKhachHang == "Khách lẻ")
+                {
+                    <td style="text-align : center; margin-bottom : 20px">
+                        <p>Khách lẻ</p>
+                    </td>
+                }
+                else
+                {
+                    @foreach (var nv in Listaccout)
+                    {
+                        if (nv.Id == Model.TenKhachHang)
+                        { <td style="text-align : center; margin-bottom : 20px">
+                             @nv.FullName
+                                    ;
+                          </td>
                         }
-                </td>
+                    }
+                }
+
+               
+               <td style="text-align : center; margin-bottom : 20px" >
+                       @foreach (var item in getallhoadon)
+                       {
+                           if (Model.TenKhachHang == item.IDkh)
+                           {
+                               @item.sdtkhhang
+                           }
+                       }
+               </td>
                 <td style="text-align : center; margin-bottom : 20px">
                         @Model.SoDienThoai
                  </td>
