@@ -1,4 +1,54 @@
-﻿
+﻿#printableTable {
+    display: none;
+}
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #printableTable, #printableTable * {
+        visibility: visible;
+    }
+
+    #printableTable {
+        border: 1px solid #000;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 70%; /* Điều chỉnh chiều rộng */
+        height: auto; /* Điều chỉnh chiều cao */
+        overflow: visible;
+        page-break-inside: avoid;
+        display: table;
+        margin-left:70px;
+    }
+
+    @page {
+        size: A5; /* Thiết lập kích thước trang tự động dựa vào nội dung */
+        margin: 10mm;
+        /* Điều chỉnh lề trang in */
+        page-break-before: avoid;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+    .shop-info {
+        width: 90%; /* Full width of the table */
+        text-align: left;
+        margin-top: 20px;
+        margin-left: 10px;
+        border-top: 1px solid #000;
+        padding-top: 10px;
+        box-sizing: border-box; /* Ensures padding and border are included in the width */
+        position: relative;
+    }
+    .logo {
+        display: block;
+        margin: 0 auto 20px auto; /* Căn giữa ảnh và thêm khoảng cách dưới cùng */
+        max-width: 100%; /* Đảm bảo ảnh không lớn hơn chiều rộng của bảng */
+        height: auto; /* Duy trì tỷ lệ khung hình của ảnh */
+       
+    }
+}
 /* Điều chỉnh màu chữ và font chữ */
 body {
     font-family: Arial, sans-serif;

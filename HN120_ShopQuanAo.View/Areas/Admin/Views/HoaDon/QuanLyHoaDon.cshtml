@@ -77,7 +77,7 @@
                     Tên khách hàng
                 </th>
                 <th style="text-align : center;">
-                    Số điện thoại
+                    Số điện thoại nhận hàng 
                 </th>
                 <th style="text-align : center;">
                     Phí ship
@@ -125,17 +125,34 @@
                    @item.NgayTaoDon
                 </td>
                 <td>
-                            @foreach (var item2 in Listaccout)
-                            {
-                                @if (item2.Id == item.TenKhachHang)
-                                {
-                                    @item2.FullName
-                                }
-                            }
+                    @if (item.PhanLoai == "1")
+                     {
+                         @foreach (var item2 in Listaccout)
+                         {
+                             @if (item2.Id == item.TenKhachHang)
+                             {
+                                 @item2.FullName
+                             }                           
+                         }
+                     }
+                     @if (item.PhanLoai == "1")
+                     {
+                         
+                      if (item.TenKhachHang == "Khách lẻ")
+                      {
+                          <p>Khách lẻ</p>
+                      }
+                         
+                     }
+                    @if (item.PhanLoai == "2")
+                     {
+                         @item.TenKhachHang
+                     }
+                     
                    @* @item.TenKhachHang *@
                 </td>
                 <td>
-                     @item.SoDienThoai
+                        @item.SoDienThoai
                 </td>
                  <td class="money">
                      @item.PhiShip
