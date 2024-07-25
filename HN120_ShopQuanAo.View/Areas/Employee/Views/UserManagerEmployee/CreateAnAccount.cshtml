@@ -1,0 +1,120 @@
+﻿@using HN120_ShopQuanAo.Data.ViewModels;
+@model HN120_ShopQuanAo.Data.ViewModels.RegisterUser
+@{
+    ViewData["Title"] = "CreateAnAccount";
+    Layout = "~/Areas/Employee/Views/Shared/_LayoutEmployee.cshtml";
+}
+
+<style>
+    .register-form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+        .register-form-container p {
+            margin-bottom: 15px;
+        }
+
+        .register-form-container label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+            .register-form-container label span {
+                color: red;
+            }
+
+        .register-form-container .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .register-form-container .text-danger {
+            font-size: 0.875em;
+            margin-top: 5px;
+            color: #dc3545;
+        }
+
+        .register-form-container .login_submit {
+            text-align: right;
+        }
+
+            .register-form-container .login_submit button {
+                background-color: #007bff;
+                border: none;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+                .register-form-container .login_submit button:hover {
+                    background-color: #0056b3;
+                }
+</style>
+
+<div class="register-form-container">
+    <form asp-controller="UserManagerEmployee" asp-action="CreateAnAccount" method="post">
+        <p>
+            <label>Role<span>*</span></label>
+            <select name="role" class="form-control">
+                <option value="User">User</option>
+                <option value="Employee">Employee</option>
+                <option value="Admin">Admin</option>
+            </select>
+        </p>
+        <p>
+            <label>PhoneNumber<span>*</span></label>
+            <input type="text" class="form-control" required asp-for="PhoneNumber">
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </p>
+        <p>
+            <label>Email<span>*</span></label>
+            <input type="email" class="form-control" required asp-for="Email">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </p>
+        <p>
+            <label>FullName<span>*</span></label>
+            <input type="text" class="form-control" required asp-for="FullName">
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </p>
+        <p>
+            <label>Password <span>*</span></label>
+            <input type="password" class="form-control" required asp-for="Password">
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </p>
+        <p>
+            <label>ConfirmPassword <span>*</span></label>
+            <input type="password" class="form-control" required asp-for="ConfirmPassword">
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </p>
+        <div class="login_submit">
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Script để hiển thị thông báo lỗi -->
+<script>
+    @if (ViewBag.Message != null)
+    {
+        <text>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '@ViewBag.Message',
+            });
+        </text>
+    }
+</script>

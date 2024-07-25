@@ -36,6 +36,7 @@
     <tbody>
         @foreach (var item in Model)
         {
+
           <tr>
                <td>@item.MaMau</td>
                <td>@item.TenMau</td>
@@ -43,6 +44,7 @@
                <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
           <td>
                 <a asp-action="UpdateMauSac" asp-route-id="@item.MaMau" class="btn btn-warning">Cập Nhật</a>
+
                     @if (item.TrangThai == 1)
                     {
                         <form asp-action="UpdateStatusMauSacKKD" method="post" style="display:inline;">
@@ -52,6 +54,7 @@
                     }
                     else
                     {
+
                        <form asp-action="UpdateStatusMauSacKD" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="@item.MaMau" />
                             <button type="submit" class="btn btn-success">Bật</button>
@@ -59,6 +62,7 @@
                     }
                     </td>
                     </tr>
+
         }
     </tbody>
 </table>
