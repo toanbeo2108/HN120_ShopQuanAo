@@ -34,5 +34,21 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 return false;
             }
         }
+
+        public async Task<bool> CreateHoaDonChiTiet2(HoaDonChiTiet? hdct)
+        {
+            try
+            {
+                hdct.MaHoaDonChiTiet = Guid.NewGuid().ToString();
+                await _context.HoaDonChiTiet.AddAsync(hdct);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+        }
     }
 }
