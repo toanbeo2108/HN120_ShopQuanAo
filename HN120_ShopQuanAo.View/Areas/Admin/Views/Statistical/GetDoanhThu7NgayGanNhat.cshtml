@@ -1,0 +1,142 @@
+﻿@using Newtonsoft.Json;
+@model List<HN120_ShopQuanAo.View.Areas.Admin.Models.DoanhThuViewModel>
+
+@{
+    ViewData["Title"] = "Doanh Thu 7 Ngày Gần Nhất";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    // Format the total revenue
+    string formattedTongDoanhThu = String.Format("{0:N0}", Convert.ToDecimal(ViewBag.TongDoanhThu)).Replace(",", ".");
+}
+
+<div class="container statistics">
+    <div class="row">
+        <div class="col-md-4 stat-item">
+            <p>Tổng Doanh Thu:</p>
+            <strong class="stat-value">@formattedTongDoanhThu</strong>
+        </div>
+        <div class="col-md-4 stat-item">
+            <p>Tổng Số Lượng Sản Phẩm Bán Được:</p>
+            <strong class="stat-value">@ViewBag.TongSanPhamBanDuoc</strong>
+        </div>
+        <div class="col-md-4 stat-item">
+            <p>Tổng Số Lượng Hóa Đơn:</p>
+            <strong class="stat-value">@ViewBag.TongSoLuongHoaDon</strong>
+        </div>
+    </div>
+</div>
+
+<h2>Doanh thu 7 ngày qua</h2>
+
+<form method="get" asp-action="ChiTietThongKe" class="form-inline mb-4">
+    <div class="form-group mr-2">
+        <label for="fromDate">Từ ngày:</label>
+        <input type="date" class="form-control ml-2" id="fromDate" name="fromDate" required />
+    </div>
+    <div class="form-group mr-2">
+        <label for="toDate">Đến ngày:</label>
+        <input type="date" class="form-control ml-2" id="toDate" name="toDate" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Lọc</button>
+</form>
+
+<div class="chart-container">
+    <canvas id="doanhThuChart" width="800" height="400"></canvas>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('doanhThuChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(Model.Select(x => x.Ngay.ToString("yyyy-MM-dd")).ToList())),
+                    datasets: [{
+                        label: 'Doanh Thu',
+                        data: @Html.Raw(JsonConvert.SerializeObject(Model.Select(x => x.TongDoanhThu).ToList())),
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .statistics {
+        margin: 20px 0;
+    }
+
+    .stat-item {
+        padding: 20px;
+        background-color: rgba(54, 162, 235, 0.1);
+        color: rgba(54, 162, 235, 1);
+        border: 2px solid rgba(54, 162, 235, 1);
+        border-radius: 8px; /* Bo tròn góc */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .stat-item p {
+            margin: 0;
+            font-weight: bold;
+        }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+    }
+
+    #doanhThuChart {
+        display: block;
+        margin: 0 auto;
+        max-width: 90%;
+        height: auto;
+    }
+
+    .chart-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .form-inline {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+    }
+
+        .form-inline .form-group {
+            display: flex;
+            flex: 1 1 auto;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .form-inline .form-control {
+            display: inline-block;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        .form-inline .btn {
+            white-space: nowrap;
+        }
+</style>

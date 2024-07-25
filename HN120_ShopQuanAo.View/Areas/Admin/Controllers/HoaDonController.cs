@@ -343,55 +343,14 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             string apiData = await respon.Content.ReadAsStringAsync();
             var lst = JsonConvert.DeserializeObject<List<HoaDon>>(apiData);
 
-            //var getallhoadon = from hd in (
-            //                   from h in lst
-            //                   join us in Listaccout on h.UserID equals us.Id
-            //                   select new
-            //                   {
-            //                       h.MaHoaDon,
-            //                       h.UserID,
-            //                       us.FullName,
-            //                       h.MaVoucher,
-            //                       h.NgayTaoDon,
-            //                       h.NgayThayDoi,
-            //                       h.SoDienThoai,
-            //                       h.PhiShip,
-            //                       h.TongGiaTriHangHoa,
-            //                       h.PhuongThucThanhToan,
-            //                       h.PhanLoai,
-            //                       h.TrangThai
-            //                   }
-            //                   )
-            //                   join ttkh in (
-            //                   from h in lst
-            //                   join us in Listaccout on h.TenKhachHang equals us.Id
-            //                   select new
-            //                   {
-            //                       h.MaHoaDon,
-            //                       h.TenKhachHang,
-            //                       us.FullName,
-            //                       us.PhoneNumber
-            //                   }
-
-            //                   ) on hd.MaHoaDon equals ttkh.MaHoaDon
-            //                   select new HoaDonWithDetailsViewModel
-            //                   {
-
-            //                       MaHoaDon_ = hd.MaHoaDon,
-            //                       tennhanhvien = hd.FullName,
-            //                       MaVC = hd.MaVoucher,
-            //                       NgayTao = hd.NgayTaoDon,
-            //                       Ngayupdate = hd.NgayThayDoi,
-            //                       tenkhachhang  = ttkh.FullName ,
-            //                       sdtkhhang = ttkh.PhoneNumber ,
-            //                       sdtnhahang = hd.SoDienThoai ,
-            //                       PhiShip_ = hd.PhiShip,
-            //                       Tonggiatri = hd.TongGiaTriHangHoa,
-            //                       tt = hd.TrangThai,
-            //                       phanloai = hd.PhanLoai,
-            //                       pttt = hd.PhuongThucThanhToan
-            //                   };
-
+            var join = from hd in lst
+                       join us in Listaccout
+                       on hd.TenKhachHang equals us.Id
+                       select new
+                       {
+                           sdtkhachhang = us.PhoneNumber
+                       };
+            ViewBag.sdtkhachhang = join;    
             //if (!string.IsNullOrEmpty(sdt))
             //{
             //    lst = getallhoadon.Where(hd => hd.sdtnhahang.Contains(sdt) || hd.sdtkhhang.Contains(sdt));
@@ -502,23 +461,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
                                    MaHoaDon_ = hd.MaHoaDon,
                                    IDkh =ttkh.TenKhachHang,
-                                   //tennhanhvien = hd.FullName,
-                                   //MaVC = hd.MaVoucher,
-                                   //NgayTao = hd.NgayTaoDon,
-                                   //Ngayupdate = hd.NgayThayDoi,
                                    tenkhachhang = ttkh.FullName,
                                    sdtkhhang = ttkh.PhoneNumber,
-                                   //sdtnhahang = hd.SoDienThoai,
-                                  // PhiShip_ = hd.PhiShip,
-                                  // Tonggiatri = hd.TongGiaTriHangHoa,
-                                  // tt = hd.TrangThai,
-                                  // phanloai = hd.PhanLoai,
-                                  // pttt = hd.PhuongThucThanhToan,
-                                  // tinhthanh_=hd.TinhThanh,
-                                  // quanhuyen=hd.QuanHuyen,
-                                  //xaphuong =hd.XaPhuong,
-                                  //cuthe =hd.Cuthe,
-                                  // ghichu=hd.Ghichu
                                };
 
             ViewBag.getallhoadon = getallhoadon;

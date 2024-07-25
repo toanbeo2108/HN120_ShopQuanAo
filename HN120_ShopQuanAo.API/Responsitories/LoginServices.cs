@@ -47,7 +47,15 @@ namespace HN120_ShopQuanAo.API.Responsitories
                     Message = "Your account is locked"
                 };
             }
-
+            if (user.Status == -1)
+            {
+                return new Response()
+                {
+                    IsSuccess = false,
+                    StatusCode = 403,
+                    Message = "Unconfirmed account"
+                };
+            }
             if (!await _userManager.CheckPasswordAsync(user, loginUser.Password))
             {
                 return new Response()

@@ -69,33 +69,53 @@ namespace HN120_ShopQuanAo.API.Controllers
 
 		[HttpPut]
 		[Route("UpdateUser")]
-		public async Task<User> UpdateUser(User model)
-		{
-			// Tìm người dùng theo ID
-			var user = await _userManager.FindByIdAsync(model.Id);
+        public async Task<IActionResult> UpdateUser(User model)
+        {
+            // Tìm người dùng theo ID
+            var user = await _userManager.FindByIdAsync(model.Id);
 
-			// Cập nhật thông tin người dùng
-			user.UserName = model.UserName;
-			user.FullName = model.FullName;
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            // Validate Birthday
+            if (model.Birthday.HasValue)
+            {
+                var today = DateTime.Today;
+                var age = today.Year - model.Birthday.Value.Year;
+                if (model.Birthday > today.AddYears(-age))
+                {
+                    age--;
+                }
+
+                if (age < 18)
+                {
+                    return BadRequest("User must be at least 15 years old.");
+                }
+            }
+
+            // Cập nhật thông tin người dùng
+            user.UserName = model.UserName;
+            user.FullName = model.FullName;
             user.Email = model.Email;
-			user.PhoneNumber = model.PhoneNumber;
-			user.Avatar = model.Avatar;
-			user.Gender = model.Gender;
-			user.Birthday = model.Birthday;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Avatar = model.Avatar;
+            user.Gender = model.Gender;
+            user.Birthday = model.Birthday;
             user.Status = model.Status;
-			// Cập nhật các thuộc tính khác của User tại đây
 
-			// Lưu thay đổi
-			var result = await _userManager.UpdateAsync(user);
-			if (result.Succeeded)
-			{
-				return user;
-			}
-			else
-			{
-				return null;
-			}
-		}
+            // Lưu thay đổi
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return Ok(user);
+            }
+            else
+            {
+                return BadRequest("Failed to update user.");
+            }
+        }
 
         [HttpDelete]
         [Route("DeleteUser")]

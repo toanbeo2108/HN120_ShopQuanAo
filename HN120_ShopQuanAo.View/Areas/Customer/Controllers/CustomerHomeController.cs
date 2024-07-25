@@ -7,10 +7,12 @@ using HN120_ShopQuanAo.View.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Newtonsoft.Json;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
+
 
 namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
 {
@@ -533,7 +535,10 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
         [HttpPost]
         public async Task<IActionResult> DatHang(decimal tienship, string tinh, string huyen, string xa, string cuthe, decimal tongtiendonhang )
         {
-           
+           if(tongtiendonhang == 0)
+            {
+                return RedirectToAction("GianHangNguoiDung", "CustomerHome", new { areas = "Customer" });
+            }
 
             //Lấy thông tin người dùng
             var maND = Request.Cookies["UserId"];
@@ -602,15 +607,26 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
                 // đẩy dữ liệu từ Giỏ Hàng Chi Tiết qua Hóa Đơn Chi Tiết
                 foreach (var item in GHCB)
                 {
-                    var urltaoHDCT = $"https://localhost:7197/api/ChiTietHoaDon/CreateHoaDonCT?sku={item.SKU}&maHD={hd.MaHoaDon}&tenSP={item.TenSp}&donGia={item.ThanhTien}&soluong={item.SoLuong}";
-                    var contenttaoHDCT = new StringContent("Tạo Hóa Đơn Chi Tiết Thành Công", Encoding.UTF8, "application/json");
+                    var newHDCT = new HoaDonChiTiet
+                    {
+                        MaHoaDonChiTiet = Guid.NewGuid().ToString(),
+                        MaHoaDon = hd.MaHoaDon,
+                        SKU = item.SKU,
+                        TenSp = item.TenSp,
+                        SoLuongMua = item.SoLuong,
+                        DonGia = item.ThanhTien,
+                        TrangThai = 1
+
+                    };
+                    var urltaoHDCT = $"https://localhost:7197/api/ChiTietHoaDon/TaoHoaDonCT";
+                    var contenttaoHDCT = new StringContent(JsonConvert.SerializeObject(newHDCT), Encoding.UTF8, "application/json");
                     var responsetaoHDCT = await _httpClient.PostAsync(urltaoHDCT, contenttaoHDCT);
                     if (!responsetaoHDCT.IsSuccessStatusCode)
                     {
                         return BadRequest("Không thể tạo hóa đơn chi tiết, lỗi 497");
                     }
                 }
-                var urlupdateHD = $"https://localhost:7197/api/HoaDon?maHD={hd.MaHoaDon}&MaVoucher={null}&tenkh={nd.FullName}&sdt={nd.PhoneNumber}&phiship={tienship}&tongtien={tongtiendonhang}&pttt={4}&phanloai={2}&ghichu={"Không"}&tinh={tinh}&huyen={huyen}&xa={xa}&cuthe={cuthe}";
+                var urlupdateHD = $"https://localhost:7197/api/HoaDon?maHD={hd.MaHoaDon}&MaVoucher={null}&tenkh={maND}&sdt={nd.PhoneNumber}&phiship={tienship}&tongtien={tongtiendonhang}&pttt={4}&phanloai={2}&ghichu={"Không"}&tinh={tinh}&huyen={huyen}&xa={xa}&cuthe={cuthe}";
                 var contentupdateHD = new StringContent("Update thành công");
                 var responseUpdateHD = await _httpClient.PutAsync(urlupdateHD, contentupdateHD);
                 if(responseUpdateHD.IsSuccessStatusCode)

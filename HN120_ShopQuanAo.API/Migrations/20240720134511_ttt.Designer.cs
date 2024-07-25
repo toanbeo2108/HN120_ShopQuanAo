@@ -4,6 +4,7 @@ using HN120_ShopQuanAo.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HN120_ShopQuanAo.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240720134511_ttt")]
+    partial class ttt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -712,28 +714,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-
-                            Id = "4657417e-b941-4fef-a0a9-934e1b4c1bd6",
-                            ConcurrencyStamp = "c5fc6364-2800-4e34-846d-92f5aa256810",
-
+                            Id = "3471932e-f7cf-4f44-82b4-ba3ce1ad5159",
+                            ConcurrencyStamp = "afcb16b5-4bc6-4707-b564-51b7b0b94327",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-
-                            Id = "5bfdd3a9-cb39-4a1c-a898-eac1dea134c3",
-                            ConcurrencyStamp = "bbde8eef-e6ba-44a0-96bd-299922f4df6d",
-
+                            Id = "216d986b-1404-4b45-9e81-160c8ae1b17e",
+                            ConcurrencyStamp = "ea573432-e919-4de7-b1cb-3c872942e202",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-
-                            Id = "f48553ad-39ac-4238-9897-e8ad2f2ad52e",
-                            ConcurrencyStamp = "ff6a6e7a-9263-49ed-a10b-0c508e52c03e",
-
+                            Id = "91eec882-acf9-4f86-8d11-09780a08f0c1",
+                            ConcurrencyStamp = "53d8f492-2c77-417f-868b-786bb9d090c9",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
