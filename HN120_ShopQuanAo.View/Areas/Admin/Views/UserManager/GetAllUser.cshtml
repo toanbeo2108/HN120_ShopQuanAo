@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "GetAllUser";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    string ReturnUrl = ViewBag.ReturnUrl;
 
 }
 <style>
@@ -122,7 +123,7 @@
 
                 </td>
                 <td>
-                    @(items.Birthday.HasValue ? items.Birthday.Value.ToString("dd/MM/yyyy") : "N/A")
+                    @(items.Birthday.HasValue ? items.Birthday.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")
                 </td>
                 <td>
 
@@ -134,9 +135,13 @@
                     {
                         <span style="color:red">Đã khóa</span>
                     }
+                    else if (items.Status == -1)
+                    {
+                        <span style="color:violet">Chờ xác nhận</span>
+                    }
                 </td>
                 <td>
-                    <a asp-controller="UserManager" asp-action="Update" asp-route-id="@items.Id" class="btn btn-primary">
+                    <a asp-controller="UserManager" asp-action="Update" asp-route-id="@items.Id" asp-route-returnUrl="@ReturnUrl" class="btn btn-primary">
                         <i class="bi bi-gear-fill"></i>
                     </a>
                     @if (items.Status == 1)
