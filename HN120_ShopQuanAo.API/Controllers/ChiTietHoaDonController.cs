@@ -94,5 +94,21 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             return await _iresponses.CreateHoaDonChiTiet(sku,  maHD, tenSP, donGia, soluong);
         }
+
+        [HttpPost("[Action]")]
+        public async Task<bool> TaoHoaDonCT(HoaDonChiTiet hdct)
+        {
+            HoaDonChiTiet newHDCT = new HoaDonChiTiet
+            {
+                MaHoaDonChiTiet = Guid.NewGuid().ToString(),
+                MaHoaDon = hdct.MaHoaDon,
+                SKU = hdct.SKU,
+                TenSp = hdct.TenSp,
+                SoLuongMua = hdct.SoLuongMua,
+                DonGia = hdct.DonGia,
+                TrangThai = hdct.TrangThai,
+            };
+            return await _iresponses.CreateHoaDonChiTiet2(newHDCT);
+        }
     }
 }

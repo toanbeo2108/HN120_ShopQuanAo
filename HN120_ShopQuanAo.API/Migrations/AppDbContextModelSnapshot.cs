@@ -712,28 +712,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-
-                            Id = "82a0b057-4955-421f-a25f-c83a6d5913f0",
-                            ConcurrencyStamp = "d09301de-e87f-4401-9bfc-0f04ac929ed1",
-
+                            Id = "3471932e-f7cf-4f44-82b4-ba3ce1ad5159",
+                            ConcurrencyStamp = "afcb16b5-4bc6-4707-b564-51b7b0b94327",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-
-                            Id = "b72d617a-f0be-4bfd-bfb6-56988eac617e",
-                            ConcurrencyStamp = "ca7e9073-1be2-48f8-81f4-da0d8ef208ed",
-
+                            Id = "216d986b-1404-4b45-9e81-160c8ae1b17e",
+                            ConcurrencyStamp = "ea573432-e919-4de7-b1cb-3c872942e202",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-
-                            Id = "205db25c-0048-4bab-8767-c9681b3f46f0",
-                            ConcurrencyStamp = "728cb71d-b010-4977-9dd4-188ffed0c7cd",
-
+                            Id = "91eec882-acf9-4f86-8d11-09780a08f0c1",
+                            ConcurrencyStamp = "53d8f492-2c77-417f-868b-786bb9d090c9",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
