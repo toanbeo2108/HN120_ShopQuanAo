@@ -330,11 +330,13 @@ $(document).ready(function () {
         }
         let tt = ($('#btn_tienkhachdua').val().replace(/\./g, '').replace(',', '.'));
         let kt = ($('#btn_tienkhachphaitra').val().replace(/\./g, '').replace(',', '.'));
-       
-       
+        if ($('#search_khachhang_input').val() == '' || $('#search_khachhang_input').val() == undefined || $('#search_khachhang_input').val() == null) {
+            $.notify('Chưa chọn khách hàng!', 'error');
+            return;
+        }
         if ($('#city').val() == '' || $('#district').val() == '' || $('#ward').val() == '' || $('#street').val() == ''  ) {
-            $.notify('Vui lòng điền đầy đủ địa chỉ!', 'error');
-                return;
+            $.notify('Thông tin địa chỉ còn thiếu!', 'error');
+            return;
         }
         if ((tt - kt >= 0) || tt == '' || tt == '' || tt == 0) {
             if ($('#btn_phuongthucthanhtoan').val() == 1) {
@@ -586,9 +588,15 @@ $(document).ready(function () {
 let paymentSuccessful = false;
 function QRCODE_PAYMENT() {
     $('#pop_QR').modal('show');
-    let countdownTime = 300;
+    let countdownTime = 30;
     const countdownElement = document.getElementById("countdown");
+    const paymentCheckInterval = setInterval(() => {
 
+
+        checkpaid(sotienck, thongtinhoadon, paymentCheckInterval);
+
+
+    }, 3000);
     // Cập nhật đồng hồ đếm ngược mỗi giây
     const countdownInterval = setInterval(function () {
         if (paymentSuccessful) {
@@ -600,17 +608,16 @@ function QRCODE_PAYMENT() {
         // Khi đồng hồ đếm ngược về 0, đóng modal và dừng đồng hồ đếm ngược
         if (countdownTime < 0) {
             clearInterval(countdownInterval);
-            localStorage.setItem('notification', JSON.stringify({ message: 'Giao dịch không thành công, quá thời gian chờ', type: 'error' }));
-          
+            $.notify('Giao dịch không thành công, quá thời gian chờ', 'error');
             $("#pop_QR").modal('hide');
-           
+            clearInterval(paymentCheckInterval);
         }
     }, 1000); // Cập nhật mỗi giây
     $('#btn_sotienck').text(($('#btn_tienkhachphaitra').val() != '' ? $('#btn_tienkhachphaitra').val() : 0) + ' VNĐ');
 
     thongtinhoadon = $('#btn_maQR').val();
     //string thongtinhoadon = a;
-    let sotienck = parseInt($('#btn_tienkhachphaitra').val().replace('.',''));
+    let sotienck = parseInt($('#btn_tienkhachphaitra').val().replace('.', ''));
     let QR = `https://img.vietqr.io/image/MB-0336262156-qr_only.png?amount=${sotienck}&addInfo=${thongtinhoadon}`
     $('#imgQR').attr('src', QR);
 
@@ -620,13 +627,7 @@ function QRCODE_PAYMENT() {
     //    }
     //  // checkpaid(sotienck, thongtinhoadon);
     //}, 1000);
-    const paymentCheckInterval = setInterval(() => {
-       
-        
-        checkpaid(sotienck, thongtinhoadon, paymentCheckInterval);
-        
-       
-    }, 3000);
+
     async function checkpaid(price, content, paymentCheckInterval) {
         try {
             const respon = await fetch("https://script.google.com/macros/s/AKfycbxwZpNWFZTZmzDCaWaxfbHbUX5hHKImRf1bCtbIU8dQkHKmDNhagjFAxkR9TDLGMoMYKQ/exec");
@@ -637,7 +638,7 @@ function QRCODE_PAYMENT() {
                 let pr = lastPaid['Giá trị'];
                 let ct = lastPaid['Mô tả'];
                 if (pr >= price && ct.includes(content)) {
-                 //   shouldStopQRCodePayment = true;
+                    //   shouldStopQRCodePayment = true;
                     price = 0;
                     content = '';
                     Thanhtoan();
@@ -658,8 +659,6 @@ function QRCODE_PAYMENT() {
         }
     }
 }
-
-
 function tienthua() {
     var tienkhachdua = $('#btn_tienkhachdua').val();
     var tienkhachphaitra = $('#btn_tienkhachphaitra').val()
@@ -1202,8 +1201,9 @@ function Thanhtoan() {
                     if (re.status) {      
                         if ($('#btn_Status').val() == 5) {
                             AddThanhTOanHoaDon();
-                          //  localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
-                          //  window.location.reload();$('#inhoadon_modal').modal('show');
+                            //  localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
+                            //  window.location.reload();$('#inhoadon_modal').modal('show');
+                            $.notify('Thanh toán thành công', 'success');
                             $('#inhoadon_modal').modal('show');
                         }
                         if ($('#btn_Status').val() == 2) {

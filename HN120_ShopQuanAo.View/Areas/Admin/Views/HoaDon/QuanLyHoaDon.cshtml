@@ -125,31 +125,20 @@
                    @item.NgayTaoDon
                 </td>
                 <td>
-                    @if (item.PhanLoai == "1")
-                     {
-                         @foreach (var item2 in Listaccout)
-                         {
-                             @if (item2.Id == item.TenKhachHang)
-                             {
-                                 @item2.FullName
-                             }                           
-                         }
-                     }
-                     @if (item.PhanLoai == "1")
-                     {
-                         
-                      if (item.TenKhachHang == "Khách lẻ")
-                      {
-                          <p>Khách lẻ</p>
-                      }
-                         
-                     }
-                    @if (item.PhanLoai == "2")
-                     {
-                         @item.TenKhachHang
-                     }
-                     
-                   @* @item.TenKhachHang *@
+                        @if (item.TenKhachHang == "Khách lẻ")
+                        {
+                                <p>Khách lẻ</p>
+                        }
+                        else
+                        {
+                            @foreach (var item2 in Listaccout)
+                            {
+                                @if (item2.Id == item.TenKhachHang)
+                                {
+                                    @item2.FullName
+                                }
+                            }
+                        }
                 </td>
                 <td>
                         @item.SoDienThoai

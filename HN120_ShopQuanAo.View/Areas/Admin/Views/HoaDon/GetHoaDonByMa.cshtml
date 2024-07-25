@@ -324,7 +324,7 @@
                             if (nv.Id == Model.UserID)
                             {
                                 @nv.FullName
-                                ;
+                                
                             }
                         }
                 </td>
@@ -355,7 +355,6 @@
                         if (nv.Id == Model.TenKhachHang)
                         { <td style="text-align : center; margin-bottom : 20px">
                              @nv.FullName
-                                    ;
                           </td>
                         }
                     }
@@ -614,13 +613,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Đơn hàng bị hủy sẽ không thể chỉnh sửa</h5>
+                <h5 class="modal-title">Nhập ghi chú</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="card-body">
                     <div style="display:none">
-                        <label for="btn_mahoadonls">Mã Hóa Đơn</label>                        <input type="type" id="btn_mahoadonls" value="@Model.MaHoaDon" />
+                        <label for="btn_mahoadonls">Mã Hóa Đơn</label>                        
+                         <input type="type" id="btn_mahoadonls" value="@Model.MaHoaDon" />
                     </div>
                     <div style ="display:none">
                         <label for="btn_nhanvien">Nhân viên</label>
@@ -655,7 +655,7 @@
                     </div>
                     <div style="display:none">
                         <label for="btn_trangthai">Trạng thái</label>
-                        <input type="number" id="btn_trangthai" value="6" />
+                        <input type="number" id="btn_trangthai"  />
                     </div>
                 </div>
             </div>
@@ -704,90 +704,94 @@
                     <div class="col-md-12">
                         <input id="btn_ma" style="display:none" class="form-control" type="text" />
                     </div>
-
-                    <div class="col-md-4">
+                   @*  <div id="thongtinhoadon_"> *@
+                        <div class="col-md-3">
                         
-                        <label for="btn_UserID">Người tạo</label>
-                        <input id="btn_UserID" class="form-control" type="text" style="display:none" />
-                        
-                        @foreach (var nv in ListUseradmin)
-                        {
-                            if (nv.Id == Model.UserID)
-                            {
+                            <label for="btn_UserID">Người tạo</label>
+                            <input id="btn_UserID" class="form-control" type="text" style="display:none" />
 
-                                <input type="type" id="btn_tennhanvien" class="form-control" value="@nv.FullName" readonly style="display:block" />
-                            }
-                        }
-                       
-                    </div>
-                    <div class="col-md-4" style="display:none">
-                        <label for="btn_MaVoucher">Mã Voucher</label>
-                        <select id="btn_MaVoucher" class="form-select">
-                            <option value="">Chọn</option>
-                            @foreach (var item in lstVC)
+                        @foreach (var nv in Listaccout)
                             {
+                                if (nv.Id == Model.UserID)
+                                {
 
-                                <option value="@item.MaVoucher">@item.Ten</option>
+                                    <input type="type" id="btn_tennhanvien" class="form-control" value="@nv.FullName" readonly style="display:block" />
+                                }
                             }
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="btn_NgayTaoDon">Ngày tạo</label>
-                        <input id="btn_NgayTaoDon" class="form-control" type="datetime" readonly style="display:block" />
-                    </div>
-                    <div class="col-md-4">
-                        <label for="btn_Update">Ngày Update</label>
-                        <input id="btn_Update" class="form-control" type="text" readonly style="display:block" />
-                    </div>
-                    <div class="col-md-4">
-                        <label for="btn_TenKhachHang">Tên khách hàng</label>
-                        @foreach (var item in getallhoadon)
-                        {
-                            if (Model.TenKhachHang == item.IDkh)
+                       
+                        </div>
+                        <div class="col-md-3" style="display:none">
+                            <label for="btn_MaVoucher">Mã Voucher</label>
+                            <select id="btn_MaVoucher" class="form-select">
+                                <option value="">Chọn</option>
+                                @foreach (var item in lstVC)
+                                {
+
+                                    <option value="@item.MaVoucher">@item.Ten</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="btn_NgayTaoDon">Ngày tạo</label>
+                            <input id="btn_NgayTaoDon" class="form-control" type="datetime" readonly style="display:block" />
+                        </div>
+                        <div class="col-md-3">
+                            <label for="btn_Update">Ngày Update</label>
+                            <input id="btn_Update" class="form-control" type="text" readonly style="display:block" />
+                        </div>
+                        <div class="col-md-3">
+                            <label for="btn_TenKhachHang">Tên khách hàng</label>
+                            @foreach (var item in getallhoadon)
                             {
-                                <input id="btn_TenKhachHang_" class="form-control" value="@item.tenkhachhang" readonly style="display:block" />
-                                <input id="btn_TenKhachHang" class="form-control" value="@item.tenkhachhang" style="display:none" />
+                                if (Model.TenKhachHang == item.IDkh)
+                                {
+                                    <input id="btn_TenKhachHang_" class="form-control" value="@item.tenkhachhang" readonly style="display:block" />
+                                    <input id="btn_TenKhachHang" class="form-control" value="@item.tenkhachhang" style="display:none" />
+                                }
                             }
-                        }
                        
-                    </div>
-                    <div class="col-md-4">
-                        <label for="btn_SoDienThoai">Số điện thoại nhận hàng</label>
-                        <input id="btn_SoDienThoai" class="form-control" type="text" />
-                    </div>
-                    <div class="col-md-4">
-                        <label for="City">Tỉnh/Thành phố</label>
-                        <select class="form-control" id="city" name="City">
-                            <option value="" selected>Chọn tỉnh thành</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="District">Quận/Huyện</label>
-                        <select class="form-control" id="district" name="District">
-                            <option value="" selected>Chọn quận huyện</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="Ward">Phường/Xã</label>
-                        <select class="form-control" id="ward" name="Ward">
-                            <option value="" selected>Chọn phường xã</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="street">Địa chỉ cụ thể</label>
-                        <input type="text" class="form-control" name="Street" id="street">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="btn_PhiShip">Phí ship</label>
-                        <input id="btn_PhiShip" class="form-control money" type="text" />
+                        </div>
+                        <div class="col-md-12">
+                            <hr />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="btn_SoDienThoai">Số điện thoại nhận hàng</label>
+                            <input id="btn_SoDienThoai" class="form-control" type="text" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="City">Tỉnh/Thành phố</label>
+                            <select class="form-control" id="city" name="City">
+                                <option value="" selected>Chọn tỉnh thành</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="District">Quận/Huyện</label>
+                            <select class="form-control" id="district" name="District">
+                                <option value="" selected>Chọn quận huyện</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="Ward">Phường/Xã</label>
+                            <select class="form-control" id="ward" name="Ward">
+                                <option value="" selected>Chọn phường xã</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="street">Địa chỉ cụ thể</label>
+                            <input type="text" class="form-control" name="Street" id="street">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="btn_PhiShip">Phí ship</label>
+                            <input id="btn_PhiShip" class="form-control money" type="text" />
                        
-                    </div>
-                    <div class="col-md-12 text-center">
-                        <label for="clear"></label>
-                        <button type="text" class="form-control w-50 d-grid gap-2 col-6 mx-auto" name="clear" id="clear">Chọn lại địa chỉ</button>
-                    </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <label for="clear"></label>
+                            <button type="text" class="form-control w-50 d-grid gap-2 col-6 mx-auto" name="clear" id="clear">Chọn địa chỉ khác</button>
+                        </div>
+                   @*  </div> *@
                     
-                    <div class="col-md-10">
+                    <div class="col-md-12">
                         <label for="btn_ghichu">Ghi chú</label>
                         <textarea id="btn_ghichu" class="form-control" type="text" /></textarea>
                     </div>
@@ -876,9 +880,10 @@
                                     {
                                         <p>Chờ giao hàng</p>
                                     }
-                                    @if (item.ChiTiet == "4")
+                                    @if (item.TrangThai == 4)
                                     {
                                         <p>Đang giao hàng</p>
+                                        <p>Ghi chú: @item.ChiTiet</p>
                                     }
                                     @if (item.ChiTiet == "5")
                                     {
