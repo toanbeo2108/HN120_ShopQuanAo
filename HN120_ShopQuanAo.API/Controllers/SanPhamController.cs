@@ -33,52 +33,112 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             return await _irespon.GetByID(id);
         }
-        [HttpPost("AddSpWithDetails")]
-        public async Task<IActionResult> AddSpWithDetails([FromBody] AddSpViewModel model)
+        [HttpPost("AddOrUpdateSpWithDetails")]
+        public async Task<IActionResult> AddOrUpdateSpWithDetails([FromBody] AddSpViewModel model)
         {
+            // Check if the product with the given name already exists
+            var existingProduct = (await _irespon.GetAll()).FirstOrDefault(sp => sp.TenSP == model.TenSp);
 
-            var listsp = await _irespon.GetAll();
-            int spcount = listsp.Count() + 1;
-            // Tạo sản phẩm mới
-            var newProduct = new SanPham
+            if (existingProduct != null)
             {
-                MaSp = "SP_" + spcount.ToString(),
-                TenSP = model.TenSp,
-                MaThuongHieu = model.MaThuongHieu,
-                MaTheLoai = model.MaTheLoai,
-                MaChatLieu = model.MaChatLieu,
-                UrlAvatar = model.UrlAvatar,
-                NgayNhap = DateTime.Now,
-                TrangThai = 1
-            };
+                // Update existing product details
+                existingProduct.MaThuongHieu = model.MaThuongHieu;
+                existingProduct.MaTheLoai = model.MaTheLoai;
+                existingProduct.MaChatLieu = model.MaChatLieu;
+                existingProduct.UrlAvatar = model.UrlAvatar;
+                existingProduct.NgayNhap = DateTime.Now;
+                existingProduct.TrangThai = 1;
 
-
-
-            // Thêm chi tiết sản phẩm
-            foreach (var detail in model.ChiTietSps)
-            {
-                var newChiTietSp = new ChiTietSp
+                // Update existing product details
+                foreach (var detail in model.ChiTietSps)
                 {
-                    MaSp = newProduct.MaSp,
-                    MaSize = detail.MaSize,
-                    MaMau = detail.MaMau,
-                    DonGia = detail.DonGia,
-                    GiaBan = detail.DonGia,
-                    SoLuongTon = detail.SoLuongTon,
-                    UrlAnhSpct = detail.UrlAnhSpct,
-                    SKU = newProduct.MaSp + "_" + detail.MaSize + "_" + detail.MaMau,
+                    var existingChiTietSp = (await _iresponCTSP.GetAll())
+                        .FirstOrDefault(ctsp => ctsp.MaSp == existingProduct.MaSp &&
+                                                ctsp.MaSize == detail.MaSize &&
+                                                ctsp.MaMau == detail.MaMau);
+
+                    if (existingChiTietSp != null)
+                    {
+                        // Update existing product detail
+                        existingChiTietSp.DonGia = detail.DonGia;
+                        existingChiTietSp.GiaBan = detail.DonGia;
+                        existingChiTietSp.SoLuongTon = detail.SoLuongTon;
+                        existingChiTietSp.UrlAnhSpct = detail.UrlAnhSpct;
+                        existingChiTietSp.TrangThai = 1;
+
+                        await _iresponCTSP.UpdateItem(existingChiTietSp);
+                    }
+                    else
+                    {
+                        // Add new product detail
+                        var newChiTietSp = new ChiTietSp
+                        {
+                            MaSp = existingProduct.MaSp,
+                            MaSize = detail.MaSize,
+                            MaMau = detail.MaMau,
+                            DonGia = detail.DonGia,
+                            GiaBan = detail.DonGia,
+                            SoLuongTon = detail.SoLuongTon,
+                            UrlAnhSpct = detail.UrlAnhSpct,
+                            SKU = existingProduct.MaSp + "_" + detail.MaSize + "_" + detail.MaMau,
+                            TrangThai = 1
+                        };
+
+                        await _iresponCTSP.CreateItem(newChiTietSp);
+                    }
+                }
+
+                existingProduct.TongSoLuong = model.ChiTietSps.Sum(c => c.SoLuongTon);
+                await _irespon.UpdateItem(existingProduct);
+
+                return Ok(new { success = true, message = "Product and details updated successfully" });
+            }
+            else
+            {
+                // Create new product
+                var listsp = await _irespon.GetAll();
+                int spcount = listsp.Count() + 1;
+
+                var newProduct = new SanPham
+                {
+                    MaSp = "SP_" + spcount.ToString(),
+                    TenSP = model.TenSp,
+                    MaThuongHieu = model.MaThuongHieu,
+                    MaTheLoai = model.MaTheLoai,
+                    MaChatLieu = model.MaChatLieu,
+                    UrlAvatar = model.UrlAvatar,
+                    NgayNhap = DateTime.Now,
                     TrangThai = 1
                 };
 
-                await _iresponCTSP.CreateItem(newChiTietSp);
+                await _irespon.CreateItem(newProduct);
+
+                // Add product details
+                foreach (var detail in model.ChiTietSps)
+                {
+                    var newChiTietSp = new ChiTietSp
+                    {
+                        MaSp = newProduct.MaSp,
+                        MaSize = detail.MaSize,
+                        MaMau = detail.MaMau,
+                        DonGia = detail.DonGia,
+                        GiaBan = detail.DonGia,
+                        SoLuongTon = detail.SoLuongTon,
+                        UrlAnhSpct = detail.UrlAnhSpct,
+                        SKU = newProduct.MaSp + "_" + detail.MaSize + "_" + detail.MaMau,
+                        TrangThai = 1
+                    };
+
+                    await _iresponCTSP.CreateItem(newChiTietSp);
+                }
+
+                newProduct.TongSoLuong = model.ChiTietSps.Sum(c => c.SoLuongTon);
+                await _irespon.UpdateItem(newProduct);
+
+                return Ok(new { success = true, message = "Product and details added successfully" });
             }
-            newProduct.TongSoLuong = model.ChiTietSps.Sum(c => c.SoLuongTon);
-            await _irespon.CreateItem(newProduct);
-            return Ok(new { success = true, message = "Product and details added successfully" });
-
-
-            return BadRequest(ModelState);
         }
+
 
 
         [HttpPut("[Action]")]
