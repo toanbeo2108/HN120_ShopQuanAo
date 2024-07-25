@@ -713,8 +713,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                         new
                         {
 
-                            Id = "82a0b057-4955-421f-a25f-c83a6d5913f0",
-                            ConcurrencyStamp = "d09301de-e87f-4401-9bfc-0f04ac929ed1",
+                            Id = "4657417e-b941-4fef-a0a9-934e1b4c1bd6",
+                            ConcurrencyStamp = "c5fc6364-2800-4e34-846d-92f5aa256810",
 
                             Name = "Admin",
                             NormalizedName = "ADMIN"
@@ -722,8 +722,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                         new
                         {
 
-                            Id = "b72d617a-f0be-4bfd-bfb6-56988eac617e",
-                            ConcurrencyStamp = "ca7e9073-1be2-48f8-81f4-da0d8ef208ed",
+                            Id = "5bfdd3a9-cb39-4a1c-a898-eac1dea134c3",
+                            ConcurrencyStamp = "bbde8eef-e6ba-44a0-96bd-299922f4df6d",
 
                             Name = "User",
                             NormalizedName = "USER"
@@ -731,8 +731,8 @@ namespace HN120_ShopQuanAo.API.Migrations
                         new
                         {
 
-                            Id = "205db25c-0048-4bab-8767-c9681b3f46f0",
-                            ConcurrencyStamp = "728cb71d-b010-4977-9dd4-188ffed0c7cd",
+                            Id = "f48553ad-39ac-4238-9897-e8ad2f2ad52e",
+                            ConcurrencyStamp = "ff6a6e7a-9263-49ed-a10b-0c508e52c03e",
 
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"

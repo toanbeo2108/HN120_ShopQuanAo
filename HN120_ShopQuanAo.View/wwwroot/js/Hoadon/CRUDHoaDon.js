@@ -97,7 +97,8 @@ $(document).ready(function () {
         })
     }) 
 
-    var token = '8fbfedf6-b458-11ee-b6f7-7a81157ff3b1';
+    // var token = '8fbfedf6-b458-11ee-b6f7-7a81157ff3b1';
+    var token = 'd01771f0-3f8b-11ef-8f55-4ee3d82283af';
     async function loadTinhThanh() {
         var tinhthanh = $('#city').val();
         let provinceID;

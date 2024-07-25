@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HN120_ShopQuanAo.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240711024846_482")]
-    partial class _482
+    [Migration("20240721191751_1234")]
+    partial class _1234
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -100,19 +100,15 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaKhuyenMai")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaMau")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaSize")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaSp")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MauSacMaMau")
@@ -131,7 +127,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UrlAnhSpct")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SKU");
@@ -398,28 +393,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaChatLieu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaTheLoai")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaThuongHieu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Mota")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayNhap")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TenSP")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TheLoaiMaTheLoai")
                         .HasColumnType("nvarchar(450)");
@@ -434,7 +423,6 @@ namespace HN120_ShopQuanAo.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UrlAvatar")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaSp");
@@ -726,22 +714,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "09508c5b-94d1-460c-82b6-d528d805f13b",
-                            ConcurrencyStamp = "7d72eb3c-4ea0-4ee7-8b2f-530ece5988fd",
+                            Id = "4657417e-b941-4fef-a0a9-934e1b4c1bd6",
+                            ConcurrencyStamp = "c5fc6364-2800-4e34-846d-92f5aa256810",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3504041d-4672-4a91-bdac-82b7dbeac2b8",
-                            ConcurrencyStamp = "5fb6ca91-3676-4b8e-b9fd-998e84d18dce",
+                            Id = "5bfdd3a9-cb39-4a1c-a898-eac1dea134c3",
+                            ConcurrencyStamp = "bbde8eef-e6ba-44a0-96bd-299922f4df6d",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "0156c258-376a-485c-a457-d5d69f30c5a0",
-                            ConcurrencyStamp = "fc60e769-d63c-4023-a67a-6a6b3ed18b77",
+                            Id = "f48553ad-39ac-4238-9897-e8ad2f2ad52e",
+                            ConcurrencyStamp = "ff6a6e7a-9263-49ed-a10b-0c508e52c03e",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });

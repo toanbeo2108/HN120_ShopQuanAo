@@ -57,11 +57,37 @@
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
         <!-- Sidebar Start -->
         <aside class="left-sidebar">
-            <!-- Sidebar scroll-->
-            <div>
-                <div class="brand-logo d-flex align-items-center justify-content-between">
-                    <a asp-area="Admin" asp-controller="AdminHome" asp-action="Index" class="text-nowrap logo-img">
-                        <img src="~/src/assets/images/logos/dark-logo.svg" width="180" alt="" />
+    <!-- Sidebar scroll-->
+    <div>
+        <div class="brand-logo d-flex align-items-center justify-content-between">
+            <a asp-area="Admin" asp-controller="AdminHome" asp-action="Index" class="text-nowrap logo-img">
+                <img src="~/src/assets/images/logos/image.png" width="180" alt="" />
+            </a>
+            <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                <i class="ti ti-x fs-8"></i>
+            </div>
+        </div>
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+            <ul id="sidebarnav">
+                <li class="nav-small-cap">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span class="hide-menu">Thống kê</span>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" asp-area="Admin" asp-controller="Statistical" asp-action="GetDoanhThu7NgayGanNhat" aria-expanded="false">
+                        <span>
+                            <i class="bi bi-speedometer2"></i>
+                        </span>
+                        <span class="hide-menu">Bảng thống kê</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+                        <span>
+                            <i class="bi bi-person-gear"></i>
+                        </span>
+                        <span class="hide-menu">Quản lý tài khoản</span>
                     </a>
                     <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                         <i class="ti ti-x fs-8"></i>
@@ -210,6 +236,8 @@
                                 <span class="hide-menu">Danh sách khuyến mãi</span>
                             </a>
                         </li>
+
+
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->

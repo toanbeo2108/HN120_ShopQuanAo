@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 namespace HN120_ShopQuanAo.Data.Models
 {
 	public class VoucherHistory
-	{
-		[Key] public int Id { get; set; }
+    {
+        [Key] 
+        public int Id { get; set; }
         public string? MaVoucher { get; set; }
         public DateTime? NgayTao { get; set; }
         public DateTime? NgayThayDoi { get; set; }

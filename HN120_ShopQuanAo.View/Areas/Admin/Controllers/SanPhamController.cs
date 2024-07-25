@@ -146,11 +146,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     model.ChiTietSps[i].UrlAnhSpct = await UploadImageAsync(imageFile, "photoSanPhamCT");
                 }
             }
-            if (await IsDuplicateSP(model.TenSp))
-            {
-                TempData["errorMessage"] = "Tên đã tồn tại.";
-                return View();
-            }
+            
             // Gọi API để thêm sản phẩm và chi tiết sản phẩm
             var httpClient = _httpClientFactory.CreateClient();
             var url = "https://localhost:7197/api/SanPham/AddSpWithDetails";
@@ -162,38 +158,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return RedirectToAction("AllSanPhamManager", "SanPham", new { area = "Admin" });
             }
 
-            TempData["errorMessage"] = "Thêm thất bại";
 
             // Lấy lại dữ liệu cho ViewBag nếu ModelState không hợp lệ
-            var urlTL = "https://localhost:7197/api/TheLoai/GetAllTheLoai";
-            var responTL = await httpClient.GetAsync(urlTL);
-            string apiDataTL = await responTL.Content.ReadAsStringAsync();
-            var lstTL = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataTL);
-            ViewBag.lstTL = lstTL;
-
-            var urlTH = "https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
-            var responTH = await httpClient.GetAsync(urlTH);
-            string apiDataTH = await responTH.Content.ReadAsStringAsync();
-            var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
-            ViewBag.lstTH = lstTH;
-
-            var urlCL = "https://localhost:7197/api/ChatLieu/GetAllChatLieu";
-            var responCL = await httpClient.GetAsync(urlCL);
-            string apiDataCL = await responCL.Content.ReadAsStringAsync();
-            var lstCL = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataCL);
-            ViewBag.lstCL = lstCL;
-
-            var urlSZ = "https://localhost:7197/api/Size/GetAllSize";
-            var responSZ = await httpClient.GetAsync(urlSZ);
-            string apiDataSZ = await responSZ.Content.ReadAsStringAsync();
-            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDataSZ);
-            ViewBag.lstSZ = lstSZ;
-
-            var urlMS = "https://localhost:7197/api/MauSac/GetAllMauSac";
-            var responMS = await httpClient.GetAsync(urlMS);
-            string apiDataMS = await responMS.Content.ReadAsStringAsync();
-            var lstMS = JsonConvert.DeserializeObject<List<MauSac>>(apiDataMS);
-            ViewBag.lstMS = lstMS;
+            await LoadDataForViewBag();
 
             return View(model);
         }
@@ -244,6 +211,13 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             string apiDataMS = await responMS.Content.ReadAsStringAsync();
             var lstMS = JsonConvert.DeserializeObject<List<MauSac>>(apiDataMS);
             ViewBag.lstMS = lstMS;
+
+            var urlSP = $"https://localhost:7197/api/SanPham/GetAllSanPham";
+            var responSP = await _httpClient.GetAsync(urlSP);
+            string apiDataSP = await responSP.Content.ReadAsStringAsync();
+            var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apiDataSP);
+            ViewBag.lstSP = lstSP;
+
         }
 
 
