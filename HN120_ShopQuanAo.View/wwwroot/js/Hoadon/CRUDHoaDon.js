@@ -247,8 +247,18 @@ $(document).ready(function () {
         AddLichsuhoadon(3);
     })
     $('body').on('click', '#btn_GiaoHang', function () {
-        updateHoaDon(4);
-        AddLichsuhoadon(4);
+        $('#table_hoadon tbody tr').each(function () {
+
+            var stt = $(this).find('#stt_hoadon').val();
+            $('#stthoadon_fake').val(stt)
+
+        });
+        $('#btn_trangthai').val(4)
+        $('#pop_huydon').modal('show');
+
+
+        //updateHoaDon(4);
+        //AddLichsuhoadon(4);
     })
     $('body').on('click', '#btn_HoanThanh', function () {
         updateHoaDon(5);
@@ -288,7 +298,9 @@ $(document).ready(function () {
 
             var stt = $(this).find('#stt_hoadon').val();
             $('#stthoadon_fake').val(stt)
+            
         });
+        $('#btn_trangthai').val(6)
         $('#pop_huydon').modal('show');
        
     })
@@ -315,7 +327,37 @@ $(document).ready(function () {
 
             $.post('/Add-lichsuhoadon', { lshd: data }, function (re) {
                 if (re.status) {
-                    updateHoaDon(6);
+                    if ($('#btn_trangthai').val() == 4) {
+                        updateHoaDon(4);
+                       // AddLichsuhoadon(4);
+                    }
+                    if ($('#btn_trangthai').val() == 6) {
+                        updateHoaDon(6);
+                        if ($('#stthoadon_fake').val() == 2 || $('#stthoadon_fake').val() == 3) {
+                            let datasp = getSanPhamChiTiet();
+                            $.ajax({
+                                url: '/Update_soluongCTsanpham',
+                                method: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'json',
+                                data: JSON.stringify(datasp),
+                                success: function (re) {
+                                    if (re.status) {
+                                        console.log('Trừ số lượng sản phẩm thành công');
+                                    } else {
+                                        console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                                    }
+                                },
+                                error: function () {
+                                    console.error('Có lỗi xảy ra khi gửi yêu cầu.');
+                                }
+                            });
+                        }
+                    }
+                    //else {
+
+                    //    updateHoaDon(6);
+                    //}
                     window.location.reload();
                 }
                 else {
@@ -326,26 +368,7 @@ $(document).ready(function () {
             })
         }
        
-        if ($('#stthoadon_fake').val() == 2 || $('#stthoadon_fake').val() == 3) {
-            let datasp = getSanPhamChiTiet();
-            $.ajax({
-                url: '/Update_soluongCTsanpham',
-                method: 'POST',
-                contentType: 'application/json',
-                dataType: 'json',
-                data: JSON.stringify(datasp),
-                success: function (re) {
-                    if (re.status) {
-                        console.log('Trừ số lượng sản phẩm thành công');
-                    } else {
-                        console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
-                    }
-                },
-                error: function () {
-                    console.error('Có lỗi xảy ra khi gửi yêu cầu.');
-                }
-            });
-        }
+       
     });
     $('body').on('click', '#btn_xemlichsu', function () {
         $('#pop_lshd').modal('show');
