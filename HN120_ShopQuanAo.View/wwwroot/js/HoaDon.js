@@ -588,7 +588,7 @@ $(document).ready(function () {
 let paymentSuccessful = false;
 function QRCODE_PAYMENT() {
     $('#pop_QR').modal('show');
-    let countdownTime = 30;
+    let countdownTime = 300;
     const countdownElement = document.getElementById("countdown");
     const paymentCheckInterval = setInterval(() => {
 
