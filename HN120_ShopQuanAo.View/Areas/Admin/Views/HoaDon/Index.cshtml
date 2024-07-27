@@ -209,7 +209,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                         <div class="col-md-12">
                             <div class="row mb-3" style="padding-top:20px">
                                 <div class="col-md-4">
-                                    <input type="text" id="search-input" class="form-control" onkeyup="filterFunction()" placeholder="Tìm kiếm...">
+                                <input type="text" id="search-input" class="form-control" onkeyup="filterFunction()" placeholder="Tìm kiếm..." maxlength="50">
                                 </div>
                                 <div class="col-md-4">
                                     <select id="select-color" class="form-select" aria-label="Default select example" onchange="filterFunction()">
@@ -322,7 +322,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                 </select>
                             </div> *@
                             <div class="col-md-8">
-                                <input type="text" name="hoten" placeholder="Nhập họ tên hoặc số điện thoại" id="search_khachhang_input" onfocus="showTable()" class="form-control" oninput="filterTable()">
+                                <input type="text" name="hoten" placeholder="Nhập họ tên hoặc số điện thoại" id="search_khachhang_input" onfocus="showTable()" class="form-control" oninput="filterTable()" maxlength="50">
 
                                 <table id="timkiemkhachhang_table" class="table table-hover hidden" style="width:350px">
                                     <thead>
@@ -395,7 +395,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                 <tr>
                                     <th style="width: 130px; padding: 12px">Tiền khách đưa</th>
                                     <td>
-                                        <input id="btn_tienkhachdua" style="color:brown; border:none" class="form-control w-100" type="text">
+                                    <input id="btn_tienkhachdua" style="color:brown; border:none" class="form-control w-100" type="text" maxlength="8">
                                     </td>
                                     <td>VNĐ</td>
                                 </tr>
@@ -442,7 +442,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                 <i class="fa-solid fa-truck-arrow-right fa-xl" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
                             </button>
                         </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12" style="display:none">
                         <button class="btn btn-outline-primary" id="btn_inphieu">
                             <i class="fa-solid fa-print fa-xl"></i> In phiếu
                         </button>
@@ -454,7 +454,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 </div>
 
 <div id="printableTable">
-    <!-- Nội dung bảng -->
+    
 </div>
 @* Modal thanh toán  QR code *@
 <div class="modal fade" tabindex="-1" id="pop_QR">
@@ -470,6 +470,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                 </div>
                 <div class="col-md-12 d-flex justify-content-center">
                     <img width="60%" id="imgQR" src="https://img.vietqr.io/image/MB-0336262156-qr_only.png" />
+
+                   @*  <img width="60%" id="imgQR" src="https://img.vietqr.io/image/TCB-983333666888-qr_only.png" /> *@
                 </div>
                 <div class="col-md-12">
                    <p>Nội dung chuyển khoản: @ViewBag.RandomString</p>
@@ -498,11 +500,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                 <div class="row">
                     <div class="col-md-4">
                         <label for="sdtnhanhang_btn">SĐT nhận hàng</label>
-                        <input id="sdtnhanhang_btn" class="form-control" />
+                        <input id="sdtnhanhang_btn" class="form-control" maxlength="50" />
                     </div>
                     <div class="col-md-4">
                         <label for="ngnhanhang_btn">Người nhận hàng</label>
-                        <input id="ngnhanhang_btn" class="form-control" />
+                        <input id="ngnhanhang_btn" class="form-control" maxlength="50" />
                     </div>
                     <div class="col-md-4">
                         <label for="City">Tỉnh/Thành phố</label>
@@ -524,7 +526,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     </div>
                     <div class="col-md-4">
                         <label for="street">Địa chỉ cụ thể</label>
-                        <input type="text" class="form-control" name="Street" id="street">
+                        <input type="text" class="form-control" name="Street" id="street" maxlength="100">
                     </div>
 
                     
@@ -561,11 +563,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     
                    <div class="col-md-4">
                         <label for="btn_fullname">Họ và tên</label>
-                        <input id="btn_fullname" type="text" class="form-control" />
+                        <input id="btn_fullname" type="text" class="form-control" maxlength="50" />
                    </div>
                     <div class="col-md-4" id="themsdt_btn">
                         <label for="btn_SoDienThoai_">Số điện thoại</label>
-                        <input id="btn_SoDienThoai_" class="form-control" type="text" />
+                        <input id="btn_SoDienThoai_" class="form-control" type="text" maxlength="11" />
                         <div id="phoneError" style="color: red; display: none;">Số điện thoại không hợp lệ.</div>
                     </div>
                     <div class="col-md-4" style="display:none">
@@ -575,15 +577,15 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     </div>
                    <div class="col-md-4">
                         <label for="btn_Email">Email</label>
-                        <input id="btn_Email" type="text" class="form-control" />
+                        <input id="btn_Email" type="text" class="form-control" maxlength="50" />
                    </div>
                    <div class="col-md-4">
                         <label for="btn_Password ">Password </label>
-                        <input id="btn_Password" type="text" class="form-control" />
+                        <input id="btn_Password" type="text" class="form-control" maxlength="50" />
                    </div>
                    <div class="col-md-4">
                         <label for="btn_ConfirmPassword">ConfirmPassword</label>
-                        <input id="btn_ConfirmPassword" type="text" class="form-control" />
+                        <input id="btn_ConfirmPassword" type="text" class="form-control" maxlength="50" />
                    </div>                 
                 </div>
               
@@ -613,7 +615,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
             </div>
         </div>
     </div>
-</div>
+</div> 
 <script>
     document.getElementById('label_phuongthucthanhtoan').addEventListener('click', function () {
         var selectElement = document.getElementById('btn_phuongthucthanhtoan');

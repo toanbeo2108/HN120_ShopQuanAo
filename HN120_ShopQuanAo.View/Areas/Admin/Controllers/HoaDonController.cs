@@ -777,7 +777,90 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Lỗi cài đặt địa chỉ mặc định" });
             }
         }
+        [HttpGet, Route("InHoaDonBanHang")]
+        public async Task<IActionResult> InHoaDon(string ma)
+        {
+            var apiurl_hd = "https://localhost:7197/api/HoaDon/GetAllHoaDon";
+            var respon_hd = await _httpClient.GetAsync(apiurl_hd);
+            string apiData_hd = await respon_hd.Content.ReadAsStringAsync();
+            var lst_hd = JsonConvert.DeserializeObject<List<HoaDon>>(apiData_hd);
 
+            var apiurlhdct = "https://localhost:7197/api/ChiTietHoaDon/GetAll";
+            var responhdct = await _httpClient.GetAsync(apiurlhdct);
+            string apiDatahdct = await responhdct.Content.ReadAsStringAsync();
+            var lsthdct = JsonConvert.DeserializeObject<List<HoaDonChiTiet>>(apiDatahdct);
+
+            var apiCTSP = "https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+            var responCTSP = await _httpClient.GetAsync(apiCTSP);
+            string apidataCTSP = await responCTSP.Content.ReadAsStringAsync();
+            var lstCTSP = JsonConvert.DeserializeObject<List<ChiTietSp>>(apidataCTSP);
+
+            var apiMauSac = "https://localhost:7197/api/MauSac/GetAllMauSac";
+            var responMauSac = await _httpClient.GetAsync(apiMauSac);
+            string apidaMauSac = await responMauSac.Content.ReadAsStringAsync();
+            var lstMauSac = JsonConvert.DeserializeObject<List<MauSac>>(apidaMauSac);
+
+            var apiSize = "https://localhost:7197/api/Size/GetAllSize";
+            var responSize = await _httpClient.GetAsync(apiSize);
+            string apidaSize = await responSize.Content.ReadAsStringAsync();
+            var lstSize = JsonConvert.DeserializeObject<List<Size>>(apidaSize);
+
+            var urluseraccout = $"https://localhost:7197/api/User/GetAllAccount";
+            var responaccout = await _httpClient.GetAsync(urluseraccout);
+            string apiDataaccout = await responaccout.Content.ReadAsStringAsync();
+            var Listaccout = JsonConvert.DeserializeObject<List<User>>(apiDataaccout);
+
+            // Debugging - Check if data is loaded correctly
+            if (!lst_hd.Any() || !lsthdct.Any() || !lstCTSP.Any() || !lstMauSac.Any() || !lstSize.Any() || !Listaccout.Any())
+            {
+                return Json(new { status = false, message = "Dữ liệu không tải đúng", data = new List<object>() });
+            }
+
+            var query = from hd in lst_hd
+                        join ct in lsthdct on hd.MaHoaDon equals ct.MaHoaDon
+                        join ctsp in lstCTSP on ct.SKU equals ctsp.SKU into ctspGroup
+                        from ctsp in ctspGroup.DefaultIfEmpty()
+                        join sz in lstSize on ctsp.MaSize equals sz.MaSize into sizeGroup
+                        from sz in sizeGroup.DefaultIfEmpty()
+                        join ms in lstMauSac on ctsp.MaMau equals ms.MaMau into mauGroup
+                        from ms in mauGroup.DefaultIfEmpty()
+                        join user in Listaccout on hd.TenKhachHang equals user.Id into userGroup
+                        from user in userGroup.DefaultIfEmpty()
+                        where hd.MaHoaDon == ma
+                        select new
+                        {
+                            FullName_ = user?.FullName ?? "N/A",
+                            MaHoaDon_ = hd.MaHoaDon,
+                            NgayTaoDon_ = hd.NgayTaoDon,
+                            TenSp_ = ct.TenSp,
+                            TenSize_ = sz?.TenSize ?? "N/A",
+                            TenMau_ = ms?.TenMau ?? "N/A",
+                            SoLuongMua_ = ct.SoLuongMua,
+                            DonGia_ = ct.DonGia
+                        };
+
+            var result = query.ToList();
+
+            if (result.Any())
+            {
+                _stt = true;
+                _data = result;
+                _mess = "OK";
+            }
+            else
+            {
+                _stt = false;
+                _data = new List<object>();
+                _mess = "Không có dữ liệu";
+            }
+
+            return Json(new
+            {
+                status = _stt,
+                message = _mess,
+                data = _data
+            });
+        }
 
     }
 }
