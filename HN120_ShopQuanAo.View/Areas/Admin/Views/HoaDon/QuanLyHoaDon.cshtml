@@ -111,15 +111,14 @@
                     }
                  @*   @item.UserID *@
                 </td>
-                <td>
-                            @item.MaVoucher
-                  @*  @foreach (var vc in lstVC)
+                <td>     
+                   @foreach (var vc in lstVC)
                    {
-                       if (vc.MaVoucher == item.MaVC)
+                       if (vc.MaVoucher == item.MaVoucher)
                        {
                            <p>@vc.Ten</p>
                        }
-                   } *@
+                   }
                 </td>
                 <td>
                    @item.NgayTaoDon

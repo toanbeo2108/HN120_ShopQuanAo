@@ -280,9 +280,118 @@
     $('body').on('click', '#btn_update_hoadon', function () {
         fakedata(); 
     }) 
+    $('body').on('click', '#btn_inphieu', function () {
+        let ma = $('#btn_mahoadon').val();
+
+        // Gửi yêu cầu GET để lấy dữ liệu hóa đơn
+        $.get('/InHoaDonBanHang', { ma: ma }, function (re) {
+            if (re.status) {
+                // Gọi hàm In với dữ liệu nhận được từ server
+                InHoaDon(re.data);
+            } else {
+                console.log(re.message);
+            }
+        });
+        
+    })
   
 })
+function InHoaDon(data) {
 
+    var mahoadon = $('#btn_mahoadon').val();
+    var diachi; 
+    if ($('#btn_diachi').val() == ' - - -') {
+        diachi = '';
+    }
+    else {
+        diachi = $('#btn_diachi').val();
+    }
+    var maVoucher;
+    var tenKhachHang;
+    var soDienThoai;
+    var soDienThoaiNhanHang;
+    var phiShip;
+    var tongGiaTri;
+    $('#table_hoadon tbody tr').each(function () {
+        var row = $(this);
+
+        // Lấy nội dung của các ô cụ thể
+        var vc = row.find('td').eq(2).text().trim(); // Ô Mã Voucher
+        if (vc == "") {
+            maVoucher = '- 0 VNĐ'
+        }
+        else {
+            maVoucher = vc;
+        }
+        tenKhachHang = row.find('td').eq(4).text().trim(); // Ô Tên khách hàng
+        soDienThoai = row.find('td').eq(5).text().trim(); // Ô Số điện thoại
+        soDienThoaiNhanHang = row.find('td').eq(6).text().trim(); // Ô Số điện thoại nhận hàng
+        phiShip = row.find('td').eq(7).text().trim(); // Ô Phí ship
+        tongGiaTri = row.find('td').eq(8).text().trim(); // Ô Tổng giá trị
+    });
+
+
+    var printContent = `
+        <div style="text-align: center;">
+             <img id="shopLogo" src="https://localhost:7060/img/logo/image.png" alt="Shop Logo" style="max-width: 200px;height: 35px; ">
+             <p> Số 1, Cầu Noi,P.Cổ Nhuế 2, Q.Bắc Từ Liêm</p>
+             <p>Liên hệ : 0461728398</p>
+              <hr />
+              <h4>HÓA ĐƠN BÁN HÀNG</h4>
+             <p>Số : ${mahoadon}</p>
+        </div>
+        <div class="col-md-12" style="text-align:left;margin-left:10px">
+        <p>Khách hàng :  ${tenKhachHang}</p>
+        <p>ĐT :  ${soDienThoai}</p>
+        <p>SĐT nhận hàng :  ${soDienThoaiNhanHang}</p>
+        <p>Địa Chỉ :${diachi} </p>
+        </div>
+        <table style="width: 400px; border-collapse: collapse;">
+            <thead>
+                    <tr>
+                        <th style="text-align : center;">Tên Sản Phẩm</th>
+                        <th style="text-align : center;">Size</th>
+                        <th style="text-align : center;">Màu</th>
+                        <th style="text-align : center;">Số Lượng</th>
+                        <th style="text-align : center;">Đơn Giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+    data.forEach(item => {
+        printContent += `
+            <tr>
+                <td style="text-align : center;">${item.tenSp_}</td>
+                <td style="text-align : center;">${item.tenSize_}</td>
+                <td style="text-align : center;">${item.tenMau_}</td>
+                <td style="text-align : center;">${item.soLuongMua_}</td>
+                <td style="text-align : center;">${formatMoney(item.donGia_)}</td>
+            </tr>
+        `;
+    });
+
+    printContent += `
+            </tbody>
+        </table>
+        <div class="shop-info"  style="text-align:left">
+             <table style="width: 400px; border-collapse: collapse;">
+                <tr><th style="padding-left:10px;width:150px">Voucher</th><td>: ${maVoucher}</td></tr>
+                <tr><th style="padding-left:10px;width:150px">Phí ship</th><td>: ${phiShip}</td></tr>
+                <tr><th style="padding-left:10px;width:150px">Tổng giá trị</th><td>: ${tongGiaTri}</td></tr>
+             </table>
+         </div>
+    `;
+
+    $('#printableTable').html(printContent);
+    $('#shopLogo').on('load', function () {
+
+        window.onafterprint = function () {
+            location.reload();
+        };
+        window.print();
+    });
+
+}
 function fakedata() {
     let ma = $('#btn_mahoadon').val();
     $.get('/Detail-hoadon/' + ma, function (re) {
@@ -369,26 +478,3 @@ function AddLichsuhoadon(status) {
 
     })
 }
-//function getdataahoadonchitiet_() {
-//    var hdctList = [];
-//    $('#hoaDonctTable tbody tr').each(function () {
-//        var maHoaDonChiTiet = $(this).find('.maHoaDonChiTiet').val();
-//        var sku = $(this).find('.sku').val();
-//        var maHoaDon = $(this).find('.maHoaDon').val();
-//        var tenSp = $(this).find('.tenSp').val();
-//        var donGia = parseFloat($(this).find('.donGia').val());
-//        var soLuongMua = parseInt($(this).find('.soLuongMua').val());
-//        var trangThai = parseInt($(this).find('.trangThai').val());
-//        var dt = {
-//            MaHoaDonChiTiet: maHoaDonChiTiet,
-//            SKU: sku,
-//            MaHoaDon: maHoaDon,
-//            TenSp: tenSp,
-//            DonGia: donGia,
-//            SoLuongMua: soLuongMua,
-//            TrangThai: trangThai
-//        };
-//        hdctList.push(dt);
-//    });
-//    return hdctList;
-//}

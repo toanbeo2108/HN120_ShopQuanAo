@@ -97,6 +97,16 @@ $(document).ready(function () {
             $('#btn_Email').val('');
             $('#btn_Password').val('');
             $('#btn_Password').val('');
+
+            let input = document.getElementById('search_khachhang_input');
+            input.setAttribute('data-idKH', '');
+            input.setAttribute('data-tinh', '');
+            input.setAttribute('data-quanhuyen', '');
+            input.setAttribute('data-xaphuong', '');
+            input.setAttribute('data-cuthe', '');
+            input.setAttribute('data-sdtnhanhhang', '');
+            input.setAttribute('data-ngnhanhang', '');
+
             $('#clear').click();
         }
     })
@@ -499,11 +509,34 @@ $(document).ready(function () {
     });
    
     $('body').on('click', '#in_hoadon', function () {
-        In();
+        let ma = $('#btn_ma').val(); 
+
+        // Gửi yêu cầu GET để lấy dữ liệu hóa đơn
+        $.get('/InHoaDonBanHang', { ma: ma }, function (re) {
+            if (re.status) {
+                // Gọi hàm In với dữ liệu nhận được từ server
+                In(re.data);
+            } else {
+                console.log(re.message);
+            }
+        });
     });
     $('body').on('click', '#khongin_hoadon', function () {
         window.location.reload();
     });
+    //$('body').on('click', '#btn_inphieu', function () {
+    //    let ma = $('#btn_ma').val(); // Mã hóa đơn giả sử này là đúng
+
+    //    // Gửi yêu cầu GET để lấy dữ liệu hóa đơn
+    //    $.get('/InHoaDonBanHang', { ma: ma }, function (re) {
+    //        if (re.status) {
+    //            // Gọi hàm In với dữ liệu nhận được từ server
+    //            In(re.data);
+    //        } else {
+    //            console.log(re.message);
+    //        }
+    //    });
+    //});
 
     $('body').on('click', '#luukhachhangMoi_cl', function () {
         if ($('#btn_fullname').val() == '' || $('#btn_fullname').val() == null || $('#btn_fullname').val() == undefined) {
@@ -596,7 +629,7 @@ function QRCODE_PAYMENT() {
         checkpaid(sotienck, thongtinhoadon, paymentCheckInterval);
 
 
-    }, 3000);
+    }, 1000);
     // Cập nhật đồng hồ đếm ngược mỗi giây
     const countdownInterval = setInterval(function () {
         if (paymentSuccessful) {
@@ -619,6 +652,7 @@ function QRCODE_PAYMENT() {
     //string thongtinhoadon = a;
     let sotienck = parseInt($('#btn_tienkhachphaitra').val().replace('.', ''));
     let QR = `https://img.vietqr.io/image/MB-0336262156-qr_only.png?amount=${sotienck}&addInfo=${thongtinhoadon}`
+    /*let QR = `https://img.vietqr.io/image/TCB-983333666888-qr_only.png?amount=${sotienck}&addInfo=${thongtinhoadon}`*/
     $('#imgQR').attr('src', QR);
 
     //setInterval(() => {
@@ -1429,8 +1463,8 @@ function themnhanhkhachhang() {
                          $('#pop_diachikhachhang').modal('hide');
                     },
                     error: function (xhr, status, error) {
-                        // Xử lý lỗi nếu có
-                        $.notify('Đã xảy ra lỗi:', error);
+                        $.notify(xhr.responseText);
+
                         return;
                     }
                 });
@@ -1586,29 +1620,10 @@ function selectValue(row) {
     document.getElementById('timkiemkhachhang_table').classList.add('hidden');
 
 }
-function In() {
+function In(data) {
 
     var selectedOption = $('#btn_MaVoucher').find(':selected');
-    var pttt = $('#btn_phuongthucthanhtoan').val();
-    var thanhtoan;
-    var pt;
-
-    if (pttt == 1) {
-        pt = 'Tiền mặt';
-        thanhtoan = 'Đã thanh toán';
-    } else if (pttt == 2) {
-        pt = 'Chuyển khoản';
-        thanhtoan = 'Đã thanh toán';
-    } else if (pttt == 3) {
-        pt = 'Chuyển khoản + tiền mặt';
-        thanhtoan = 'Đã thanh toán';
-    } else if (pttt == 4) {
-        pt = 'Thanh toán khi nhận hàng';
-        thanhtoan = 'Chưa thanh toán';
-    }
-
     // Lấy dữ liệu từ các ô nhập liệu
-   
     var mahoadon = $('#btn_ma').val();
     var tongtien = $('#btn_tongtien').val();
     var ngaytao = $('#btn_NgayTaoDon').val();
@@ -1622,51 +1637,89 @@ function In() {
     var pt_thanhtoan = pt;
     var trangthai = thanhtoan;
     var tenkhachhang;
+    var sdt;
+    var tinhthanh;
+    var quanhuyen;
+    var xaphuong;
+    var cuthe;
+    var diachi;
+
     const id = document.getElementById('search_khachhang_input');
-
-
-   
     if ($('#search_khachhang_input').val() == '') {
-        tenkhachhang = 'Khách lẻ';
+        tenkhachhang = '';
+        sdt = '';
+        tinhthanh= '';
+        quanhuyen= '';
+        xaphuong = '';
+        cuthe = '';
+        diachi = '';
     }
     if ($('#search_khachhang_input').val() != '') {
-        tenkhachhang = id.value;
+       
+        var parts = id.value.split('-');
+        sdt = parts[1].trim();
+        tenkhachhang = parts[0].trim();
+        tinhthanh = $('#search_khachhang_input').attr('data-tinh');
+        quanhuyen = $('#search_khachhang_input').attr('data-quanhuyen');
+        xaphuong = $('#search_khachhang_input').attr('data-xaphuong');
+        cuthe = $('#search_khachhang_input').attr('data-cuthe');
+        diachi = tinhthanh + '-' + quanhuyen + '-' + xaphuong + '-' + cuthe;
     }
-    $
+    
     var printContent = `
         <div style="text-align: center;">
-          <img id="shopLogo" src="https://localhost:7060/img/logo/image.png" alt="Shop Logo" style="max-width: 200px; margin-bottom: 20px;">
+             <img id="shopLogo" src="https://localhost:7060/img/logo/image.png" alt="Shop Logo" style="max-width: 200px;height: 35px; ">
+             <p> Số 1, Cầu Noi,P.Cổ Nhuế 2, Q.Bắc Từ Liêm</p>
+             <p>Liên hệ : 0461728398</p>
+              <hr />
+              <h4>HÓA ĐƠN BÁN HÀNG</h4>
+             <p>Số : ${mahoadon}</p>
         </div>
-         <table style="width: 400px; border-collapse: collapse;">
-            <tr><th style="padding-left:10px;"></th><td> </td></tr>
-            <tr><th style="padding-left:10px;width:200px">Nhân viên</th><td>: ${nv}</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Khách hàng</th><td>: ${tenkhachhang}</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Mã hóa đơn</th><td>: ${mahoadon}</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Ngày tạo</th><td>: ${ngaytao}</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Tổng tiền</th><td>: ${tongtien} VNĐ</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Voucher</th><td>: ${voucher}</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Phí ship</th><td>: ${phiship} VNĐ</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Số tiền phải trả</th><td>: ${tienkhachphaitra} VNĐ</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Khách đưa</th><td>: ${khachdua} VNĐ</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Tiền thừa</th><td>: ${tienthua} VNĐ</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Phương thức thanh toán</th><td>: ${pt_thanhtoan}</td></tr>
-            <tr><th style="padding-left:10px;width:200px">Trạng thái:</th><td>: ${trangthai}</td></tr>
-      
+        <div class="col-md-12" style="text-align:left;margin-left:10px">
+        <p>Khách hàng :  ${tenkhachhang}</p>
+        <p>ĐT :  ${sdt}</p>
+        <p>Địa Chỉ :${diachi} </p>
+        </div>
+        <table style="width: 400px; border-collapse: collapse;">
+            <thead>
+                    <tr>
+                        <th style="text-align : center;">Tên Sản Phẩm</th>
+                        <th style="text-align : center;">Size</th>
+                        <th style="text-align : center;">Màu</th>
+                        <th style="text-align : center;">Số Lượng</th>
+                        <th style="text-align : center;">Đơn Giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+    data.forEach(item => {
+        printContent += `
+            <tr>
+                <td style="text-align : center;">${item.tenSp_}</td>
+                <td style="text-align : center;">${item.tenSize_}</td>
+                <td style="text-align : center;">${item.tenMau_}</td>
+                <td style="text-align : center;">${item.soLuongMua_}</td>
+                <td style="text-align : center;">${formatMoney(item.donGia_)}</td>
+            </tr>
+        `;
+    });
+
+    printContent += `
+            </tbody>
         </table>
-        <div class="shop-info">
-             <strong>FBOIPOLY SHOP</strong>
-             <p>Địa chỉ: 123 Đường ABC, Quận XYZ, Hà Nội</p>
-             <p>SĐT: 0123 456 789</p>
+        <div class="shop-info"  style="text-align:left">
+             <table style="width: 400px; border-collapse: collapse;">
+                <tr><th style="padding-left:10px;width:150px">Tổng tiền hàng</th><td>: ${tongtien} VNĐ</td></tr>
+                <tr><th style="padding-left:10px;width:150px">Voucher</th><td>: ${voucher}</td></tr>
+                <tr><th style="padding-left:10px;width:150px">Phí ship</th><td>: ${phiship} VNĐ</td></tr>
+                <tr><th style="padding-left:10px;width:150px">Tổng tiền</th><td>: ${tienkhachphaitra} VNĐ</td></tr>
+                <tr><th style="padding-left:10px;width:150px">Khách đưa</th><td>: ${khachdua} VNĐ</td></tr>
+                <tr><th style="padding-left:10px;width:150px">Tiền thừa</th><td>: ${tienthua} VNĐ</td></tr>
+             </table>
          </div>
     `;
 
     $('#printableTable').html(printContent);
-    //window.onafterprint = function () {
-
-    //    location.reload();
-    //};
-    //// Kích hoạt chế độ in
-    //window.print();
     $('#shopLogo').on('load', function () {
        
         window.onafterprint = function () {
