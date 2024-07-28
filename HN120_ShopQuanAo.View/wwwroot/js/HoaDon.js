@@ -629,7 +629,7 @@ function QRCODE_PAYMENT() {
         checkpaid(sotienck, thongtinhoadon, paymentCheckInterval);
 
 
-    }, 1000);
+    }, 3000);
     // Cập nhật đồng hồ đếm ngược mỗi giây
     const countdownInterval = setInterval(function () {
         if (paymentSuccessful) {
@@ -648,10 +648,13 @@ function QRCODE_PAYMENT() {
     }, 1000); // Cập nhật mỗi giây
     $('#btn_sotienck').text(($('#btn_tienkhachphaitra').val() != '' ? $('#btn_tienkhachphaitra').val() : 0) + ' VNĐ');
 
+    //let sotienck = 5000
+    //thongtinhoadon = 'YUKAOZFVFD';
+    
     thongtinhoadon = $('#btn_maQR').val();
-    //string thongtinhoadon = a;
     let sotienck = parseInt($('#btn_tienkhachphaitra').val().replace('.', ''));
     let QR = `https://img.vietqr.io/image/MB-0336262156-qr_only.png?amount=${sotienck}&addInfo=${thongtinhoadon}`
+
     /*let QR = `https://img.vietqr.io/image/TCB-983333666888-qr_only.png?amount=${sotienck}&addInfo=${thongtinhoadon}`*/
     $('#imgQR').attr('src', QR);
 
@@ -675,10 +678,10 @@ function QRCODE_PAYMENT() {
                     //   shouldStopQRCodePayment = true;
                     price = 0;
                     content = '';
+                    clearInterval(paymentCheckInterval);
                     Thanhtoan();
                     AddLichsuhoadon();
                     $("#pop_QR").modal('hide');
-                    clearInterval(paymentCheckInterval);
                     return;
                 }
 
@@ -1244,12 +1247,14 @@ function Thanhtoan() {
                             AddThanhTOanHoaDon();
                           //  localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
                             //  window.location.reload();
+                            $.notify('Thanh toán thành công', 'success');
                             $('#inhoadon_modal').modal('show');
                          
                         }   
                         if ($('#btn_Status').val() == 4) {
                           //  localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
                             AddThanhTOanHoaDon();
+                            $.notify('Thanh toán thành công', 'success');
                             $('#inhoadon_modal').modal('show');
                         }
                         
