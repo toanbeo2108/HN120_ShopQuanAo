@@ -159,9 +159,48 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(chitietsp);
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> UpdateChiTietSp(string id)
+        //[HttpGet]
+        //public async Task<IActionResult> UpdateChiTietSp(string id)
+        //{
+        //    var urlSize = $"https://localhost:7197/api/Size/GetAllSize";
+        //    var responSize = await _httpClient.GetAsync(urlSize);
+        //    string apiDatasz = await responSize.Content.ReadAsStringAsync();
+        //    var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
+        //    ViewBag.lstSZ = lstSZ;
+
+        //    var urlms = $"https://localhost:7197/api/MauSac/GetAllMauSac";
+        //    var responms = await _httpClient.GetAsync(urlms);
+        //    string apiDatams = await responms.Content.ReadAsStringAsync();
+        //    var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
+        //    ViewBag.lstms = lstms;
+
+        //    var urlkm = "https://localhost:7197/api/KhuyenMai/GetAllKhuyenMai";
+        //    var responkm = await _httpClient.GetAsync(urlkm);
+        //    responkm.EnsureSuccessStatusCode();
+        //    string apiDatakm = await responkm.Content.ReadAsStringAsync();
+        //    var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
+        //    ViewBag.lstkm = lstkm;
+        //    //var token = Request.Cookies["Token"];
+        //    //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        //    var urlBook = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+        //    var responBook = await _httpClient.GetAsync(urlBook);
+        //    string apiDataBook = await responBook.Content.ReadAsStringAsync();
+        //    var lstBook = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDataBook);
+        //    var chitietsp = lstBook.FirstOrDefault(x => x.SKU == id);
+        //    ViewBag.chitietsp = chitietsp;
+        //    if (chitietsp == null)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    else
+        //    {
+        //        return View(chitietsp);
+        //    }
+        //}
+        [HttpPost,Route("/UpdateChiTietSp")]
+        public async Task<IActionResult> UpdateChiTietSp(ChiTietSp ctsp, IFormFile imagectspFile)
         {
+
             var urlSize = $"https://localhost:7197/api/Size/GetAllSize";
             var responSize = await _httpClient.GetAsync(urlSize);
             string apiDatasz = await responSize.Content.ReadAsStringAsync();
@@ -180,47 +219,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             string apiDatakm = await responkm.Content.ReadAsStringAsync();
             var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
             ViewBag.lstkm = lstkm;
-            //var token = Request.Cookies["Token"];
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var urlBook = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
-            var responBook = await _httpClient.GetAsync(urlBook);
-            string apiDataBook = await responBook.Content.ReadAsStringAsync();
-            var lstBook = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDataBook);
-            var chitietsp = lstBook.FirstOrDefault(x => x.SKU == id);
-            ViewBag.chitietsp = chitietsp;
-            if (chitietsp == null)
-            {
-                return BadRequest();
-            }
-            else
-            {
-                return View(chitietsp);
-            }
-        }
-        [HttpPost]
-        public async Task<IActionResult> UpdateChiTietSp(string id, ChiTietSp vc, IFormFile imagectspFile)
-        {
 
-            var urlSize = $"https://localhost:7197/api/Size/GetAllSize";
-            var responSize = await _httpClient.GetAsync(urlSize);
-            string apiDatasz = await responSize.Content.ReadAsStringAsync();
-            var lstSZ = JsonConvert.DeserializeObject<List<Size>>(apiDatasz);
-            ViewBag.lstSZ = lstSZ;
-
-            var urlms = $"https://localhost:7197/api/MauSac/GetAllMauSac";
-            var responms = await _httpClient.GetAsync(urlms);
-            string apiDatams = await responms.Content.ReadAsStringAsync();
-            var lstms = JsonConvert.DeserializeObject<List<MauSac>>(apiDatams);
-            ViewBag.lstms = lstms;
-
-            var urlkm = "https://localhost:7197/api/KhuyenMai/GetAllKhuyenMai";
-            var responkm = await _httpClient.GetAsync(urlkm);
-            responkm.EnsureSuccessStatusCode();
-            string apiDatakm = await responkm.Content.ReadAsStringAsync();
-            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
-            ViewBag.lstkm = lstkm;
-
-            var spUrl = $"https://localhost:7197/api/CTSanPham/GetCTSPById?id={id}";
+            var spUrl = $"https://localhost:7197/api/CTSanPham/GetCTSPById?id={ctsp.SKU}";
             var spResponse = await _httpClient.GetAsync(spUrl);
             if (!spResponse.IsSuccessStatusCode)
             {
@@ -249,12 +249,19 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
                 // Cập nhật URL của ảnh vào thuộc tính
                 ExsitSP.UrlAnhSpct = imagectspFile.FileName;
-                ExsitSP.DonGia = vc.DonGia;
-                ExsitSP.SoLuongTon = vc.SoLuongTon;
+                ExsitSP.DonGia = ctsp.DonGia;
+                ExsitSP.GiaBan = ctsp.GiaBan;
+                ExsitSP.SoLuongTon = ctsp.SoLuongTon;
+            }
+            else
+            {
+                ExsitSP.DonGia = ctsp.DonGia;
+                ExsitSP.GiaBan = ctsp.GiaBan;
+                ExsitSP.SoLuongTon = ctsp.SoLuongTon;
             }
 
 
-            var urlBook = $"https://localhost:7197/api/CTSanPham/EditCTSP/{id}";
+            var urlBook = $"https://localhost:7197/api/CTSanPham/EditCTSP/{ctsp.SKU}";
 
             var content = new StringContent(JsonConvert.SerializeObject(ExsitSP), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PutAsync(urlBook, content);
@@ -264,7 +271,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
             //var token = Request.Cookies["Token"];
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            return RedirectToAction("UpdateSanPham", "SanPham", new { area = "Admin", id = vc.MaSp });
+            return RedirectToAction("UpdateSanPham", "SanPham", new { area = "Admin", id = ctsp.MaSp });
 
         }
         private async Task<bool> IsDuplicateChiTietSP(string SKU)

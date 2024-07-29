@@ -60,8 +60,7 @@ namespace HN120_ShopQuanAo.API.Controllers
                     if (existingChiTietSp != null)
                     {
                         // Update existing product detail
-                        existingChiTietSp.DonGia = detail.DonGia;
-                        existingChiTietSp.GiaBan = detail.DonGia;
+                        
                         existingChiTietSp.SoLuongTon = detail.SoLuongTon;
                         existingChiTietSp.UrlAnhSpct = detail.UrlAnhSpct;
                         existingChiTietSp.TrangThai = 1;

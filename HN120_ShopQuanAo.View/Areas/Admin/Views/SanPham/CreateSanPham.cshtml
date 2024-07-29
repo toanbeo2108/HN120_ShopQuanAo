@@ -298,7 +298,7 @@
     </div>
 </div>
 
-<!-- Modal thêm Chất Liệu confim -->
+<!-- Modal confim -->
 <div id="confirmModal" class="modal fade" tabindex="-1" aria-labelledby="chatLieuModalLabel" aria-hidden="true">
     <div class="modal-dialog" >
         <div class="modal-content">
@@ -308,7 +308,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Bạn có chắc chắn muốn thêm sản phẩm này không?</p>
+                <p class="tentrue" stype="display:none">Bạn có chắc chắn muốn thêm sản phẩm này không?</p>
+                <p class="tenfalse" stype="display:none">Sản phẩm này đã tồn tại bạn có chắc muốn cập nhật sản phẩm này không?</p>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Không</button>
@@ -376,8 +378,8 @@
 
             $('#sizeModal').modal('hide');
         }
-            var existingProducts = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP).ToList()));
 
+                  
             function validateFields() {
                 var imageSP = document.getElementById('imageSP').value;
                 var tenSP = document.getElementById('TenSP').value;
@@ -489,9 +491,21 @@
         }
 
         $(document).ready(function () {
+                var checktensp = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP).ToList()));
+                        var tensp = $('#TenSP').val();
                 $('#showConfirmModal').on('click', function() {
                         if(validateFields()==true){
-                                $('#confirmModal').modal('show');
+                                if(checktensp.includes(tensp)){
+                                    $('.tentrue').show();
+                                    $('.tenfalse').hide();
+                                    
+                                   }
+                                else{
+                                    $('.tentrue').hide();
+                                    $('.tenfalse').show();
+                                }
+                           $('#confirmModal').modal('show');
+                               
                         }
                     else{
                             alert('Vui lòng nhập đầy dủ thông tin sản phẩm.');
@@ -503,7 +517,7 @@
                         $('#createProductForm').submit();
                 });
                 var checktenth = @Html.Raw(Json.Serialize(lstTH.Select(p => p.TenThuongHieu).ToList()));
-                var checktentl = @Html.Raw(Json.Serialize(lstTL.Select(p => p.TenTheLoai).ToList()));
+                var checktentl = @Html.Raw(Json.Serialize(lstTL.Select(p => p.TenTheLoai).ToList())); 
                 var checktencl = @Html.Raw(Json.Serialize(lstCL.Select(p => p.TenChatLieu).ToList()));
 
         function addThuongHieu() {
@@ -649,60 +663,6 @@
                 window.addTheLoai = addTheLoai;
                 window.addChatLieu = addChatLieu;
         });
-            //function addThuongHieu() {
-            //        var tenThuongHieu = document.getElementById('TenThuongHieu').value;
-            //        if (!tenThuongHieu.trim()) {
-            //            alert('Vui lòng nhập tên thương hiệu.');
-            //            return;
-            //        }
-            //        // Thêm option mới vào dropdown Thương Hiệu
-            //        var select = document.getElementById('MaThuongHieu');
-            //        var option = document.createElement('option');
-            //        option.value = tenThuongHieu; // Sử dụng tên làm value, có thể thay đổi
-            //        option.innerText = tenThuongHieu;
-            //        select.appendChild(option);
-            //        $('#thuongHieuModal').modal('hide');
-            //    }
-
-            //    function addTheLoai() {
-            //        var tenTheLoai = document.getElementById('TenTheLoai').value;
-            //        if (!tenTheLoai.trim()) {
-            //            alert('Vui lòng nhập tên thể loại.');
-            //            return;
-            //        }
-            //        // Thêm option mới vào dropdown Thể Loại
-            //        var select = document.getElementById('MaTheLoai');
-            //        var option = document.createElement('option');
-            //        option.value = tenTheLoai; // Sử dụng tên làm value, có thể thay đổi
-            //        option.innerText = tenTheLoai;
-            //        select.appendChild(option);
-            //        $('#theLoaiModal').modal('hide');
-            //    }
-
-            //    function addChatLieu() {
-            //        var tenChatLieu = document.getElementById('TenChatLieu').value;
-            //        if (!tenChatLieu.trim()) {
-            //            alert('Vui lòng nhập tên chất liệu.');
-            //            return;
-            //        }
-            //        // Thêm option mới vào dropdown Chất Liệu
-            //        var select = document.getElementById('MaChatLieu');
-            //        var option = document.createElement('option');
-            //        option.value = tenChatLieu; // Sử dụng tên làm value, có thể thay đổi
-            //        option.innerText = tenChatLieu;
-            //        select.appendChild(option);
-            //        $('#chatLieuModal').modal('hide');
-            //    }
-
-            //    // Gán sự kiện hiển thị modal cho các nút +
-            //    document.getElementById('btn_addThuongHieu').onclick = function () {
-            //        $('#thuongHieuModal').modal('show');
-            //    };
-            //    document.getElementById('btn_addTheLoai').onclick = function () {
-            //        $('#theLoaiModal').modal('show');
-            //    };
-            //    document.getElementById('btn_addChatLieu').onclick = function () {
-            //        $('#chatLieuModal').modal('show');
-            //    };
+            
     </script>
 }
