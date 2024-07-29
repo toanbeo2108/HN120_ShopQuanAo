@@ -275,13 +275,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var sp = lstsp.FirstOrDefault(x => x.MaSp == id);
             ViewBag.sp = sp;
 
-            var urlkm = "https://localhost:7197/api/KhuyenMai/GetAllKhuyenMai";
-            var responkm = await _httpClient.GetAsync(urlkm);
-            responkm.EnsureSuccessStatusCode();
-            string apiDatakm = await responkm.Content.ReadAsStringAsync();
-            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
-            ViewBag.lstkm = lstkm;
-
             var urlctsp = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
             var responctsp = await _httpClient.GetAsync(urlctsp);
             string apiDatactsp = await responctsp.Content.ReadAsStringAsync();
