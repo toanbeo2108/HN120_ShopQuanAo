@@ -1,5 +1,6 @@
 ﻿using HN120_ShopQuanAo.API.Data;
 using HN120_ShopQuanAo.API.IResponsitories;
+using HN120_ShopQuanAo.Data.Configurations;
 using HN120_ShopQuanAo.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +23,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
                     UserID = UserId,
                     MaVoucher = null,
                     NgayTaoDon = DateTime.Now,
-                    NgayThayDoi = null,
+                    NgayThayDoi = DateTime.Now,
                     TenKhachHang = null,
                     SoDienThoai = null,
                     PhiShip = null,
@@ -39,6 +40,8 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 };
                 await _context.HoaDon.AddAsync(hd);
                 await _context.SaveChangesAsync();
+
+                
                 return true;
             }
             catch (Exception)
@@ -46,6 +49,20 @@ namespace HN120_ShopQuanAo.API.Responsitories
 
                 return false;
             }
+        }
+
+        public async Task<bool> CreateUVC(string userid, string mavc)
+        {
+            User_Voucher UVC = new User_Voucher
+            {
+                UserVoucherID = Guid.NewGuid().ToString(),
+                UserID = userid,
+                MaVoucher = mavc,
+                TrangThai = 1
+            };
+            await _context.User_Voucher.AddAsync(UVC);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<IEnumerable<HoaDon>> GetAllHoaDonByUserId(string UserId)
@@ -57,6 +74,11 @@ namespace HN120_ShopQuanAo.API.Responsitories
         public async Task<IEnumerable<HoaDonChiTiet>> GetAllItemHoaDon(string MaHD)
         {
             return await _context.HoaDonChiTiet.Where(x => x.MaHoaDon == MaHD).ToListAsync();
+        }
+
+        public async Task<IEnumerable<User_Voucher>> GetVoucherbyUserid(string userid)
+        {
+            return await _context.User_Voucher.Where(x => x.UserID == userid).ToListAsync();
         }
 
         public async Task<bool> UpdateHoaDon(string maHD, string? MaVoucher, string? tenkh, string? sdt, decimal? phiship, decimal? tongtien, int? pttt, string? phanloai, string? ghichu, string? tinh, string? huyen, string? xa, string? cuthe)
@@ -86,6 +108,34 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 hd.TrangThai = 1;
                 _context.HoaDon.Update(hd);
                 await _context.SaveChangesAsync();
+
+                HoaDon_History hdhs = new HoaDon_History
+                {
+                    LichSuHoaDonID = DateTime.Now.ToString(),
+                    MaHoaDon = hd.MaHoaDon,
+                    UserID = hd.UserID,
+                    NgayTaoDon = DateTime.Now,
+                    NgayThayDoi = DateTime.Now,
+                    TongGiaTri = hd.TongGiaTriHangHoa,
+                    HinhThucThanhToan = "4",
+                    ChiTiet = "",
+                    TrangThai = 1
+                };
+                _context.HoaDon_History.Add(hdhs);
+                await _context.SaveChangesAsync();
+
+                ThanhToan_HoaDon tthd = new ThanhToan_HoaDon
+                {
+                    MaPhuongThuc_HoaDon = hd.MaHoaDon + "_4",
+                    MaHoaDon = hd.MaHoaDon,
+                    MaPhuongThuc = "4",
+                    MoTa = "",
+                    NgayTao = DateTime.Now,
+                    NgayThayDoi = DateTime.Now,
+                    TrangThai = 1
+                };
+                _context.ThanhToan_HoaDon.Add(tthd);
+                await _context.SaveChangesAsync();  
                 return true;
             }
             catch (Exception)
@@ -93,6 +143,22 @@ namespace HN120_ShopQuanAo.API.Responsitories
 
                 return false;
             }
+        }
+
+        public async Task<bool> UpdateUser_Voucher(string user_voucherid)
+        {
+            var uvc =  _context.User_Voucher.FirstOrDefault(x => x.UserVoucherID ==  user_voucherid);
+            if(uvc != null)
+            {
+                uvc.UserID = uvc.UserID;
+                uvc.MaVoucher = uvc.MaVoucher;
+                uvc.TrangThai = 0;
+                _context.User_Voucher.Update(uvc);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
         }
     }
 }

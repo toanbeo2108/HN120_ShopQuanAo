@@ -14,12 +14,12 @@
         <div class="col-md-6 border-right">
             <h4>Voucher</h4>
             <hr />
-            @if (TempData["error message"] != null)
+@*            @if (TempData["error message"] != null)
             {
                 <div class="alert alert-danger">
                     @TempData["error message"]
                 </div>
-            }
+            }*@
             <form asp-action="CreateVC">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
