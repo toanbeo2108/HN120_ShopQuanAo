@@ -1,4 +1,10 @@
 ﻿$(document).ready(function () {
+    var notification = localStorage.getItem('notification');
+    if (notification) {
+        notification = JSON.parse(notification);
+        $.notify(notification.message, notification.type);
+        localStorage.removeItem('notification');
+    } 
     filterQuantity();
 
     //$('#minmaxx').show();
@@ -64,6 +70,7 @@
                 console.error('Đã xảy ra lỗi:', error);
             }
         });
+        $.notify('Thêm thành công sản phẩm vào giỏ hàng của bạn', 'error');
     });
     $('#quantity_input').on('change', function () {
         var inputQuantity = parseInt($(this).val());
@@ -98,7 +105,7 @@ function filterQuantity() {
         var row = rows[i];
         var color = row.querySelector('[data-mamau]').getAttribute('data-mamau').trim();
         var size = row.querySelector('[data-masize]').getAttribute('data-masize').trim();
-        var dg = row.querySelector('[data-masize]').getAttribute('data-madg').trim();
+        var dg = row.querySelector('[data-madg]').getAttribute('data-madg').trim();
         var quantity = parseInt(row.querySelector('[data-soluong]').getAttribute('data-soluong').trim());
         if ((selectedColor === '' || color === selectedColor) &&
             (selectedSize === '' || size === selectedSize)) {

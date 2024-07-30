@@ -52,9 +52,9 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                         }
                         else if (now >= voucher.NgayBatDau && now < voucher.NgayKetThuc)
                         {
-                            if (voucher.TrangThai == 3) 
+                            if (voucher.TrangThai == 3)
                             {
-                                continue; 
+                                continue;
                             }
                             voucher.TrangThai = 1; // Voucher đang hoạt động
                         }
@@ -79,63 +79,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(new List<Voucher>());
             }
         }
-
-        [HttpPost]
-        public async Task<IActionResult> EndEarly(string id)
-        {
-            try
-            {
-                var urlBook = $"https://localhost:7197/GetAllVoucher";
-                var responseBook = await _httpClient.GetAsync(urlBook);
-                string apiDataBook = await responseBook.Content.ReadAsStringAsync();
-                var lstBook = JsonConvert.DeserializeObject<List<Voucher>>(apiDataBook);
-                var voucher = lstBook.FirstOrDefault(x => x.MaVoucher == id);
-
-                if (voucher == null)
-                {
-                    TempData["error message"] = "Voucher không tồn tại.";
-                    return RedirectToAction("AllVoucherManager");
-                }
-
-                voucher.TrangThai = 3; 
-
-                var urlUpdate = $"https://localhost:7197/UpdateVCher/{voucher.MaVoucher}";
-                var content = new StringContent(JsonConvert.SerializeObject(voucher), Encoding.UTF8, "application/json");
-                var responseUpdate = await _httpClient.PutAsync(urlUpdate, content);
-
-                if (!responseUpdate.IsSuccessStatusCode)
-                {
-                    TempData["error message"] = "Cập nhật thất bại.";
-                }
-                else
-                {
-                    TempData["success message"] = "Voucher đã được cập nhật thành 'Kết thúc sớm'.";
-                }
-
-                return RedirectToAction("AllVoucherManager");
-            }
-            catch (Exception ex)
-            {
-                TempData["error message"] = "Có lỗi xảy ra: " + ex.Message;
-                return RedirectToAction("AllVoucherManager");
-            }
-        }
-        private async Task<bool> IsVoucherNameDuplicate(string voucherName, string currentVoucherId = null)
-        {
-            var url = $"https://localhost:7197/GetAllVoucher";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception("Error fetching vouchers");
-            }
-
-            var apiData = await response.Content.ReadAsStringAsync();
-            var lstVoucher = JsonConvert.DeserializeObject<List<Voucher>>(apiData);
-
-            return lstVoucher.Any(v => v.Ten.Equals(voucherName, StringComparison.OrdinalIgnoreCase) && v.MaVoucher != currentVoucherId);
-        }
-
+        
 
         public IActionResult CreateVC()
         {
@@ -389,7 +333,61 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
 
         }
+        [HttpPost]
+        public async Task<IActionResult> EndEarly(string id)
+        {
+            try
+            {
+                var urlBook = $"https://localhost:7197/GetAllVoucher";
+                var responseBook = await _httpClient.GetAsync(urlBook);
+                string apiDataBook = await responseBook.Content.ReadAsStringAsync();
+                var lstBook = JsonConvert.DeserializeObject<List<Voucher>>(apiDataBook);
+                var voucher = lstBook.FirstOrDefault(x => x.MaVoucher == id);
 
+                if (voucher == null)
+                {
+                    TempData["error message"] = "Voucher không tồn tại.";
+                    return RedirectToAction("AllVoucherManager");
+                }
+
+                voucher.TrangThai = 3;
+
+                var urlUpdate = $"https://localhost:7197/UpdateVCher/{voucher.MaVoucher}";
+                var content = new StringContent(JsonConvert.SerializeObject(voucher), Encoding.UTF8, "application/json");
+                var responseUpdate = await _httpClient.PutAsync(urlUpdate, content);
+
+                if (!responseUpdate.IsSuccessStatusCode)
+                {
+                    TempData["error message"] = "Cập nhật thất bại.";
+                }
+                else
+                {
+                    TempData["success message"] = "Voucher đã được cập nhật thành 'Kết thúc sớm'.";
+                }
+
+                return RedirectToAction("AllVoucherManager");
+            }
+            catch (Exception ex)
+            {
+                TempData["error message"] = "Có lỗi xảy ra: " + ex.Message;
+                return RedirectToAction("AllVoucherManager");
+            }
+        }
+        private async Task<bool> IsVoucherNameDuplicate(string voucherName, string currentVoucherId = null)
+        {
+            var url = $"https://localhost:7197/GetAllVoucher";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error fetching vouchers");
+            }
+
+            var apiData = await response.Content.ReadAsStringAsync();
+            var lstVoucher = JsonConvert.DeserializeObject<List<Voucher>>(apiData);
+
+            return lstVoucher.Any(v => v.Ten.Equals(voucherName, StringComparison.OrdinalIgnoreCase) && v.MaVoucher != currentVoucherId);
+        }
     }
 
 }

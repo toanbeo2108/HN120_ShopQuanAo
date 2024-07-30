@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HN120_ShopQuanAo.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240720134511_ttt")]
-    partial class ttt
+    [Migration("20240725065348_122345")]
+    partial class _122345
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -714,22 +714,22 @@ namespace HN120_ShopQuanAo.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3471932e-f7cf-4f44-82b4-ba3ce1ad5159",
-                            ConcurrencyStamp = "afcb16b5-4bc6-4707-b564-51b7b0b94327",
+                            Id = "80ce3129-e64d-434a-b539-1b097442b028",
+                            ConcurrencyStamp = "8268e1b9-e72a-4340-9fdf-7eabb1c94e36",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "216d986b-1404-4b45-9e81-160c8ae1b17e",
-                            ConcurrencyStamp = "ea573432-e919-4de7-b1cb-3c872942e202",
+                            Id = "8db6b829-69ba-4d4c-b0f4-950364acd570",
+                            ConcurrencyStamp = "5aacf5d1-8e95-4788-954e-ec4756c9335d",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "91eec882-acf9-4f86-8d11-09780a08f0c1",
-                            ConcurrencyStamp = "53d8f492-2c77-417f-868b-786bb9d090c9",
+                            Id = "1b8a4280-b854-4372-8e57-314526c495a2",
+                            ConcurrencyStamp = "a7ebce69-1332-488b-877b-8482d7d759e2",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });

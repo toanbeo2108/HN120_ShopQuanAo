@@ -163,9 +163,9 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
                                    MaSize = sz.MaSize,
                                    TenMau = ms.TenMau,
                                    TenSize = sz.TenSize,
-                                   DonGia = ctsp.DonGia,
+                                   DonGia = ctsp.GiaBan,
                                    SoLuong = ghct.SoLuong,
-                                   ThanhTien = ctsp.DonGia * ghct.SoLuong
+                                   ThanhTien = ctsp.GiaBan * ghct.SoLuong
                                };
                 var listGHCTview = joinData.ToList();
                 ViewBag.JoinDataGH = listGHCTview;
@@ -440,6 +440,32 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             decimal? tonghoadon = 0;
             decimal? tienship = 0;
             var maND = Request.Cookies["UserId"];
+
+
+            var urlvc = $"https://localhost:7197/GetAllVoucher";
+            var responseVC = await _httpClient.GetAsync(urlvc);
+            string apiurlVC = await responseVC.Content.ReadAsStringAsync();
+            var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apiurlVC);
+
+            var urlUVC = $"https://localhost:7197/api/Voucher_User/GetVoucher_UserbyUserId/{maND}";
+            var responseUVC = await _httpClient.GetAsync(urlUVC);
+            string apiurlUVC = await responseUVC.Content.ReadAsStringAsync();
+            var lstUVC = JsonConvert.DeserializeObject<List<User_Voucher>>(apiurlUVC);
+            var joinDataUVC = from vc in lstVC
+                              join uvc in lstUVC on vc.MaVoucher equals uvc.MaVoucher
+                              select new VoucherUserView
+                              {
+                                  UserVoucherId = uvc.UserVoucherID,
+                                  UserId = maND,
+                                  MaVoucher = vc.MaVoucher,
+                                  TenVoucher = vc.Ten,
+                                  DonGiaToiThieu = vc.GiaGiamToiThieu,
+                                  GiamGiaToiDa = vc.GiaGiamToiDa,
+                                  GiaTriGiam = vc.GiaTriGiam,
+                                  TrangThai = uvc.TrangThai
+                              };
+            ViewBag.lstUVC = joinDataUVC.ToList();
+
             var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
             var responseListGHCB = await _httpClient.GetAsync(ApiurllstGioHangcuaban);
             string apidataListGHCB = await responseListGHCB.Content.ReadAsStringAsync();
