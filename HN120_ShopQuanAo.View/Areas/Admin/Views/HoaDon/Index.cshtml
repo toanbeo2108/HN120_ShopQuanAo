@@ -138,7 +138,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                             <label for="btn_UserName">Nhân viên:</label>
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <input class="form-control" type="text" id="btn_UserName" value="@user.UserName" readonly style="display:block;width:100%"/>
+                                <input class="form-control" type="text" id="btn_UserName" value="@user.UserName" readonly style="display:block"/>
                                 <input class="form-control" type="text" id="btn_UserID" value="@user.UserId" readonly style="display:none"/>
                             }
                             else
@@ -149,7 +149,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                         </div>
                         <div class="col-md-6">
                             <label for="btn_NgayTaoDon">Ngày tạo hóa đơn</label>
-                            <input id="btn_NgayTaoDon" class="form-control" type="datetime" />
+                        <input id="btn_NgayTaoDon" class="form-control" type="datetime" readonly style="display:block" />
                         </div>
                         <div class="col-md-6" style="display:none">
                             <label for="btn_Update">Ngày Update</label>

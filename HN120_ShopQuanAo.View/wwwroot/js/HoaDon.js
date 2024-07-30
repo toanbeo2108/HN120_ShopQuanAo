@@ -28,8 +28,8 @@ $(document).ready(function () {
         document.getElementById('street').value = '';
         $('#btn_PhiShip').val(0);
         $('#btn_PhiShip_fake').val('');
-        $('#ngnhanhang_btn').val('');
-        $('#sdtnhanhang_btn').val('');
+        //$('#ngnhanhang_btn').val('');
+        //$('#sdtnhanhang_btn').val('');
         updatePaymentDetails();
         var Parameter = {
             url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
@@ -123,7 +123,7 @@ $(document).ready(function () {
         var giaBanCell = $(this).find('td:eq(3)');
 
         var giaBanText = giaBanCell.html().split('<br>')[0].trim();
-        var giaBan = parseFloat(giaBanText.replace(' VNĐ', '').replace(/\./g, '').replace(',', '.'));
+        var giaBan = parseFloat(giaBanText);
       //  var giaBan = parseFloat(giaBanCell.text().trim().replace(/\./g, '').replace(',', '.'));
         if (!isNaN(giaBan)) {
             // giaBanCell.text(formatMoney(giaBan));
@@ -1012,7 +1012,7 @@ function addNewRow(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, ma
 
     /* soLuongCell.innerHTML = '<input type="number" value="1" min="1" class="form-control" oninput="updateTotalPrice(this, ' + giaBan + ', ' + slton + ')">';*/
 
-    giaBanCell.innerText = formatMoney(giaBan);
+    giaBanCell.innerText = formatMoney(giaBan) + ' VNĐ';
     actionCell.innerHTML = `<button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>`;
 
     maMau_Cell.innerText = maMau_;
@@ -1053,7 +1053,7 @@ function updateTotalPrice(input, giaBan, slton) {
     var totalPriceCell = row.cells[5];
     var soLuongInput = row.cells[4].querySelector('input'); // kiểm tra số lượng mua
     if (!totalPriceCell) return; // Kiểm tra totalPriceCell có tồn tại hay không
-    totalPriceCell.innerText = formatMoney(parseFloat(input.value) * giaBan);
+    totalPriceCell.innerText = formatMoney(parseFloat(input.value) * giaBan) + ' VNĐ';
     updatePaymentDetails();
 }
 
@@ -1639,8 +1639,8 @@ function In(data) {
     var khachdua = $('#btn_tienkhachdua').val() != '' ? $('#btn_tienkhachdua').val() : 0;
     var tienthua = $('#btn_tienthua').val() != '' ? $('#btn_tienthua').val() : 0;
     var nv = $('#btn_UserName').val();
-    var pt_thanhtoan = pt;
-    var trangthai = thanhtoan;
+   // var pt_thanhtoan = pt;
+  //  var trangthai = thanhtoan;
     var tenkhachhang;
     var sdt;
     var tinhthanh;
