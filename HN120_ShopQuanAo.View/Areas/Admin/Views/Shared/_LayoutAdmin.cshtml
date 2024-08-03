@@ -5,9 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - HN120_ShopQuanAo.View</title>
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="shortcut icon" type="image/png" href="~/src/assets/images/logos/image.png" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="shortcut icon" type="image/png" href="~/src/assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="~/src/assets/css/styles.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HN120_ShopQuanAo.View.styles.css" asp-append-version="true" />
@@ -34,261 +35,247 @@
                     background-color: #f8f9fa;
                     color: #000;
                 }
+
+        .collapse.show {
+            display: block;
+        }
+
+        .collapse {
+            display: none;
+        }
+
+        .sidebar-item {
+            cursor: pointer;
+        }
+
+        .sidebar-sub-item {
+            padding-left: 30px;
+        }
     </style>
 </head>
 <body>
-
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
-
         <!-- Sidebar Start -->
         <aside class="left-sidebar">
-    <!-- Sidebar scroll-->
-    <div>
-        <div class="brand-logo d-flex align-items-center justify-content-between">
-            <a asp-area="Admin" asp-controller="AdminHome" asp-action="Index" class="text-nowrap logo-img">
-                <img src="~/src/assets/images/logos/image.png" width="180" alt="" />
-            </a>
-            <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
-                <i class="ti ti-x fs-8"></i>
-            </div>
-        </div>
-        <!-- Sidebar navigation-->
-        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-            <ul id="sidebarnav">
-                <li class="nav-small-cap">
-                    <i class="bi bi-bar-chart-line"></i>
-                    <span class="hide-menu">Thống kê</span>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="https://localhost:7060/Admin/Statistical/GetDoanhThu7NgayGanNhat" aria-expanded="false">
-                        <span>
-                            <i class="bi bi-speedometer2"></i>
-                        </span>
-                        <span class="hide-menu">Bảng thống kê</span>
+            <!-- Sidebar scroll-->
+            <div>
+                <div class="brand-logo d-flex align-items-center justify-content-between">
+                    <a asp-area="Admin" asp-controller="AdminHome" asp-action="Index" class="text-nowrap logo-img">
+                        <img src="~/src/assets/images/logos/dark-logo.svg" width="180" alt="" />
                     </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-                        <span>
-                            <i class="bi bi-person-gear"></i>
-                        </span>
-                        <span class="hide-menu">Quản lý tài khoản</span>
-                    </a>
-                    <ul aria-expanded="false" class="collapse first-level">
+                    <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                        <i class="ti ti-x fs-8"></i>
+                    </div>
+                </div>
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                    <ul id="sidebarnav">
+                        <li class="nav-small-cap">
+                            <i class="bi bi-bar-chart-line"></i>
+                            <span class="hide-menu">Thống kê</span>
+                        </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" asp-area="Admin" asp-controller="UserManager" asp-action="GetAllUser">
+                            <a class="sidebar-link" asp-area="Admin" asp-controller="Statistical" asp-action="GetDoanhThu7NgayGanNhat" aria-expanded="false">
                                 <span>
-                                    <i class="bi bi-people"></i>
+                                    <i class="bi bi-speedometer2"></i>
                                 </span>
-                                <span class="hide-menu">Quản lý người dùng</span>
+                                <span class="hide-menu">Bảng thống kê</span>
                             </a>
                         </li>
-
-                        <li class="sidebar-item dropdown">
-                            <a class="sidebar-link dropdown-toggle" href="#" id="accountManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-
+                        <li class="sidebar-item">
+                            <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false" id="accountManagementLink">
                                 <span>
-                                    <i class="bi bi-person-badge"></i>
+                                    <i class="bi bi-person-gear"></i>
                                 </span>
-                                <span class="hide-menu">Quản lý nhân viên</span>
+                                <span class="hide-menu">Quản lý tài khoản</span>
                             </a>
-
-                            <ul class="dropdown-menu" aria-labelledby="accountManagementDropdown">
-                                <li class="sidebar-item">
+                            <ul aria-expanded="false" class="collapse first-level" id="accountManagementMenu">
+                                <li class="sidebar-sub-item">
                                     <a class="sidebar-link" asp-area="Admin" asp-controller="UserManager" asp-action="GetAllUser">
+                                        <span>
+                                            <i class="bi bi-people"></i>
+                                        </span>
                                         <span class="hide-menu">Quản lý người dùng</span>
                                     </a>
                                 </li>
-                                <li class="sidebar-item">
+                                <li class="sidebar-sub-item">
                                     <a class="sidebar-link" asp-area="Admin" asp-controller="UserManager" asp-action="GetAllEmpolyee">
+                                        <span>
+                                            <i class="bi bi-person-badge"></i>
+                                        </span>
                                         <span class="hide-menu">Quản lý nhân viên</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                         <li class="nav-small-cap">
-                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            <i class="bi bi-box-seam"></i>
                             <span class="hide-menu">Quản lý sản phẩm</span>
-
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+                                <span>
+                                    <i class="bi bi-boxes"></i>
+                                </span>
+                                <span class="hide-menu">Sản phẩm</span>
+                            </a>
+                            <ul aria-expanded="false" class="collapse first-level">
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-action="AllSanPhamManager" asp-controller="SanPham" asp-area="Admin">
+                                        <span>
+                                            <i class="bi bi-list-ul"></i>
+                                        </span>
+                                        <span class="hide-menu">Danh sách sản phẩm</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-action="AllMauSacManager" asp-controller="MauSac" asp-area="Admin">
+                                        <span>
+                                            <i class="bi bi-palette"></i>
+                                        </span>
+                                        <span class="hide-menu">Màu sắc</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-action="AllSizeManager" asp-controller="Size" asp-area="Admin">
+                                        <span>
+                                            <i class="bi bi-rulers"></i>
+                                        </span>
+                                        <span class="hide-menu">Size</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-action="AllChatLieuManager" asp-controller="ChatLieu" asp-area="Admin">
+                                        <span>
+                                            <i class="bi bi-file-earmark-text"></i>
+                                        </span>
+                                        <span class="hide-menu">Chất liệu</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-action="AllTheLoaiManager" asp-controller="TheLoai" asp-area="Admin">
+                                        <span>
+                                            <i class="bi bi-tags"></i>
+                                        </span>
+                                        <span class="hide-menu">Thể loại</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-action="AllThuongHieuManager" asp-controller="ThuongHieu" asp-area="Admin">
+                                        <span>
+                                            <i class="bi bi-badge-3d"></i>
+                                        </span>
+                                        <span class="hide-menu">Thương hiệu</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-small-cap">
+                            <i class="bi bi-cash"></i>
+                            <a class="sidebar-link" href="/admin/HoaDon/BanHangTaiQuayView">
+                                <span class="hide-menu">Bán hàng tại quầy</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <i class="bi bi-receipt"></i>
+                            <span class="hide-menu">Quản lý hóa đơn</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="/admin/HoaDon/QuanLyHoaDon">
+                                <span class="hide-menu">Danh sách hóa đơn</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./authentication-register.html" aria-expanded="false">
+                                <span class="hide-menu">Lịch sử hóa đơn</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <i class="bi bi-tags"></i>
+                            <span class="hide-menu">Giảm giá</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" asp-action="AllVoucherManager" asp-controller="Voucher" asp-area="Admin">
+                                <span>
+                                    <i class="bi bi-card-list"></i>
+                                </span>
+                                <span class="hide-menu">Danh sách Voucher</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" asp-action="AllKhuyenMaiManager" asp-controller="KhuyenMai" asp-area="Admin">
+                                <span>
+                                    <i class="bi bi-percent"></i>
+                                </span>
+                                <span class="hide-menu">Danh sách khuyến mãi</span>
+                            </a>
                         </li>
                     </ul>
-                </li>
-                <li class="nav-small-cap">
-                    <i class="bi bi-box-seam"></i>
-                    <span class="hide-menu">Quản lý sản phẩm</span>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-                        <span>
-                            <i class="bi bi-boxes"></i>
-                        </span>
-                        <span class="hide-menu">Sản phẩm</span>
-                    </a>
-                    <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" asp-action="AllSanPhamManager" asp-controller="SanPham" asp-area="Admin">
-                                <span>
-                                    <i class="bi bi-list-ul"></i>
-                                </span>
-                                <span class="hide-menu">Danh sách sản phẩm</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" asp-action="AllMauSacManager" asp-controller="MauSac" asp-area="Admin">
-                                <span>
-                                    <i class="bi bi-palette"></i>
-                                </span>
-                                <span class="hide-menu">Màu sắc</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" asp-action="AllSizeManager" asp-controller="Size" asp-area="Admin">
-                                <span>
-                                    <i class="bi bi-rulers"></i>
-                                </span>
-                                <span class="hide-menu">Size</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" asp-action="AllChatLieuManager" asp-controller="ChatLieu" asp-area="Admin">
-                                <span>
-                                    <i class="bi bi-file-earmark-text"></i> <!-- Icon cuộn giấy -->
-                                </span>
-                                <span class="hide-menu">Chất liệu</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" asp-action="AllTheLoaiManager" asp-controller="TheLoai" asp-area="Admin">
-                                <span>
-                                    <i class="bi bi-tags"></i>
-                                </span>
-                                <span class="hide-menu">Thể loại</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" asp-action="AllThuongHieuManager" asp-controller="ThuongHieu" asp-area="Admin">
-                                <span>
-                                    <i class="bi bi-badge-3d"></i>
-                                </span>
-                                <span class="hide-menu">Thương hiệu</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-small-cap">
-                    <i class="bi bi-cash"></i>
-                    <a class="sidebar-link" href="/admin/HoaDon/BanHangTaiQuayView">
-                        <span class="hide-menu">Bán hàng tại quầy</span>
-                    </a>
-                </li>
-                <li class="nav-small-cap">
-                    <i class="bi bi-receipt"></i>
-                    <span class="hide-menu">Quản lý hóa đơn</span>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="/admin/HoaDon/QuanLyHoaDon">
-                        <span class="hide-menu">Danh sách hóa đơn</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="./authentication-register.html" aria-expanded="false">
-                        <span class="hide-menu">Lịch sử hóa đơn</span>
-                    </a>
-                </li>
-                <li class="nav-small-cap">
-                    <i class="bi bi-tags"></i>
-                    <span class="hide-menu">Giảm giá</span>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" asp-action="AllVoucherManager" asp-controller="Voucher" asp-area="Admin">
-                        <span>
-                            <i class="bi bi-card-list"></i>
-                        </span>
-                        <span class="hide-menu">Danh sách Voucher</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" asp-action="AllKhuyenMaiManager" asp-controller="KhuyenMai" asp-area="Admin">
-                        <span>
-                            <i class="bi bi-percent"></i>
-                        </span>
-                        <span class="hide-menu">Khuyến mại</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <!-- End Sidebar navigation -->
-    </div>
-    <!-- End Sidebar scroll-->
-</aside>
-
-
-        <!--  Sidebar End -->
-        <!--  Main wrapper -->
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <!-- Sidebar End -->
         <div class="body-wrapper">
-            <!--  Header Start -->
-
-            <nav class="navbar navbar-expand-lg navbar-light">
-                <ul class="navbar-nav">
-                    <li class="nav-item d-block d-xl-none">
-                        <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
-                            <i class="ti ti-menu-2"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-icon-hover" href="javascript:void(0)">
-                            <i class="ti ti-bell-ringing"></i>
-                            <div class="notification bg-primary rounded-circle"></div>
-                        </a>
-                    </li>
-                </ul>
-                <div class="collapse navbar-collapse justify-content-end px-0" id="navbarNav">
-                    <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
-                                @if (User.Identity.IsAuthenticated)
-                                {
-                                    var avatar = User.Claims.FirstOrDefault(c => c.Type == "Avatar")?.Value;
-                                    @if (avatar == null)
+            <header class="app-header">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <ul class="navbar-nav">
+                        <li class="nav-item d-block d-xl-none">
+                            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                                <i class="ti ti-menu-2"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @if (User.Identity.IsAuthenticated)
                                     {
-                                        <img src="~/img/Avatar/AvatarDefault.png" alt="" width="35" height="35" style="object-fit: cover;" class="rounded-circle">
+                                        var avatar = User.Claims.FirstOrDefault(c => c.Type == "Avatar")?.Value;
+                                        @if (avatar == null)
+                                        {
+                                            <img src="~/img/Avatar/AvatarDefault.png" alt="" width="35" height="35" style="object-fit: cover;" class="rounded-circle">
+                                        }
+                                        else
+                                        {
+                                            <img src="@Url.Content($"~/img/Avatar/{avatar}")" alt="" width="35" height="35" style="object-fit: cover;" class="rounded-circle">
+                                        }
                                     }
                                     else
                                     {
-                                        <img src="@Url.Content($"~/img/Avatar/{avatar}")" alt="" width="35" height="35" style="object-fit: cover;" class="rounded-circle">
+                                        <img src="~/img/Avatar/AvatarDefault.png" alt="" width="35" height="35" class="rounded-circle">
                                     }
-                                }
-                                else
-                                {
-                                    <img src="~/img/Avatar/AvatarDefault.png" alt="" width="35" height="35" class="rounded-circle">
-                                }
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
-                                <div class="message-body">
-                                    <a class="d-flex align-items-center gap-2 dropdown-item" asp-controller="UserManager" asp-action="Update" asp-route-id="@User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value">
-                                        <i class="ti ti-user fs-6"></i>
-                                        <p class="mb-0 fs-3">@User.Identity.Name</p>
-                                    </a>
-                                    <a class="d-flex align-items-center gap-2 dropdown-item">
-                                        <i class="ti ti-list-check fs-6"></i>
-                                        <p class="mb-0 fs-3">My Task</p>
-                                    </a>
-                                    <a asp-action="Logout" asp-controller="AdminHome" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                    <div class="message-body">
+                                        <div class="message-body">
+                                            <a class="d-flex align-items-center gap-2 dropdown-item" asp-controller="UserManager" asp-action="Update" asp-route-id="@User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value">
+                                                <i class="ti ti-user fs-6"></i>
+                                                <p class="mb-0 fs-3">@User.Identity.Name</p>
+                                            </a>
+                                            <a class="d-flex align-items-center gap-2 dropdown-item">
+                                                <i class="ti ti-list-check fs-6"></i>
+                                                <p class="mb-0 fs-3">My Task</p>
+                                            </a>
+                                            <a asp-action="Logout" asp-controller="AdminHome" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            <!--  Header End -->
-
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <div class="container-fluid">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/src/assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="~/js/notify.js"></script>
     <script src="~/js/notify.min.js"></script>
@@ -298,7 +285,17 @@
     <script src="~/src/assets/libs/apexcharts/dist/apexcharts.min.js"></script>
     <script src="~/src/assets/libs/simplebar/dist/simplebar.js"></script>
     <script src="~/src/assets/js/dashboard.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>  
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.getElementById('accountManagementLink').addEventListener('click', function () {
+            const menu = document.getElementById('accountManagementMenu');
+            if (menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            } else {
+                menu.classList.add('show');
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
