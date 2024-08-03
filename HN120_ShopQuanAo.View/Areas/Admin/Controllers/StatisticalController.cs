@@ -11,73 +11,38 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         {
             _httpClient = httpClient;
         }
-        public async Task<IActionResult> GetDoanhThu7NgayGanNhat()
+       
+        public async Task<IActionResult> ThongKe()
         {
-            var response = await _httpClient.GetAsync("https://localhost:7197/api/ThongKe/ThongKeDoanhThu7NgayGanNhat");
-            response.EnsureSuccessStatusCode();
+            var viewModel = new ThongKeViewModel();
 
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var doanhThuList = JsonConvert.DeserializeObject<List<DoanhThuViewModel>>(jsonResponse);
+            // Lấy dữ liệu doanh thu ngày hôm nay
+            var today = DateTime.Today;
+            var revenueResponse = await _httpClient.GetAsync($"https://localhost:7197/api/ThongKe2/doanh-thu?day={today.Day}&month={today.Month}&year={today.Year}");
+            var revenueJson = await revenueResponse.Content.ReadAsStringAsync();
+            viewModel.TongDoanhThu = JsonConvert.DeserializeObject<decimal>(revenueJson);
 
-            var tongDoanhThuResponse = await _httpClient.GetAsync("https://localhost:7197/api/ThongKe/TongDoanhThu");
-            tongDoanhThuResponse.EnsureSuccessStatusCode();
-            var tongDoanhThu = await tongDoanhThuResponse.Content.ReadAsStringAsync();
+            // Lấy số lượng sản phẩm bán được ngày hôm nay
+            var productCountResponse = await _httpClient.GetAsync($"https://localhost:7197/api/ThongKe2/so-luong-san-pham?day={today.Day}&month={today.Month}&year={today.Year}");
+            var productCountJson = await productCountResponse.Content.ReadAsStringAsync();
+            viewModel.SoLuongSanPham = JsonConvert.DeserializeObject<int>(productCountJson);
 
-            var tongSanPhamBanDuocResponse = await _httpClient.GetAsync("https://localhost:7197/api/ThongKe/TongSanPhamBanDuoc");
-            tongSanPhamBanDuocResponse.EnsureSuccessStatusCode();
-            var tongSanPhamBanDuoc = await tongSanPhamBanDuocResponse.Content.ReadAsStringAsync();
+            // Lấy số lượng hóa đơn bán được ngày hôm nay
+            var invoiceCountResponse = await _httpClient.GetAsync($"https://localhost:7197/api/ThongKe2/so-luong-hoa-don?day={today.Day}&month={today.Month}&year={today.Year}");
+            var invoiceCountJson = await invoiceCountResponse.Content.ReadAsStringAsync();
+            viewModel.SoLuongHoaDon = JsonConvert.DeserializeObject<int>(invoiceCountJson);
 
-            var tongSoLuongHoaDonResponse = await _httpClient.GetAsync("https://localhost:7197/api/ThongKe/TongSoLuongHoaDon");
-            tongSoLuongHoaDonResponse.EnsureSuccessStatusCode();
-            var tongSoLuongHoaDon = await tongSoLuongHoaDonResponse.Content.ReadAsStringAsync();
+            // Lấy danh sách sản phẩm sắp hết hàng
+            var lowStockProductsResponse = await _httpClient.GetAsync("https://localhost:7197/api/ThongKe2/san-pham-sap-het-hang");
+            var lowStockProductsJson = await lowStockProductsResponse.Content.ReadAsStringAsync();
+            viewModel.SanPhamSapHetHang = JsonConvert.DeserializeObject<List<SanPhamSapHetHangViewModel>>(lowStockProductsJson);
 
-            ViewBag.TongDoanhThu = tongDoanhThu;
-            ViewBag.TongSanPhamBanDuoc = tongSanPhamBanDuoc;
-            ViewBag.TongSoLuongHoaDon = tongSoLuongHoaDon;
+            // Lấy danh sách top sản phẩm bán chạy ngày hôm nay
+            var topProductsResponse = await _httpClient.GetAsync($"https://localhost:7197/api/ThongKe2/top-san-pham-ban-chay?day={today.Day}&month={today.Month}&year={today.Year}&top=10");
+            var topProductsJson = await topProductsResponse.Content.ReadAsStringAsync();
+            viewModel.TopSanPhamBanChay = JsonConvert.DeserializeObject<List<SanPhamBanChayViewModel>>(topProductsJson);
 
-            return View(doanhThuList);
-        }
-        public async Task<IActionResult> ChiTietThongKe(DateTime? fromDate, DateTime? toDate)
-        {
-            if (fromDate == null || toDate == null)
-            {
-                return View(new List<DoanhThuViewModel>());
-            }
-
-            var doanhThuResponse = await _httpClient.GetAsync($"https://localhost:7197/api/ThongKe/ThongKeDoanhThu?fromDate={fromDate}&toDate={toDate}");
-            doanhThuResponse.EnsureSuccessStatusCode();
-            var doanhThuJsonResponse = await doanhThuResponse.Content.ReadAsStringAsync();
-            var doanhThuObj = JsonConvert.DeserializeObject<dynamic>(doanhThuJsonResponse);
-            decimal tongDoanhThu = doanhThuObj?.tongDoanhThu ?? 0;
-
-            var doanhThuTheoNgayResponse = await _httpClient.GetAsync($"https://localhost:7197/api/ThongKe/ThongKeDoanhThuTheoNgay?fromDate={fromDate}&toDate={toDate}");
-            doanhThuTheoNgayResponse.EnsureSuccessStatusCode();
-            var doanhThuTheoNgayJsonResponse = await doanhThuTheoNgayResponse.Content.ReadAsStringAsync();
-            var doanhThuTheoNgayList = JsonConvert.DeserializeObject<List<DoanhThuViewModel>>(doanhThuTheoNgayJsonResponse);
-
-            var hoaDonResponse = await _httpClient.GetAsync($"https://localhost:7197/api/ThongKe/ThongKeHoaDon?fromDate={fromDate}&toDate={toDate}");
-            hoaDonResponse.EnsureSuccessStatusCode();
-            var hoaDonJsonResponse = await hoaDonResponse.Content.ReadAsStringAsync();
-            var hoaDonObj = JsonConvert.DeserializeObject<dynamic>(hoaDonJsonResponse);
-            int soLuongHoaDon = hoaDonObj?.soLuongHoaDon ?? 0;
-
-            ViewBag.TongDoanhThu = tongDoanhThu;
-            ViewBag.SoLuongSanPham = doanhThuTheoNgayList.Sum(x => x.SoLuongSanPham);
-            ViewBag.SoLuongHoaDon = soLuongHoaDon;
-
-            ViewBag.FromDate = fromDate.Value.ToString("yyyy-MM-dd");
-            ViewBag.ToDate = toDate.Value.ToString("yyyy-MM-dd");
-
-            return View(doanhThuTheoNgayList);
-        }
-
-        public async Task<List<DoanhThuViewModel>> GetDoanhThuTheoNgay(DateTime? fromDate, DateTime? toDate)
-        {
-            var response = await _httpClient.GetAsync($"https://localhost:7197/api/ThongKe/ThongKeDoanhThuTheoNgay?fromDate={fromDate}&toDate={toDate}");
-            response.EnsureSuccessStatusCode();
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<DoanhThuViewModel>>(jsonResponse);
+            return View(viewModel);
         }
     }
 }

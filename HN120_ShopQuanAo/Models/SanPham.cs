@@ -11,20 +11,11 @@ namespace HN120_ShopQuanAo.Data.Models
     {
         [Key]
         public string MaSp { get; set; }
-
         public string? MaThuongHieu { get; set; }
-
         public string? MaTheLoai { get; set; }
-
         public string? MaChatLieu { get; set; }
-
         public string? UrlAvatar { get; set; }
-
-
-
         public string? TenSP { get; set; }
-
-
         public string? Mota { get; set; }
         public DateTime? NgayNhap { get; set; }
         public int? TongSoLuong { get; set; }
