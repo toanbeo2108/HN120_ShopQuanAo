@@ -41,7 +41,7 @@
             <label class="form-check-label" for="btn_onlinehoadon">Hóa đơn online</label>
         </div>
     </div>
-
+    
     <div class="col-md-3">
         <select class="form-select" id="btn_Loctheott" aria-label="Default select example">
             <option value="" selected>Trạng thái</option>
@@ -68,7 +68,7 @@
                     Người tạo
                 </th>
                 <th style="text-align : center;">
-                    Mã Voucher
+                    Voucher
                 </th>
                 <th style="text-align : center;">
                     Ngày tạo
@@ -87,6 +87,9 @@
                 </th>
                 <th style="text-align : center;">
                     Phương thức thanh toán
+                </th>
+                <th style="text-align : center;">
+                    Phân loại
                 </th>
                 <th style="text-align : center;">
                     Trạng thái
@@ -112,13 +115,14 @@
                  @*   @item.UserID *@
                 </td>
                 <td>     
-                   @foreach (var vc in lstVC)
+                  @*  @foreach (var vc in lstVC)
                    {
                        if (vc.MaVoucher == item.MaVoucher)
                        {
                            <p>@vc.Ten</p>
                        }
-                   }
+                   } *@
+                   @item.MaVoucher
                 </td>
                 <td>
                    @item.NgayTaoDon
@@ -167,6 +171,15 @@
                      <p>Thanh toán khi nhận hàng</p>
                      }
                 </td>
+                    <td>
+                            @if (item.PhanLoai == "1")
+                            {
+                                <p>Tại quầy</p>
+                            }@if (item.PhanLoai == "2")
+                            {
+                                <p>Online</p>
+                            }
+                    </td>
                 <td class="tt">
                      @if (item.TrangThai == 1)
                      {

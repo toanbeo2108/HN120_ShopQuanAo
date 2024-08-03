@@ -321,8 +321,9 @@ function InHoaDon(data) {
             maVoucher = '- 0 VNĐ'
         }
         else {
-            maVoucher = vc;
+            maVoucher = vc ;
         }
+        
         tenKhachHang = row.find('td').eq(4).text().trim(); // Ô Tên khách hàng
         soDienThoai = row.find('td').eq(5).text().trim(); // Ô Số điện thoại
         soDienThoaiNhanHang = row.find('td').eq(6).text().trim(); // Ô Số điện thoại nhận hàng
@@ -375,7 +376,7 @@ function InHoaDon(data) {
         </table>
         <div class="shop-info"  style="text-align:left">
              <table style="width: 400px; border-collapse: collapse;">
-                <tr><th style="padding-left:10px;width:150px">Voucher</th><td>: ${maVoucher}</td></tr>
+                <tr><th style="padding-left:10px;width:150px">Voucher</th><td>: ${formatMoney(maVoucher)}</td></tr>
                 <tr><th style="padding-left:10px;width:150px">Phí ship</th><td>: ${phiShip}</td></tr>
                 <tr><th style="padding-left:10px;width:150px">Tổng giá trị</th><td>: ${tongGiaTri}</td></tr>
              </table>
