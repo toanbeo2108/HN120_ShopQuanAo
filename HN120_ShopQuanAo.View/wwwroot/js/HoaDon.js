@@ -45,6 +45,7 @@ $(document).ready(function () {
     $('#btn_giaohang').change(function () {
         var isChecked = $(this).is(':checked');
         if (isChecked) {
+            
             $('#btn_chondiachi').show();
             $('#dathangtaiquay').show();
             $('#thanhtoantaiquay').hide();
@@ -81,6 +82,8 @@ $(document).ready(function () {
             }
             
         } else {
+            
+
             $('#btn_chondiachi').hide();
             $('#dathangtaiquay').hide();
             $('#thanhtoantaiquay').show();
@@ -165,9 +168,7 @@ $(document).ready(function () {
             }
                     
         }
-        else {
-            $.notify('Tiền khách đưa chưa đủ', 'error')
-        }
+        
         if ( $('#btn_phuongthucthanhtoan').val() == '3') {
 
             QRCODE_PAYMENT();
@@ -524,19 +525,16 @@ $(document).ready(function () {
     $('body').on('click', '#khongin_hoadon', function () {
         window.location.reload();
     });
-    //$('body').on('click', '#btn_inphieu', function () {
-    //    let ma = $('#btn_ma').val(); // Mã hóa đơn giả sử này là đúng
-
-    //    // Gửi yêu cầu GET để lấy dữ liệu hóa đơn
-    //    $.get('/InHoaDonBanHang', { ma: ma }, function (re) {
-    //        if (re.status) {
-    //            // Gọi hàm In với dữ liệu nhận được từ server
-    //            In(re.data);
-    //        } else {
-    //            console.log(re.message);
-    //        }
-    //    });
-    //});
+    $('body').on('click', '#Thanhtoandonhang', function () {
+        $('#btn_dathang').hide();
+        $('#btn_thanhtoanhoadon').show();
+        $('#confirm_modal').modal('show');
+    });
+    $('body').on('click', '#dathangtaiquay_', function () {
+        $('#btn_dathang').show();
+        $('#btn_thanhtoanhoadon').hide();
+        $('#confirm_modal').modal('show');
+    });
 
     $('body').on('click', '#luukhachhangMoi_cl', function () {
         if ($('#btn_fullname').val() == '' || $('#btn_fullname').val() == null || $('#btn_fullname').val() == undefined) {
@@ -1197,11 +1195,12 @@ function getdataHoaDon() {
         tenkhachhang = dataIdKh;    
     }
     var tongtienhoadon = $('#btn_tienkhachphaitra').val().replace(/\./g, '').split(',')[0]; 
-    
+    var selectedOption = $('#btn_MaVoucher').find(':selected');
+    var voucher = selectedOption.text() != 'Chọn Voucher' ? selectedOption.attr('data-giatrigiam') : '- 0 VNĐ';
     return {
         MaHoaDon: $('#btn_ma').val(),
         UserID: $('#btn_UserID').val(),
-        MaVoucher: $('#btn_MaVoucher').val(), 
+        MaVoucher: voucher ,/*$('#btn_MaVoucher').val()*/
         NgayTaoDon: $('#btn_NgayTaoDon').val(),
         NgayThayDoi: $('#btn_Update').val(),
         TenKhachHang: tenkhachhang,
@@ -1241,6 +1240,7 @@ function Thanhtoan() {
                             //  localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
                             //  window.location.reload();$('#inhoadon_modal').modal('show');
                             $.notify('Thanh toán thành công', 'success');
+                            $('#confirm_modal').modal('hide');
                             $('#inhoadon_modal').modal('show');
                         }
                         if ($('#btn_Status').val() == 2) {
@@ -1248,6 +1248,7 @@ function Thanhtoan() {
                           //  localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
                             //  window.location.reload();
                             $.notify('Thanh toán thành công', 'success');
+                            $('#confirm_modal').modal('hide');
                             $('#inhoadon_modal').modal('show');
                          
                         }   
@@ -1255,6 +1256,7 @@ function Thanhtoan() {
                           //  localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
                             AddThanhTOanHoaDon();
                             $.notify('Thanh toán thành công', 'success');
+                            $('#confirm_modal').modal('hide');
                             $('#inhoadon_modal').modal('show');
                         }
                         
@@ -1627,12 +1629,12 @@ function selectValue(row) {
 }
 function In(data) {
 
-    var selectedOption = $('#btn_MaVoucher').find(':selected');
     // Lấy dữ liệu từ các ô nhập liệu
     var mahoadon = $('#btn_ma').val();
     var tongtien = $('#btn_tongtien').val();
     var ngaytao = $('#btn_NgayTaoDon').val();
-    var voucher = selectedOption.text() != 'Chọn Voucher' ? selectedOption.text() : '- 0 VNĐ';
+    var selectedOption = $('#btn_MaVoucher').find(':selected');
+    var voucher = selectedOption.text() != 'Chọn Voucher' ?'- '+ formatMoney(selectedOption.attr('data-giatrigiam')) + ' VNĐ' : '- 0 VNĐ';
 
     var phiship = $('#btn_PhiShip_fake').val() != '' ? $('#btn_PhiShip_fake').val() : 0;
     var tienkhachphaitra = $('#btn_tienkhachphaitra').val();
@@ -1678,7 +1680,7 @@ function In(data) {
              <p>Liên hệ : 0461728398</p>
               <hr />
               <h4>HÓA ĐƠN BÁN HÀNG</h4>
-             <p>Số : ${mahoadon}</p>
+              <p>Số : ${mahoadon}</p>
         </div>
         <div class="col-md-12" style="text-align:left;margin-left:10px">
         <p>Khách hàng :  ${tenkhachhang}</p>
@@ -1704,7 +1706,7 @@ function In(data) {
                 <td style="text-align : center;">${item.tenSize_}</td>
                 <td style="text-align : center;">${item.tenMau_}</td>
                 <td style="text-align : center;">${item.soLuongMua_}</td>
-                <td style="text-align : center;">${formatMoney(item.donGia_)}</td>
+                <td style="text-align : center;">${formatMoney(item.donGia_)} VNĐ</td>
             </tr>
         `;
     });

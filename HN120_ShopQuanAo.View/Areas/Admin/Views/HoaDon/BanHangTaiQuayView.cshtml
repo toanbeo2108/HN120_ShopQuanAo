@@ -103,10 +103,78 @@
             scrollLeft: $('#tabContainer')[0].scrollWidth
         }, 500);
 
-        // Đặt hẹn giờ đóng tab sau 30 giây
+        checkForNewDay(newTabId);
+    }
+
+    function openTab(event, tabId) {
+        $('.tab').removeClass('active');
+        $(event ? event.target : $('.tab[onclick*="' + tabId + '"]')).closest('.tab').addClass('active');
+
+        $('.tab-content').removeClass('active');
+        $('#' + tabId).addClass('active');
+    }
+
+    function closeTab(event, tabId) {
+        if (event) {
+            event.stopPropagation();
+        }
+
+        var tabToRemove = $('#' + tabId);
+        var wasActive = tabToRemove.hasClass('active');
+        tabToRemove.remove();
+        $('.tab[onclick*="' + tabId + '\"]').remove();
+
+        // Cập nhật tabCount
+        tabCount--;
+
+        // Chuyển sang tab đầu tiên nếu tab đóng là tab đang hoạt động
+        if (wasActive && $('.tab').length > 0) {
+            var firstTabId = $('.tab:first').attr('onclick').match(/'(.*?)'/)[1];
+            openTab({ target: $('.tab:first')[0] }, firstTabId);
+        }
+    }
+
+    function checkForNewDay(tabId) {
+        var interval = setInterval(function () {
+            var now = new Date();
+            if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+                closeTab(null, tabId);
+                clearInterval(interval); // Dừng kiểm tra sau khi tab đã được đóng
+            }
+        }, 1000); // Kiểm tra mỗi giây
+    }
+
+    $(document).ready(function () {
+        checkForNewDay('HoaDon1');
+    });
+</script>
+@* <script>
+    var tabCount = 1;
+
+    function addTab() {
+        tabCount++;
+        var newTabId = 'HoaDon' + tabCount;
+        var newTabContent = '<div id="' + newTabId + '" class="tab-content">' +
+            '<iframe src="https://localhost:7060/admin/hoadon"></iframe>' +
+            '</div>';
+
+        $('.tabs').append(
+            '<div class="tab" onclick="openTab(event, \'' + newTabId + '\')">' +
+            'Hóa đơn ' + tabCount +
+            '<span class="close-btn" onclick="closeTab(event, \'' + newTabId + '\')">&times;</span>' +
+            '</div>'
+        );
+
+        $('#tabContainer').append(newTabContent);
+        // Cuộn đến tab mới được thêm
+        $('#tabContainer').animate({
+            scrollLeft: $('#tabContainer')[0].scrollWidth
+        }, 500);
+
+        // Đặt hẹn giờ đóng tab 
         setTimeout(function () {
             closeTab(null, newTabId);
-        }, 600000); // 30000 milliseconds = 30 seconds
+        },10000);  //600000 30000 milliseconds = 30 seconds
     }
 
     function openTab(event, tabId) {
@@ -136,5 +204,5 @@
             openTab({ target: $('.tab:first')[0] }, firstTabId);
         }
     }
-</script>
+</script> *@
 

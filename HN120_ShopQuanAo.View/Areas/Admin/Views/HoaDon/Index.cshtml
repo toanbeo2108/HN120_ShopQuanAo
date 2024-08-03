@@ -433,12 +433,12 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     <!-- Phần Thanh Toán -->
                     <div class="row section__ align-items-center">
                         <div class="col-md-12" id="thanhtoantaiquay" style="display: none;">
-                            <button type="button" class="btn btn-info w-100 payment-button" id="btn_thanhtoanhoadon">
+                        <button type="button" class="btn btn-info w-100 payment-button" id="Thanhtoandonhang">
                                 <i class="fa-solid fa-coins fa-2xl" style="color: #de0d0d;"></i>
                             </button>
                         </div>
                         <div class="col-md-12" id="dathangtaiquay" style="display: none; position: relative;">
-                            <button type="button" class="btn btn-outline-success w-100 payment-button" id="btn_dathang">
+                        <button type="button" class="btn btn-outline-success w-100 payment-button" id="dathangtaiquay_">
                                 <i class="fa-solid fa-truck-arrow-right fa-xl" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
                             </button>
                         </div>
@@ -447,6 +447,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                             <i class="fa-solid fa-print fa-xl"></i> In phiếu
                         </button>
                     </div>
+                    
                     </div>
                </div>
             </div>
@@ -616,6 +617,25 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         </div>
     </div>
 </div> 
+@*MModal xác nhận thanh toán*@
+<div class="modal fade" id="confirm_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirm_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            @*  <div class="modal-header">
+            <h5 class="modal-title" id="inhoadon_modalLabel">Thông báo</h5>
+
+            </div> *@
+            <div class="modal-body" style="text-align:center">
+                <h4>Thanh toán hóa đơn ?</h4>
+            </div>
+            <div class="modal-footer" style="display: flex;justify-content: space-between;">
+                <button type="button" id="tieptucmuahang" class="btn btn-secondary" data-bs-dismiss="modal">Tiếp tục mua hàng</button>
+                <button type="button" id="btn_thanhtoanhoadon" class="btn btn-primary" style="display:none">Thanh toán</button>
+                <button type="button" id="btn_dathang" class="btn btn-primary" style="display:none">Đặt hàng</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     document.getElementById('label_phuongthucthanhtoan').addEventListener('click', function () {
         var selectElement = document.getElementById('btn_phuongthucthanhtoan');
