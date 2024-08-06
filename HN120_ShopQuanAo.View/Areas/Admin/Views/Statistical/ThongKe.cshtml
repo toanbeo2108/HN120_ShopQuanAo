@@ -1,8 +1,12 @@
-﻿@model HN120_ShopQuanAo.View.Areas.Admin.Models.ThongKeViewModel
+﻿@using Newtonsoft.Json;
+@using HN120_ShopQuanAo.Data.Models;
+@model HN120_ShopQuanAo.View.Areas.Admin.Models.ThongKeViewModel
 
 @{
     ViewData["Title"] = "ThongKe";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    var listSanPham = ViewBag.ListSanPham as List<SanPham>;
+    var listCTSanPham = ViewBag.ListCTSanPham as List<ChiTietSp>;
 }
 <div class="container">
     <div class="row mt-4">
@@ -10,7 +14,7 @@
             <div class="card text-white bg-primary mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Doanh thu hôm nay</h5>
-                    <p class="card-text">@Model.TongDoanhThu.ToString("C")</p>
+                    <p class="card-text">@String.Format("{0:N0}vnđ", Model.TongDoanhThu)</p>
                 </div>
             </div>
         </div>
@@ -34,52 +38,12 @@
 
     <div class="row mt-4">
         <div class="col-md-12">
-            <h3>Biểu đồ doanh thu và số lượng bán</h3>
-            <div>
-                <canvas id="revenueChart"></canvas>
-            </div>
-            <div>
-                <canvas id="quantityChart"></canvas>
-            </div>
+            <h3>Doanh thu 7 ngày gần nhất</h3>
+            <canvas id="revenue7DaysChart"></canvas>
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <h3>Sản phẩm sắp hết hàng</h3>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>SKU</th>
-                        <th>Tên sản phẩm</th>
-                        <th>Giá bán</th>
-                        <th>Số lượng tồn</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.SanPhamSapHetHang != null)
-                    {
-                        @foreach (var product in Model.SanPhamSapHetHang)
-                        {
-                            <tr>
-                                <td>@product.SKU</td>
-                                <td>@product.TenSP</td>
-                                <td>@product.GiaBan.ToString("C")</td>
-                                <td>@product.SoLuongTon</td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="4">Không có dữ liệu</td>
-                        </tr>
-                    }
-                   
-                </tbody>
-            </table>
-        </div>
-    </div>
+    
 
     <div class="row mt-4">
         <div class="col-md-12">
@@ -87,21 +51,19 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>SKU</th>
                         <th>Tên sản phẩm</th>
                         <th>Giá bán</th>
                         <th>Tổng số lượng bán</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model.TopSanPhamBanChay != null)
+                    @if (Model.TopSanPhamBanChay != null && Model.TopSanPhamBanChay.Any())
                     {
                         foreach (var product in Model.TopSanPhamBanChay)
                         {
                             <tr>
-                                <td>@product.SKU</td>
                                 <td>@product.TenSP</td>
-                                <td>@product.GiaBan.ToString("C")</td>
+                                <td>@String.Format("{0:N0}vnđ", product.DonGia)</td>
                                 <td>@product.TotalQuantity</td>
                             </tr>
                         }
@@ -116,55 +78,63 @@
             </table>
         </div>
     </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            @if (Model.SanPhamSapHetHang != null && Model.SanPhamSapHetHang.Any())
+            {
+                <h3>Sản phẩm sắp hết hàng</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá bán</th>
+                            <th>Số lượng tồn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model.SanPhamSapHetHang)
+                        {
+                            <tr>
+                                <td>@product.TenSP</td>
+                                <td>@String.Format("{0:N0}vnđ", product.GiaBan)</td>
+                                <td>@product.SoLuongTon</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info text-center" role="alert">
+                    <strong>Thông báo:</strong> Không có sản phẩm sắp hết hàng.
+                </div>
+            }
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const revenueChartCtx = document.getElementById('revenueChart').getContext('2d');
-        const quantityChartCtx = document.getElementById('quantityChart').getContext('2d');
+        const revenue7DaysChartCtx = document.getElementById('revenue7DaysChart').getContext('2d');
 
-        // Dữ liệu biểu đồ doanh thu (ví dụ mẫu)
-        const revenueData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        // Dữ liệu biểu đồ doanh thu 7 ngày gần nhất
+        const revenue7DaysData = {
+            labels: @Html.Raw(JsonConvert.SerializeObject(Model.DoanhThuTheoNgay.Select(d => d.Ngay.ToString("dd-MM-yyyy")).ToList())),
             datasets: [{
                 label: 'Doanh thu',
-                data: [12000, 19000, 3000, 5000, 2000, 3000, 4500],
+                data: @Html.Raw(JsonConvert.SerializeObject(Model.DoanhThuTheoNgay.Select(d => d.DoanhThu).ToList())),
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
             }]
         };
 
-        // Dữ liệu biểu đồ số lượng bán (ví dụ mẫu)
-        const quantityData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-            datasets: [{
-                label: 'Số lượng bán',
-                data: [150, 200, 180, 220, 160, 170, 210],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        };
-
-        // Tạo biểu đồ doanh thu
-        new Chart(revenueChartCtx, {
-            type: 'line',
-            data: revenueData,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        // Tạo biểu đồ số lượng bán
-        new Chart(quantityChartCtx, {
-            type: 'line',
-            data: quantityData,
+        // Tạo biểu đồ doanh thu 7 ngày gần nhất (dạng cột)
+        new Chart(revenue7DaysChartCtx, {
+            type: 'bar',
+            data: revenue7DaysData,
             options: {
                 scales: {
                     y: {
@@ -175,4 +145,3 @@
         });
     </script>
 }
-
