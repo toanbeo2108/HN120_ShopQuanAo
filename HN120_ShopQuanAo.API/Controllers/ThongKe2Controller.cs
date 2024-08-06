@@ -1,5 +1,4 @@
-﻿// File path: Controllers/ThongKe2Controller.cs
-using HN120_ShopQuanAo.API.Data;
+﻿using HN120_ShopQuanAo.API.Data;
 using HN120_ShopQuanAo.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +30,40 @@ namespace HN120_ShopQuanAo.API.Controllers
             var revenue = await query.SumAsync(hd => hd.TongGiaTriHangHoa ?? 0);
             return Ok(revenue);
         }
+        [HttpGet("doanh-thu-theo-ngay")]
+        public async Task<IActionResult> GetDailyRevenue(DateTime? fromDate, DateTime? toDate)
+        {
+            if (fromDate == null || toDate == null)
+            {
+                return BadRequest("fromDate and toDate are required.");
+            }
+
+            toDate = toDate.Value.AddDays(1).AddTicks(-1);
+
+            var doanhThu = await _context.HoaDon
+                .Where(hd => hd.NgayTaoDon >= fromDate && hd.NgayTaoDon <= toDate)
+                .GroupBy(hd => hd.NgayTaoDon.Value.Date)
+                .Select(g => new
+                {
+                    Ngay = g.Key,
+                    TongDoanhThu = g.Sum(hd => hd.TongGiaTriHangHoa)
+                })
+                .ToListAsync();
+
+            var doanhThuDict = doanhThu.ToDictionary(dt => dt.Ngay, dt => dt.TongDoanhThu);
+
+            var result = Enumerable.Range(0, (toDate.Value.Date - fromDate.Value.Date).Days + 1)
+                .Select(i => fromDate.Value.Date.AddDays(i))
+                .Select(date => new
+                {
+                    Ngay = date,
+                    TongDoanhThu = doanhThuDict.ContainsKey(date) ? doanhThuDict[date] : 0
+                })
+                .ToList();
+
+            return Ok(result);
+        }
+
 
         [HttpGet("hoa-don-chi-tiet")]
         public async Task<IActionResult> GetInvoiceDetails(DateTime? startDate, DateTime? endDate, int? year, int? month, int? day)
@@ -123,6 +156,69 @@ namespace HN120_ShopQuanAo.API.Controllers
                 Console.WriteLine($"An error occurred: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
+        }
+        [HttpGet("top-selling-product2")]
+        public async Task<IActionResult> GetTopSellingProduct2(DateTime? startDate, DateTime? endDate, int? year, int? month, int? day, int top = 5)
+        {
+            try
+            {
+                // Bước 1: Lọc danh sách hóa đơn dựa trên các điều kiện ngày tháng
+                var invoicesQuery = _context.HoaDon.AsQueryable();
+                invoicesQuery = DateFilterHelper.ApplyDateFilter(invoicesQuery, startDate, endDate, year, month, day);
+
+                // Bước 2: Lấy danh sách chi tiết hóa đơn từ danh sách hóa đơn
+                var invoiceDetailsQuery = _context.HoaDonChiTiet
+                    .Where(hdct => invoicesQuery.Select(hd => hd.MaHoaDon).Contains(hdct.MaHoaDon));
+
+                // Bước 3: Nhóm theo SKU và tính tổng số lượng mua
+                var topSellingProducts = await invoiceDetailsQuery
+                    .GroupBy(hdct => hdct.SKU)
+                    .Select(g => new
+                    {
+                        SKU = g.Key,
+                        TotalQuantity = g.Sum(hdct => hdct.SoLuongMua) ?? 0
+                    })
+                    .OrderByDescending(g => g.TotalQuantity)
+                    .Take(top)
+                    .ToListAsync();
+
+                // Bước 4: Lấy thông tin từ bảng ChiTietSp
+                var chiTietSpList = await _context.ChiTietSp
+                    .Where(ct => topSellingProducts.Select(p => p.SKU).Contains(ct.SKU))
+                    .ToListAsync();
+
+                // Bước 5: Kết hợp thông tin từ bảng SanPham
+                var result = new List<TopSellingProductSimpleDto2>();
+                foreach (var product in topSellingProducts)
+                {
+                    var chiTietSp = chiTietSpList.FirstOrDefault(ct => ct.SKU == product.SKU);
+                    if (chiTietSp != null)
+                    {
+                        var sanPham = await _context.SanPham
+                            .FirstOrDefaultAsync(sp => sp.MaSp == chiTietSp.MaSp);
+
+                        var dto = new TopSellingProductSimpleDto2
+                        {
+                            SKU = chiTietSp.SKU,
+                            MaSp = chiTietSp.MaSp,
+                            TotalQuantity = product.TotalQuantity,
+                            TenSP = sanPham?.TenSP,
+                            DonGia = chiTietSp.DonGia,
+                            SoLuongTon = chiTietSp.SoLuongTon
+                        };
+                        result.Add(dto);
+                    }
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi và trả về lỗi 500
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return StatusCode(500, ex.Message);
+            }
+            
         }
 
 
@@ -250,6 +346,15 @@ namespace HN120_ShopQuanAo.API.Controllers
     public class TopSellingProductSimpleDto
     {
         public string SKU { get; set; }
+        public int TotalQuantity { get; set; }
+    }
+    public class TopSellingProductSimpleDto2
+    {
+        public string SKU { get; set; }
+        public string MaSp { get; set; }
+        public string TenSP { get; set; }
+        public decimal? DonGia { get; set; }
+        public int? SoLuongTon { get; set; }
         public int TotalQuantity { get; set; }
     }
 }

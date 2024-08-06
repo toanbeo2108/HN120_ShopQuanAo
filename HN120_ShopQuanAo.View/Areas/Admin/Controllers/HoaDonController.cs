@@ -117,20 +117,20 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             string apiDataaccout = await responaccout.Content.ReadAsStringAsync();
             var Listaccout = JsonConvert.DeserializeObject<List<User>>(apiDataaccout);
 
-            var user = from us in Listaccout
-                       join ad in ListUsers on us.Id equals ad.UserID
-                       where ad.Status == 1
-                       select new {
-                       idUser = us.Id,
-                       Ten = us.FullName,
-                       tinhthanh = ad.City,
-                       quanhuyen = ad.District,
-                       xaphuong = ad.Ward,
-                       cuthe = ad.Street,
-                       sdt = ad.PhoneNumber
-                       };
+            //var user = from us in Listaccout
+            //           join ad in ListUsers on us.Id equals ad.UserID
+            //           where ad.Status == 1
+            //           select new {
+            //           idUser = us.Id,
+            //           Ten = us.FullName,
+            //           tinhthanh = ad.City,
+            //           quanhuyen = ad.District,
+            //           xaphuong = ad.Ward,
+            //           cuthe = ad.Street,
+            //           sdt = ad.PhoneNumber
+            //           };
 
-            ViewBag.user = user.ToList();
+            //ViewBag.user = user.ToList();
 
 
             var apiThanhToan = "https://localhost:7197/api/ThanhToan/GetAllThanhToan";
