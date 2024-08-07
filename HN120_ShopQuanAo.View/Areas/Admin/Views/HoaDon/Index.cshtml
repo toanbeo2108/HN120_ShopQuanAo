@@ -60,16 +60,13 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         color: white;
     }
 
-    #btn_phuongthucthanhtoan {
-        display: none;
-    }
-
+   
     .section {
-        height: 77%;
+        height: 85%;
     }
-    .section_ {
+    /* .section_ {
         height: 5%;
-    }
+    } */
     .section__ {
         height: 10%;
     }
@@ -78,9 +75,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         overflow-y: auto;
     }
 
-    #btn_phuongthucthanhtoan {
-        margin-top: 20px;
-    }
+    
 
     .payment-button {
         height: 50px;
@@ -406,14 +401,35 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                     </td>
                                     <td>VNĐ</td>
                                 </tr>
+                                <tr id="btn_tienthua_error" style="display:none">
+                                <th style="width: 130px; padding: 12px;color:red"> <p style="color:orangered;text-align:center;">Lỗi</p></th>
+                                    <td>
+                                    <p style="color:orangered;text-align:center;">Số tiền khách đưa chưa đủ</p>
+                                    </td>
+                                  
+                                </tr>
+                                <tr>
+                                    <th style="width: 130px; padding: 12px">
+                                        <i class="fa-brands fa-cc-amazon-pay fa-2xl" style="color: #291aff;"></i>
+                                    </th>
+                                    <td>
+                                    <select id="btn_phuongthucthanhtoan" class="form-select" style="color:brown;border:none; width:100%">
+                                            @foreach (var item in lstThanhToan)
+                                            {
+                                                <option value="@item.MaPhuongThuc">@item.TenPhuongThuc</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    
+                                </tr>
                              </table>
                         </div>
-                        <div id="btn_tienthua_error" style="display:none">
+                       @*  <div id="btn_tienthua_error" style="display:none">
                             <p style="color:orangered;text-align:center;">Số tiền khách đưa chưa đủ</p>
-                        </div>
+                        </div> *@
                     </div>
                     <!-- Phần Chọn Phương Thức Thanh Toán -->
-                    <div class="row section_ align-items-center">
+                   @*  <div class="row section_ align-items-center">
 
                    
                     <div class="col-md-6 position-relative">
@@ -428,7 +444,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                             }
                         </select>
                     </div>
-                    </div>
+                    </div> *@
 
                     <!-- Phần Thanh Toán -->
                     <div class="row section__ align-items-center">
@@ -453,10 +469,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
             </div>
     </div> 
 </div>
-
+<img src="~/img/services/QRSHOP.png" style="display:none;"/>
 <div id="printableTable">
     
 </div>
+
 @* Modal thanh toán  QR code *@
 <div class="modal fade" tabindex="-1" id="pop_QR">
     <div class="modal-dialog">
@@ -636,7 +653,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         </div>
     </div>
 </div>
-<script>
+@* <script>
     document.getElementById('label_phuongthucthanhtoan').addEventListener('click', function () {
         var selectElement = document.getElementById('btn_phuongthucthanhtoan');
         selectElement.style.display = 'block'; // Hiển thị select khi nhấn vào label
@@ -649,4 +666,4 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
   // tìm kiếm kahsch hàng
 
   
-</script>
+</script> *@
