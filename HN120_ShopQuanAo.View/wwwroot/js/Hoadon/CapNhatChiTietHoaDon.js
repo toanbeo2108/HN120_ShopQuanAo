@@ -317,8 +317,8 @@ function InHoaDon(data) {
 
         // Lấy nội dung của các ô cụ thể
         var vc = row.find('td').eq(2).text().trim(); // Ô Mã Voucher
-        if (vc == "") {
-            maVoucher = '- 0 VNĐ'
+        if (vc == 0) {
+            maVoucher = '0'
         }
         else {
             maVoucher = vc ;
@@ -337,10 +337,22 @@ function InHoaDon(data) {
              <img id="shopLogo" src="https://localhost:7060/img/logo/image.png" alt="Shop Logo" style="max-width: 200px;height: 35px; ">
              <p> Số 1, Cầu Noi,P.Cổ Nhuế 2, Q.Bắc Từ Liêm</p>
              <p>Liên hệ : 0461728398</p>
+         </div>
               <hr />
-              <h4>HÓA ĐƠN BÁN HÀNG</h4>
-             <p>Số : ${mahoadon}</p>
-        </div>
+
+         <div style="display: flex;">
+
+             <img src="https://localhost:7060/img/services/QRSHOP.png" alt="Shop QR Code" style="max-width: 65px; height: 65px;margin-left: 20px;">
+             <div style="text-align: center; margin-left: 20px;">
+                 <h4>HÓA ĐƠN BÁN HÀNG</h4>
+                 <p>Số : ${mahoadon}</p>
+             </div>
+         </div>
+
+
+
+             
+      
         <div class="col-md-12" style="text-align:left;margin-left:10px">
         <p>Khách hàng :  ${tenKhachHang}</p>
         <p>ĐT :  ${soDienThoai}</p>

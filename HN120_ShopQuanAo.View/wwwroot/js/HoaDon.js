@@ -324,9 +324,18 @@ $(document).ready(function () {
         updatePaymentDetails();
     });
     $('#btn_tienkhachdua').change(function () {
-        
+        if ($('#btn_tienkhachdua').val() == '' || $('#btn_tienkhachdua').val() == undefined || $('#btn_tienkhachdua').val() == NaN) {
+            $('#btn_tienkhachdua').val(0);
+        }
         tienthua();
+        
     });
+     $('#btn_tienkhachdua').focus(function () {
+        
+         $('#btn_tienthua_error').hide();
+        
+    });
+
     $('#btn_tienkhachdua').on('focus', handleTienKhachDuaFocus);
     $('body').on('click', '#btn_dathang', function () {
         var today = new Date();
@@ -350,29 +359,26 @@ $(document).ready(function () {
             return;
         }
         if ((tt - kt >= 0) || tt == '' || tt == '' || tt == 0) {
-            if ($('#btn_phuongthucthanhtoan').val() == 1) {
+            if ($('#btn_phuongthucthanhtoan').val() == '1') {
 
                 Thanhtoan();
                 AddLichsuhoadon();
             } 
-            if ($('#btn_phuongthucthanhtoan').val() == 2) {
+            if ($('#btn_phuongthucthanhtoan').val() == '2') {
 
                 QRCODE_PAYMENT();
               
             }
 
         }
-        else {
-            $.notify('Tiền khách đưa chưa đủ', 'error')
-        }
-        if ($('#btn_phuongthucthanhtoan').val() == 3) {
+        if ($('#btn_phuongthucthanhtoan').val() == '3') {
 
             QRCODE_PAYMENT();
            
         }   
-        if ($('#btn_phuongthucthanhtoan').val() == 4) {
+        if ($('#btn_phuongthucthanhtoan').val() == '4') {
             Thanhtoan();
-           
+            AddLichsuhoadon();
         }
     })
     async function fetchData() {
@@ -1196,7 +1202,7 @@ function getdataHoaDon() {
     }
     var tongtienhoadon = $('#btn_tienkhachphaitra').val().replace(/\./g, '').split(',')[0]; 
     var selectedOption = $('#btn_MaVoucher').find(':selected');
-    var voucher = selectedOption.text() != 'Chọn Voucher' ? selectedOption.attr('data-giatrigiam') : '- 0 VNĐ';
+    var voucher = selectedOption.text() != 'Chọn Voucher' ? selectedOption.attr('data-giatrigiam') : '0';
     return {
         MaHoaDon: $('#btn_ma').val(),
         UserID: $('#btn_UserID').val(),
@@ -1247,7 +1253,7 @@ function Thanhtoan() {
                             AddThanhTOanHoaDon();
                           //  localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
                             //  window.location.reload();
-                            $.notify('Thanh toán thành công', 'success');
+                            $.notify('Tạo đơn thành công', 'success');
                             $('#confirm_modal').modal('hide');
                             $('#inhoadon_modal').modal('show');
                          
@@ -1255,7 +1261,7 @@ function Thanhtoan() {
                         if ($('#btn_Status').val() == 4) {
                           //  localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
                             AddThanhTOanHoaDon();
-                            $.notify('Thanh toán thành công', 'success');
+                            $.notify('Tạo đơn thành công', 'success');
                             $('#confirm_modal').modal('hide');
                             $('#inhoadon_modal').modal('show');
                         }
@@ -1634,7 +1640,7 @@ function In(data) {
     var tongtien = $('#btn_tongtien').val();
     var ngaytao = $('#btn_NgayTaoDon').val();
     var selectedOption = $('#btn_MaVoucher').find(':selected');
-    var voucher = selectedOption.text() != 'Chọn Voucher' ?'- '+ formatMoney(selectedOption.attr('data-giatrigiam')) + ' VNĐ' : '- 0 VNĐ';
+    var voucher = selectedOption.text() != 'Chọn Voucher' ?'- '+ formatMoney(selectedOption.attr('data-giatrigiam')) + ' VNĐ' : '0';
 
     var phiship = $('#btn_PhiShip_fake').val() != '' ? $('#btn_PhiShip_fake').val() : 0;
     var tienkhachphaitra = $('#btn_tienkhachphaitra').val();
@@ -1678,10 +1684,18 @@ function In(data) {
              <img id="shopLogo" src="https://localhost:7060/img/logo/image.png" alt="Shop Logo" style="max-width: 200px;height: 35px; ">
              <p> Số 1, Cầu Noi,P.Cổ Nhuế 2, Q.Bắc Từ Liêm</p>
              <p>Liên hệ : 0461728398</p>
-              <hr />
-              <h4>HÓA ĐƠN BÁN HÀNG</h4>
-              <p>Số : ${mahoadon}</p>
         </div>
+        <hr />
+        <div style="display: flex;">
+         
+            <img src="https://localhost:7060/img/services/QRSHOP.png" alt="Shop QR Code" style="max-width: 65px; height: 65px;margin-left: 20px;">
+            <div style="text-align: center; margin-left: 20px;">
+                <h4 style="margin: 0;">HÓA ĐƠN BÁN HÀNG</h4>
+                <p style="margin: 0;">Số: ${mahoadon}</p>
+            </div>
+        </div>
+
+
         <div class="col-md-12" style="text-align:left;margin-left:10px">
         <p>Khách hàng :  ${tenkhachhang}</p>
         <p>ĐT :  ${sdt}</p>
@@ -1717,7 +1731,7 @@ function In(data) {
         <div class="shop-info"  style="text-align:left">
              <table style="width: 400px; border-collapse: collapse;">
                 <tr><th style="padding-left:10px;width:150px">Tổng tiền hàng</th><td>: ${tongtien} VNĐ</td></tr>
-                <tr><th style="padding-left:10px;width:150px">Voucher</th><td>: ${voucher}</td></tr>
+                <tr><th style="padding-left:10px;width:150px">Voucher</th><td>: ${voucher} VNĐ</td></tr>
                 <tr><th style="padding-left:10px;width:150px">Phí ship</th><td>: ${phiship} VNĐ</td></tr>
                 <tr><th style="padding-left:10px;width:150px">Tổng tiền</th><td>: ${tienkhachphaitra} VNĐ</td></tr>
                 <tr><th style="padding-left:10px;width:150px">Khách đưa</th><td>: ${khachdua} VNĐ</td></tr>
