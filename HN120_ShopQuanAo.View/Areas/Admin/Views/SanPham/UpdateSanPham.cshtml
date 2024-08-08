@@ -7,8 +7,8 @@
     List<ThuongHieu> lstTH = ViewBag.lstTH as List<ThuongHieu>;
     List<TheLoai> lstTL = ViewBag.lstTL as List<TheLoai>;
     List<ChatLieu> lstCL = ViewBag.lstCL as List<ChatLieu>;
-    var lstSZ = ViewBag.lstSZ as List<Size> ?? new List<Size>();
-    var lstms = ViewBag.lstms as List<MauSac> ?? new List<MauSac>();
+    var lstSZ = ViewBag.lstSZ as List<Size>;
+    var lstms = ViewBag.lstms as List<MauSac>;
     var lstkm = ViewBag.lstkm as List<KhuyenMai>;
     var lstSP = ViewBag.lstSP as List<SanPham>;
     var sp = ViewBag.sp as SanPham;
@@ -107,11 +107,11 @@
                         <div class="form-group text-center">
                             @if (Model.UrlAvatar == null)
                             {
-                                    <img class="img-account-profile" src="~/photoSP/default.png" alt="Product Image" />
+                                        <img class="img-account-profile" src="~/photoSP/default.png" alt="Product Image" />
                             }
                             else
                             {
-                                    <img class="img-account-profile" src="~/photoSP/@Model.UrlAvatar" alt="Product Image" />
+                                        <img class="img-account-profile" src="~/photoSP/@Model.UrlAvatar" alt="Product Image" />
                             }
                         </div>
 
@@ -135,7 +135,7 @@
                                 <option value=""></option>
                                 @foreach (ThuongHieu item in lstTH)
                                 {
-                                        <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
+                                            <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
                                 }
                             </select>
                         </div>
@@ -145,7 +145,7 @@
                                 <option value=""></option>
                                 @foreach (TheLoai item in lstTL)
                                 {
-                                        <option value="@item.MaTheLoai">@item.TenTheLoai</option>
+                                            <option value="@item.MaTheLoai">@item.TenTheLoai</option>
                                 }
                             </select>
                         </div>
@@ -155,7 +155,7 @@
                                 <option value=""></option>
                                 @foreach (ChatLieu item in lstCL)
                                 {
-                                        <option value="@item.MaChatLieu">@item.TenChatLieu</option>
+                                            <option value="@item.MaChatLieu">@item.TenChatLieu</option>
                                 }
                             </select>
                         </div>
@@ -163,11 +163,11 @@
                             <label asp-for="TrangThai" class="control-label">Trạng thái:</label>
                             @if (sp.TrangThai == 0)
                             {
-                                    <span>Không hoạt động</span>
+                                        <span>Không hoạt động</span>
                             }
                             else if (sp.TrangThai == 1)
                             {
-                                    <span>Hoạt động</span>
+                                        <span>Hoạt động</span>
                             }
                         </div>
                         <div class="form-group">
@@ -201,57 +201,60 @@
         }
         @foreach (var item in ctsp)
         {
-                <form id="updateChiTietSpForm-@item.SKU" asp-action="UpdateChiTietSp" asp-controller="ChiTietSP" method="post" enctype="multipart/form-data">
-                    <tr>
-                        <td>@i</td>
-                        <input name="SKU" type="hidden" value="@item.SKU">
-                        <input name="MaSp" type="hidden" value="@item.MaSp">
-                        <td>
+                    <form id="updateChiTietSpForm-@item.SKU" asp-action="UpdateChiTietSp" asp-controller="ChiTietSP" method="post" enctype="multipart/form-data">
+                        <tr>
+                            <td>@i</td>
+                            <input name="SKU" type="hidden" value="@item.SKU">
+                            <input name="MaSp" type="hidden" value="@item.MaSp">
+                            <td>
                         @{
                             var size = lstSZ.FirstOrDefault(th => th.MaSize == item.MaSize)?.TenSize ?? "Lỗi Hiển Thị";
                         }
                         @size
-                        </td>
-                        <td>
+                            </td>
+                            <td>
                         @{
                             var mau = lstms.FirstOrDefault(th => th.MaMau == item.MaMau)?.TenMau ?? "Lỗi Hiển Thị";
                         }
                         @mau
-                        </td>
-                        <td>
-                            <div class="form-group text-center">
+                            </td>
+                            <td>
+                                <div class="form-group text-center">
                             @if (item.UrlAnhSpct == null)
                             {
-                                        <img class="img-spdetai" src="~/photoSanPhamCT/default.png" alt="Product Detail Image" />
+                                                <img class="img-spdetai" src="~/photoSanPhamCT/default.png" alt="Product Detail Image" />
                             }
                             else
                             {
-                                        <img class="img-spdetai" src="~/photoSanPhamCT/@item.UrlAnhSpct" alt="Product Detail Image" />
+                                                <img class="img-spdetai" src="~/photoSanPhamCT/@item.UrlAnhSpct" alt="Product Detail Image" />
                             }
-                            </div>
-                            <input type="file" class="form-control" name="imagectspFile" id="productdetailImageFile" />
-                        </td>
-                        <td>
-                            <input name="DonGia" id="dongia_in" class="form-control" value="@item.DonGia" required min="0" max="900000000" onblur="checkDonGia(this)" />
-                        </td>
-                        <td>
-                            <input name="SoLuongTon" id="soluong_in" class="form-control" value="@item.SoLuongTon" required min="0" max="999" onblur="checkSoLuongTon(this)" />
-                        </td>
-                        <td>
+                                </div>
+                                <input type="file" class="form-control" name="imagectspFile" id="productdetailImageFile" />
+                            </td>
+                            <td>
+                        @{
+                            var formattedDonGia = item.DonGia % 1 == 0 ? $"{item.DonGia:0}" : $"{item.DonGia:0.00}";
+                        }
+                                <input type="number" name="DonGia" id="dongia_in" class="form-control" value="@formattedDonGia" required min="0" max="900000000" onblur="checkDonGia(this)" />
+                            </td>
+                            <td>
+                                <input type="number" name="SoLuongTon" id="soluong_in" class="form-control" value="@item.SoLuongTon" required min="0" max="999" onblur="checkSoLuongTon(this)" />
+                            </td>
+                            <td>
                         @if (item.TrangThai == 0)
                         {
-                                    <span>Không hoạt động</span>
+                                            <span>Không hoạt động</span>
                         }
                         else if (item.TrangThai == 1)
                         {
-                                    <span>Hoạt động</span>
+                                            <span>Hoạt động</span>
                         }
-                        </td>
-                        <td style="text-align: center;">
-                            <button type="button" class="btn btn-primary suact" data-sku="@item.SKU">Sửa</button>
-                        </td>
-                    </tr>
-                </form>
+                            </td>
+                            <td style="text-align: center;">
+                                <button type="button" class="btn btn-primary suact" data-sku="@item.SKU">Sửa</button>
+                            </td>
+                        </tr>
+                    </form>
             i++;
         }
     </tbody>
@@ -278,114 +281,92 @@
 </div>
 
 @section Scripts {
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script>
-            function checkDonGia(input) {
-                if (input.value > 900000000) {
-                    input.value = 900000000;
-                } else if (input.value < 0) {
-                    input.value = 0;
-                }
-            }
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+            <script>
+                $(document).ready(function () {
+                        $('#productImageFile').change(function (e) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('.img-account-profile').attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(e.target.files[0]);
+                    });
+                    $('input[type="file"][id="productdetailImageFile"]').change(function (e) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $(e.target).closest('tr').find('.img-spdetai').attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(e.target.files[0]);
+                    });
 
-            function checkSoLuongTon(input) {
-                if (input.value > 999) {
-                    input.value = 999;
-                } else if (input.value < 0) {
-                    input.value = 0;
-                }
-            }
-
-            $(document).ready(function () {
-                $('#productImageFile').change(function (e) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $('.img-account-profile').attr('src', e.target.result);
-                    }
-                    reader.readAsDataURL(e.target.files[0]);
-                });
-
-                $('input[type="file"][id="productdetailImageFile"]').change(function (e) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $(e.target).closest('tr').find('.img-spdetai').attr('src', e.target.result);
-                    }
-                    reader.readAsDataURL(e.target.files[0]);
-                });
                     var checktensp = @Html.Raw(Json.Serialize(existingProductNames));
 
-                $('#submitProductForm').on('click', function () {
-                    var isValid = true;
-                    //var tenSP = $('#tensp_inp').val().trim().toLowerCase();
-                    //var isDuplicate = false;
+                    $('#submitProductForm').on('click', function () {
+                        var isValid = true;
+                        var tensp = $('#tensp_inp').val();
 
-                       var tensp = $('#tensp_inp').val();
-
-                    if ($('#tensp_inp').val().trim() === "") {
-                        isValid = false;
-                        alert('Vui lòng nhập tên sản phẩm.');
-                    }
-
-                    if (checktensp.includes(tensp)) {
-                        alert('tên sản phẩm đã tồn tại. vui lòng chọn tên khác.');
-                        isValid = false;
-                    }
-
-                    if ($('#thuonghieu_in').val() === "") {
-                        isValid = false;
-                        alert('Vui lòng chọn thương hiệu.');
-                    }
-
-                    if ($('#theloai_in').val() === "") {
-                        isValid = false;
-                        alert('Vui lòng chọn thể loại.');
-                    }
-
-                    if ($('#chatlieu_in').val() === "") {
-                        isValid = false;
-                        alert('Vui lòng chọn chất liệu.');
-                    }
-
-                    if ($('#dongia_in').val() === "") {
-                        isValid = false;
-                        alert('Vui lòng chọn đơn giá.');
-                    }
-
-                    if (isValid) {
-                        $('.editsp').show();
-                        $('.editct').hide();
-                        $('#confirmModal').modal('show');
-                    }
-                });
-
-                $('.suact').on('click', function () {
-                    var sku = $(this).data('sku');
-                    var form = $('#updateChiTietSpForm-' + sku);
-                    var isValid = true;
-
-                    form.find('input').each(function () {
-                        if ($(this).val().trim() === "") {
+                        if ($('#tensp_inp').val().trim() === "") {
                             isValid = false;
-                            alert('Vui lòng nhập đầy đủ thông tin chi tiết sản phẩm.');
+                            alert('Vui lòng nhập tên sản phẩm.');
+                        }
+
+                        if (checktensp.includes(tensp)) {
+                            alert('Tên sản phẩm đã tồn tại. Vui lòng chọn tên khác.');
+                            isValid = false;
+                        }
+
+                        if ($('#thuonghieu_in').val() === "") {
+                            isValid = false;
+                            alert('Vui lòng chọn thương hiệu.');
+                        }
+
+                        if ($('#theloai_in').val() === "") {
+                            isValid = false;
+                            alert('Vui lòng chọn thể loại.');
+                        }
+
+                        if ($('#chatlieu_in').val() === "") {
+                            isValid = false;
+                            alert('Vui lòng chọn chất liệu.');
+                        }
+
+                        if (isValid) {
+                            $('.editsp').show();
+                            $('.editct').hide();
+                            $('#confirmModal').modal('show');
                         }
                     });
 
-                    if (isValid) {
-                        $('.editsp').hide();
-                        $('.editct').show();
-                        $('#confirmModal').modal('show');
-                        $('#confirmSubmit').data('sku', sku);
-                    }
-                });
+                    $('.suact').on('click', function () {
+                        var sku = $(this).data('sku');
+                        var form = $('#updateChiTietSpForm-' + sku);
+                        var isValid = true;
 
-                $('#confirmSubmit').on('click', function () {
-                    var sku = $(this).data('sku');
-                    if (sku) {
-                        $('#updateChiTietSpForm-' + sku).submit();
-                    } else {
-                        $('#updateProductForm').submit();
-                    }
+                        form.find('input').each(function () {
+                            if ($(this).val().trim() === "") {
+                                isValid = false;
+                                alert('Vui lòng nhập đầy đủ thông tin chi tiết sản phẩm.');
+                            }
+                        });
+
+                        if (isValid) {
+                            $('.editsp').hide();
+                            $('.editct').show();
+                            $('#confirmModal').modal('show');
+                            $('#confirmSubmit').data('sku', sku);
+                        }
+                    });
+
+                    $('#confirmSubmit').on('click', function () {
+                        var sku = $(this).data('sku');
+                        if (sku) {
+                            $('#updateChiTietSpForm-' + sku).submit();
+                        } else {
+                            $('#updateProductForm').submit();
+                        }
+                    });
                 });
-            });
-        </script>
+            </script>
 }

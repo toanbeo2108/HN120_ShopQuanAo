@@ -21,6 +21,7 @@ namespace HN120_ShopQuanAo.API.Controllers
         AppDbContext _context = new AppDbContext();
         public CTSanPhamController()
         {
+
             _iresponCTSP = new AllResponsitories<ChiTietSp>(_context, _context.ChiTietSp);
             _iresponSP = new AllResponsitories<SanPham>(_context, _context.SanPham);
             _iresponKM = new AllResponsitories<KhuyenMai>(_context, _context.KhuyenMai);
