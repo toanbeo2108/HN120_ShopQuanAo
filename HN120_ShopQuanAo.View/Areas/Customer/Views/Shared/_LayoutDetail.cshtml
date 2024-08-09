@@ -158,7 +158,7 @@
                                         <nav>
                                             <ul>
                                                 <li class="active">
-                                                    <a href="index.html">Home</a>
+                                                    <a asp-action="Index" asp-controller="CustomerHome" asp-area="Customer">Home</a>
                                                     <div class="mega_menu jewelry">
                                                         <div class="mega_items jewelry">
                                                             <ul>
@@ -354,54 +354,7 @@
                                                         </div>
                                                     </div>
                                                 </li>
-                                                <li>
-                                                    <a href="#">women</a>
-                                                    <div>
-                                                        <div>
-                                                            <div>
-                                                                <h3><a href="#">Accessories</a></h3>
-                                                                <ul>
-                                                                    <li><a href="#">Cocktai</a></li>
-                                                                    <li><a href="#">day</a></li>
-                                                                    <li><a href="#">Evening</a></li>
-                                                                    <li><a href="#">Sundresses</a></li>
-                                                                    <li><a href="#">Belts</a></li>
-                                                                    <li><a href="#">Sweets</a></li>
-                                                                </ul>
-                                                            </div>
-                                                            <div>
-                                                                <h3><a href="#">HandBags</a></h3>
-                                                                <ul>
-                                                                    <li><a href="#">Accessories</a></li>
-                                                                    <li><a href="#">Hats and Gloves</a></li>
-                                                                    <li><a href="#">Lifestyle</a></li>
-                                                                    <li><a href="#">Bras</a></li>
-                                                                    <li><a href="#">Scarves</a></li>
-                                                                    <li><a href="#">Small Leathers</a></li>
-                                                                </ul>
-                                                            </div>
-                                                            <div>
-                                                                <h3><a href="#">Tops</a></h3>
-                                                                <ul>
-                                                                    <li><a href="#">Evening</a></li>
-                                                                    <li><a href="#">Long Sleeved</a></li>
-                                                                    <li><a href="#">Shrot Sleeved</a></li>
-                                                                    <li><a href="#">Tanks and Camis</a></li>
-                                                                    <li><a href="#">Sleeveless</a></li>
-                                                                    <li><a href="#">Sleeveless</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <div>
-                                                                <a href="#"><img src="assets\img\banner\banner1.jpg" alt=""></a>
-                                                            </div>
-                                                            <div>
-                                                                <a href="#"><img src="assets\img\banner\banner2.jpg" alt=""></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </li>
+                                                
                                                 <li>
                                                     <a href="#">men</a>
                                                     <div>
@@ -702,7 +655,11 @@
             </div>
         </div>
     </div>
-
+    <style>
+        a {
+            text-decoration: none;
+        }
+    </style>
     <!-- modal area end -->
     <!-- all js here -->
     <script src="assets\js\vendor\jquery-1.12.0.min.js"></script>

@@ -98,57 +98,8 @@
                             </div>
                             <div class="col-lg-9 col-md-9">
                                 <div class="header_right_info">
-                                    <div class="search_bar">
-                                        <form action="#">
-                                            <input placeholder="Search..." type="text">
-                                            <button type="submit"><i class="fa fa-search"></i></button>
-                                        </form>
-                                    </div>
-                                    <div class="shopping_cart">
-                                        <a href="#"><i class="fa fa-shopping-cart"></i> 2Items - $209.44 <i class="fa fa-angle-down"></i></a>
-
-                                        <!--mini cart-->
-                                        <div class="mini_cart">
-                                            <div class="cart_item">
-                                                <div class="cart_img">
-                                                    <a href="#"><img src="assets\img\cart\cart.jpg" alt=""></a>
-                                                </div>
-                                                <div class="cart_info">
-                                                    <a href="#">lorem ipsum dolor</a>
-                                                    <span class="cart_price">$115.00</span>
-                                                    <span class="quantity">Qty: 1</span>
-                                                </div>
-                                                <div class="cart_remove">
-                                                    <a title="Remove this item" href="#"><i class="fa fa-times-circle"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="cart_item">
-                                                <div class="cart_img">
-                                                    <a href="#"><img src="assets\img\cart\cart2.jpg" alt=""></a>
-                                                </div>
-                                                <div class="cart_info">
-                                                    <a href="#">Quisque ornare dui</a>
-                                                    <span class="cart_price">$105.00</span>
-                                                    <span class="quantity">Qty: 1</span>
-                                                </div>
-                                                <div class="cart_remove">
-                                                    <a title="Remove this item" href="#"><i class="fa fa-times-circle"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="shipping_price">
-                                                <span> Shipping </span>
-                                                <span>  $7.00  </span>
-                                            </div>
-                                            <div class="total_price">
-                                                <span> total </span>
-                                                <span class="prices">  $227.00  </span>
-                                            </div>
-                                            <div class="cart_button">
-                                                <a href="checkout.html"> Check out</a>
-                                            </div>
-                                        </div>
-                                        <!--mini cart end-->
-                                    </div>
+                                    
+                                    
 
                                 </div>
                             </div>
@@ -163,7 +114,7 @@
                                         <nav>
                                             <ul>
                                                 <li class="active">
-                                                    <a href="index.html">Home</a>
+                                                    <a asp-action="Index" asp-controller="CustomerHome" asp-area="Customer">Home</a>
                                                     <div class="mega_menu jewelry">
                                                         <div class="mega_items jewelry">
                                                             <ul>
@@ -506,17 +457,9 @@
                                 <div class="widget_color">
                                     <ul>
 
-                                        <li><a href="#">Black <span>(10)</span></a></li>
+                                        <li><a href="#">Black <span>(918)</span></a></li>
 
-                                        <li><a href="#">Orange <span>(12)</span></a></li>
-
-                                        <li> <a href="#">Blue <span>(14)</span></a></li>
-
-                                        <li><a href="#">Yellow <span>(15)</span></a></li>
-
-                                        <li><a href="#">pink <span>(16)</span></a></li>
-
-                                        <li><a href="#">green <span>(11)</span></a></li>
+                                        <li> <a href="#">Blue <span>(1987)</span></a></li>
 
                                     </ul>
                                 </div>
@@ -696,8 +639,10 @@
                             <div class="shop_tab_product">
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="large" role="tabpanel">
-                                        <div class="row">
-                                            @RenderBody()
+                                        <div id="searchResults">
+                                           
+                                                @RenderBody()
+                                            
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="list" role="tabpanel">
@@ -1286,7 +1231,12 @@
             </div>
         </div>
     </div>
-
+    <style>
+        a {
+            text-decoration: none;
+        }
+    </style>
+    <script src="~/js/locsp.js"></script>
     <!-- modal area end -->
     <!-- all js here -->
     <script src="assets\js\vendor\jquery-1.12.0.min.js"></script>
