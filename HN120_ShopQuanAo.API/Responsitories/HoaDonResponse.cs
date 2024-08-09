@@ -19,7 +19,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
             {
                 HoaDon hd = new HoaDon
                 {
-                    MaHoaDon = Guid.NewGuid().ToString(),
+                    MaHoaDon = DateTime.Now.ToString(),
                     UserID = UserId,
                     MaVoucher = null,
                     NgayTaoDon = DateTime.Now,
