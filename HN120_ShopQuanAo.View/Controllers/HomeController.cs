@@ -10,6 +10,7 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using HN120_ShopQuanAo.API.EmailConfig.ViewModel;
+using HN120_ShopQuanAo.Data.Models;
 
 namespace HN120_ShopQuanAo.View.Controllers
 {
@@ -183,6 +184,100 @@ namespace HN120_ShopQuanAo.View.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Shop(string query)
+        {
+            var ApiurlSanPham = $"https://localhost:7197/api/SanPham/GetAllSanPham";
+            var resposeSP = await _httpClient.GetAsync(ApiurlSanPham);
+            string apidatasSP = await resposeSP.Content.ReadAsStringAsync();
+            var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apidatasSP);
+            if (!string.IsNullOrEmpty(query))
+            {
+                lstSP = lstSP.Where(x => x.TrangThai == 1).ToList();
+                lstSP = lstSP.Where(x => x.TenSP.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            ViewData["CurrentFilter"] = query;
+            return View(lstSP);
+        }
+        [HttpGet]
+        public async Task<IActionResult> DetailSP(string masp)
+        {
+            // lấy danh sách sản phẩm
+            var ApiurlSanPham = $"https://localhost:7197/api/SanPham/GetAllSanPham";
+            var resposeSP = await _httpClient.GetAsync(ApiurlSanPham);
+            string apidatasSP = await resposeSP.Content.ReadAsStringAsync();
+            var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apidatasSP);
+            if (lstSP == null)
+            {
+                TempData["MessageSPNull"] = "Không lấy được dữ liệu sản phẩm";
+                return View();
+            }
+            // lấy danh sách sản phẩm có trạng thái khả dụng
+            var lstSP_ok = lstSP.Where(x => x.TrangThai == 1).ToList();
+            if (lstSP_ok == null)
+            {
+                TempData["MessageSPNull"] = "Không lấy được dữ liệu sản phẩm khả dụng";
+                return View();
+            }
+            // list sản phẩm có thể order thêm ở bên dưới (không quan trọng)
+            var lstSP_CanOrder = lstSP_ok.OrderBy(x => x.NgayNhap).Take(5);
+            ViewBag.lstSP_CanOrder = lstSP_CanOrder;
+            //lấy sản phẩm Detail   
+            var SP = lstSP_ok.FirstOrDefault(x => x.MaSp == masp);
+            if (SP == null)
+            {
+                TempData["MessageSPNull"] = "Không lấy được dữ liệu sản phẩm cần mua";
+                return View();
+            }
+            ViewBag.SP = SP;
+
+            // Lấy toàn bộ danh sách CTSP
+            var urlSPCT = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
+            var responBook = await _httpClient.GetAsync(urlSPCT);
+            string apiDataBook = await responBook.Content.ReadAsStringAsync();
+            var lstBook = JsonConvert.DeserializeObject<List<ChiTietSp>>(apiDataBook);
+            if (lstBook == null)
+            {
+                TempData["Error Message"] = "Sản Phẩm không khả dụng";
+            }
+            //Lấy danh sách sản phẩm chi tiết thông qua mã sản phâm
+
+            var ListCTSP = lstBook.Where(x => x.MaSp == SP.MaSp).ToList();
+            if (ListCTSP == null)
+            {
+                TempData["MessageSPCTNull"] = "Sản Phẩm hiện không khả dụng";
+            }
+            ViewBag.ListCTSP = ListCTSP;
+            var minCTSP = ListCTSP.OrderBy(x => x.GiaBan).FirstOrDefault();
+            ViewBag.minCTSP = minCTSP;
+            var maxCTSP = ListCTSP.OrderBy(x => x.GiaBan).LastOrDefault();
+            ViewBag.maxCTSP = maxCTSP;
+            // Lấy List Size
+            var urlSize = $"https://localhost:7197/api/Size/GetAllSize";
+            //var httpClient = new HttpClient();
+            var ResponSize = await _httpClient.GetAsync(urlSize);
+            string apidataSize = await ResponSize.Content.ReadAsStringAsync();
+            var lstSize = JsonConvert.DeserializeObject<List<Size>>(apidataSize);
+            if (lstSize == null)
+            {
+                TempData["MessageSizeNull"] = "Sản phẩm này đang không có Size";
+            }
+            ViewBag.ListSize = lstSize;
+            // Lấy List Màu Sắc
+            var urlMauSac = $"https://localhost:7197/api/MauSac/GetAllMauSac";
+            //var httpClient = new HttpClient();
+            var responMS = await _httpClient.GetAsync(urlMauSac);
+            string apiDataMS = await responMS.Content.ReadAsStringAsync();
+            var lstMauSac = JsonConvert.DeserializeObject<List<MauSac>>(apiDataMS);
+            if (lstMauSac == null)
+            {
+                TempData["MessageMauSacNull"] = "Sản phẩm này không có màu";
+            }
+            ViewBag.lstMauSac = lstMauSac;
+            return View();
         }
     }
 }

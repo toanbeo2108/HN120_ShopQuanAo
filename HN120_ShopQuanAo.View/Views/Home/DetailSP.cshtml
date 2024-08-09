@@ -1,0 +1,370 @@
+﻿@using HN120_ShopQuanAo.Data.Models;
+@model IEnumerable<HN120_ShopQuanAo.Data.Models.SanPham>
+
+
+@{
+    Layout = "~/Views/Shared/_LayoutDetailHome.cshtml";
+    SanPham sp = ViewBag.SP as SanPham;
+    List<ChiTietSp> lstCTSP = ViewBag.ListCTSP as List<ChiTietSp>;
+    List<Size> lstSize = ViewBag.ListSize as List<Size>;
+    List<MauSac> lstMauSac = ViewBag.lstMauSac as List<MauSac>;
+    var min = ViewBag.minCTSP as ChiTietSp;
+    var max = ViewBag.maxCTSP as ChiTietSp;
+    string maGH = ViewBag.MaGH;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="~/js/locdetailnguoidung.js"></script>
+<input value="magiohang" />
+
+
+<!--product wrapper start-->
+@if (sp == null)
+{
+    <h1>Không lấy được thông tin sản phẩm này</h1>
+}
+else
+{
+    <form asp-action="AddToCart" asp-controller="CustomerHome" asp-area="Customer" method="post" id="actionForm">
+        <div class="product_details">
+            <div class="row">
+                <div class="col-lg-5 col-md-6">
+                    <div class="product_tab fix">
+                        <div class="product_tab_button">
+                            <ul class="nav" role="tablist">
+                                <li>
+                                    <a class="active" data-toggle="tab" href="#p_tab1" role="tab" aria-controls="p_tab1" aria-selected="false"><img src="~/photoSP/@sp.UrlAvatar" alt=""></a>
+                                </li>
+                                @if (lstCTSP == null)
+                                {
+                                    <h1>Sản Phẩm này không còn mặt hàng nào tồn tại</h1>
+                                }
+                                @foreach (var item in lstCTSP)
+                                {
+                                    <li>
+                                        <a data-toggle="tab" href="#p_tab2" role="tab" aria-controls="p_tab2" aria-selected="false"><img src="~/photoSanPhamCT/@item.UrlAnhSpct" alt=""></a>
+                                    </li>
+                                }
+
+
+                            </ul>
+                        </div>
+                        <div class="tab-content produc_tab_c">
+                            <div class="tab-pane fade show active" id="p_tab1" role="tabpanel">
+                                <div class="modal_img">
+                                    <a href="#"><img src="~/photoSP/@sp.UrlAvatar" alt=""></a>
+                                    <div class="img_icone">
+                                        <img src="assets\img\cart\span-new.png" alt="">
+                                    </div>
+                                    <div class="view_img">
+                                        <a class="large_view" href="~/photoSP/@sp.UrlAvatar"><i class="fa fa-search-plus"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="p_tab2" role="tabpanel">
+                                <div class="modal_img">
+                                    <a href="#"><img src="assets\img\product\taixuong(2).jpg" alt=""></a>
+                                    <div class="img_icone">
+                                        <img src="assets\img\cart\span-new.png" alt="">
+                                    </div>
+                                    <div class="view_img">
+                                        <a class="large_view" href="assets\img\product\taixuong(2).jpg"><i class="fa fa-search-plus"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="p_tab3" role="tabpanel">
+                                <div class="modal_img">
+                                    <a href="#"><img src="assets\img\product\taixuong(3).jpg" alt=""></a>
+                                    <div class="img_icone">
+                                        <img src="assets\img\cart\span-new.png" alt="">
+                                    </div>
+                                    <div class="view_img">
+                                        <a class="large_view" href="assets\img\product\taixuong(3).jpg"> <i class="fa fa-search-plus"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-7 col-md-6">
+                    <div class="product_d_right">
+                        <h1>@sp.TenSP</h1>
+                        <div class="product_ratting mb-10">
+                            <ul>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"> Write a review </a></li>
+                            </ul>
+                        </div>
+                        <div class="product_desc">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati modi culpa voluptates illo, quos magni totam inventore delectus perspiciatis necessitatibus, iure rerum! Deleniti nobis voluptatibus minus, iusto ullam quae esse..</p>
+                        </div>
+
+                        <input id="maGH_input" value="@maGH" style="display:none">
+                        <input id="tenSP_input" value="@sp.TenSP" style="display:none">
+                        <div class="content_price mb-15" id="minmaxx">
+                            <span>@min.GiaBan VND -</span>
+                            <span>@max.GiaBan VND</span>
+
+                        </div>
+                        <div class="box_quantity mb-20">
+                            <form action="#">
+                                <label>quantity</label>
+                                <input min="0" max="100" value="1" type="number" id="quantity_input">
+                                <span id="quantity-error" style="color: red; display: none;">Số lượng nhập không được lớn hơn số lượng tồn.</span>
+                            </form>
+                            <button type="button"><a asp-action="Login" asp-controller="Home"><i class="fa fa-shopping-cart"></i>Add To Cart</a></button>
+                            <a href="#" title="add to wishlist"><i class="fa fa-heart" aria-hidden="true"></i></a>
+                        </div>
+                        <div class="product_d_size mb-20">
+                            <label for="group_1">size</label>
+                            <select name="size" id="group_1" style="max-width:30%" onchange="filterQuantity()">
+                                <option value="" selected>Chọn size</option>
+                                @foreach (var item in lstSize)
+                                {
+                                    <option value="@item.MaSize">@item.TenSize</option>
+                                }
+
+                            </select>
+                        </div>
+
+                        <div class="product_d_size mb-20">
+                            <label for="group_1">Màu</label>
+                            <select name="size" id="group_2" style="max-width:30%" onchange="filterQuantity()">
+                                <option value="" selected>Chọn màu</option>
+                                @foreach (var item in lstMauSac)
+                                {
+                                    <option value="@item.MaMau">@item.TenMau</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="product_stock mb-20">
+
+                            <p id="total"></p>
+                            <span> In stock </span>
+                        </div>
+                        <div class="wishlist-share">
+                            <h4>Share on:</h4>
+                            <ul>
+                                <li><a href="#"><i class="fa fa-rss"></i></a></li>
+                                <li><a href="#"><i class="fa fa-vimeo"></i></a></li>
+                                <li><a href="#"><i class="fa fa-tumblr"></i></a></li>
+                                <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+                                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+
+<!--product details end-->
+<!--product info start-->
+<div class="product_d_info">
+    <div class="row">
+        <div class="col-12">
+            <div class="product_d_inner">
+                <div class="product_info_button">
+                    <ul class="nav" role="tablist">
+                        <li>
+                            <a class="active" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">More info</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#sheet" role="tab" aria-controls="sheet" aria-selected="false">Data sheet</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="info" role="tabpanel">
+                        <div class="product_info_content">
+                            <p>Fashion has been creating well-designed collections since 2010. The brand offers feminine designs delivering stylish separates and statement dresses which have since evolved into a full ready-to-wear collection in which every item is a vital part of a woman's wardrobe. The result? Cool, easy, chic looks with youthful elegance and unmistakable signature style. All the beautiful pieces are made in Italy and manufactured with the greatest attention. Now Fashion extends to a range of accessories including shoes, hats, belts and more!</p>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="sheet" role="tabpanel">
+                        <div class="product_d_table">
+                            <form action="#">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td class="first_child">Compositions</td>
+                                            <td>Polyester</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="first_child">Styles</td>
+                                            <td>Girly</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="first_child">Properties</td>
+                                            <td>Short Dress</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                        <div class="product_info_content">
+                            <p>Fashion has been creating well-designed collections since 2010. The brand offers feminine designs delivering stylish separates and statement dresses which have since evolved into a full ready-to-wear collection in which every item is a vital part of a woman's wardrobe. The result? Cool, easy, chic looks with youthful elegance and unmistakable signature style. All the beautiful pieces are made in Italy and manufactured with the greatest attention. Now Fashion extends to a range of accessories including shoes, hats, belts and more!</p>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="reviews" role="tabpanel">
+                        <div class="product_info_content">
+                            <p>Fashion has been creating well-designed collections since 2010. The brand offers feminine designs delivering stylish separates and statement dresses which have since evolved into a full ready-to-wear collection in which every item is a vital part of a woman's wardrobe. The result? Cool, easy, chic looks with youthful elegance and unmistakable signature style. All the beautiful pieces are made in Italy and manufactured with the greatest attention. Now Fashion extends to a range of accessories including shoes, hats, belts and more!</p>
+                        </div>
+                        <div class="product_info_inner">
+                            <div class="product_ratting mb-10">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                </ul>
+                                <strong>Posthemes</strong>
+                                <p>09/07/2018</p>
+                            </div>
+                            <div class="product_demo">
+                                <strong>demo</strong>
+                                <p>That's OK!</p>
+                            </div>
+                        </div>
+                        <div class="product_review_form">
+                            <form action="#">
+                                <h2>Add a review </h2>
+                                <p>Your email address will not be published. Required fields are marked </p>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="review_comment">Your review </label>
+                                        <textarea name="comment" id="review_comment"></textarea>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <label for="author">Name</label>
+                                        <input id="author" type="text">
+
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <label for="email">Email </label>
+                                        <input id="email" type="text">
+                                    </div>
+                                </div>
+                                <button type="submit">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--product info end-->
+
+
+<div class="new_product_area product_page">
+    <div class="row">
+        <div class="col-12">
+            <div class="block_title">
+                <h3>  Một số sản phẩm mới</h3>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="single_p_active owl-carousel">
+            <div class="col-lg-3">
+                <div class="single_product">
+                    <div class="product_thumb">
+                        <a href="single-product.html"><img src="assets\img\product\product1.jpg" alt=""></a>
+                        <div class="img_icone">
+                            <img src="assets\img\cart\span-new.png" alt="">
+                        </div>
+                        <div class="product_action">
+                            <a href="#"> <i class="fa fa-shopping-cart"></i> Add to cart</a>
+                        </div>
+                    </div>
+                    <div class="product_content">
+                        <span class="product_price">$50.00</span>
+                        <h3 class="product_title"><a href="single-product.html">Curabitur sodales</a></h3>
+                    </div>
+                    <div class="product_info">
+                        <ul>
+                            <li><a href="#" title=" Add to Wishlist ">Add to Wishlist</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#modal_box" title="Quick view">View Detail</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<table id="tb_dataCTSP" style="visibility:hidden">
+    <thead>
+        <tr>
+            <td>
+                Mã SPCT
+            </td>
+            <td>
+                Mã Màu
+            </td>
+            <td>
+                Mã Size
+            </td>
+            <td>
+                Số Lượng
+            </td>
+            <td>
+                button
+            </td>
+            <td>
+                Đơn Giá
+            </td>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in lstCTSP)
+        {
+            <tr>
+                <td>
+                    @item.SKU
+                </td>
+                <td>
+                    @item.MaMau
+                </td>
+                <td>
+                    @item.MaSize
+                </td>
+                <td>
+                    @item.SoLuongTon
+                </td>
+                <td>
+                    <button id="totalsoluong" data-madg="@item.GiaBan" data-mamau="@item.MaMau" data-masize="@item.MaSize" data-soluong="@item.SoLuongTon"></button>
+                </td>
+                <td>
+                    @item.GiaBan
+                </td>
+
+            </tr>
+        }
+    </tbody>
+
+</table>
+<style>
+    a {
+        text-decoration: none;
+    }
+</style>
+<!--new product area start-->

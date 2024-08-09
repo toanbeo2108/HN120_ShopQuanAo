@@ -1,0 +1,59 @@
+﻿@using HN120_ShopQuanAo.Data.Models;
+@model IEnumerable<HN120_ShopQuanAo.Data.Models.SanPham>
+@{
+	Layout = "~/Views/Shared/_LayoutShop.cshtml";
+	List<SanPham> lstSanPham = ViewBag.ListSP as List<SanPham>;
+}
+<script src="~/js/locsp.js"></script>
+@if(!Model.Any()){
+    <div class="search_bar">
+        <form action="#">
+            <input id="searchInput" name="query" placeholder="Search..." type="text"  value="@ViewData["CurrentFilter"]">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+	<h1>Shop hiện tại hết mặt hàng này, hoặc chưa bán</h1>
+}
+else{
+
+    <div class="search_bar">
+        <form action="#">
+            <input id="searchInput" name="query" placeholder="Search..." type="text"  value="@ViewData["CurrentFilter"]">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+	foreach(var item in Model)
+	{
+         <div class="row">
+            <a asp-action="DetailSP" asp-controller="Home"  asp-route-masp="@item.MaSp">
+            <div class="col-lg-4 col-md-6">
+                <div class="single_product">
+                    <div class="product_thumb">
+                        <a href="single-product.html"><img src="~/photoSP/@item.UrlAvatar" alt=""></a>
+                        <div class="img_icone">
+                            <img src="~/photoSP/@item.UrlAvatar" alt="">
+                        </div>
+                        <div class="product_action">
+                                <a asp-action="DetailSP" asp-controller="Home"  asp-route-masp="@item.MaSp"> <i class="fa fa-shopping-cart"></i> Mua Hàng</a>
+                        </div>
+                    </div>
+                    <div class="product_content">
+                        <span class="product_price"></span>
+                            <h3 class="product_title"><a asp-action="DetailSP" asp-controller="Home"  asp-route-masp="@item.MaSp">@item.TenSP</a></h3>
+                    </div>
+                    <div class="product_info">
+                        <ul>
+                                <li><a asp-action="DetailSP" asp-controller="Home"  asp-route-masp="@item.MaSp" data-toggle="modal" data-target="#modal_box" title="Quick view">Xem Chi Tiết</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+		</a>
+        </div>
+	}
+}   
+<style>
+    a {
+        text-decoration: none;
+    }
+</style>
