@@ -106,12 +106,13 @@ function filterQuantity() {
         var color = row.querySelector('[data-mamau]').getAttribute('data-mamau').trim();
         var size = row.querySelector('[data-masize]').getAttribute('data-masize').trim();
         var dg = row.querySelector('[data-madg]').getAttribute('data-madg').trim();
+        var dgformat = formatMoney(parseInt(dg));
         var quantity = parseInt(row.querySelector('[data-soluong]').getAttribute('data-soluong').trim());
         if ((selectedColor === '' || color === selectedColor) &&
             (selectedSize === '' || size === selectedSize)) {
             row.style.display = "";
             totalQuantity += quantity;
-            $("#minmaxx").html(`<h1>Giá: ${dg}</h1>`);
+            $("#minmaxx").html(`<h1>Giá: ${dgformat}</h1>`);
             
         } else {
             row.style.display = "none";
@@ -131,4 +132,11 @@ function getdataSPCT() {
     //    }
     //})
     //return sku;
+}
+function formatMoney(amount) {
+    if (!isNaN(amount) && amount !== null && amount !== '') {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    } else {
+        return amount;
+    }
 }

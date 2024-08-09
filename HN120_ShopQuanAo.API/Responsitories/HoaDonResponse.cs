@@ -109,6 +109,34 @@ namespace HN120_ShopQuanAo.API.Responsitories
 
                 _context.HoaDon.Update(hd);
                 await _context.SaveChangesAsync();
+                
+                HoaDon_History hdhs = new HoaDon_History
+                {
+                    LichSuHoaDonID = DateTime.Now.ToString(),
+                    MaHoaDon = hd.MaHoaDon,
+                    UserID = hd.UserID,
+                    NgayTaoDon = DateTime.Now,
+                    NgayThayDoi = DateTime.Now,
+                    TongGiaTri = hd.TongGiaTriHangHoa,
+                    HinhThucThanhToan = "4",
+                    ChiTiet = "Tôi Không còn nhu cầu mua hàng",
+                    TrangThai = 6
+                };
+                _context.HoaDon_History.Add(hdhs);
+                await _context.SaveChangesAsync();
+
+                ThanhToan_HoaDon tthd = new ThanhToan_HoaDon
+                {
+                    MaPhuongThuc_HoaDon = hd.MaHoaDon + "_4",
+                    MaHoaDon = hd.MaHoaDon,
+                    MaPhuongThuc = "4",
+                    MoTa = "",
+                    NgayTao = DateTime.Now,
+                    NgayThayDoi = DateTime.Now,
+                    TrangThai = 6
+                };
+                _context.ThanhToan_HoaDon.Add(tthd);
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception)

@@ -1,14 +1,30 @@
 ﻿@using HN120_ShopQuanAo.Data.Models;
+@model IEnumerable<HN120_ShopQuanAo.Data.Models.SanPham>
 @{
 	Layout = "~/Areas/Customer/Views/Shared/_LayoutShopCustomer.cshtml";
 	List<SanPham> lstSanPham = ViewBag.ListSP as List<SanPham>;
 }
-@if(lstSanPham == null){
-	<h1>Null Rồi đại ca ơi</h1>
+<script src="~/js/locsp.js"></script>
+@if(!Model.Any()){
+    <div class="search_bar">
+        <form action="#">
+            <input id="searchInput" name="query" placeholder="Search..." type="text"  value="@ViewData["CurrentFilter"]">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+	<h1>Shop hiện tại hết mặt hàng này, hoặc chưa bán</h1>
 }
 else{
-	foreach(var item in lstSanPham)
+
+    <div class="search_bar">
+        <form action="#">
+            <input id="searchInput" name="query" placeholder="Search..." type="text"  value="@ViewData["CurrentFilter"]">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+	foreach(var item in Model)
 	{
+         <div class="row">
         <a asp-action="DetailSanPham" asp-controller="CustomerHome" asp-area="Customer" asp-route-masp="@item.MaSp">
             <div class="col-lg-4 col-md-6">
                 <div class="single_product">
@@ -33,5 +49,11 @@ else{
                 </div>
             </div>
 		</a>
+        </div>
 	}
 }   
+<style>
+    a {
+        text-decoration: none;
+    }
+</style>

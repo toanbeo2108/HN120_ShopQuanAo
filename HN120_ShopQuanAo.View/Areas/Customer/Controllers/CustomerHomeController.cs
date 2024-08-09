@@ -50,22 +50,19 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
         }
         //Gian Hàng của khách hàng
         [HttpGet]
-        public async Task<IActionResult> GianHangNguoiDung()
+        public async Task<IActionResult> GianHangNguoiDung(string query)
         {
             var ApiurlSanPham = $"https://localhost:7197/api/SanPham/GetAllSanPham";
             var resposeSP = await _httpClient.GetAsync(ApiurlSanPham);
             string apidatasSP = await resposeSP.Content.ReadAsStringAsync();
             var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apidatasSP);
-            if (lstSP != null)
+            if (!string.IsNullOrEmpty(query))
             {
-                var LstSP_ok = lstSP.Where(x => x.TrangThai == 1).ToList();
-                ViewBag.ListSP = LstSP_ok;
-                return View();
+                lstSP = lstSP.Where(x => x.TrangThai == 1).ToList();
+                lstSP = lstSP.Where(x => x.TenSP.Contains(query,StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            else
-            {
-                return BadRequest("Api lỗi data sản phẩm rồi");
-            }
+            ViewData["CurrentFilter"] = query;
+            return View(lstSP);
         }
 
         // Giỏ Hàng của Khách hàng
