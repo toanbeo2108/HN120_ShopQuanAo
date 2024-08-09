@@ -87,6 +87,11 @@ namespace HN120_ShopQuanAo.API.Controllers
                 return false;
             }
         }
+        [HttpDelete("[Action]/{maGH}")]
+        public async Task<bool> DeleteAllGHCT(string maGH)
+        {
+            return await _iresponse.DeleteAllGHCT(maGH);
+        }
 
     }
 }

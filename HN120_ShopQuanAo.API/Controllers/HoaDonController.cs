@@ -110,10 +110,15 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             return await _iresponse.GetAllHoaDonByUserId(UserId);
         }
-        [HttpPut]
+        [HttpPut("[Action]/{maHD}")]
         public async Task<bool> UpdateHD(string maHD, string? MaVoucher, string? tenkh, string? sdt, decimal? phiship, decimal? tongtien, int? pttt, string? phanloai, string? ghichu, string? tinh, string? huyen, string? xa, string? cuthe)
         {
             return await _iresponse.UpdateHoaDon(maHD,MaVoucher, tenkh, sdt, phiship, tongtien, pttt, phanloai, ghichu, tinh, huyen, xa, cuthe);
+        }
+        [HttpPut("[Action]/{maHD}")]
+        public async Task<bool> HuyDon(string maHD)
+        {
+            return await _iresponse.HuyDon(maHD);
         }
     }
 }

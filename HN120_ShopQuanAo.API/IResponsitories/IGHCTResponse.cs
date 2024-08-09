@@ -3,5 +3,6 @@
     public interface IGHCTResponse
     {
         Task<bool> UpdateGHCT(string MaGHCT, int? soluong);
+        Task<bool> DeleteAllGHCT(string maGH);
     }
 }
