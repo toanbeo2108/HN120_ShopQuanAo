@@ -81,6 +81,43 @@ namespace HN120_ShopQuanAo.API.Responsitories
             return await _context.User_Voucher.Where(x => x.UserID == userid).ToListAsync();
         }
 
+        public async Task<bool> HuyDon(string maHD)
+        {
+            try
+            {
+                var hd = await _context.HoaDon.FirstOrDefaultAsync(x => x.MaHoaDon == maHD);
+                if (hd == null)
+                {
+                    return false;
+                }
+                hd.UserID = hd.UserID;
+                hd.MaVoucher = hd.MaVoucher;
+                hd.NgayTaoDon = hd.NgayTaoDon;
+                hd.NgayThayDoi = hd.NgayThayDoi;
+                hd.TenKhachHang = hd.TenKhachHang;
+                hd.SoDienThoai = hd.SoDienThoai;
+                hd.PhiShip = hd.PhiShip;
+                hd.TongGiaTriHangHoa = hd.TongGiaTriHangHoa;
+                hd.PhuongThucThanhToan = hd.PhuongThucThanhToan;
+                hd.PhanLoai = hd.PhanLoai;
+                hd.Ghichu = hd.Ghichu;
+                hd.TinhThanh = hd.TinhThanh;
+                hd.QuanHuyen = hd.QuanHuyen;
+                hd.XaPhuong = hd.XaPhuong;
+                hd.Cuthe = hd.Cuthe;
+                hd.TrangThai = 6;
+
+                _context.HoaDon.Update(hd);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+        }
+
         public async Task<bool> UpdateHoaDon(string maHD, string? MaVoucher, string? tenkh, string? sdt, decimal? phiship, decimal? tongtien, int? pttt, string? phanloai, string? ghichu, string? tinh, string? huyen, string? xa, string? cuthe)
         {
             try

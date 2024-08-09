@@ -16,7 +16,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
         public async Task<IActionResult> HoaDonCuaToi()
         {
             var maND = Request.Cookies["UserId"];
-            string urlhoadon = $"https://localhost:7197/api/HoaDon/GetAllHoaDon";
+            string urlhoadon = $"https://localhost:7197/api/HoaDon/GetAllHDByUserId/UserId?UserId={maND}";
             var responseListHDCB = await _httpClient.GetAsync(urlhoadon);
             string apidataListHDCB = await responseListHDCB.Content.ReadAsStringAsync();
             var lstHDCB =  JsonConvert.DeserializeObject<List<HoaDon>>(apidataListHDCB);
@@ -51,11 +51,26 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             var lstSPDH = lst.Where(x => x.MaHoaDon == HDND.MaHoaDon).ToList();
             if(lstSPDH == null)
             {
-                return BadRequest("Há Đơn này bị lỗi rồi");
+                return BadRequest("Hoá Đơn này bị lỗi rồi");
             }
             ViewBag.MaHD = HDND.MaHoaDon; 
             ViewBag.lstSPDH = lstSPDH;
             return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> HuyDon(string maHD)
+        {
+            var urlhuydon = $"https://localhost:7197/api/HoaDon/HuyDon/{maHD}";
+            var contentupdateHD = new StringContent("Cập nhật thành công");
+            var responseHuyDon = await _httpClient.PutAsync(urlhuydon, contentupdateHD);
+            if (responseHuyDon.IsSuccessStatusCode)
+            {
+                return RedirectToAction("HoaDonCuaToi", "HoaDonCustomer", new { areas = "Customer" });
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
         public IActionResult Index()
         {

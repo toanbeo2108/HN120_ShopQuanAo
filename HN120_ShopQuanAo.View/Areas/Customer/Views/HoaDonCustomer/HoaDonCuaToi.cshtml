@@ -1,0 +1,170 @@
+﻿@using HN120_ShopQuanAo.Data.Models;
+@using HN120_ShopQuanAo.View.Areas.Admin.Data;
+@using HN120_ShopQuanAo.View.Areas.Customer.Data;
+@{
+    Layout = "~/Areas/Customer/Views/Shared/_LayoutHoadonCustomer.cshtml";
+    List<HoaDon> lstHDCB = ViewBag.lstHDCB as List<HoaDon>;
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.css" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+<style>
+    .bodytable {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+       
+    }
+
+    .styled-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+            .styled-table tbody tr:nth-of-type(even) {
+                background-color: #f3f3f3;
+            }
+
+            .styled-table tbody tr:last-of-type {
+                border-bottom: 2px solid #009879;
+            }
+
+            .styled-table tbody tr.active-row {
+                font-weight: bold;
+                color: #009879;
+            }
+
+    .cancel-button {
+        background-color: #ff4d4d; /* Màu nền đỏ nhạt */
+        color: white; /* Màu chữ trắng */
+        border: none; /* Loại bỏ viền */
+        padding: 10px 20px; /* Khoảng cách bên trong */
+        font-size: 16px; /* Cỡ chữ */
+        cursor: pointer; /* Con trỏ khi hover */
+        border-radius: 5px; /* Bo góc */
+        transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu */
+    }
+
+        .cancel-button:hover {
+            background-color: #ff3333; /* Màu nền khi hover */
+        }
+
+    a {
+        text-decoration: none !important;
+    }
+
+</style>
+
+<div class="bodytable">
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Mã Hóa Đơn</th>
+                <th>Ngày Đặt Hàng</th>
+                <th>Tổng Tiền Hàng</th>
+                <th>Giảm Giá</th>
+                <th>Tiền Ship</th>
+                <th>Thành Tiền Đơn Hàng</th>
+                <th>Trạng Thái</th>
+                <th>Thao Tác</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in lstHDCB)
+            {
+                <tr>
+                    <td>@item.MaHoaDon</td>
+                    <td>@item.NgayTaoDon</td>
+                    <td>@(item.TongGiaTriHangHoa - item.PhiShip)</td>
+                    <td>0 đ</td>
+                    <td>@item.PhiShip</td>
+                    <td>@item.TongGiaTriHangHoa</td>
+                    @if(item.TrangThai == 1)
+                    {
+                        <td>Chờ Xác Nhận</td>
+                        <td><a asp-action="HuyDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon" class="cancel-button">Hủy Đơn</a></td>
+                        <td><a asp-action="XemChiTietHoaDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon"><i class="fa-solid fa-eye"></i></a></td>
+                    }
+                    @if (item.TrangThai == 2)
+                    {
+                        <td>Đã Xác Nhận</td>
+                        <td></td>
+                        <td><a asp-action="XemChiTietHoaDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon"><i class="fa-solid fa-eye"></i></a></td>
+
+                    }
+                    @if (item.TrangThai == 3)
+                    {
+                        <td>Chờ Giao Hàng</td>
+                        <td></td>
+
+                        <td><a asp-action="XemChiTietHoaDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon"><i class="fa-solid fa-eye"></i></a></td>
+
+                    }
+                    @if (item.TrangThai == 4)
+                    {
+                        <td>Đang Giao Hàng</td>
+                        <td></td>
+                        <td><a asp-action="XemChiTietHoaDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon"><i class="fa-solid fa-eye"></i></a></td>
+
+                    }
+                    @if (item.TrangThai == 5)
+                    {
+                        <td>Hoàn Thành</td>
+                        <td></td>
+
+                        <td><a asp-action="XemChiTietHoaDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon"><i class="fa-solid fa-eye"></i></a></td>
+
+                    }
+                    @if (item.TrangThai == 6)
+                    {
+                        <td>Hủy</td>
+                        <td></td>
+                        <td><a asp-action="XemChiTietHoaDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon"><i class="fa-solid fa-eye"></i></a></td>
+
+                    }
+                   
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<style>
+   
+</style>
+
+

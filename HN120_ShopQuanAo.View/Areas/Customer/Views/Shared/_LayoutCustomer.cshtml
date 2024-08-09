@@ -63,10 +63,19 @@
                                 <div class="header_links">
                                     <ul>
                                         <li><a href="contact.html" title="Contact">Contact</a></li>
-                                        <li><a href="wishlist.html" title="wishlist">My wishlist</a></li>
+                                        <li><a asp-action="HoaDonCuaToi" asp-controller="HoaDonCustomer" asp-area="Customer">Hóa đơn của tôi</a></li>
                                         <li><a href="my-account.html" title="My account">My account</a></li>
                                         <li><a asp-action="GioHangCuaBan" asp-controller="CustomerHome" asp-area="Customer">My cart</a></li>
-                                        <li><a href="login.html" title="Login">Login</a></li>
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="border: none;">
+                                                <img style="max-width: 20px; max-height: 20px;" src="https://tse1.mm.bing.net/th?id=OIP.f3DM2upCo-p_NPRwBAwbKQHaHa&pid=Api&rs=1&c=1&qlt=95&w=120&h=120" alt="">
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a class="dropdown-item" href="#">Trang Cá Nhân</a></li>
+                                                <li><a class="dropdown-item" href="#">Hóa Đơn Của Tôi</a></li>
+                                                <li><a class="dropdown-item" href="#">Đăng Xuất</a></li>
+                                            </ul>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>

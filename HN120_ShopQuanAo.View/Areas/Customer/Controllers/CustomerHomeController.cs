@@ -554,129 +554,130 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
            return  View();
         }
 
-        //private dynamic GenerateRandomString(Random r, int v)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        [HttpPost]
-        public async Task<IActionResult> DatHang(decimal tienship, string tinh, string huyen, string xa, string cuthe, decimal tongtiendonhang )
-        {
-           if(tongtiendonhang == 0)
-            {
-                return RedirectToAction("GianHangNguoiDung", "CustomerHome", new { areas = "Customer" });
-            }
+		//private dynamic GenerateRandomString(Random r, int v)
+		//{
+		//    throw new NotImplementedException();
+		//}
+		[HttpPost]
+		public async Task<IActionResult> DatHang(decimal tienship, string tinh, string huyen, string xa, string cuthe, decimal tongtiendonhang)
+		{
+			if (tongtiendonhang == 0)
+			{
+				return RedirectToAction("GianHangNguoiDung", "CustomerHome", new { areas = "Customer" });
+			}
 
-            //Lấy thông tin người dùng
-            var maND = Request.Cookies["UserId"];
-            var urlND = $"https://localhost:7197/api/User/GetUserById?id={maND}";
-            var responseND = await _httpClient.GetAsync(urlND);
-            string apidataND = await responseND.Content.ReadAsStringAsync();
-            var nd = JsonConvert.DeserializeObject<User>(apidataND);
-            if(nd == null)
-            {
-                return BadRequest("Không tìm thấy thông tin của bạn, vui lòng đăng nhập lại");
-            }
+			//Lấy thông tin người dùng
+			var maND = Request.Cookies["UserId"];
+			var urlND = $"https://localhost:7197/api/User/GetUserById?id={maND}";
+			var responseND = await _httpClient.GetAsync(urlND);
+			string apidataND = await responseND.Content.ReadAsStringAsync();
+			var nd = JsonConvert.DeserializeObject<User>(apidataND);
+			if (nd == null)
+			{
+				return BadRequest("Không tìm thấy thông tin của bạn, vui lòng đăng nhập lại");
+			}
 
-            //var apiurlgethdbyuserid = $"https://localhost:7197/api/HoaDon/GetAllHDByUserId/UserId?UserId={maND}";
-            //var responsegethdbyuserid = await _httpClient.GetAsync(apiurlgethdbyuserid);
-            //string apidatahdbyuserid = await responsegethdbyuserid.Content.ReadAsStringAsync();
-            //var lstHDByUserId = JsonConvert.DeserializeObject<List<HoaDon>>(apidatahdbyuserid);
-            //if(lstHDByUserId == null)
-            //{
-            //    return BadRequest("Không tìm thấy thông tin người dùng");
-            //}
-            // lấy danh sách giỏ hàng
-            var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
-            var responseListGHCB = await _httpClient.GetAsync(ApiurllstGioHangcuaban);
-            string apidataListGHCB = await responseListGHCB.Content.ReadAsStringAsync();
-            var ListGHCB = JsonConvert.DeserializeObject<List<GioHang>>(apidataListGHCB);
-            if (ListGHCB == null)
-            {
-                return BadRequest("KHông tìm thấy thông tin giỏ hàng, vui lòng đăng nhập lại");
-            }
-            // lấy giỏ hàng chờ xử lý
-            var Ghcb = ListGHCB.FirstOrDefault(x => x.TrangThai == 1);
-            if (Ghcb == null)
-            {
-                return BadRequest("Không có Mã ND nên Null là đúng");
-            }
-            // lấy danh sách sản phẩm có trong giỏ hàng
-            var ApiurlGioHangcuaban = $"https://localhost:7197/api/GioHangChiTiet/GetGHCTByMaGH/{Ghcb.MaGioHang}";
-            var responseGHCB = await _httpClient.GetAsync(ApiurlGioHangcuaban);
-            string apidataGHCB = await responseGHCB.Content.ReadAsStringAsync();
-            var GHCB = JsonConvert.DeserializeObject<List<GioHangChiTiet>>(apidataGHCB);
-            if (GHCB == null)
-            {
-                return BadRequest("Giỏ Hàng đang null kìa, xem lại api truyền vào");
-            }
-            // tạo sẵn 1 hóa đơn đẩy dữ liệu giỏ hàng vào
-            var apiurlTaoHDUserId = $"https://localhost:7197/api/HoaDon/CreateHoaDonUser?UserId={maND}";
-            var content = new StringContent("Tạo Hóa Đơn Thành Công");
-            var respon = await _httpClient.PostAsync(apiurlTaoHDUserId, content);
-            if (respon.IsSuccessStatusCode)
-            {
-                // lấy thông tin giỏ hàng vừa tạo 
-                var apiurlgethdbyuserid = $"https://localhost:7197/api/HoaDon/GetAllHDByUserId/UserId?UserId={maND}";
-                var responsegethdbyuserid = await _httpClient.GetAsync(apiurlgethdbyuserid);
-                string apidatahdbyuserid = await responsegethdbyuserid.Content.ReadAsStringAsync();
-                var lstHDByUserId = JsonConvert.DeserializeObject<List<HoaDon>>(apidatahdbyuserid);
-                if (lstHDByUserId == null)
-                {
-                    return BadRequest("Không tìm thấy thông tin người dùng, lỗi 456");
-                }
-                var hd = lstHDByUserId.Where(x => x.TrangThai == 0).OrderByDescending(o => o.NgayTaoDon).FirstOrDefault();
-                if(hd == null)
-                {
-                    return BadRequest("Chung tôi không tìm thấy thông tin của bạn, lỗi 461");
-                }
+			//var apiurlgethdbyuserid = $"https://localhost:7197/api/HoaDon/GetAllHDByUserId/UserId?UserId={maND}";
+			//var responsegethdbyuserid = await _httpClient.GetAsync(apiurlgethdbyuserid);
+			//string apidatahdbyuserid = await responsegethdbyuserid.Content.ReadAsStringAsync();
+			//var lstHDByUserId = JsonConvert.DeserializeObject<List<HoaDon>>(apidatahdbyuserid);
+			//if(lstHDByUserId == null)
+			//{
+			//    return BadRequest("Không tìm thấy thông tin người dùng");
+			//}
+			// lấy danh sách giỏ hàng
+			var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
+			var responseListGHCB = await _httpClient.GetAsync(ApiurllstGioHangcuaban);
+			string apidataListGHCB = await responseListGHCB.Content.ReadAsStringAsync();
+			var ListGHCB = JsonConvert.DeserializeObject<List<GioHang>>(apidataListGHCB);
+			if (ListGHCB == null)
+			{
+				return BadRequest("KHông tìm thấy thông tin giỏ hàng, vui lòng đăng nhập lại");
+			}
+			// lấy giỏ hàng chờ xử lý
+			var Ghcb = ListGHCB.FirstOrDefault(x => x.TrangThai == 1);
+			if (Ghcb == null)
+			{
+				return BadRequest("Không có Mã ND nên Null là đúng");
+			}
+			// lấy danh sách sản phẩm có trong giỏ hàng
+			var ApiurlGioHangcuaban = $"https://localhost:7197/api/GioHangChiTiet/GetGHCTByMaGH/{Ghcb.MaGioHang}";
+			var responseGHCB = await _httpClient.GetAsync(ApiurlGioHangcuaban);
+			string apidataGHCB = await responseGHCB.Content.ReadAsStringAsync();
+			var GHCB = JsonConvert.DeserializeObject<List<GioHangChiTiet>>(apidataGHCB);
+			if (GHCB == null)
+			{
+				return BadRequest("Giỏ Hàng đang null kìa, xem lại api truyền vào");
+			}
+			// tạo sẵn 1 hóa đơn đẩy dữ liệu giỏ hàng vào
+			var apiurlTaoHDUserId = $"https://localhost:7197/api/HoaDon/CreateHoaDonUser?UserId={maND}";
+			var content = new StringContent("Tạo Hóa Đơn Thành Công");
+			var respon = await _httpClient.PostAsync(apiurlTaoHDUserId, content);
+			if (respon.IsSuccessStatusCode)
+			{
+				// lấy thông tin giỏ hàng vừa tạo 
+				var apiurlgethdbyuserid = $"https://localhost:7197/api/HoaDon/GetAllHDByUserId/UserId?UserId={maND}";
+				var responsegethdbyuserid = await _httpClient.GetAsync(apiurlgethdbyuserid);
+				string apidatahdbyuserid = await responsegethdbyuserid.Content.ReadAsStringAsync();
+				var lstHDByUserId = JsonConvert.DeserializeObject<List<HoaDon>>(apidatahdbyuserid);
+				if (lstHDByUserId == null)
+				{
+					return BadRequest("Không tìm thấy thông tin người dùng, lỗi 456");
+				}
+				var hd = lstHDByUserId.Where(x => x.TrangThai == 0).OrderByDescending(o => o.NgayTaoDon).FirstOrDefault();
+				if (hd == null)
+				{
+					return BadRequest("Chung tôi không tìm thấy thông tin của bạn, lỗi 461");
+				}
 
-                // đẩy dữ liệu từ Giỏ Hàng Chi Tiết qua Hóa Đơn Chi Tiết
-                foreach (var item in GHCB)
-                {
-                    var newHDCT = new HoaDonChiTiet
-                    {
-                        MaHoaDonChiTiet = Guid.NewGuid().ToString(),
-                        MaHoaDon = hd.MaHoaDon,
-                        SKU = item.SKU,
-                        TenSp = item.TenSp,
-                        SoLuongMua = item.SoLuong,
-                        DonGia = item.ThanhTien,
-                        TrangThai = 1
+				// đẩy dữ liệu từ Giỏ Hàng Chi Tiết qua Hóa Đơn Chi Tiết
+				foreach (var item in GHCB)
+				{
+					var newHDCT = new HoaDonChiTiet
+					{
+						MaHoaDonChiTiet = Guid.NewGuid().ToString(),
+						MaHoaDon = hd.MaHoaDon,
+						SKU = item.SKU,
+						TenSp = item.TenSp,
+						SoLuongMua = item.SoLuong,
+						DonGia = item.ThanhTien,
+						TrangThai = 1
 
-                    };
-                    var urltaoHDCT = $"https://localhost:7197/api/ChiTietHoaDon/TaoHoaDonCT";
-                    var contenttaoHDCT = new StringContent(JsonConvert.SerializeObject(newHDCT), Encoding.UTF8, "application/json");
-                    var responsetaoHDCT = await _httpClient.PostAsync(urltaoHDCT, contenttaoHDCT);
-                    if (!responsetaoHDCT.IsSuccessStatusCode)
-                    {
-                        return BadRequest("Không thể tạo hóa đơn chi tiết, lỗi 497");
-                    }
-                }
-                var urlupdateHD = $"https://localhost:7197/api/HoaDon?maHD={hd.MaHoaDon}&MaVoucher={null}&tenkh={maND}&sdt={nd.PhoneNumber}&phiship={tienship}&tongtien={tongtiendonhang}&pttt={4}&phanloai={2}&ghichu={"Không"}&tinh={tinh}&huyen={huyen}&xa={xa}&cuthe={cuthe}";
-                var contentupdateHD = new StringContent("Update thành công");
-                var responseUpdateHD = await _httpClient.PutAsync(urlupdateHD, contentupdateHD);
-                if(responseUpdateHD.IsSuccessStatusCode)
-                {
-                    foreach(var item in GHCB)
-                    {
-                        _appDbContext.GioHangChiTiet.Remove(item);
-                        _appDbContext.SaveChanges();
-                    }
-                    
-                    // update thông tin giỏ hàng
-                    var urlupdateGH = $"https://localhost:7197/api/GioHang/UpdateGH/{Ghcb.MaGioHang}?tongtien={0}&trangthai=1";
-                    var contentupdateGH = new StringContent("Cập nhật thành công");
+					};
+					var urltaoHDCT = $"https://localhost:7197/api/ChiTietHoaDon/TaoHoaDonCT";
+					var contenttaoHDCT = new StringContent(JsonConvert.SerializeObject(newHDCT), Encoding.UTF8, "application/json");
+					var responsetaoHDCT = await _httpClient.PostAsync(urltaoHDCT, contenttaoHDCT);
+					if (!responsetaoHDCT.IsSuccessStatusCode)
+					{
+						return BadRequest("Không thể tạo hóa đơn chi tiết, lỗi 497");
+					}
+				}
+                var urlupdateHD = $"https://localhost:7197/api/HoaDon/UpdateHD/{hd.MaHoaDon}?MaVoucher={null}&tenkh={maND}&sdt={nd.PhoneNumber}&phiship={tienship}&tongtien={tongtiendonhang}&pttt={4}&phanloai={2}&ghichu={"Không"}&tinh={tinh}&huyen={huyen}&xa={xa}&cuthe={cuthe}";
+				
+				var contentupdateHD = new StringContent("Update thành công");
+				var responseUpdateHD = await _httpClient.PutAsync(urlupdateHD, contentupdateHD);
+				if (responseUpdateHD.IsSuccessStatusCode)
+				{
+					foreach (var item in GHCB)
+					{
+						_appDbContext.GioHangChiTiet.Remove(item);
+						_appDbContext.SaveChanges();
+					}
 
-                    var responseUpdateGH = await _httpClient.PutAsync(urlupdateGH, contentupdateGH);
-                    if (responseUpdateGH.IsSuccessStatusCode)
-                    {
-                        return RedirectToAction("GioHangCuaBan", "CustomerHome", new { areas = "Customer" });
-                    }
-                }
-                return BadRequest("Đặt hàng không thành công,634");
-            }
-            return BadRequest("Tạo hóa đơn sẵn không thành công, lỗi 636");
+					// update thông tin giỏ hàng
+					var urlupdateGH = $"https://localhost:7197/api/GioHang/UpdateGH/{Ghcb.MaGioHang}?tongtien={0}&trangthai=1";
+					var contentupdateGH = new StringContent("Cập nhật thành công");
 
-        }
-    }
+					var responseUpdateGH = await _httpClient.PutAsync(urlupdateGH, contentupdateGH);
+					if (responseUpdateGH.IsSuccessStatusCode)
+					{
+						return RedirectToAction("GioHangCuaBan", "CustomerHome", new { areas = "Customer" });
+					}
+				}
+				return BadRequest("Đặt hàng không thành công,634");
+			}
+			return BadRequest("Tạo hóa đơn sẵn không thành công, lỗi 636");
+
+		}
+	}
 }

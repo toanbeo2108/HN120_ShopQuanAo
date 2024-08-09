@@ -11,6 +11,20 @@ namespace HN120_ShopQuanAo.API.Responsitories
         {
             appContext = new AppDbContext();
         }
+
+        public async Task<bool> DeleteAllGHCT(string maGH)
+        {
+            var gh = appContext.GioHang.FirstOrDefault(x => x.MaGioHang == maGH);
+            if(gh == null)
+            {
+                return false;
+            }
+            var lstGHCT = appContext.GioHangChiTiet.Where(x => x.MaGioHang == maGH).ToList();
+            appContext.GioHangChiTiet.RemoveRange(lstGHCT);
+            await appContext.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> UpdateGHCT(string MaGHCT, int? soluong)
         {
             var ghct = await appContext.GioHangChiTiet.FirstOrDefaultAsync(x => x.MaGioHangChiTiet == MaGHCT);

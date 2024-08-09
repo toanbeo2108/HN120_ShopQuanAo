@@ -1154,7 +1154,7 @@ function updatePaymentDetails() {
     else {
         $('#btn_tienkhachphaitra').val(formatMoney(tongtienkhachphaitra));
     }
-    $('#btn_tongtien').val(formatMoney(tongtien));
+    $('#btn_tongtien').val(formatMoney(parseFloat(tongtien)));
 
 }
 

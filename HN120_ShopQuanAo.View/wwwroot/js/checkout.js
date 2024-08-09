@@ -1,4 +1,10 @@
 ﻿$(document).ready(function () {
+    var notification = localStorage.getItem('notification');
+    if (notification) {
+        notification = JSON.parse(notification);
+        $.notify(notification.message, notification.type);
+        localStorage.removeItem('notification');
+    } 
     var Parameter = {
         url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
         method: "GET",
@@ -24,28 +30,53 @@
 
         console.log(tongtiendonhang);
 
-        $.ajax({
-            url: '/CustomerHome/DatHang',
-            type: 'POST',
-            data: {
-                tienship: tienship,
-                tinh: tinh,
-                huyen: huyen,
-                xa: xa,
-                cuthe: cuthe,
-                tongtiendonhang: tongtiendonhang
-            }
-                
-            ,
-            success: function (response) {
-                // Xử lý phản hồi từ server nếu cần
-                alert('Sản phẩm đã được thêm vào giỏ hàng');
-            },
-            error: function (xhr, status, error) {
-                // Xử lý lỗi nếu có
-                console.error('Đã xảy ra lỗi:', error);
-            }
-        });
+        if (tongtiendonhang != 0) {
+            $.ajax({
+                url: '/CustomerHome/DatHang',
+                type: 'POST',
+                data: {
+                    tienship: tienship,
+                    tinh: tinh,
+                    huyen: huyen,
+                    xa: xa,
+                    cuthe: cuthe,
+                    tongtiendonhang: tongtiendonhang
+                }
+
+                ,
+                success: function (response) {
+                    localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
+
+                    location.reload(true);
+
+                },
+                error: function (xhr, status, error) {
+                    localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thất bại', type: 'error' }));
+                    location.reload(true);
+
+                }
+            });
+
+            localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
+            location.reload(true);
+
+        }
+        else {
+            $.ajax({
+                url: '/Customer/CustomerHome/GianHangNguoiDung',
+                type: 'GET',
+                success: function (data) {
+                    // Xử lý dữ liệu trả về tại đây
+                    $('#target-element').html(data); // Thay '#target-element' bằng ID của phần tử nơi bạn muốn chèn nội dung
+                },
+                error: function (xhr, status, error) {
+                    console.error('Có lỗi xảy ra: ' + error);
+                }
+            });
+            location.reload(true);
+
+        }
+        
     });
 
 
