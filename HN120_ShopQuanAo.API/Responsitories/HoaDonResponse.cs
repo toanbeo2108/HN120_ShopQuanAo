@@ -19,7 +19,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
             {
                 HoaDon hd = new HoaDon
                 {
-                    MaHoaDon = DateTime.Now.ToString(),
+                    MaHoaDon = Guid.NewGuid().ToString(),
                     UserID = UserId,
                     MaVoucher = null,
                     NgayTaoDon = DateTime.Now,
@@ -158,7 +158,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 hd.UserID = hd.UserID;
                 hd.MaVoucher = MaVoucher;
                 hd.NgayTaoDon = DateTime.Now;
-                hd.NgayThayDoi = null;
+                hd.NgayThayDoi = DateTime.Now;
                 hd.TenKhachHang = tenkh;
                 hd.SoDienThoai = sdt;
                 hd.PhiShip = phiship;
@@ -184,7 +184,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
                     TongGiaTri = hd.TongGiaTriHangHoa,
                     HinhThucThanhToan = "4",
                     ChiTiet = "",
-                    TrangThai = 1
+                    TrangThai = 0
                 };
                 _context.HoaDon_History.Add(hdhs);
                 await _context.SaveChangesAsync();
@@ -197,7 +197,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
                     MoTa = "",
                     NgayTao = DateTime.Now,
                     NgayThayDoi = DateTime.Now,
-                    TrangThai = 1
+                    TrangThai = 0
                 };
                 _context.ThanhToan_HoaDon.Add(tthd);
                 await _context.SaveChangesAsync();  
