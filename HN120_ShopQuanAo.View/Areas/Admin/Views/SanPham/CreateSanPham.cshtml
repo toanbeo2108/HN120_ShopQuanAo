@@ -309,8 +309,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p class="tentrue" stype="display:none">Bạn có chắc chắn muốn thêm sản phẩm này không?</p>
-                <p class="tenfalse" stype="display:none">Sản phẩm này đã tồn tại bạn có chắc muốn cập nhật sản phẩm này không?</p>
+                <p >Bạn có chắc chắn muốn thêm sản phẩm này không?</p>
+                @*<p class="tenfalse" stype="display:none">Sản phẩm này đã tồn tại bạn có chắc muốn cập nhật sản phẩm này không?</p>*@
 
             </div>
             <div class="modal-footer">
@@ -549,23 +549,23 @@
                     return true;
                 }
         $(document).ready(function () {
-                var checktensp = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP).ToList()));
-                                var notification = localStorage.getItem('notification');
-                            if (notification) {
-                                notification = JSON.parse(notification);
-                                $.notify(notification.message, notification.type);
-                                localStorage.removeItem('notification');
-                            } 
+                //var checktensp = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP).ToList()));
+                //                var notification = localStorage.getItem('notification');
+                //            if (notification) {
+                //                notification = JSON.parse(notification);
+                //                $.notify(notification.message, notification.type);
+                //                localStorage.removeItem('notification');
+                //            } 
                 $('#showConfirmModal').on('click', function() {
-                           var tensp = $('#TenSP').val();
+                           //var tensp = $('#TenSP').val();
                     if (validateorSanPham() && validateSanPhamCT()) {
-                    if (checktensp.includes(tensp)) {
-                        $('.tentrue').hide();
-                        $('.tenfalse').show();
-                    } else {
-                        $('.tentrue').show();
-                        $('.tenfalse').hide();
-                    }
+                    //if (checktensp.includes(tensp)) {
+                    //    $('.tentrue').hide();
+                    //    $('.tenfalse').show();
+                    //} else {
+                    //    $('.tentrue').show();
+                    //    $('.tenfalse').hide();
+                    //}
                     $('#confirmModal').modal('show');
                 } else {
                     alert('Vui lòng nhập đầy đủ thông tin sản phẩm và chi tiết sản phẩm.');
@@ -576,17 +576,18 @@
                 $('#confirmSubmit').on('click', function() {
                         $('#createProductForm').submit();
                 });
-                var checktenth = @Html.Raw(Json.Serialize(lstTH.Select(p => p.TenThuongHieu).ToList()));
-                var checktentl = @Html.Raw(Json.Serialize(lstTL.Select(p => p.TenTheLoai).ToList())); 
-                var checktencl = @Html.Raw(Json.Serialize(lstCL.Select(p => p.TenChatLieu).ToList()));
+                var checktenth = @Html.Raw(Json.Serialize(lstTH.Select(p => p.TenThuongHieu.ToUpper()).ToList()));
+                var checktentl = @Html.Raw(Json.Serialize(lstTL.Select(p => p.TenTheLoai.ToUpper()).ToList())); 
+                var checktencl = @Html.Raw(Json.Serialize(lstCL.Select(p => p.TenChatLieu.ToUpper()).ToList()));
 
         function addThuongHieu() {
-            var tenThuongHieu = $('#TenThuongHieu').val();
-            if (!tenThuongHieu.trim()) {
+            var tenThuongHieu = $('#TenThuongHieu').val().trim();
+            var checktenThuongHieu = $('#TenThuongHieu').val().trim().toUpperCase();
+            if (!checktenThuongHieu) {
                 alert('Vui lòng nhập tên thương hiệu.');
                 return;
             }
-            if (checktenth.includes(tenThuongHieu)) {
+            if (checktenth.includes(checktenThuongHieu)) {
                 alert('Tên thương hiệu đã tồn tại.');
 
                 return;
@@ -627,12 +628,13 @@
 
 
                 function addTheLoai() {
-                    var tenTheLoai = $('#TenTheLoai').val();
-                    if (!tenTheLoai.trim()) {
+                    var tenTheLoai = $('#TenTheLoai').val().trim();
+                    var checktenTheLoai = $('#TenTheLoai').val().trim().toUpperCase();
+                    if (!checktenTheLoai) {
                         alert('Vui lòng nhập tên thể loại.');
                         return;
                     }
-                    if (checktentl.includes(tenTheLoai)) {
+                    if (checktentl.includes(checktenTheLoai)) {
                     alert('Tên thể loại đã tồn tại.');
                     return;
                     }
@@ -672,12 +674,13 @@
             }
 
                 function addChatLieu() {
-                    var tenChatLieu = $('#TenChatLieu').val();
-                    if (!tenChatLieu.trim()) {
+                    var tenChatLieu = $('#TenChatLieu').val().trim();
+                    var checktenChatLieu = $('#TenChatLieu').val().trim().toUpperCase();
+                    if (!checktenChatLieu) {
                         alert('Vui lòng nhập tên chất liệu.');
                         return;
                     }
-                    if (checktencl.includes(tenChatLieu)) {
+                    if (checktencl.includes(checktenChatLieu)) {
                     alert('Tên chất liệu đã tồn tại.');
                     return;
                     }
