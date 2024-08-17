@@ -109,12 +109,12 @@ namespace HN120_ShopQuanAo.API.Responsitories
 
                 _context.HoaDon.Update(hd);
                 await _context.SaveChangesAsync();
-                
+                var nguoidung = _context.User.FirstOrDefault(c=>c.Id == hd.UserID);
                 HoaDon_History hdhs = new HoaDon_History
                 {
                     LichSuHoaDonID = DateTime.Now.ToString(),
                     MaHoaDon = hd.MaHoaDon,
-                    UserID = hd.UserID,
+                    UserID = "Khách hàng: "+ nguoidung.FullName,
                     NgayTaoDon = DateTime.Now,
                     NgayThayDoi = DateTime.Now,
                     TongGiaTri = hd.TongGiaTriHangHoa,
@@ -173,18 +173,18 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 hd.TrangThai = 1;
                 _context.HoaDon.Update(hd);
                 await _context.SaveChangesAsync();
-
+                var nguoidung = _context.User.FirstOrDefault(c => c.Id == hd.UserID);
                 HoaDon_History hdhs = new HoaDon_History
                 {
                     LichSuHoaDonID = DateTime.Now.ToString(),
                     MaHoaDon = hd.MaHoaDon,
-                    UserID = hd.UserID,
+                    UserID = "Khách hàng: " + nguoidung.FullName,
                     NgayTaoDon = DateTime.Now,
                     NgayThayDoi = DateTime.Now,
                     TongGiaTri = hd.TongGiaTriHangHoa,
                     HinhThucThanhToan = "4",
-                    ChiTiet = "",
-                    TrangThai = 0
+                    ChiTiet = "1",
+                    TrangThai = 1
                 };
                 _context.HoaDon_History.Add(hdhs);
                 await _context.SaveChangesAsync();
