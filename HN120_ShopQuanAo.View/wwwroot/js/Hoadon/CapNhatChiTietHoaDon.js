@@ -107,50 +107,48 @@
                         TrangThai: parseInt(tt),
                     };
                     var datahoadon = getdatafake();
-                    $.post('/Update-hoadon', { hd: datahoadon }, function (re) {
+                    $.ajax({
+                        url: '/Update_soluongCTsanpham',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify([dt2]),
+                        success: function (re) {
+                            if (re.status) {
+                                $.post('/Update-hoadon', { hd: datahoadon }, function (re) {
 
-                        if (re.status) {
-                            $.ajax({
-                                url: '/Update-hoadonct',
-                                type: 'POST',
-                                contentType: 'application/json',
-                                data: JSON.stringify(dt),
-                                success: function (response) {
-                                    if (response.status) {
-
+                                    if (re.status) {
                                         $.ajax({
-                                            url: '/Update_soluongCTsanpham',
-                                            method: 'POST',
+                                            url: '/Update-hoadonct',
+                                            type: 'POST',
                                             contentType: 'application/json',
-                                            dataType: 'json',
-                                            data: JSON.stringify([dt2]),
-                                            success: function (re) {
-                                                if (re.status) {
+                                            data: JSON.stringify(dt),
+                                            success: function (response) {
+                                                if (response.status) {
                                                     AddLichsuhoadon(7)
                                                     localStorage.setItem('notification', JSON.stringify({ message: 'Cập nhật thông tin hóa đơn thành công', type: 'success' }));
                                                     window.location.reload();
+
                                                 } else {
-                                                    console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                                                    $.notify("Đã xảy ra lỗi: " + err, 'error');
                                                 }
-                                            },
-                                            error: function () {
-                                                console.error('Có lỗi xảy ra khi gửi yêu cầu.');
                                             }
                                         });
 
-
-
-                                    } else {
-                                        $.notify("Đã xảy ra lỗi: " + err, 'error');
                                     }
-                                }
-                            });
-                           
+                                    else {
+                                        $.notify('Có lỗi sảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error')
+                                    }
+                                })
+                            } else {
+                                $.notify('Số lượng sản phẩm còn lại không đủ', 'error');
+                            }
+                        },
+                        error: function () {
+                            console.error('Có lỗi xảy ra khi gửi yêu cầu.');
                         }
-                        else {
-                            $.notify('Có lỗi sảy ra khi cập nhật, vui lòng kiểm tra, hoặc gọi cho đội ngũ phát triển', 'error')
-                        }
-                    })
+                    });
+                   
                    
                 }
                 else {
@@ -324,6 +322,7 @@ function InHoaDon(data) {
             maVoucher = vc ;
         }
         
+        nguoitaodon = row.find('td').eq(1).text().trim(); // Ô người tạo
         tenKhachHang = row.find('td').eq(4).text().trim(); // Ô Tên khách hàng
         soDienThoai = row.find('td').eq(5).text().trim(); // Ô Số điện thoại
         soDienThoaiNhanHang = row.find('td').eq(6).text().trim(); // Ô Số điện thoại nhận hàng
@@ -354,6 +353,7 @@ function InHoaDon(data) {
              
       
         <div class="col-md-12" style="text-align:left;margin-left:10px">
+        <p>Người tạo đơn :  ${nguoitaodon}</p>
         <p>Khách hàng :  ${tenKhachHang}</p>
         <p>ĐT :  ${soDienThoai}</p>
         <p>SĐT nhận hàng :  ${soDienThoaiNhanHang}</p>
@@ -371,7 +371,10 @@ function InHoaDon(data) {
                 </thead>
                 <tbody>
             `;
+   
+    var tong = 0;
     data.forEach(item => {
+        tong += item.donGia_
         printContent += `
             <tr>
                 <td style="text-align : center;">${item.tenSp_}</td>
@@ -379,18 +382,22 @@ function InHoaDon(data) {
                 <td style="text-align : center;">${item.tenMau_}</td>
                 <td style="text-align : center;">${item.soLuongMua_}</td>
                 <td style="text-align : center;">${formatMoney(item.donGia_)}</td>
+             
             </tr>
+           
         `;
+       
     });
-
+   
     printContent += `
             </tbody>
         </table>
         <div class="shop-info"  style="text-align:left">
              <table style="width: 400px; border-collapse: collapse;">
-                <tr><th style="padding-left:10px;width:150px">Voucher</th><td>: ${formatMoney(maVoucher)}</td></tr>
-                <tr><th style="padding-left:10px;width:150px">Phí ship</th><td>: ${phiShip}</td></tr>
-                <tr><th style="padding-left:10px;width:150px">Tổng giá trị</th><td>: ${tongGiaTri}</td></tr>
+                <tr><th style="padding-left:10px;width:200px">Tổng giá trị hàng hóa</th><td>: ${formatMoney(tong)}</td></tr>
+                <tr><th style="padding-left:10px;width:200px">Voucher</th><td>: ${formatMoney(maVoucher)}</td></tr>
+                <tr><th style="padding-left:10px;width:200px">Phí ship</th><td>: ${phiShip}</td></tr>
+                <tr><th style="padding-left:10px;width:200px">Tổng tiền</th><td>: ${formatMoney(tongGiaTri)}</td></tr>
              </table>
          </div>
     `;

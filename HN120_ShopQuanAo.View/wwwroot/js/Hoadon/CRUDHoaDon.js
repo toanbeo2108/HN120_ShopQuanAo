@@ -219,11 +219,9 @@ $(document).ready(function () {
     })
    
     $('body').on('click', '#btn_Xacnhandonhang', function () {
-        
-        
-        updateHoaDon(2);
-        AddLichsuhoadon(2);
         let datasp = getSanPhamChiTiet();
+        
+        
         $.ajax({
             url: '/Update_soluongCTsanpham',
             method: 'POST',
@@ -232,9 +230,10 @@ $(document).ready(function () {
             data: JSON.stringify(datasp),
             success: function (re) {
                 if (re.status) {
-                    console.log('Trừ số lượng sản phẩm thành công');
+                    updateHoaDon(2);
+                    AddLichsuhoadon(2);
                 } else {
-                    console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                    $.notify('Số lượng sản phẩm còn lại không đủ');
                 }
             },
             error: function () {

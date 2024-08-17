@@ -19,6 +19,7 @@ using System.Security.Policy;
 using System;
 using HN120_ShopQuanAo.Data.Configurations;
 using System.Net;
+using SendGrid;
 
 
 namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
@@ -76,6 +77,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             }
             return View();
         }
+       
         public async Task<IActionResult> Index()
         {
 
@@ -286,7 +288,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("Add-hoadon")]
-        public async Task<IActionResult> Add_HoaDon(HoaDon hd)
+        public async Task<IActionResult> Add_HoaDon(HoaDon hd, string mavc)
         {
           
             var apiurlcr = "https://localhost:7197/api/HoaDon/CreateHoaDon";    
@@ -296,6 +298,32 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
             if (responcr.StatusCode == System.Net.HttpStatusCode.Created)
             {
+                var apiVC = "https://localhost:7197/GetAllVoucher";
+                var responVC = await _httpClient.GetAsync(apiVC);
+                string apidaVC = await responVC.Content.ReadAsStringAsync();
+                var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apidaVC);
+                var vc = lstVC.FirstOrDefault(c=>c.MaVoucher == mavc);
+
+                
+               
+                if (vc != null)
+                {
+                    vc.SoLuong -= 1;
+                    var apiUpdateVC = $"https://localhost:7197/UpdateVCher/{mavc}";
+                    var updateContent = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
+                    var responUpdateVC = await _httpClient.PutAsync(apiUpdateVC, updateContent);
+
+                    if (responUpdateVC.StatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        _stt = false;
+                        _mess = "Voucher update failed!";
+                    }
+                    else
+                    {
+                        _stt = false;
+                        _mess = "Voucher quantity is insufficient!";
+                    }
+                }
 
                 _stt = true;
                 _mess = "thêm thành công!";
@@ -515,7 +543,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                              join ctsp in lstCTSP on sp.MaSp equals ctsp.MaSp
                              join ms in lstMauSac on ctsp.MaMau equals ms.MaMau
                              join sz in lstSize on ctsp.MaSize equals sz.MaSize
-                             where ctsp.SoLuongTon > 0
+                           //  where ctsp.SoLuongTon > 0 
                              select new ChiTietSPView
                              {
                                  MaSp = sp.MaSp,
@@ -540,6 +568,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                              };
             var litspctview = joinedData.ToList();
             ViewBag.JoinedData = litspctview;
+            
             #endregion
 
 
@@ -689,7 +718,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var responVC = await _httpClient.GetAsync(apiVC);
             string apidaVC = await responVC.Content.ReadAsStringAsync();
             var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apidaVC);
-            var listVckhadung = lstVC.Where(c => c.GiaGiamToiThieu <= check).ToList();
+            var listVckhadung = lstVC.Where(c => c.GiaGiamToiThieu <= check && c.SoLuong > 0).ToList();
 
             if (listVckhadung.Any())
             {
@@ -700,6 +729,24 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return NoContent();
             }
         }
+        [HttpPost,Route("trusoluongvoucher")]
+        public async Task<IActionResult> TruSoluongVoucher(Voucher vc)
+        {
+            var urlBook = $"https://localhost:7197/UpdateVCher/{vc.MaVoucher}";
+            var content = new StringContent(JsonConvert.SerializeObject(vc), Encoding.UTF8, "application/json");
+            var respon = await _httpClient.PutAsync(urlBook, content);
+            if (!respon.IsSuccessStatusCode)
+            {
+                TempData["error message"] = "Cập nhật thất bại";
+                return View(vc);
+            }
+            else
+            {
+                return RedirectToAction("AllVoucherManager", "Voucher", new { Areas = "Admin" });
+            }
+
+
+        } 
         [HttpGet, Route("GetDanhSachUser")]
         public async Task<IActionResult> GetAlluser()
         {
@@ -836,7 +883,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                             TenSize_ = sz?.TenSize ?? "N/A",
                             TenMau_ = ms?.TenMau ?? "N/A",
                             SoLuongMua_ = ct.SoLuongMua,
-                            DonGia_ = ct.DonGia
+                            DonGia_ = ct.DonGia,
+                            
                         };
 
             var result = query.ToList();
