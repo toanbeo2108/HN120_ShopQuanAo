@@ -1,27 +1,25 @@
-﻿using HN120_ShopQuanAo.API.IResponsitories;
+﻿using HN120_ShopQuanAo.API.Data;
+using HN120_ShopQuanAo.API.IResponsitories;
 using HN120_ShopQuanAo.Data.Models;
 using HN120_ShopQuanAo.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text;
-using HN120_ShopQuanAo.API.Data;
 
 namespace HN120_ShopQuanAo.API.Responsitories
 {
-    public class RegisterServices : IRegisterServices
+    public class CreateAnAccount : ICreateAnAccount
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly AppDbContext _context;
-
-        public RegisterServices(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, AppDbContext context)
+        public CreateAnAccount(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, AppDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
         }
-
         private const int MaxFullNameLength = 50;
 
         private async Task<string> GenerateUniqueUserName(string fullName)
@@ -89,11 +87,10 @@ namespace HN120_ShopQuanAo.API.Responsitories
 
             return stringBuilder.ToString();
         }
-
-        public async Task<Response> RegisterAsync(RegisterUser registerUser, string role)
+        public async Task<Response> AdminCreateAccount(NewAccountModel newAccountModel, string role, string? userId = null)
         {
             // Limit the length of FullName
-            if (registerUser.FullName.Length > MaxFullNameLength)
+            if (newAccountModel.FullName.Length > MaxFullNameLength)
             {
                 return new Response
                 {
@@ -103,8 +100,28 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 };
             }
 
+            if (newAccountModel.Birthday.HasValue)
+            {
+                var today = DateTime.Today;
+                var age = today.Year - newAccountModel.Birthday.Value.Year;
+                if (newAccountModel.Birthday > today.AddYears(-age))
+                {
+                    age--;
+                }
+
+                if (age < 18)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        StatusCode = 500,
+                        Message = "User must be at least 18 years old.",
+                    };
+                }
+            }
+
             // Check if User already exists
-            if (await _userManager.FindByEmailAsync(registerUser.Email) != null)
+            if (await _userManager.FindByEmailAsync(newAccountModel.Email) != null)
             {
                 return new Response
                 {
@@ -116,7 +133,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
 
             // Check if PhoneNumber already exists
             var existingUserWithPhoneNumber = await _userManager.Users
-                .AnyAsync(u => u.PhoneNumber == registerUser.PhoneNumber);
+                .AnyAsync(u => u.PhoneNumber == newAccountModel.PhoneNumber);
 
             if (existingUserWithPhoneNumber)
             {
@@ -128,35 +145,28 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 };
             }
 
-            // Check if ConfirmPassword matches Password
-            if (registerUser.Password != registerUser.ConfirmPassword)
-            {
-                return new Response
-                {
-                    IsSuccess = false,
-                    StatusCode = 400,
-                    Message = "Password and confirmation password do not match!"
-                };
-            }
-
             // Generate UserName from FullName and ensure uniqueness
-            string userName = await GenerateUniqueUserName(registerUser.FullName);
+            string userName = await GenerateUniqueUserName(newAccountModel.FullName);
 
             // If both conditions above are successful, create a new User
             User newUser = new()
             {
+                Id = !string.IsNullOrEmpty(userId) ? userId : Guid.NewGuid().ToString(), // Set UserId if provided, else generate a new one
                 UserName = userName,
-                FullName = registerUser.FullName,
-                Email = registerUser.Email,
+                FullName = newAccountModel.FullName,
+                Email = newAccountModel.Email,
+                Avatar = newAccountModel.Avatar,
+                Gender = newAccountModel.Gender,
+                Birthday = newAccountModel.Birthday,
                 Status = 1,
-                PhoneNumber = registerUser.PhoneNumber
+                PhoneNumber = newAccountModel.PhoneNumber
             };
 
             // Check if role exists
             if (await _roleManager.RoleExistsAsync(role))
             {
                 // Add User to the Database
-                var result = await _userManager.CreateAsync(newUser, registerUser.Password);
+                var result = await _userManager.CreateAsync(newUser, newAccountModel.Password);
 
                 // If registration fails
                 if (!result.Succeeded)
@@ -186,92 +196,6 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 _context.GioHang.Add(gioHang);
                 await _context.SaveChangesAsync();
 
-                return new Response
-                {
-                    IsSuccess = true,
-                    StatusCode = 201,
-                    Message = "Registration successful!"
-                };
-            }
-            else
-            {
-                return new Response
-                {
-                    IsSuccess = false,
-                    StatusCode = 404,
-                    Message = "Role does not exist!"
-                };
-            }
-        }
-
-        public async Task<Response> CreateAnAccount(NewAccountModel newAccountModel, string role)
-        {
-            // Limit the length of FullName
-            if (newAccountModel.FullName.Length > MaxFullNameLength)
-            {
-                return new Response
-                {
-                    IsSuccess = false,
-                    StatusCode = 400,
-                    Message = $"Full name must not exceed {MaxFullNameLength} characters."
-                };
-            }
-
-            // Check if User already exists
-            if (await _userManager.FindByEmailAsync(newAccountModel.Email) != null)
-            {
-                return new Response
-                {
-                    IsSuccess = false,
-                    StatusCode = 400,
-                    Message = "Email already exists!"
-                };
-            }
-            else if (await _userManager.FindByNameAsync(newAccountModel.PhoneNumber) != null)
-            {
-                return new Response
-                {
-                    IsSuccess = false,
-                    StatusCode = 400,
-                    Message = "Phone number already exists!"
-                };
-            }
-
-            // Generate UserName from FullName and ensure uniqueness
-            string userName = await GenerateUniqueUserName(newAccountModel.FullName);
-
-            // If both conditions above are successful, create a new User
-            User newUser = new()
-            {
-                UserName = userName,
-                FullName = newAccountModel.FullName,
-                Gender = newAccountModel.Gender,
-                Avatar = newAccountModel.Avatar,
-                Birthday = newAccountModel.Birthday,
-                Email = newAccountModel.Email,
-                Status = 1,
-                PhoneNumber = newAccountModel.PhoneNumber
-            };
-
-            // Check if role exists
-            if (await _roleManager.RoleExistsAsync(role))
-            {
-                // Add User to the Database
-                var result = await _userManager.CreateAsync(newUser, newAccountModel.Password);
-
-                // If registration fails
-                if (!result.Succeeded)
-                {
-                    return new Response
-                    {
-                        IsSuccess = false,
-                        StatusCode = 500,
-                        Message = "Registration failed, unknown error!"
-                    };
-                }
-
-                // Add role to the user
-                await _userManager.AddToRoleAsync(newUser, role);
                 return new Response
                 {
                     IsSuccess = true,
