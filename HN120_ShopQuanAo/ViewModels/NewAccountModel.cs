@@ -30,10 +30,5 @@ namespace HN120_ShopQuanAo.Data.ViewModels
         [Required(ErrorMessage = "Password không được bỏ trống")]
         [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$", ErrorMessage = "Mật khẩu phải có ít nhất 1 ký tự viết hoa, 1 ký tự đặc biệt, 1 số và tối thiểu 6 ký tự")]
         public string? Password { get; set; }
-
-
-        [Required(ErrorMessage = "Confirm password không được bỏ trống")]
-        [Compare("Password", ErrorMessage = "Mật khẩu và xác nhận mật khẩu không khớp!")]
-        public string? ConfirmPassword { get; set; }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using HN120_ShopQuanAo.Data.Models;
 using HN120_ShopQuanAo.Data.ViewModels;
+using HN120_ShopQuanAo.View.Areas.Admin.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -96,6 +99,80 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             {
                 ViewBag.Message = $"Lỗi không xác định: {ex.Message}";
                 return View();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateUserAccount()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateUserAccount(CreateUserAccountViewModel model, IFormFile imageFile)
+        {
+            try
+            {
+                // Tạo  UserID cho NewAccount
+                var userId = Guid.NewGuid().ToString();
+                model.DeliveryAddress.UserID = userId;
+                model.DeliveryAddress.Status = 1;
+
+                // Xử lý ảnh đại diện (nếu có)
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Avatar", imageFile.FileName);
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+                    model.NewAccount.Avatar = imageFile.FileName;
+                }
+
+                //Thêm tài khoản mới:
+                var url1 = $"https://localhost:7197/api/CreateAnAccount?role=User&userId={userId}";
+                var httpClient1 = new HttpClient();
+                var content1 = new StringContent(JsonConvert.SerializeObject(model.NewAccount), Encoding.UTF8, "application/json");
+                var response1 = await httpClient1.PostAsync(url1, content1);
+                if (!response1.IsSuccessStatusCode)
+                {
+                    // Đọc nội dung phản hồi từ API
+                    var errorContent = await response1.Content.ReadAsStringAsync();
+
+                    // Ghi log hoặc trả về lỗi chi tiết
+                    if (response1.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        return NotFound($"API không tìm thấy. URL: {url1}. Nội dung lỗi: {errorContent}");
+                    }
+
+                    TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tạo tài khoản: " + errorContent;
+                    return View(model);
+                }
+
+
+                var url = $"https://localhost:7197/api/UserAddress/Create";
+                var httpClient = new HttpClient();
+                var content = new StringContent(JsonConvert.SerializeObject(model.DeliveryAddress), Encoding.UTF8, "application/json");
+                var response2 = await httpClient.PostAsync(url, content);
+                if (!response2.IsSuccessStatusCode)
+                {
+                    // Đọc nội dung phản hồi từ API
+                    var errorContent2 = await response2.Content.ReadAsStringAsync();
+
+                    // Ghi log hoặc trả về lỗi chi tiết
+                    if (response2.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        return NotFound($"API không tìm thấy. URL: {url1}. Nội dung lỗi: {errorContent2}");
+                    }
+
+                    TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tạo tài khoản: " + errorContent2;
+                    return View(model);
+                }
+                return RedirectToAction("GetAllUser");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tạo tài khoản: " + ex.Message;
+                return View(model);
             }
         }
 
