@@ -574,14 +574,14 @@ $(document).ready(function () {
             $.notify('Nhập password', 'error');
             return;
         }
-        if ($('#btn_ConfirmPassword').val() == '' || $('#btn_ConfirmPassword').val() == null || $('#btn_ConfirmPassword').val() == undefined) {
-            $.notify('Nhập lại password', 'error');
-            return;
-        }
-        if ($('#btn_ConfirmPassword').val() != $('#btn_Password').val()) {
-            $.notify('Nhập lại password không đúng', 'error');
-            return;
-        }
+        //if ($('#btn_ConfirmPassword').val() == '' || $('#btn_ConfirmPassword').val() == null || $('#btn_ConfirmPassword').val() == undefined) {
+        //    $.notify('Nhập lại password', 'error');
+        //    return;
+        //}
+        //if ($('#btn_ConfirmPassword').val() != $('#btn_Password').val()) {
+        //    $.notify('Nhập lại password không đúng', 'error');
+        //    return;
+        //}
         if ($('#sdtnhanhang_btn').val() == '' || $('#sdtnhanhang_btn').val() == null || $('#sdtnhanhang_btn').val() == undefined) {
             $.notify('Nhập số điện thoại nhận hàng ', 'error');
             return;
