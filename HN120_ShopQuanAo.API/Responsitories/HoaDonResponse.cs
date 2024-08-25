@@ -100,6 +100,21 @@ namespace HN120_ShopQuanAo.API.Responsitories
             return await _context.User_Voucher.Where(x => x.UserID == userid).ToListAsync();
         }
 
+        public async Task<bool> UpdateVoucherUserByUserIdMaVoucher(string userId, string mavc)
+        {
+            var uvc = await _context.User_Voucher.FirstOrDefaultAsync(x => x.UserID == userId && x.MaVoucher == mavc);
+            if(uvc != null)
+            {
+                uvc.UserID = uvc.UserID;
+                uvc.MaVoucher = uvc.MaVoucher;
+                uvc.TrangThai = 0;
+                _context.User_Voucher.Update(uvc);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
         public async Task<bool> HuyDon(string maHD)
         {
             try

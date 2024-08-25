@@ -39,6 +39,11 @@ namespace HN120_ShopQuanAo.API.Controllers
         {
             return await _irespon.CreateUVC(userid, mavc);  
         }
+        [HttpPut("[Action]/{userid}&{mavc}")]
+        public async Task<bool> UpdateUVCByUserIdMavc (string userid,string mavc)
+        {
+            return await _irespon.UpdateVoucherUserByUserIdMaVoucher(userid, mavc);
+        }
 
     }
 }
