@@ -41,8 +41,11 @@
                                         <td class="product_thumb"><a href="#"><img src="~/photoSanPhamCT/@item.UrlAnhSPCT" alt=""></a></td>
                                         <td class="product_name"><a href="#">@item.TenSP (@item.TenMau) (@item.TenSize)</a></td>
                                         <td name="tien" class="product-price">@item.DonGia</td>
-                                        <td class="product_quantity"><input min="0" max="100" value="@item.SoLuong" type="number"></td>
-                                        <td name="tien" id="total" class="product-price">@item.ThanhTien</td>
+                                        <td class="product_quantity">
+                                            <input id="quantity-@item.MaGHCT.ToString().Substring(0, 8)" min="0" max="100" value="@item.SoLuong" type="number" class="quantity-input" data-don-gia="@item.DonGia">
+                                        </td>
+                                        <td name="tien" role="money" id="total-@item.MaGHCT.ToString().Substring(0, 8)" class="product-price">@item.ThanhTien</td>
+
                                     </tr>
                                     }
 
@@ -68,7 +71,7 @@
                         <div class="coupon_inner">
                             <div class="cart_subtotal">
                                 <p>Tổng tiền hàng</p>
-                                <p class="cart_amount" name="tien">@tongtien</p>
+                                <p class="cart_amount" name="tien" id="amount_items">@tongtien</p>
                             </div>
                             <div class="cart_subtotal ">
                                 <p>Tiền ship</p>
