@@ -60,16 +60,13 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         color: white;
     }
 
-    #btn_phuongthucthanhtoan {
-        display: none;
-    }
-
+   
     .section {
-        height: 77%;
+        height: 85%;
     }
-    .section_ {
+    /* .section_ {
         height: 5%;
-    }
+    } */
     .section__ {
         height: 10%;
     }
@@ -78,9 +75,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         overflow-y: auto;
     }
 
-    #btn_phuongthucthanhtoan {
-        margin-top: 20px;
-    }
+    
 
     .payment-button {
         height: 50px;
@@ -138,7 +133,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                             <label for="btn_UserName">Nhân viên:</label>
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <input class="form-control" type="text" id="btn_UserName" value="@user.UserName" readonly style="display:block;width:100%"/>
+                                <input class="form-control" type="text" id="btn_UserName" value="@user.UserName" readonly style="display:block"/>
                                 <input class="form-control" type="text" id="btn_UserID" value="@user.UserId" readonly style="display:none"/>
                             }
                             else
@@ -149,7 +144,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                         </div>
                         <div class="col-md-6">
                             <label for="btn_NgayTaoDon">Ngày tạo hóa đơn</label>
-                            <input id="btn_NgayTaoDon" class="form-control" type="datetime" />
+                        <input id="btn_NgayTaoDon" class="form-control" type="datetime" readonly style="display:block" />
                         </div>
                         <div class="col-md-6" style="display:none">
                             <label for="btn_Update">Ngày Update</label>
@@ -193,6 +188,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                           <th style="display:none">Mã KM</th>
                                           <th style="display:none">IMG</th>
                                           <th style="display:none">Trạng thái</th>
+                                         
 
                                       </tr>
                                   </thead>
@@ -209,7 +205,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                         <div class="col-md-12">
                             <div class="row mb-3" style="padding-top:20px">
                                 <div class="col-md-4">
-                                    <input type="text" id="search-input" class="form-control" onkeyup="filterFunction()" placeholder="Tìm kiếm...">
+                                <input type="text" id="search-input" class="form-control" onkeyup="filterFunction()" placeholder="Tìm kiếm..." maxlength="50">
                                 </div>
                                 <div class="col-md-4">
                                     <select id="select-color" class="form-select" aria-label="Default select example" onchange="filterFunction()">
@@ -322,7 +318,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                 </select>
                             </div> *@
                             <div class="col-md-8">
-                                <input type="text" name="hoten" placeholder="Nhập họ tên hoặc số điện thoại" id="search_khachhang_input" onfocus="showTable()" class="form-control" oninput="filterTable()">
+                                <input type="text" name="hoten" placeholder="Nhập họ tên hoặc số điện thoại" id="search_khachhang_input" onfocus="showTable()" class="form-control" oninput="filterTable()" maxlength="50">
 
                                 <table id="timkiemkhachhang_table" class="table table-hover hidden" style="width:350px">
                                     <thead>
@@ -395,7 +391,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                 <tr>
                                     <th style="width: 130px; padding: 12px">Tiền khách đưa</th>
                                     <td>
-                                        <input id="btn_tienkhachdua" style="color:brown; border:none" class="form-control w-100" type="text">
+                                    <input id="btn_tienkhachdua" style="color:brown; border:none" class="form-control w-100" type="text" maxlength="8">
                                     </td>
                                     <td>VNĐ</td>
                                 </tr>
@@ -406,14 +402,35 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                     </td>
                                     <td>VNĐ</td>
                                 </tr>
+                                <tr id="btn_tienthua_error" style="display:none">
+                                <th style="width: 130px; padding: 12px;color:red"> <p style="color:orangered;text-align:center;">Lỗi</p></th>
+                                    <td>
+                                    <p style="color:orangered;text-align:center;">Số tiền khách đưa chưa đủ</p>
+                                    </td>
+                                  
+                                </tr>
+                                <tr>
+                                    <th style="width: 130px; padding: 12px">
+                                        <i class="fa-brands fa-cc-amazon-pay fa-2xl" style="color: #291aff;"></i>
+                                    </th>
+                                    <td>
+                                    <select id="btn_phuongthucthanhtoan" class="form-select" style="color:brown;border:none; width:100%">
+                                            @foreach (var item in lstThanhToan)
+                                            {
+                                                <option value="@item.MaPhuongThuc">@item.TenPhuongThuc</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    
+                                </tr>
                              </table>
                         </div>
-                        <div id="btn_tienthua_error" style="display:none">
+                       @*  <div id="btn_tienthua_error" style="display:none">
                             <p style="color:orangered;text-align:center;">Số tiền khách đưa chưa đủ</p>
-                        </div>
+                        </div> *@
                     </div>
                     <!-- Phần Chọn Phương Thức Thanh Toán -->
-                    <div class="row section_ align-items-center">
+                   @*  <div class="row section_ align-items-center">
 
                    
                     <div class="col-md-6 position-relative">
@@ -428,34 +445,38 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                             }
                         </select>
                     </div>
-                    </div>
+                    </div> *@
 
                     <!-- Phần Thanh Toán -->
                     <div class="row section__ align-items-center">
                         <div class="col-md-12" id="thanhtoantaiquay" style="display: none;">
-                            <button type="button" class="btn btn-info w-100 payment-button" id="btn_thanhtoanhoadon">
-                                <i class="fa-solid fa-coins fa-2xl" style="color: #de0d0d;"></i>
+                        <button type="button" class="btn btn-info w-100 payment-button" id="Thanhtoandonhang">
+                                @* <i class="fa-solid fa-coins fa-2xl" style="color: #de0d0d;"></i> *@
+                                Thanh toán
                             </button>
                         </div>
                         <div class="col-md-12" id="dathangtaiquay" style="display: none; position: relative;">
-                            <button type="button" class="btn btn-outline-success w-100 payment-button" id="btn_dathang">
-                                <i class="fa-solid fa-truck-arrow-right fa-xl" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                        <button type="button" class="btn btn-outline-success w-100 payment-button" id="dathangtaiquay_">
+                               @*  <i class="fa-solid fa-truck-arrow-right fa-xl" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i> *@
+                               Đặt hàng
                             </button>
                         </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12" style="display:none">
                         <button class="btn btn-outline-primary" id="btn_inphieu">
                             <i class="fa-solid fa-print fa-xl"></i> In phiếu
                         </button>
                     </div>
+                    
                     </div>
                </div>
             </div>
     </div> 
 </div>
-
+<img src="~/img/services/QRSHOP.png" style="display:none;"/>
 <div id="printableTable">
-    <!-- Nội dung bảng -->
+    
 </div>
+
 @* Modal thanh toán  QR code *@
 <div class="modal fade" tabindex="-1" id="pop_QR">
     <div class="modal-dialog">
@@ -470,6 +491,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                 </div>
                 <div class="col-md-12 d-flex justify-content-center">
                     <img width="60%" id="imgQR" src="https://img.vietqr.io/image/MB-0336262156-qr_only.png" />
+
+                   @*  <img width="60%" id="imgQR" src="https://img.vietqr.io/image/TCB-983333666888-qr_only.png" /> *@
                 </div>
                 <div class="col-md-12">
                    <p>Nội dung chuyển khoản: @ViewBag.RandomString</p>
@@ -498,11 +521,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                 <div class="row">
                     <div class="col-md-4">
                         <label for="sdtnhanhang_btn">SĐT nhận hàng</label>
-                        <input id="sdtnhanhang_btn" class="form-control" />
+                        <input id="sdtnhanhang_btn" class="form-control" maxlength="50" />
                     </div>
                     <div class="col-md-4">
                         <label for="ngnhanhang_btn">Người nhận hàng</label>
-                        <input id="ngnhanhang_btn" class="form-control" />
+                        <input id="ngnhanhang_btn" class="form-control" maxlength="50" />
                     </div>
                     <div class="col-md-4">
                         <label for="City">Tỉnh/Thành phố</label>
@@ -524,13 +547,13 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     </div>
                     <div class="col-md-4">
                         <label for="street">Địa chỉ cụ thể</label>
-                        <input type="text" class="form-control" name="Street" id="street">
+                        <input type="text" class="form-control" name="Street" id="street" maxlength="100">
                     </div>
 
                     
                     <div class="col-md-12 text-center">
                         <label for="clear"></label>
-                        <button type="text" class="form-control btn btn-danger w-50 d-grid gap-2 col-6 mx-auto mt-4" name="clear" id="clear">Chọn lại địa chỉ</button>
+                        <button type="text" class="form-control btn btn-danger w-50 d-grid gap-2 col-6 mx-auto mt-4" name="clear" id="clear">Chọn địa chỉ khác</button>
                     </div>
                     <div class="col-md-12">
                         <label for="btn_ghichu">Ghi chú</label>
@@ -561,11 +584,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     
                    <div class="col-md-4">
                         <label for="btn_fullname">Họ và tên</label>
-                        <input id="btn_fullname" type="text" class="form-control" />
+                        <input id="btn_fullname" type="text" class="form-control" maxlength="50" />
                    </div>
                     <div class="col-md-4" id="themsdt_btn">
                         <label for="btn_SoDienThoai_">Số điện thoại</label>
-                        <input id="btn_SoDienThoai_" class="form-control" type="text" />
+                        <input id="btn_SoDienThoai_" class="form-control" type="text" maxlength="11" />
                         <div id="phoneError" style="color: red; display: none;">Số điện thoại không hợp lệ.</div>
                     </div>
                     <div class="col-md-4" style="display:none">
@@ -575,15 +598,15 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     </div>
                    <div class="col-md-4">
                         <label for="btn_Email">Email</label>
-                        <input id="btn_Email" type="text" class="form-control" />
+                        <input id="btn_Email" type="text" class="form-control" maxlength="50" />
                    </div>
                    <div class="col-md-4">
                         <label for="btn_Password ">Password </label>
-                        <input id="btn_Password" type="text" class="form-control" />
+                        <input id="btn_Password" type="text" class="form-control" maxlength="50" />
                    </div>
-                   <div class="col-md-4">
+                   <div class="col-md-4" style="display:none">
                         <label for="btn_ConfirmPassword">ConfirmPassword</label>
-                        <input id="btn_ConfirmPassword" type="text" class="form-control" />
+                        <input id="btn_ConfirmPassword" type="text" class="form-control" maxlength="50" />
                    </div>                 
                 </div>
               
@@ -598,14 +621,14 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 @* Modal in hóa đơn  *@
 <div class="modal fade" id="inhoadon_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="inhoadon_modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+           @*  <div class="modal-header">
                 <h5 class="modal-title" id="inhoadon_modalLabel">Thông báo</h5>
-               @*  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
-            </div>
-            <div class="modal-body">
-                <h4>Thanh toán thành công mày có muốn in hóa đơn không ?</h4>
+              
+            </div> *@
+            <div class="modal-body" style="text-align:center">
+                <h4>In hóa đơn ?</h4>
             </div>
             <div class="modal-footer" style="display: flex;justify-content: space-between;">
                 <button type="button" id="khongin_hoadon" class="btn btn-secondary" data-bs-dismiss="modal">Không</button>
@@ -613,8 +636,27 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
             </div>
         </div>
     </div>
+</div> 
+@*MModal xác nhận thanh toán*@
+<div class="modal fade" id="confirm_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirm_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            @*  <div class="modal-header">
+            <h5 class="modal-title" id="inhoadon_modalLabel">Thông báo</h5>
+
+            </div> *@
+            <div class="modal-body" style="text-align:center">
+                <h4>Thanh toán hóa đơn ?</h4>
+            </div>
+            <div class="modal-footer" style="display: flex;justify-content: space-between;">
+                <button type="button" id="tieptucmuahang" class="btn btn-secondary" data-bs-dismiss="modal">Tiếp tục mua hàng</button>
+                <button type="button" id="btn_thanhtoanhoadon" class="btn btn-primary" style="display:none">Thanh toán</button>
+                <button type="button" id="btn_dathang" class="btn btn-primary" style="display:none">Đặt hàng</button>
+            </div>
+        </div>
+    </div>
 </div>
-<script>
+@* <script>
     document.getElementById('label_phuongthucthanhtoan').addEventListener('click', function () {
         var selectElement = document.getElementById('btn_phuongthucthanhtoan');
         selectElement.style.display = 'block'; // Hiển thị select khi nhấn vào label
@@ -627,4 +669,4 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
   // tìm kiếm kahsch hàng
 
   
-</script>
+</script> *@

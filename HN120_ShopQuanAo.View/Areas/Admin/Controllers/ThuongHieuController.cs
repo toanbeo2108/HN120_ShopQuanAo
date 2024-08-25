@@ -1,4 +1,5 @@
-﻿using HN120_ShopQuanAo.Data.Models;
+﻿using HN120_ShopQuanAo.API.Data;
+using HN120_ShopQuanAo.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
@@ -14,6 +15,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         {
             _httpClient = new HttpClient();
             _logger = logger;
+            
         }
 
         public IActionResult Index()
@@ -37,7 +39,16 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             ViewData["CurrentFilter"] = searchString;
             return View(lstBook);
         }
+        [HttpGet]
+        public async Task<IActionResult> DSThuongHieu()
+        {
+            var urlBook = $"https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
+            var responBook = await _httpClient.GetAsync(urlBook);
+            string apiDataBook = await responBook.Content.ReadAsStringAsync();
+            var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataBook);
 
+            return Json(lstTH);
+        }
         [HttpGet]
         public IActionResult CreateThuongHieu()
         {
@@ -59,6 +70,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var content = new StringContent(JsonConvert.SerializeObject(bk), Encoding.UTF8, "application/json");
             var respon = await _httpClient.PostAsync(urlBook, content);
 
+
             if (respon.IsSuccessStatusCode)
             {
                 return Json(true);
@@ -66,6 +78,8 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
             return Json(false);
         }
+
+        
 
         [HttpGet]
         public async Task<IActionResult> UpdateThuongHieu(string id)

@@ -237,17 +237,6 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 };
             }
 
-            // Check if ConfirmPassword matches Password
-            if (newAccountModel.Password != newAccountModel.ConfirmPassword)
-            {
-                return new Response
-                {
-                    IsSuccess = false,
-                    StatusCode = 400,
-                    Message = "Password and confirmation password do not match!"
-                };
-            }
-
             // Generate UserName from FullName and ensure uniqueness
             string userName = await GenerateUniqueUserName(newAccountModel.FullName);
 

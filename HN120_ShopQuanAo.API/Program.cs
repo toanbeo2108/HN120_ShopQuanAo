@@ -28,6 +28,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add DI
 builder.Services.AddScoped<ILoginServices, LoginServices>();
 builder.Services.AddScoped<IRegisterServices, RegisterServices>();
+builder.Services.AddScoped<ICreateAnAccount, CreateAnAccount>();
+builder.Services.AddScoped<IFilterProductRepository, FilterProductRepository>();
 builder.Services.AddScoped<IHoaDon_Respository, HoaDon_Respository>();
 builder.Services.AddScoped<IHoaDon_Service, HoaDon_Service>();
 builder.Services.AddScoped<IChiTietHoaDonRepository, ChiTietHoaDonRepository>();

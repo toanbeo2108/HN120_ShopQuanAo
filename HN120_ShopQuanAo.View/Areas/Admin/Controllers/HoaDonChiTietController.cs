@@ -63,20 +63,20 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 var totalHoaDonCT = lst.Count();
                 foreach (var hdctList in hdct)
                 {
-                    hdctList.MaHoaDonChiTiet = ("HDCT" + formattedTime + (totalHoaDonCT+1)).ToString(); // Gán mã hóa đơn chi tiết
+                    hdctList.MaHoaDonChiTiet = ("HDCT" + formattedTime + (totalHoaDonCT + 1)).ToString(); // Gán mã hóa đơn chi tiết
                     totalHoaDonCT++; // Tăng tổng số hóa đơn chi tiết để cho lần tiếp theo
                     var ctsanpham = lstCTSP.FirstOrDefault(c => c.SKU == hdctList.SKU);
-                    if (ctsanpham != null)
-                    {
-                        if (ctsanpham.SoLuongTon < hdctList.SoLuongMua)
-                        {
-                            return Json(new
-                            {
-                                status = false,
-                                message = "Sản phẩm còn lại không đủ"
-                            });
-                        }
-                    }
+                   // if (ctsanpham != null)
+                    //{
+                    //    if (ctsanpham.SoLuongTon < 0)
+                    //    {
+                    //        return Json(new
+                    //        {
+                    //            status = false,
+                    //            message = "Sản phẩm còn lại không đủ"
+                    //        });
+                    //    }
+                    //}
                 }
                 var apiurlcr = "https://localhost:7197/api/ChiTietHoaDon/CreateHDCT";
                 var content = new StringContent(JsonConvert.SerializeObject(hdct), Encoding.UTF8, "application/json");
