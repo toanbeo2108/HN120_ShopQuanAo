@@ -29,7 +29,6 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
             catch (Exception ex)
             {
-                // In ra lỗi để debug
                 Console.WriteLine($"Error in GetFilteredProducts: {ex.Message}");
                 return StatusCode(500, "An error occurred while filtering products.");
             }
@@ -45,13 +44,11 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
             catch (Exception ex)
             {
-                // In ra lỗi để debug
                 Console.WriteLine($"Error in GetPagedProducts: {ex.Message}");
                 return StatusCode(500, "An error occurred while getting paged products.");
             }
         }
 
-        // Action để lấy MinPrice và MaxPrice
         [HttpGet("GetMinMaxPrice")]
         public IActionResult GetMinMaxPrice()
         {
@@ -62,7 +59,6 @@ namespace HN120_ShopQuanAo.API.Controllers
             }
             catch (Exception ex)
             {
-                // In ra lỗi để debug
                 Console.WriteLine($"Error in GetMinMaxPrice: {ex.Message}");
                 return StatusCode(500, "An error occurred while retrieving price range.");
             }
