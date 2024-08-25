@@ -25,7 +25,7 @@
         var xa = $('#ward').val();
         var cuthe = $('#street').val();
         var tongtienhang = $('#tong-tien-hang').text().replace(/[^0-9]/g, '');
-        var tiengiam = $('#btn_giamgia').val().replace(/[^0-9]/g, '');
+        var tiengiam = $('#btn_giamgia').val();
         tongtiendonhang = parseFloat(tongtienhang) + parseFloat(tienship) - parseFloat(tiengiam);
 
 
