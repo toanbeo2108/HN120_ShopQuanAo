@@ -6,6 +6,7 @@ using HN120_ShopQuanAo.View.Areas.Customer.Data;
 using HN120_ShopQuanAo.View.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Net.Http;
@@ -356,13 +357,13 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             return View();
 
         }
-        public void DeleteItemGioHang(List<GioHangChiTiet> lstSP)
-        {
-            foreach (var item in lstSP)
-            {
-                lstSP.Remove(item);
-            }
-        }
+        //public void DeleteItemGioHang(List<GioHangChiTiet> lstSP)
+        //{
+        //    foreach (var item in lstSP)
+        //    {
+        //        lstSP.Remove(item);
+        //    }
+        //}
         // Xóa sẩn phẩm khỏi giỏ hàng
         [HttpGet]
         public async Task<IActionResult> XoaSPGioHang(string maSP)
@@ -430,38 +431,132 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             }
             return BadRequest("Không thẻ update thông tin giỏ hàng");
         }
+        [HttpPost]
+        public IActionResult UpdateCart([FromBody] CartUpdateViewModel model)
+        {
+            if (model == null)
+            {
+                return BadRequest(new { message = "Dữ liệu không hợp lệ." });
+            }
+
+            try
+            {
+                // Tìm sản phẩm trong giỏ hàng dựa trên MaSP
+                var gioHangItem = _appDbContext.GioHangChiTiet.SingleOrDefault(item => item.MaGioHangChiTiet == model.MaSP);
+
+                if (gioHangItem == null)
+                {
+                    return NotFound(new { message = "Sản phẩm không tồn tại trong giỏ hàng." });
+                }
+
+                // Cập nhật số lượng và thành tiền
+                gioHangItem.SoLuong = model.SoLuong;
+                gioHangItem.ThanhTien = model.SoLuong * gioHangItem.DonGia;
+
+                // Lưu thay đổi vào cơ sở dữ liệu
+                _appDbContext.SaveChanges();
+
+                // Trả về kết quả thành công và giỏ hàng đã cập nhật
+                return Ok(new
+                {
+                    message = "Cập nhật giỏ hàng thành công.",
+                    gioHangItem
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Đã xảy ra lỗi khi cập nhật giỏ hàng.", error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AppVC(string mavc)
+        {
+            decimal? tongtien = 0;
+            decimal? tiengiam = 0;
+            var maND = Request.Cookies["UserId"];
+            var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
+            var responseListGHCB = await _httpClient.GetAsync(ApiurllstGioHangcuaban);
+            string apidataListGHCB = await responseListGHCB.Content.ReadAsStringAsync();
+            var ListGHCB = JsonConvert.DeserializeObject<List<GioHang>>(apidataListGHCB);
+            if(ListGHCB != null)
+            {
+                var Ghcb = ListGHCB.FirstOrDefault(x => x.TrangThai == 1);
+                if (Ghcb == null)
+                {
+                    return BadRequest("Không có Mã ND nên Null là đúng");
+                }
+
+
+                var ApiurlGioHangcuaban = $"https://localhost:7197/api/GioHangChiTiet/GetGHCTByMaGH/{Ghcb.MaGioHang}";
+                var responseGHCB = await _httpClient.GetAsync(ApiurlGioHangcuaban);
+                string apidataGHCB = await responseGHCB.Content.ReadAsStringAsync();
+                var GHCB = JsonConvert.DeserializeObject<List<GioHangChiTiet>>(apidataGHCB);
+                if (GHCB == null)
+                {
+                    return BadRequest("Không tìm thấy thông tin giỏ hàng");
+                }
+                foreach (var item in GHCB)
+                {
+                    tongtien += item.ThanhTien;
+                }
+
+                var urlvc = $"https://localhost:7197/GetAllVoucher";
+                var responseVC = await _httpClient.GetAsync(urlvc);
+                string apiurlVC = await responseVC.Content.ReadAsStringAsync();
+                var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apiurlVC);
+                var vc = lstVC.FirstOrDefault(x => x.MaVoucher == mavc);
+                if(vc == null)
+                {
+                    return BadRequest("Voucher sai ");
+                }
+                if(vc.KieuGiamGia == 1)
+                {
+                    tiengiam = (tongtien * vc.GiaTriGiam) / 100;
+                    if(tiengiam > vc.GiaGiamToiDa)
+                    {
+                        tiengiam = vc.GiaGiamToiDa;
+                        Response.Cookies.Append("TienGiam", tiengiam.ToString());
+
+                        tongtien = tongtien - tiengiam;
+                    }
+                    else
+                    {
+                        tongtien = tongtien - tiengiam;
+                        Response.Cookies.Append("TienGiam", tiengiam.ToString());
+
+                    }
+                }
+                else
+                {
+                    tiengiam = vc.GiaTriGiam;
+                    Response.Cookies.Append("TienGiam", tiengiam.ToString());
+                }
+            }
+            return RedirectToAction("Checkout","CustomerHome",new {areas = "Customer"});
+        }
+
         [HttpGet]
         public async Task<IActionResult> Checkout()
         {
             decimal? tongtien = 0;
             decimal? tonghoadon = 0;
             decimal? tienship = 0;
+            decimal? tiengiam = 0;
+
+            string cookiesvaluestiengiam = Request.Cookies["TienGiam"];
+            if(cookiesvaluestiengiam == null)
+            {
+                tiengiam = 0;
+            }
+            else
+            {
+                tiengiam = decimal.Parse(cookiesvaluestiengiam);
+            }
             var maND = Request.Cookies["UserId"];
 
 
-            var urlvc = $"https://localhost:7197/GetAllVoucher";
-            var responseVC = await _httpClient.GetAsync(urlvc);
-            string apiurlVC = await responseVC.Content.ReadAsStringAsync();
-            var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apiurlVC);
-
-            var urlUVC = $"https://localhost:7197/api/Voucher_User/GetVoucher_UserbyUserId/{maND}";
-            var responseUVC = await _httpClient.GetAsync(urlUVC);
-            string apiurlUVC = await responseUVC.Content.ReadAsStringAsync();
-            var lstUVC = JsonConvert.DeserializeObject<List<User_Voucher>>(apiurlUVC);
-            var joinDataUVC = from vc in lstVC
-                              join uvc in lstUVC on vc.MaVoucher equals uvc.MaVoucher
-                              select new VoucherUserView
-                              {
-                                  UserVoucherId = uvc.UserVoucherID,
-                                  UserId = maND,
-                                  MaVoucher = vc.MaVoucher,
-                                  TenVoucher = vc.Ten,
-                                  DonGiaToiThieu = vc.GiaGiamToiThieu,
-                                  GiamGiaToiDa = vc.GiaGiamToiDa,
-                                  GiaTriGiam = vc.GiaTriGiam,
-                                  TrangThai = uvc.TrangThai
-                              };
-            ViewBag.lstUVC = joinDataUVC.ToList();
+           
 
             var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
             var responseListGHCB = await _httpClient.GetAsync(ApiurllstGioHangcuaban);
@@ -489,7 +584,9 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
                     tongtien += item.ThanhTien;
                 }
                 ViewBag.TongTienHang = tongtien;
-                tonghoadon = tongtien + tienship;
+                
+                ViewBag.TienGiam = tiengiam;
+                tonghoadon = tongtien + tienship - tiengiam;
                 ViewBag.TongHoaDon = tonghoadon;
                 var urlMauSac = $"https://localhost:7197/api/MauSac/GetAllMauSac";
                 var responMS = await _httpClient.GetAsync(urlMauSac);
@@ -547,16 +644,56 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
                                };
                 var listGHCTview = joinData.ToList();
                 ViewBag.JoinDataGH = listGHCTview;
+
+
+                var urlvc = $"https://localhost:7197/GetAllVoucher";
+                var responseVC = await _httpClient.GetAsync(urlvc);
+                string apiurlVC = await responseVC.Content.ReadAsStringAsync();
+                var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apiurlVC);
+                var lstvcthoaman = lstVC.Where(x => x.GiaGiamToiThieu <= tongtien); // lấy tất cả những voucher thỏa mãn đơn giá tối thiểu
+
+                var urlUVC = $"https://localhost:7197/api/Voucher_User/GetVoucher_UserbyUserId/{maND}";
+                var responseUVC = await _httpClient.GetAsync(urlUVC);
+                string apiurlUVC = await responseUVC.Content.ReadAsStringAsync();
+                var lstUVC = JsonConvert.DeserializeObject<List<User_Voucher>>(apiurlUVC);
+                var joinDataUVC = from vc in lstvcthoaman
+                                  join uvc in lstUVC on vc.MaVoucher equals uvc.MaVoucher
+                                  select new VoucherUserView
+                                  {
+                                      UserVoucherId = uvc.UserVoucherID,
+                                      UserId = maND,
+                                      MaVoucher = vc.MaVoucher,
+                                      TenVoucher = vc.Ten,
+                                      DonGiaToiThieu = vc.GiaGiamToiThieu,
+                                      GiamGiaToiDa = vc.GiaGiamToiDa,
+                                      GiaTriGiam = vc.GiaTriGiam,
+                                      TrangThai = uvc.TrangThai
+                                  };
+                ViewBag.lstUVC = joinDataUVC.ToList();
             }
            return  View();
         }
+        //public async Task<IActionResult> Apdungvoucher(string mavoucher)
+        //{
+        //    var maND = Request.Cookies["UserId"];
+        //    var urlND = $"https://localhost:7197/api/User/GetUserById?id={maND}";
+        //    var responseND = await _httpClient.GetAsync(urlND);
+        //    string apidataND = await responseND.Content.ReadAsStringAsync();
+        //    var nd = JsonConvert.DeserializeObject<User>(apidataND);
+        //    if (nd == null)
+        //    {
+        //        return BadRequest("Không tìm thấy thông tin của bạn, vui lòng đăng nhập lại");
+        //    }
 
-		//private dynamic GenerateRandomString(Random r, int v)
-		//{
-		//    throw new NotImplementedException();
-		//}
-		[HttpPost]
-		public async Task<IActionResult> DatHang(decimal tienship, string tinh, string huyen, string xa, string cuthe, decimal tongtiendonhang)
+
+        //}
+
+        //private dynamic GenerateRandomString(Random r, int v)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        [HttpPost]
+		public async Task<IActionResult> DatHang(decimal tienship, string tinh, string huyen, string xa, string cuthe, decimal tongtiendonhang,decimal tiengiam)
 		{
 			if (tongtiendonhang == 0)
 			{
@@ -649,7 +786,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
 						return BadRequest("Không thể tạo hóa đơn chi tiết, lỗi 497");
 					}
 				}
-                var urlupdateHD = $"https://localhost:7197/api/HoaDon/UpdateHD/{hd.MaHoaDon}?MaVoucher={null}&tenkh={maND}&sdt={nd.PhoneNumber}&phiship={tienship}&tongtien={tongtiendonhang}&pttt={4}&phanloai={2}&ghichu={"Không"}&tinh={tinh}&huyen={huyen}&xa={xa}&cuthe={cuthe}";
+                var urlupdateHD = $"https://localhost:7197/api/HoaDon/UpdateHD/{hd.MaHoaDon}?MaVoucher={tiengiam}&tenkh={maND}&sdt={nd.PhoneNumber}&phiship={tienship}&tongtien={tongtiendonhang}&pttt={4}&phanloai={2}&ghichu={"Không"}&tinh={tinh}&huyen={huyen}&xa={xa}&cuthe={cuthe}";
 				
 				var contentupdateHD = new StringContent("Update thành công");
 				var responseUpdateHD = await _httpClient.PutAsync(urlupdateHD, contentupdateHD);

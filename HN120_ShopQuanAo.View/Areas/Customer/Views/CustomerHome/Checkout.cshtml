@@ -5,6 +5,7 @@
     Layout = "~/Areas/Customer/Views/Shared/_LayoutCheckoutCustomer.cshtml";
     decimal? tongtienhang = ViewBag.TongTienHang as decimal?;
     decimal? tongdonhang = ViewBag.TongHoaDon as decimal?;
+    decimal? tiengiam = ViewBag.TienGiam as decimal?;
     var lstGHCT = ViewBag.JoinDataGH as List<GioHangChiTietView>;
     var lstUVC = ViewBag.lstUVC as List<VoucherUserView>;
 }
@@ -151,9 +152,9 @@
                                     <div class="voucher-card">
                                         <div class="voucher-info">
                                             <h2>@item.TenVoucher</h2>
-                                            <p>Dành cho đơn hàng từ @item.DonGiaToiThieu VND (tối đa @item.GiamGiaToiDa VNĐ)</p>
+                                            <p>Dành cho đơn hàng từ <p name="tien">@item.DonGiaToiThieu</p> (tối đa <p name="tien">@item.GiamGiaToiDa</p>)</p>
                                         </div>
-                                        <button class="select-voucher-btn">Áp Dụng</button>
+                                        <button class="select-voucher-btn"><a asp-action="AppVC" asp-controller="CustomerHome" asp-area="Customer" asp-route-mavc="@item.MaVoucher">Áp Dụng</a></button>
                                     </div>
                                 }
 
@@ -196,7 +197,7 @@
                             <th>Tiền ship</th>
                             <td>
                                 <strong>
-                                    <input id="btn_PhiShip" name="tien" class="form-control" type="number" min="0" readonly style="color:brown;border:none; display:block" />
+                                    <input id="btn_PhiShip" name="tieninput"  min="0" disabled style="color:brown;border:none;"  />
                                 </strong>
                             </td>
                         </tr>
@@ -204,13 +205,13 @@
                             <th>Giảm Giá</th>
                             <td>
                                 <strong>
-                                    <input id="btn_giamgia" name="tien" class="form-control" type="number" min="0" readonly style="color:brown;border:none; display:block" />
+                                    <input id="btn_giamgia" name="tieninput" value="@tiengiam" min="0" disabled style="color:brown;border:none;"  />
                                 </strong>
                             </td>
                         </tr>
                         <tr class="order_total">
                             <th>Tổng Hóa Đơn</th>
-                            <td name="tien"><strong><input id="tong-don-hang" disabled  /></strong></td>
+                            <td><strong><input id="tong-don-hang" disabled name="tieninput" style="border:none"/></strong></td>
                             
                         </tr>
                     </tfoot>

@@ -62,6 +62,25 @@ namespace HN120_ShopQuanAo.API.Responsitories
             };
             await _context.User_Voucher.AddAsync(UVC);
             await _context.SaveChangesAsync();
+
+
+            var vc = await _context.Voucher.FirstOrDefaultAsync(x => x.MaVoucher == mavc);
+            if(vc == null)
+            {
+                return false;
+            }
+            vc.Ten = vc.Ten;
+            vc.KieuGiamGia = vc.KieuGiamGia;
+            vc.GiaGiamToiThieu = vc.GiaGiamToiThieu;
+            vc.GiaGiamToiDa = vc.GiaGiamToiDa;
+            vc.NgayBatDau = vc.NgayBatDau;
+            vc.NgayKetThuc = vc.NgayKetThuc;
+            vc.GiaTriGiam = vc.GiaTriGiam;
+            vc.SoLuong = vc.SoLuong - 1;
+            vc.MoTa = vc.MoTa;
+            vc.TrangThai = vc.TrangThai;
+             _context.Voucher.Update(vc);
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -145,6 +164,11 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 return false;
             }
         }
+
+        //public async Task<bool> UpdateHDVoucher(string maHD, string Voucher)
+        //{
+
+        //}
 
         public async Task<bool> UpdateHoaDon(string maHD, string? MaVoucher, string? tenkh, string? sdt, decimal? phiship, decimal? tongtien, int? pttt, string? phanloai, string? ghichu, string? tinh, string? huyen, string? xa, string? cuthe)
         {

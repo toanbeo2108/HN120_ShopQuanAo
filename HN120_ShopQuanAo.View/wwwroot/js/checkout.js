@@ -15,6 +15,7 @@
         renderCity(result.data);
     });
 
+
     // lấy tiền ship gửi về controller
     $('body').on('click', '#dat-hang', function () {
         var tongtiendonhang = 0;
@@ -24,7 +25,8 @@
         var xa = $('#ward').val();
         var cuthe = $('#street').val();
         var tongtienhang = $('#tong-tien-hang').text().replace(/[^0-9]/g, '');
-        tongtiendonhang = parseFloat(tongtienhang) + parseFloat(tienship);
+        var tiengiam = $('#btn_giamgia').val().replace(/[^0-9]/g, '');
+        tongtiendonhang = parseFloat(tongtienhang) + parseFloat(tienship) - parseFloat(tiengiam);
 
 
 
@@ -40,7 +42,8 @@
                     huyen: huyen,
                     xa: xa,
                     cuthe: cuthe,
-                    tongtiendonhang: tongtiendonhang
+                    tongtiendonhang: tongtiendonhang,
+                    tiengiam: tiengiam
                 }
 
                 ,
@@ -98,6 +101,11 @@
             $element.text(formatMoney(amount));
         }
     });
+
+    
+
+
+
     var token = 'd01771f0-3f8b-11ef-8f55-4ee3d82283af';
     async function loadTinhThanh() {
         var tinhthanh = $('#city').val();
@@ -205,8 +213,15 @@
                     var tongtiendonhang = 0;
                     var tienship = $('#btn_PhiShip').val().replace(/[^0-9]/g, '');
                     var tongtienhang = $('#tong-tien-hang').text().replace(/[^0-9]/g, '');
-                    tongtiendonhang = parseFloat(tongtienhang) + parseFloat(tienship);
-                    $('#tong-don-hang').val(tongtiendonhang);
+                    var tiengiam = $('#btn_giamgia').val().replace(/[^0-9]/g, '');
+
+                    tongtiendonhang = parseFloat(tongtienhang) + parseFloat(tienship) - parseFloat(tiengiam);
+                    $('#tong-don-hang').val(formatMoney(tongtiendonhang));
+
+                    // Format tiền ship trong input
+                    $('#btn_PhiShip').val(formatMoney(response.data.total));
+
+                    $('#btn_giamgia').val(formatMoney(tiengiam));
 
                 } else {
                     console.error('Error:', response.message);
@@ -255,6 +270,7 @@ function renderCity(data) {
             }
         }
     };
+    
 }
 function formatMoney(amount) {
     if (!isNaN(amount) && amount !== null && amount !== '') {

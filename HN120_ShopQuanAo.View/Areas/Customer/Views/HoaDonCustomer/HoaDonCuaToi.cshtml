@@ -110,10 +110,34 @@
                 <tr>
                     <td>@item.MaHoaDon</td>
                     <td>@item.NgayTaoDon</td>
-                    <td>@(item.TongGiaTriHangHoa - item.PhiShip)</td>
-                    <td>0 đ</td>
-                    <td>@item.PhiShip</td>
-                    <td>@item.TongGiaTriHangHoa</td>
+                    <td name="tien">@(item.TongGiaTriHangHoa - item.PhiShip)</td>
+                    @if(item.MaVoucher == null)
+                    {
+                        <td>0 đ</td>
+                    }
+                    else
+                    {
+                        <td name="tien">@item.MaVoucher</td>
+
+                    }
+                    @if(item.PhiShip != 0)
+                    {
+                        <td name="tien">@item.PhiShip</td>
+                    }
+                    else
+                    {
+                        <td>0 đ</td>
+                    }
+                    @if(item.MaVoucher == null)
+                    {
+                        <td name="tien">@item.TongGiaTriHangHoa</td>
+
+                    }
+                    else
+                    {
+                        <td name="tien">@(item.TongGiaTriHangHoa - decimal.Parse(item.MaVoucher))</td>
+
+                    }
                     @if(item.TrangThai == 1)
                     {
                         <td>Chờ Xác Nhận</td>
@@ -163,6 +187,33 @@
         </tbody>
     </table>
 </div>
+<script>
+    $(document).ready(function(){
+        var moneyElements = document.getElementsByName('tien');
+
+        // Duyệt qua từng phần tử và format giá trị tiền tệ
+        $.each(moneyElements, function (index, element) {
+            var $element = $(element);
+            var amountText = $element.text().trim(); // Lấy số tiền từ văn bản và loại bỏ khoảng trắng
+
+            // Xử lý số tiền từ văn bản
+            var amountWithoutCommas = amountText.split(',')[0].replace(/,/g, ''); // Bỏ dấu phẩy và phần sau dấu phẩy
+            var amount = parseFloat(amountWithoutCommas);
+
+            // Định dạng số tiền và gán lại vào văn bản nếu số tiền hợp lệ
+            if (!isNaN(amount)) {
+                $element.text(formatMoney(amount));
+            }
+        });
+    });
+    function formatMoney(amount) {
+        if (!isNaN(amount) && amount !== null && amount !== '') {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        } else {
+            return amount;
+        }
+    }
+</script>
 <style>
     a {
         text-decoration: none;

@@ -37,6 +37,57 @@ $(document).ready(function () {
             $element.text(formatMoney(amount));
         }
     });
+    document.addEventListener("change", function () {
+        // Lấy tất cả các input số lượng sản phẩm
+        const quantityInputs = document.querySelectorAll('input[type="number"]');
+
+        quantityInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                // Lấy số lượng mới và dòng chứa sản phẩm hiện tại
+                const newQuantity = this.value;
+                const row = this.closest('tr');
+
+                // Lấy giá bán và cột thành tiền tương ứng
+                const price = parseFloat(row.querySelector('.product-price[name="tien"]').innerText);
+                const totalElement = row.getElementById('total');
+             
+                // Tính thành tiền mới
+                const newTotal = newQuantity * price;
+                totalElement.innerText = newTotal.toLocaleString('vi-VN');
+
+                // Gửi dữ liệu về server bằng AJAX
+                const productId = this.closest('a[asp-route-maSP]').getAttribute('asp-route-maSP');
+
+                fetch('/Customer/CustomerHome/UpdateCart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({
+                        MaSP: productId,
+                        SoLuong: newQuantity,
+                        ThanhTien: newTotal
+                    })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Có lỗi xảy ra khi cập nhật giỏ hàng.');
+                        }
+                    })
+                    .then(data => {
+                        // Xử lý dữ liệu trả về từ server nếu cần
+                        console.log('Giỏ hàng đã được cập nhật:', data);
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                    });
+            });
+        });
+    });
+
 });
 
 function formatMoney(amount) {
