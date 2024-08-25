@@ -22,9 +22,10 @@ else{
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
     </div>
-	foreach(var item in Model)
+    <div class="row">
+	@foreach(var item in Model)
 	{
-         <div class="row">
+        
             <a asp-action="DetailSP" asp-controller="Home"  asp-route-masp="@item.MaSp">
             <div class="col-lg-4 col-md-6">
                 <div class="single_product">
@@ -49,8 +50,8 @@ else{
                 </div>
             </div>
 		</a>
-        </div>
 	}
+        </div>
 }   
 <style>
     a {

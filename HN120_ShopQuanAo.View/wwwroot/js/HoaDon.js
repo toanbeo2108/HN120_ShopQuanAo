@@ -654,11 +654,11 @@ function QRCODE_PAYMENT() {
     }, 1000); // Cập nhật mỗi giây
     $('#btn_sotienck').text(($('#btn_tienkhachphaitra').val() != '' ? $('#btn_tienkhachphaitra').val() : 0) + ' VNĐ');
 
-    let sotienck = 5000
-    thongtinhoadon = 'YUKAOZFVFD';
+    //let sotienck = 5000
+    //thongtinhoadon = 'YUKAOZFVFD';
     
-    //thongtinhoadon = $('#btn_maQR').val();
-    //let sotienck = parseInt($('#btn_tienkhachphaitra').val().replace('.', ''));
+    thongtinhoadon = $('#btn_maQR').val();
+    let sotienck = parseInt($('#btn_tienkhachphaitra').val().replace('.', ''));
 
     let QR = `https://img.vietqr.io/image/MB-0336262156-qr_only.png?amount=${sotienck}&addInfo=${thongtinhoadon}`
 
