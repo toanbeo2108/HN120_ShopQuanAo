@@ -1,0 +1,193 @@
+﻿@model HN120_ShopQuanAo.View.Models.FilterViewModel
+<style>
+    .filter-container {
+        display: flex;
+    }
+
+    .filter-sidebar {
+        width: 30%;
+        padding: 20px;
+        background-color: #f4f4f4;
+    }
+
+    .filter-products {
+        width: 70%;
+        padding: 20px;
+    }
+
+    .filter-section {
+        margin-bottom: 15px;
+    }
+
+        .filter-section label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+
+    .product-card {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+        background-color: #fff;
+    }
+
+        .product-card img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+    .sorting {
+        margin-bottom: 20px;
+        text-align: right;
+    }
+
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+        .pagination a {
+            margin: 0 5px;
+            padding: 5px 10px;
+            color: #000;
+            text-decoration: none;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+            .pagination a.active {
+                background-color: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
+
+</style>
+<div class="filter-container">
+    <div class="filter-sidebar">
+        <form method="get">
+            <h3>Lọc sản phẩm</h3>
+            <div class="filter-section">
+                <label>Thương hiệu</label>
+                <select name="MaThuongHieu">
+                    <option value="">Tất cả</option>
+                    @foreach (var thuongHieu in Model.ThuongHieus)
+                    {
+                        <option value="@thuongHieu.MaThuongHieu">@thuongHieu.TenThuongHieu</option>
+                    }
+                </select>
+            </div>
+            <div class="filter-section">
+                <label>Thể loại</label>
+                <select name="MaTheLoai">
+                    <option value="">Tất cả</option>
+                    @foreach (var theLoai in Model.TheLoais)
+                    {
+                        <option value="@theLoai.MaTheLoai">@theLoai.TenTheLoai</option>
+                    }
+                </select>
+            </div>
+            <div class="filter-section">
+                <label>Chất liệu</label>
+                <select name="MaChatLieu">
+                    <option value="">Tất cả</option>
+                    @foreach (var chatLieu in Model.ChatLieus)
+                    {
+                        <option value="@chatLieu.MaChatLieu">@chatLieu.TenChatLieu</option>
+                    }
+                </select>
+            </div>
+            <div class="filter-section">
+                <label>Khoảng giá</label>
+                <input type="number" name="MinPrice" placeholder="Từ" min="0" value="@Model.MinPrice" />
+                <input type="number" name="MaxPrice" placeholder="Đến" min="0" value="@Model.MaxPrice" />
+            </div>
+            <div class="filter-section">
+                <label>Size</label>
+                <select name="MaSize">
+                    <option value="">Tất cả</option>
+                    @foreach (var size in Model.Sizes)
+                    {
+                        <option value="@size.MaSize">@size.TenSize</option>
+                    }
+                </select>
+            </div>
+            <div class="filter-section">
+                <label>Màu sắc</label>
+                <select name="MaMau">
+                    <option value="">Tất cả</option>
+                    @foreach (var mauSac in Model.MauSacs)
+                    {
+                        <option value="@mauSac.MaMau">@mauSac.TenMau</option>
+                    }
+                </select>
+            </div>
+            <button type="submit">Lọc sản phẩm</button>
+        </form>
+    </div>
+    <div class="filter-products">
+        <div class="sorting">
+            <label>Sắp xếp theo:</label>
+            <select onchange="this.form.submit()" name="SortBy">
+                @if (Model.SortBy == "name_asc")
+                {
+                    <option value="name_asc" selected>Tên A-Z</option>
+                }
+                else
+                {
+                    <option value="name_asc">Tên A-Z</option>
+                }
+
+                @if (Model.SortBy == "name_desc")
+                {
+                    <option value="name_desc" selected>Tên Z-A</option>
+                }
+                else
+                {
+                    <option value="name_desc">Tên Z-A</option>
+                }
+
+                @if (Model.SortBy == "price_asc")
+                {
+                    <option value="price_asc" selected>Giá tăng dần</option>
+                }
+                else
+                {
+                    <option value="price_asc">Giá tăng dần</option>
+                }
+
+                @if (Model.SortBy == "price_desc")
+                {
+                    <option value="price_desc" selected>Giá giảm dần</option>
+                }
+                else
+                {
+                    <option value="price_desc">Giá giảm dần</option>
+                }
+            </select>
+        </div>
+        <div class="product-grid">
+            @foreach (var product in Model.Products)
+            {
+                <div class="product-card">
+                    <img src="~/photoSP/@product.TenSP" alt="@product.TenSP" />
+                    <h3>@product.TenSP</h3>
+                    <p>@product.GiaBan.ToString("C0")</p>
+                </div>
+            }
+        </div>
+        <div class="pagination">
+            @for (var i = 1; i <= Math.Ceiling((decimal)Model.TotalItems / Model.PageSize); i++)
+            {
+                <a href="@Url.Action("Filter", new { pageNumber = i })" class="@(i == Model.PageNumber ? "active" : "")">@i</a>
+            }
+        </div>
+    </div>
+</div>
+
