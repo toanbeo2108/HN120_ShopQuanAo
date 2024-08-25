@@ -19,7 +19,9 @@
         $('#tb_dataCTSP tbody tr:visible').each(function () {
             if ($(this).find('td').length > 0) {
                 sku = $(this).find('td:eq(0)').text().trim();
+
                 dongia = $(this).find('td:eq(5)').text();
+
                 mamau = $(this).find('td:eq(1)').text().trim();
                 masize = $(this).find('td:eq(2)').text().trim();
             }

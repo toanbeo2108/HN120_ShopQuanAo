@@ -333,7 +333,7 @@
                             }
                         }
                 </td>
-                <td style="text-align : center; margin-bottom : 20px">
+                <td style="text-align : center; margin-bottom : 20px" class="money">
                    @*  @foreach (var vc in lstVC)
                     {
                         if (vc.MaVoucher == Model.MaVoucher)
@@ -729,14 +729,15 @@
                         </div>
                         <div class="col-md-3" style="display:none">
                             <label for="btn_MaVoucher">Mã Voucher</label>
-                            <select id="btn_MaVoucher" class="form-select">
+                           @*  <select id="btn_MaVoucher" class="form-select">
                                 <option value="">Chọn</option>
                                 @foreach (var item in lstVC)
                                 {
 
                                     <option value="@item.MaVoucher">@item.Ten</option>
                                 }
-                            </select>
+                            </select> *@
+                        <input id="btn_MaVoucher" class="form-control" />
                         </div>
                         <div class="col-md-3">
                             <label for="btn_NgayTaoDon">Ngày tạo</label>

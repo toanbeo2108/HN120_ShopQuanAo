@@ -2,16 +2,17 @@
 <style>
     .filter-container {
         display: flex;
+        flex-wrap: wrap;
     }
 
     .filter-sidebar {
-        width: 30%;
+        width: 20%;
         padding: 20px;
         background-color: #f4f4f4;
     }
 
     .filter-products {
-        width: 70%;
+        width: 80%;
         padding: 20px;
     }
 
@@ -24,6 +25,31 @@
             margin-bottom: 5px;
         }
 
+    .filter-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .filter-tag {
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        background-color: #fff;
+        cursor: pointer;
+    }
+
+        .filter-tag.selected {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+    .filter-section input[type="number"] {
+        width: calc(50% - 10px);
+        margin-right: 10px;
+    }
+
     .product-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -35,12 +61,21 @@
         padding: 10px;
         text-align: center;
         background-color: #fff;
+        max-width: 300px; /* Giới hạn độ dài của ô sản phẩm */
     }
 
         .product-card img {
             max-width: 100%;
-            height: auto;
+            height: 200px;
+            object-fit: cover;
             margin-bottom: 10px;
+        }
+
+        .product-card h3 {
+            font-size: 14px; /* Chỉnh tên sản phẩm nhỏ lại */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
     .sorting {
@@ -67,118 +102,88 @@
                 color: #fff;
                 border-color: #007bff;
             }
-
 </style>
+
+
 <div class="filter-container">
     <div class="filter-sidebar">
         <form method="get">
             <h3>Lọc sản phẩm</h3>
             <div class="filter-section">
                 <label>Thương hiệu</label>
-                <select name="MaThuongHieu">
-                    <option value="">Tất cả</option>
+                <div class="filter-tags">
                     @foreach (var thuongHieu in Model.ThuongHieus)
                     {
-                        <option value="@thuongHieu.MaThuongHieu">@thuongHieu.TenThuongHieu</option>
+                        <div class="filter-tag" data-value="@thuongHieu.MaThuongHieu" onclick="selectTag(this, 'MaThuongHieu')">@thuongHieu.TenThuongHieu</div>
                     }
-                </select>
+                </div>
+                <input type="hidden" name="MaThuongHieu" id="MaThuongHieu" value="" />
             </div>
             <div class="filter-section">
                 <label>Thể loại</label>
-                <select name="MaTheLoai">
-                    <option value="">Tất cả</option>
+                <div class="filter-tags">
                     @foreach (var theLoai in Model.TheLoais)
                     {
-                        <option value="@theLoai.MaTheLoai">@theLoai.TenTheLoai</option>
+                        <div class="filter-tag" data-value="@theLoai.MaTheLoai" onclick="selectTag(this, 'MaTheLoai')">@theLoai.TenTheLoai</div>
                     }
-                </select>
+                </div>
+                <input type="hidden" name="MaTheLoai" id="MaTheLoai" value="" />
             </div>
             <div class="filter-section">
                 <label>Chất liệu</label>
-                <select name="MaChatLieu">
-                    <option value="">Tất cả</option>
+                <div class="filter-tags">
                     @foreach (var chatLieu in Model.ChatLieus)
                     {
-                        <option value="@chatLieu.MaChatLieu">@chatLieu.TenChatLieu</option>
+                        <div class="filter-tag" data-value="@chatLieu.MaChatLieu" onclick="selectTag(this, 'MaChatLieu')">@chatLieu.TenChatLieu</div>
                     }
-                </select>
+                </div>
+                <input type="hidden" name="MaChatLieu" id="MaChatLieu" value="" />
+            </div>
+            <div class="filter-section">
+                <label>Size</label>
+                <div class="filter-tags">
+                    @foreach (var size in Model.Sizes)
+                    {
+                        <div class="filter-tag" data-value="@size.MaSize" onclick="selectTag(this, 'MaSize')">@size.TenSize</div>
+                    }
+                </div>
+                <input type="hidden" name="MaSize" id="MaSize" value="" />
+            </div>
+            <div class="filter-section">
+                <label>Màu sắc</label>
+                <div class="filter-tags">
+                    @foreach (var mauSac in Model.MauSacs)
+                    {
+                        <div class="filter-tag" data-value="@mauSac.MaMau" onclick="selectTag(this, 'MaMau')">@mauSac.TenMau</div>
+                    }
+                </div>
+                <input type="hidden" name="MaMau" id="MaMau" value="" />
             </div>
             <div class="filter-section">
                 <label>Khoảng giá</label>
                 <input type="number" name="MinPrice" placeholder="Từ" min="0" value="@Model.MinPrice" />
                 <input type="number" name="MaxPrice" placeholder="Đến" min="0" value="@Model.MaxPrice" />
             </div>
-            <div class="filter-section">
-                <label>Size</label>
-                <select name="MaSize">
-                    <option value="">Tất cả</option>
-                    @foreach (var size in Model.Sizes)
-                    {
-                        <option value="@size.MaSize">@size.TenSize</option>
-                    }
-                </select>
-            </div>
-            <div class="filter-section">
-                <label>Màu sắc</label>
-                <select name="MaMau">
-                    <option value="">Tất cả</option>
-                    @foreach (var mauSac in Model.MauSacs)
-                    {
-                        <option value="@mauSac.MaMau">@mauSac.TenMau</option>
-                    }
-                </select>
-            </div>
             <button type="submit">Lọc sản phẩm</button>
         </form>
     </div>
     <div class="filter-products">
-        <div class="sorting">
+        @* <div class="sorting">
             <label>Sắp xếp theo:</label>
             <select onchange="this.form.submit()" name="SortBy">
-                @if (Model.SortBy == "name_asc")
-                {
-                    <option value="name_asc" selected>Tên A-Z</option>
-                }
-                else
-                {
-                    <option value="name_asc">Tên A-Z</option>
-                }
-
-                @if (Model.SortBy == "name_desc")
-                {
-                    <option value="name_desc" selected>Tên Z-A</option>
-                }
-                else
-                {
-                    <option value="name_desc">Tên Z-A</option>
-                }
-
-                @if (Model.SortBy == "price_asc")
-                {
-                    <option value="price_asc" selected>Giá tăng dần</option>
-                }
-                else
-                {
-                    <option value="price_asc">Giá tăng dần</option>
-                }
-
-                @if (Model.SortBy == "price_desc")
-                {
-                    <option value="price_desc" selected>Giá giảm dần</option>
-                }
-                else
-                {
-                    <option value="price_desc">Giá giảm dần</option>
-                }
+                <option value="name_asc" @(Model.SortBy == "name_asc" ? "selected" : "")>Tên A-Z</option>
+                <option value="name_desc" @(Model.SortBy == "name_desc" ? "selected" : "")>Tên Z-A</option>
+                <option value="price_asc" @(Model.SortBy == "price_asc" ? "selected" : "")>Giá tăng dần</option>
+                <option value="price_desc" @(Model.SortBy == "price_desc" ? "selected" : "")>Giá giảm dần</option>
             </select>
-        </div>
+        </div> *@
         <div class="product-grid">
             @foreach (var product in Model.Products)
             {
                 <div class="product-card">
-                    <img src="~/photoSP/@product.TenSP" alt="@product.TenSP" />
+                    <img src="~/photoSP/@product.UrlAvatar" alt="@product.TenSP" />
                     <h3>@product.TenSP</h3>
-                    <p>@product.GiaBan.ToString("C0")</p>
+                    <p>@product.MinPrice.ToString("N0")đ</p>
                 </div>
             }
         </div>
@@ -190,4 +195,15 @@
         </div>
     </div>
 </div>
+<script>
+    function selectTag(element, inputId) {
+        // Remove 'selected' class from all tags in the same section
+        element.parentElement.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('selected'));
 
+        // Add 'selected' class to the clicked tag
+        element.classList.add('selected');
+
+        // Update the hidden input value
+        document.getElementById(inputId).value = element.dataset.value;
+    }
+</script>

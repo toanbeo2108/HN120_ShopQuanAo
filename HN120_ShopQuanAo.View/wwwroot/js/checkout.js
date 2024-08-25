@@ -213,7 +213,7 @@
                     var tongtiendonhang = 0;
                     var tienship = $('#btn_PhiShip').val().replace(/[^0-9]/g, '');
                     var tongtienhang = $('#tong-tien-hang').text().replace(/[^0-9]/g, '');
-                    var tiengiam = $('#btn_giamgia').val().replace(/[^0-9]/g, '');
+                    var tiengiam = $('#btn_giamgia').val()//.replace(/[^0-9]/g, '');
 
                     tongtiendonhang = parseFloat(tongtienhang) + parseFloat(tienship) - parseFloat(tiengiam);
                     $('#tong-don-hang').val(formatMoney(tongtiendonhang));

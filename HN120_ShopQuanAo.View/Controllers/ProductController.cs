@@ -72,8 +72,7 @@ namespace HN120_ShopQuanAo.View.Controllers
 
             // Lấy sản phẩm đã lọc từ API
             var productsResponse = await _httpClient.GetStringAsync($"https://localhost:7197/api/FilterSanPham/paged?pageNumber={pageNumber}&pageSize=9&sortBy={sortBy}{queryString}");
-            var pagedProducts = JsonConvert.DeserializeObject<PagedResultDto<SanPhamDto>>(productsResponse);
-
+            var pagedProducts = JsonConvert.DeserializeObject<PagedResultDto<ProductWithPriceRangeDto>>(productsResponse);
 
             // Truyền dữ liệu đến View
             var viewModel = new FilterViewModel
