@@ -22,7 +22,7 @@ namespace HN120_ShopQuanAo.Data.Models
         public string? UrlAnhSpct { get; set; }
 
         [Range(0, double.MaxValue, ErrorMessage = "Đơn giá không hợp lệ")]
-        public decimal? DonGia { get; set; }
+        public decimal? DonGia { get; set; } 
 
         [Range(0, double.MaxValue, ErrorMessage = "Giá bán không hợp lệ")]
         public decimal? GiaBan { get; set; }

@@ -35,18 +35,18 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 var hoadon = _appDbContext.HoaDon.FirstOrDefault(c => c.MaHoaDon == hd.MaHoaDon);
                 if (ctsanpham != null)
                 {
-                    if (ctsanpham.SoLuongTon < hd.SoLuongMua)
-                    {
-                        throw new Exception("Số lượng sản phẩm còn lại khồn đủ đáp ứng");
-                    }
-                    else if (ctsanpham.SoLuongTon <= 0)
-                    {
-                        throw new Exception("Sản phẩm này đã hết");
-                    }
-                    else
-                    {
+                    //if (ctsanpham.SoLuongTon < hd.SoLuongMua)
+                    //{
+                    //    throw new Exception("Số lượng sản phẩm còn lại khồn đủ đáp ứng");
+                    //}
+                    //else if (ctsanpham.SoLuongTon <= 0)
+                    //{
+                    //    throw new Exception("Sản phẩm này đã hết");
+                    //}
+                    //else
+                    //{
                         _appDbContext.HoaDonChiTiet.Add(hd);
-                    }
+                   // }
                 }
               
             }

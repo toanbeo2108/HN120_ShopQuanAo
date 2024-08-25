@@ -43,6 +43,15 @@ namespace HN120_ShopQuanAo.API.Controllers
             b.TrangThai = 1;
             return await _irespon.CreateItem(b);
         }
+        //[HttpGet]
+        //public IActionResult GetThuongHieus()
+        //{
+        //    var thuongHieus = _context.ThuongHieu.Select(th => new {
+        //        th.MaThuongHieu,
+        //        th.TenThuongHieu
+        //    }).ToList();
+        //    return Json(thuongHieus);
+        //}
         [HttpPut("[Action]/{id}")]
         public async Task<bool> EditThuongHieu(string id, [FromBody] ThuongHieu _ctsp)
         {

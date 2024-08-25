@@ -7,7 +7,7 @@
    
     //IEnumerable<ChiTietSp> lstctsp = ViewBag.lstctsp as IEnumerable<ChiTietSp>;
     IEnumerable<ChiTietSPView> litspctview = ViewBag.JoinedData   as IEnumerable<ChiTietSPView>;
-    
+   
 }
 @if (litspctview.Any())
 {<div class="row">
@@ -49,43 +49,45 @@
             }
             @foreach (var item in litspctview)
             {
+                if (item.SoLuongTon > 0)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>
+                            <img src="~/photoSanPhamCT/@item.UrlAnhSpct" alt="Combo Image" width="100" height="100" />
 
-                <tr>
-                    <td>@i</td>
-                    <td>
-                        <img src="~/photoSanPhamCT/@item.UrlAnhSpct" alt="Combo Image" width="100" height="100" />
-                   
-                    </td>
-                    <td>
-                        SKU: @item.SKU<br>
-                        Tên sản phẩm: @item.TenSP <br>
-                        Size: @item.TenSize<br>
-                        Màu: @item.TenMau<br>
-                    </td>
-                    <td>
-                        <span class="money">@item.GiaBan</span><br>
-                        <span class="so-luong-kha-dung"> Số lượng khả dụng (@item.SoLuongTon)</span>
-                    </td>
-                    <td>
-                        <button class="btn btn-outline-dange" type="button" id="btn_updatedhct"
-                           data-SKU_="@item.SKU"
-                           data-MaSp_="@item.MaSp"
-                           data-tensz_="@item.TenSize"
-                           data-masize_="@item.MaSize"
-                           data-Tenmau_="@item.TenMau"
-                           data-mamau_="@item.MaMau"
-                           data-makm_="@item.MaKhuyenMai"
-                           data-img_="@item.UrlAnhSpct"
-                           data-dongia_="@item.Dongia"
-                           data-GiaBan_="@item.GiaBan"
-                           data-SoLuongTon_="@item.SoLuongTon"
-                           data-tensp_="@item.TenSP"
-                           data-trangthai_="@item.TrangThai">
-                            <i class="fa-solid fa-plus" style="color: #f00f0f;"></i>
-                          </button>
-                    </td>
-                </tr>
-                i++;
+                        </td>
+                        <td>
+                            SKU: @item.SKU<br>
+                            Tên sản phẩm: @item.TenSP <br>
+                            Size: @item.TenSize<br>
+                            Màu: @item.TenMau<br>
+                        </td>
+                        <td>
+                            <span class="money">@item.GiaBan</span><br>
+                            <span class="so-luong-kha-dung"> Số lượng khả dụng (@item.SoLuongTon)</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-dange" type="button" id="btn_updatedhct"
+                                    data-SKU_="@item.SKU"
+                                    data-MaSp_="@item.MaSp"
+                                    data-tensz_="@item.TenSize"
+                                    data-masize_="@item.MaSize"
+                                    data-Tenmau_="@item.TenMau"
+                                    data-mamau_="@item.MaMau"
+                                    data-makm_="@item.MaKhuyenMai"
+                                    data-img_="@item.UrlAnhSpct"
+                                    data-dongia_="@item.Dongia"
+                                    data-GiaBan_="@item.GiaBan"
+                                    data-SoLuongTon_="@item.SoLuongTon"
+                                    data-tensp_="@item.TenSP"
+                                    data-trangthai_="@item.TrangThai">
+                                <i class="fa-solid fa-plus" style="color: #f00f0f;"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    i++;
+                }
             }
         </tbody>
 

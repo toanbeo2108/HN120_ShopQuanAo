@@ -14,7 +14,6 @@
 
 }
 <style>
-    /* CSS cho modal và thẻ tag */
     .modal-body .form-check {
         display: inline-block;
         margin: 5px;
@@ -72,6 +71,7 @@
     .modal-content {
         padding: 1rem;
     }
+    
 </style>
 
 <h1>Thêm Sản Phẩm</h1>
@@ -231,7 +231,7 @@
                 <!-- Các chi tiết sản phẩm sẽ được thêm vào đây -->
             </tbody>
         </table>
-            <button type="submit" class="btn btn-success">Lưu</button>
+            <button type="button" class="btn btn-success" id="showConfirmModal">Lưu</button>
     </div>
 
     
@@ -299,15 +299,39 @@
     </div>
 </div>
 
+<!-- Modal confim -->
+<div id="confirmModal" class="modal fade" tabindex="-1" aria-labelledby="chatLieuModalLabel" aria-hidden="true">
+    <div class="modal-dialog" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <p >Bạn có chắc chắn muốn thêm sản phẩm này không?</p>
+                @*<p class="tenfalse" stype="display:none">Sản phẩm này đã tồn tại bạn có chắc muốn cập nhật sản phẩm này không?</p>*@
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Không</button>
+                <button type="button" class="btn btn-primary" id="confirmSubmit">Có</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <script>
+
         function previewImage(event) {
             var reader = new FileReader();
             reader.onload = function () {
                 var output = document.getElementById('previewImg');
                 output.src = reader.result;
                 output.style.display = 'block';
-            }
+            }   
             reader.readAsDataURL(event.target.files[0]);
         }
 
@@ -356,9 +380,9 @@
 
             $('#sizeModal').modal('hide');
         }
-            var existingProducts = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP).ToList()));
 
-            function validateFields() {
+                  
+            function validateSanPham() {
                 var imageSP = document.getElementById('imageSP').value;
                 var tenSP = document.getElementById('TenSP').value;
                 var maThuongHieu = document.getElementById('MaThuongHieu').value;
@@ -373,10 +397,7 @@
                     alert('Vui lòng nhập tên sản phẩm.');
                     return false;
                 }
-                if (existingProducts.includes(tenSP.trim())) {
-                    alert('Tên sản phẩm đã tồn tại.');
-                    return false;
-                }
+                
                 if (!maThuongHieu) {
                     alert('Vui lòng chọn thương hiệu.');
                     return false;
@@ -398,15 +419,17 @@
             var container = document.querySelector("#chiTietSpContainer tbody");
             var count = container.children.length;
 
-                if (!validateFields()) {
+                    if (!validateSanPham()) {
                     event.preventDefault();
                 }
-                    if (sizeTags.length == 0 && colorTags.length == 0) {
-                        alert('Hãy chọn ít nhất 1 màu và 1 size');
+                else{
+                        if (sizeTags.length > 0 && colorTags.length > 0) {
+                    document.getElementById("chiTietSpContainer").style.display = "block";
                 }
-            if (sizeTags.length > 0 && colorTags.length > 0) {
-                document.getElementById("chiTietSpContainer").style.display = "block";
-            }
+                }
+                   
+                
+            
 
             sizeTags.forEach(sizeTag => {
                 var size = sizeTag.dataset.value;
@@ -434,13 +457,15 @@
                                         ${colorText}
                                     </td>
                                         <td>
-                                    <input type="number" class="form-control" name="ChiTietSps[${count}].DonGia" required min="0" max="900000000" onblur="checkDonGia(this)" />
+                                       <div class="price-container">
+                                            <input type="number" class="form-control" id="dgctsp" name="ChiTietSps[${count}].DonGia" required min="0" max="900000000" onblur="checkDonGia(this)" />
+                                    </div>
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control" name="ChiTietSps[${count}].SoLuongTon" required min="0" max="999" onblur="checkSoLuongTon(this)" />
+                                        <input type="number" class="form-control" id="soluongctsp" name="ChiTietSps[${count}].SoLuongTon" required min="0" max="999" onblur="checkSoLuongTon(this)" />
                                 </td>
                                     <td>
-                                        <input type="file" class="form-control" name="imagechitietsp" required/>
+                                            <input type="file" class="form-control" id="anhctsp" name="imagechitietsp" required/>
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-danger" onclick="removeRow(this)">Xóa</button>
@@ -451,20 +476,27 @@
                     }
                 });
             });
+                
         }
                 function checkDonGia(input) {
-                if (input.value > 900000000) {
+                if(input.value == ''){
+                        input.value = 1000;
+                    }
+                    else if (input.value > 900000000) {
                     input.value = 900000000;
                 } else if (input.value < 0) {
-                    input.value = 0;
+                    input.value = 1000;
                 }
             }
 
             function checkSoLuongTon(input) {
-                if (input.value > 999) {
+                if(input.value == ''){
+                        input.value = 1;
+                    }
+                    else if (input.value > 999) {
                     input.value = 999;
                 } else if (input.value < 0) {
-                    input.value = 0;
+                    input.value = 1;
                 }
             }
         function removeRow(button) {
@@ -472,65 +504,235 @@
             row.parentNode.removeChild(row);
         }
 
-        $(document).ready(function () {
-            $('#btn_them').on('click', function () {
-                $('#btn_luu').show();
-            });
-        });
-            function addThuongHieu() {
-                    var tenThuongHieu = document.getElementById('TenThuongHieu').value;
-                    if (!tenThuongHieu.trim()) {
-                        alert('Vui lòng nhập tên thương hiệu.');
-                        return;
-                    }
-                    // Thêm option mới vào dropdown Thương Hiệu
-                    var select = document.getElementById('MaThuongHieu');
-                    var option = document.createElement('option');
-                    option.value = tenThuongHieu; // Sử dụng tên làm value, có thể thay đổi
-                    option.innerText = tenThuongHieu;
-                    select.appendChild(option);
-                    $('#thuongHieuModal').modal('hide');
+                 function validateSanPhamCT() {
+            var rows = document.querySelectorAll("#chiTietSpContainer tbody tr");
+            for (var i = 0; i < rows.length; i++) {
+                var gia = rows[i].querySelector("input[name*='DonGia']").value;
+                var soluong = rows[i].querySelector("input[name*='SoLuongTon']").value;
+                var anhctsp = rows[i].querySelector("input[type='file']").value;
+
+                if (!gia.trim()) {
+                    return false;
                 }
+                if (!soluong.trim()) {
+                    return false;
+                }
+                if (!anhctsp) {
+                    return false;
+                }
+            }
+            return true;
+        }
+            function validateorSanPham() {
+                    var imageSP = document.getElementById('imageSP').value;
+                    var tenSP = document.getElementById('TenSP').value;
+                    var maThuongHieu = document.getElementById('MaThuongHieu').value;
+                    var maTheLoai = document.getElementById('MaTheLoai').value;
+                    var maChatLieu = document.getElementById('MaChatLieu').value;
+
+                    if (!imageSP) {
+                        return false;
+                    }
+                    if (!tenSP.trim()) {
+                        return false;
+                    }
+
+                    if (!maThuongHieu) {
+                        return false;
+                    }
+                    if (!maTheLoai) {
+                        return false;
+                    }
+                    if (!maChatLieu) {
+                        return false;
+                    }
+                    return true;
+                }
+        $(document).ready(function () {
+                //var checktensp = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP).ToList()));
+                //                var notification = localStorage.getItem('notification');
+                //            if (notification) {
+                //                notification = JSON.parse(notification);
+                //                $.notify(notification.message, notification.type);
+                //                localStorage.removeItem('notification');
+                //            } 
+                $('#showConfirmModal').on('click', function() {
+                           //var tensp = $('#TenSP').val();
+                    if (validateorSanPham() && validateSanPhamCT()) {
+                    //if (checktensp.includes(tensp)) {
+                    //    $('.tentrue').hide();
+                    //    $('.tenfalse').show();
+                    //} else {
+                    //    $('.tentrue').show();
+                    //    $('.tenfalse').hide();
+                    //}
+                    $('#confirmModal').modal('show');
+                } else {
+                    alert('Vui lòng nhập đầy đủ thông tin sản phẩm và chi tiết sản phẩm.');
+                }
+                });
+
+                // Gửi form khi người dùng nhấn nút "Có"
+                $('#confirmSubmit').on('click', function() {
+                        $('#createProductForm').submit();
+                });
+                var checktenth = @Html.Raw(Json.Serialize(lstTH.Select(p => p.TenThuongHieu.ToUpper()).ToList()));
+                var checktentl = @Html.Raw(Json.Serialize(lstTL.Select(p => p.TenTheLoai.ToUpper()).ToList())); 
+                var checktencl = @Html.Raw(Json.Serialize(lstCL.Select(p => p.TenChatLieu.ToUpper()).ToList()));
+
+        function addThuongHieu() {
+            var tenThuongHieu = $('#TenThuongHieu').val().trim();
+            var checktenThuongHieu = $('#TenThuongHieu').val().trim().toUpperCase();
+            if (!checktenThuongHieu) {
+                alert('Vui lòng nhập tên thương hiệu.');
+                return;
+            }
+            if (checktenth.includes(checktenThuongHieu)) {
+                alert('Tên thương hiệu đã tồn tại.');
+
+                return;
+            }
+            $.post('/Admin/ThuongHieu/CreateThuongHieu', { TenThuongHieu: tenThuongHieu }, function(response) {
+                if (response) {
+                    $('#thuongHieuModal').modal('hide');
+                        $('#TenThuongHieu').val('');
+                    checktenth.push(tenThuongHieu);
+                    getDanhSachThuongHieu(); 
+                      $.notify('Thêm thương hiệu thành công!', 'success');
+                } else {
+                    alert("Thêm thất bại. Vui lòng thử lại.");
+                }
+            }).fail(function() {
+                alert("Có lỗi xảy ra. Vui lòng thử lại.");
+            });
+        }
+
+        function getDanhSachThuongHieu() {
+            $.ajax({
+                        url: '/Admin/ThuongHieu/DSThuongHieu', // Đường dẫn API lấy danh sách thương hiệub
+                type: 'GET',
+                success: function(data) {
+                    var select = $('#MaThuongHieu');
+                    select.empty(); // Xóa các tùy chọn hiện tại
+                    select.append('<option value=""></option>'); // Thêm tùy chọn mặc định
+
+                    data.forEach(function(thuongHieu) {
+                        select.append('<option value="' + thuongHieu.maThuongHieu + '">' + thuongHieu.tenThuongHieu + '</option>');
+                    });
+                },
+                error: function() {
+                    alert('Đã xảy ra lỗi khi lấy danh sách thương hiệu.');
+                }
+            });
+        }
+
 
                 function addTheLoai() {
-                    var tenTheLoai = document.getElementById('TenTheLoai').value;
-                    if (!tenTheLoai.trim()) {
+                    var tenTheLoai = $('#TenTheLoai').val().trim();
+                    var checktenTheLoai = $('#TenTheLoai').val().trim().toUpperCase();
+                    if (!checktenTheLoai) {
                         alert('Vui lòng nhập tên thể loại.');
                         return;
                     }
-                    // Thêm option mới vào dropdown Thể Loại
-                    var select = document.getElementById('MaTheLoai');
-                    var option = document.createElement('option');
-                    option.value = tenTheLoai; // Sử dụng tên làm value, có thể thay đổi
-                    option.innerText = tenTheLoai;
-                    select.appendChild(option);
-                    $('#theLoaiModal').modal('hide');
+                    if (checktentl.includes(checktenTheLoai)) {
+                    alert('Tên thể loại đã tồn tại.');
+                    return;
+                    }
+                    $.post('/Admin/TheLoai/CreateTheLoai', { TenTheLoai: tenTheLoai }, function (response) {
+                            if (response) {
+
+                            $('#theLoaiModal').modal('hide');
+                            $('#TenTheLoai').val('');
+                            checktentl.push(tenTheLoai);
+                                getDanhSachTheLoai();
+                          $.notify('Thêm thể loại thành công!', 'success');
+
+                    } else {
+                        alert("Thêm thất bại. Vui lòng thử lại.");
+                    }
+                }).fail(function() {
+                    alert("Có lỗi xảy ra. Vui lòng thử lại.");
+                });
                 }
+                    function getDanhSachTheLoai() {
+                $.ajax({
+                    url: '/Admin/TheLoai/DSTheLoai', 
+                    type: 'GET',
+                    success: function(data) {
+                            var select = $('#MaTheLoai');
+                        select.empty(); 
+                        select.append('<option value=""></option>');
+                        
+                        data.forEach(function(thuongHieu) {
+                        select.append('<option value="' + thuongHieu.maTheLoai + '">' + thuongHieu.tenTheLoai + '</option>');
+                        });
+                    },
+                    error: function() {
+                        alert('Đã xảy ra lỗi khi lấy danh sách thể loại.');
+                    }
+                });
+            }
 
                 function addChatLieu() {
-                    var tenChatLieu = document.getElementById('TenChatLieu').value;
-                    if (!tenChatLieu.trim()) {
+                    var tenChatLieu = $('#TenChatLieu').val().trim();
+                    var checktenChatLieu = $('#TenChatLieu').val().trim().toUpperCase();
+                    if (!checktenChatLieu) {
                         alert('Vui lòng nhập tên chất liệu.');
                         return;
                     }
-                    // Thêm option mới vào dropdown Chất Liệu
-                    var select = document.getElementById('MaChatLieu');
-                    var option = document.createElement('option');
-                    option.value = tenChatLieu; // Sử dụng tên làm value, có thể thay đổi
-                    option.innerText = tenChatLieu;
-                    select.appendChild(option);
-                    $('#chatLieuModal').modal('hide');
+                    if (checktencl.includes(checktenChatLieu)) {
+                    alert('Tên chất liệu đã tồn tại.');
+                    return;
+                    }
+                    $.post('/Admin/ChatLieu/CreateChatLieu', { TenChatLieu: tenChatLieu }, function (response) {
+                        if (response) {
+                            $('#chatLieuModal').modal('hide');
+                                $('#TenChatLieu').val('');
+                                    checktentl.push(tenChatLieu);
+                                        getDanhSachChatLieu();
+                              $.notify('Thêm chất liệu thành công!', 'success');
+
+                        } else {
+                            alert("Thêm thất bại. Vui lòng thử lại.");
+                        }
+                    });
+                }
+                 function getDanhSachChatLieu() {
+                    $.ajax({
+                                        url: '/Admin/ChatLieu/DSChatLieu', // Đường dẫn API lấy danh sách thương hiệub
+                        type: 'GET',
+                        success: function(data) {
+                                var select = $('#MaChatLieu');
+                            select.empty(); // Xóa các tùy chọn hiện tại
+                            select.append('<option value=""></option>'); // Thêm tùy chọn mặc định
+
+                                data.forEach(function(thuongHieu) {
+                                    select.append('<option value="' + thuongHieu.maChatLieu + '">' + thuongHieu.tenChatLieu + '</option>');
+                            });
+                        },
+                        error: function() {
+                            alert('Đã xảy ra lỗi khi lấy danh sách chất liệu.');
+                        }
+                    });
                 }
 
-                // Gán sự kiện hiển thị modal cho các nút +
-                document.getElementById('btn_addThuongHieu').onclick = function () {
+
+                $('#btn_addThuongHieu').click(function () {
                     $('#thuongHieuModal').modal('show');
-                };
-                document.getElementById('btn_addTheLoai').onclick = function () {
+                });
+
+                $('#btn_addTheLoai').click(function () {
                     $('#theLoaiModal').modal('show');
-                };
-                document.getElementById('btn_addChatLieu').onclick = function () {
+                });
+
+                $('#btn_addChatLieu').click(function () {
                     $('#chatLieuModal').modal('show');
-                };
+                });
+
+                window.addThuongHieu = addThuongHieu;
+                window.addTheLoai = addTheLoai;
+                window.addChatLieu = addChatLieu;
+        });
+            
     </script>
 }

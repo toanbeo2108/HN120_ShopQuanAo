@@ -165,10 +165,6 @@ namespace HN120_ShopQuanAo.View.Controllers
             ViewBag.Message = $"Register failed: {errorResponse}";
             return View();
         }
-
-
-
-
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();

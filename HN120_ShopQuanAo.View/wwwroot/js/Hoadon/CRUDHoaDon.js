@@ -219,11 +219,9 @@ $(document).ready(function () {
     })
    
     $('body').on('click', '#btn_Xacnhandonhang', function () {
-        
-        
-        updateHoaDon(2);
-        AddLichsuhoadon(2);
         let datasp = getSanPhamChiTiet();
+        
+        
         $.ajax({
             url: '/Update_soluongCTsanpham',
             method: 'POST',
@@ -232,9 +230,10 @@ $(document).ready(function () {
             data: JSON.stringify(datasp),
             success: function (re) {
                 if (re.status) {
-                    console.log('Trừ số lượng sản phẩm thành công');
+                    updateHoaDon(2);
+                    AddLichsuhoadon(2);
                 } else {
-                    console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                    $.notify('Số lượng sản phẩm còn lại không đủ');
                 }
             },
             error: function () {
@@ -247,8 +246,18 @@ $(document).ready(function () {
         AddLichsuhoadon(3);
     })
     $('body').on('click', '#btn_GiaoHang', function () {
-        updateHoaDon(4);
-        AddLichsuhoadon(4);
+        $('#table_hoadon tbody tr').each(function () {
+
+            var stt = $(this).find('#stt_hoadon').val();
+            $('#stthoadon_fake').val(stt)
+
+        });
+        $('#btn_trangthai').val(4)
+        $('#pop_huydon').modal('show');
+
+
+        //updateHoaDon(4);
+        //AddLichsuhoadon(4);
     })
     $('body').on('click', '#btn_HoanThanh', function () {
         updateHoaDon(5);
@@ -288,7 +297,9 @@ $(document).ready(function () {
 
             var stt = $(this).find('#stt_hoadon').val();
             $('#stthoadon_fake').val(stt)
+            
         });
+        $('#btn_trangthai').val(6)
         $('#pop_huydon').modal('show');
        
     })
@@ -315,7 +326,37 @@ $(document).ready(function () {
 
             $.post('/Add-lichsuhoadon', { lshd: data }, function (re) {
                 if (re.status) {
-                    updateHoaDon(6);
+                    if ($('#btn_trangthai').val() == 4) {
+                        updateHoaDon(4);
+                       // AddLichsuhoadon(4);
+                    }
+                    if ($('#btn_trangthai').val() == 6) {
+                        updateHoaDon(6);
+                        if ($('#stthoadon_fake').val() == 2 || $('#stthoadon_fake').val() == 3) {
+                            let datasp = getSanPhamChiTiet();
+                            $.ajax({
+                                url: '/Update_soluongCTsanpham',
+                                method: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'json',
+                                data: JSON.stringify(datasp),
+                                success: function (re) {
+                                    if (re.status) {
+                                        console.log('Trừ số lượng sản phẩm thành công');
+                                    } else {
+                                        console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
+                                    }
+                                },
+                                error: function () {
+                                    console.error('Có lỗi xảy ra khi gửi yêu cầu.');
+                                }
+                            });
+                        }
+                    }
+                    //else {
+
+                    //    updateHoaDon(6);
+                    //}
                     window.location.reload();
                 }
                 else {
@@ -326,32 +367,13 @@ $(document).ready(function () {
             })
         }
        
-        if ($('#stthoadon_fake').val() == 2 || $('#stthoadon_fake').val() == 3) {
-            let datasp = getSanPhamChiTiet();
-            $.ajax({
-                url: '/Update_soluongCTsanpham',
-                method: 'POST',
-                contentType: 'application/json',
-                dataType: 'json',
-                data: JSON.stringify(datasp),
-                success: function (re) {
-                    if (re.status) {
-                        console.log('Trừ số lượng sản phẩm thành công');
-                    } else {
-                        console.error('Cập nhật số lượng sản phẩm thất bại: ' + re.message);
-                    }
-                },
-                error: function () {
-                    console.error('Có lỗi xảy ra khi gửi yêu cầu.');
-                }
-            });
-        }
+       
     });
     $('body').on('click', '#btn_xemlichsu', function () {
         $('#pop_lshd').modal('show');
     })
-    //var dtspct = getSanPhamChiTiet();
-    //console.log(dtspct);
+    
+    
 })
 
 function updateHoaDon(status) {
@@ -574,144 +596,4 @@ function AddThanhToanHoaDon_() {
     })
 }
 
-function In() {
 
-
-    // Lấy dữ liệu từ các ô nhập liệu
-    var khachhang = selectedOptionkh.text() != 'Khách lẻ' ? selectedOptionkh.text() : 'Khách lẻ';
-    var mahoadon = $('#btn_ma').val();
-    var tongtien = $('#btn_tongtien').val();
-    var ngaytao = $('#btn_NgayTaoDon').val();
-    var voucher = selectedOption.text() != 'Chọn Voucher' ? selectedOption.text() : '- 0 VNĐ';
-
-    var phiship = $('#btn_PhiShip_fake').val() != '' ? $('#btn_PhiShip_fake').val() : 0;
-    var tienkhachphaitra = $('#btn_tienkhachphaitra').val();
-    var khachdua = $('#btn_tienkhachdua').val() != '' ? $('#btn_tienkhachdua').val() : 0;
-    var tienthua = $('#btn_tienthua').val() != '' ? $('#btn_tienthua').val() : 0;
-    var nv = $('#btn_UserName').val();
-    var pt_thanhtoan = pt;
-    var trangthai = thanhtoan;
-
-
-    // Tạo nội dung cho cửa sổ in
-    var content = `
-        <html>
-            <head>
-               
-               <style>
-                    table {
-                        width: 100%;
-                        
-                    }
-                    th, td {
-                        padding: 12px;
-                       
-                    }
-                    th {
-                        text-align: left;
-                        width: 50px;
-                        padding-left: 0;
-                    }
-                     td {
-                        width: 150px;
-                    }
-                     h1 {
-                        text-align: left;
-                        font-weight: bold;
-                        margin-bottom: 20px;
-                    }
-                </style>
-                 
-            </head>
-            <body>
-             <h1>Phiếu thanh toán</h1>
-                <table id="phieuthanhtoan" class="info-table">
-                    <tr>
-                        <th><strong>Nhân viên: </strong></th>
-                        <td>${nv}</td>
-                    </tr>
-                    <tr>
-                        <th><strong>Khách hàng:</strong></th>
-                        <td>${khachhang}</td>
-                    </tr>
-                    <tr>
-                        <th><strong>Mã hóa đơn:</strong></th>
-                        <td>${mahoadon}</td>
-                    </tr>
-                    <tr>
-                        <th><strong>Ngày tạo:</strong></th>
-                        <td>${ngaytao}</td>
-                    </tr>
-                    <tr>
-                        <th><strong>Tổng tiền:</strong></th>
-                        <td>${tongtien} VNĐ</td>
-                       
-                    </tr>
-                    <tr>
-                        <th><strong>Voucher:</strong></th>
-                        <td>${voucher}</td>
-                        
-                    </tr>
-                    <tr>
-                        <th><strong>Phí ship:</strong></th>
-                        <td>${phiship} VNĐ</td>
-                        
-                    </tr>
-                    <tr>
-                        <th><strong>Tiền khách phải trả:</strong></th>
-                        <td>${tienkhachphaitra} VNĐ</td>
-                        
-                    </tr>
-                    <tr>
-                        <th><strong>Khách đưa:</strong></th>
-                        <td>${khachdua} VNĐ</td>
-                        
-                    </tr>
-                    <tr>
-                        <th><strong>Tiền thừa:</strong></th>
-                        <td>${tienthua} VNĐ</td><td></td>
-                    </tr>
-                    <tr>
-                        <th><strong>Phương thức thanh toán:</strong></th>
-                        <td>${pt_thanhtoan}</td>
-                    </tr>
-                    <tr>
-                        <th><strong>Trạng thanh toán:</strong></th>
-                        <td>${trangthai}</td>
-                    </tr>
-                </table>
-            </body>
-        </html>`;
-
-    // Mở cửa sổ mới và ghi nội dung vào đó
-    var printWindow = window.open('', '', `height=800px,width=800px`);
-    printWindow.document.write(content);
-    printWindow.document.close();
-
-    // Đợi nội dung được tải xong và gọi hàm in
-    printWindow.onload = function () {
-
-        printWindow.print();
-
-        printWindow.close();
-        if ($('#btn_Status').val() == 5) {
-            AddThanhTOanHoaDon();
-            localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
-            window.location.reload();
-
-        }
-        if ($('#btn_Status').val() == 2) {
-            AddThanhTOanHoaDon();
-            localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
-            window.location.reload();
-
-        }
-        if ($('#btn_Status').val() == 4) {
-            localStorage.setItem('notification', JSON.stringify({ message: 'Tạo đơn thành công', type: 'success' }));
-            AddThanhTOanHoaDon();
-        }
-
-    };
-
-
-}

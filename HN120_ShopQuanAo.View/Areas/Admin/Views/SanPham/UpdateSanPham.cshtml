@@ -7,30 +7,45 @@
     List<ThuongHieu> lstTH = ViewBag.lstTH as List<ThuongHieu>;
     List<TheLoai> lstTL = ViewBag.lstTL as List<TheLoai>;
     List<ChatLieu> lstCL = ViewBag.lstCL as List<ChatLieu>;
-    var lstSZ = ViewBag.lstSZ as List<Size> ?? new List<Size>();
-    var lstms = ViewBag.lstms as List<MauSac> ?? new List<MauSac>();
+    var lstSZ = ViewBag.lstSZ as List<Size>;
+    var lstms = ViewBag.lstms as List<MauSac>;
     var lstkm = ViewBag.lstkm as List<KhuyenMai>;
+    var lstSP = ViewBag.lstSP as List<SanPham>;
     var sp = ViewBag.sp as SanPham;
     var ctsp = ViewBag.ctsp as List<ChiTietSp>;
+    var existingProductNames = lstSP.Where(p => p.TenSP.ToLower() != sp.TenSP.ToLower()).Select(p => p.TenSP.ToLower()).ToList();
 }
-
 <style>
     .header h2 {
         margin: 0;
+        font-size: 24px;
+        color: #333;
     }
 
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
 
     .form-control, .form-select {
         width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
+        padding: 12px;
+        margin-bottom: 12px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        font-size: 16px;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
     }
 
     .btn-primary, .btn-warning {
-        margin-right: 10px;
+        margin-right: 15px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
     }
 
     .btn-primary {
@@ -55,127 +70,200 @@
 
     .text-danger {
         color: red;
+        font-size: 14px;
     }
 
     .container-xl {
-        max-width: 800px;
-        margin: 0 auto;
+        max-width: 900px;
+        margin: 20px auto;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
     }
 
     .card {
-        margin-bottom: 20px;
+        margin-bottom: 30px;
+        border: none;
+        border-radius: 10px;
+        background-color: #ffffff;
     }
 
     .card-header {
-        background-color: #f8f9fa;
-        padding: 10px 15px;
-        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        padding: 15px 20px;
+        font-size: 18px;
         font-weight: bold;
+        border-radius: 10px 10px 0 0;
     }
 
     .card-body {
-        padding: 15px;
+        padding: 20px;
     }
 
     .card-body label {
         font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 8px;
     }
 
-    .img-account-profile {
+    .img-account-profile, .img-spdetai {
         width: 100px;
         height: 100px;
         object-fit: cover;
-        margin-bottom: 10px;
+        border-radius: 50%;
+        margin-bottom: 15px;
+    }
+
+    .table thead th {
+        font-weight: bold;
+        font-size: 16px;
+        background-color: #f1f1f1;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .table tbody td {
+        text-align: center;
+        vertical-align: middle;
+        padding: 12px;
+    }
+
+    .modal-header {
+        background-color: #007bff;
+        color: white;
+        border-radius: 10px 10px 0 0;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .modal-footer {
+        border-top: none;
+        padding: 15px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .modal-footer .btn {
+        width: 100px;
+        margin: 0 10px;
+    }
+
+    .modal-body p {
+        font-size: 16px;
+        text-align: center;
+        padding: 20px 0;
+    }
+    .product-detail-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .product-detail-row input[type="file"] {
+        margin-left: 15px;
+        flex: 1;
+        width: 0;
+        padding: 12px 0;
+        margin: 0;
+    }
+
+    .product-detail-row .img-spdetai {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-right: 15px;
     }
 </style>
 
 <div class="container-xl px-4 mt-4">
     <div class="card">
         <div class="card-body">
-            <form asp-action="UpdateSanPham" method="post" enctype="multipart/form-data">
+            <form id="updateProductForm" asp-action="UpdateSanPham" method="post" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
                     <div class="col-md-6">
-                <input asp-for="MaSp" type="hidden" />
-                
-                <div class="form-group text-center">
-                    @if (Model.UrlAvatar == null)
-                    {
-                                <img class="img-account-profile" src="~/photoSP/default.png" alt="Product Image" />
-                    }
-                    else
-                    {
-                                <img class="img-account-profile" src="~/photoSP/@Model.UrlAvatar" alt="Product Image" />
-                    }
-                </div>
+                        <input asp-for="MaSp" type="hidden" />
 
-                
-                    <input type="file" class="form-control" name="imageFile" id="productImageFile" />
-                    
-                
-                <div class="form-group">
-                    <label asp-for="TenSP" class="control-label">Tên sản phẩm</label>
-                    <input asp-for="TenSP" class="form-control" />
-                    <span asp-validation-for="TenSP" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Mota" class="control-label">Mô tả</label>
-                    <input asp-for="Mota" class="form-control" />
-                    <span asp-validation-for="Mota" class="text-danger"></span>
-                </div>
-                </div>
-                <div class="col-md-4">
-                <div class="form-group">
-                    <label asp-for="MaThuongHieu" class="control-label">Thương hiệu</label>
-                    <select class="form-select" asp-for="MaThuongHieu" aria-label="Default select example">
-                        <option value=""></option>
-                        @foreach (ThuongHieu item in lstTH)
-                        {
-                                <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="MaTheLoai" class="control-label">Thể loại</label>
-                    <select class="form-select" asp-for="MaTheLoai" aria-label="Default select example">
-                        <option value=""></option>
-                        @foreach (TheLoai item in lstTL)
-                        {
-                                <option value="@item.MaTheLoai">@item.TenTheLoai</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="MaChatLieu" class="control-label">Chất liệu</label>
-                    <select class="form-select" asp-for="MaChatLieu" aria-label="Default select example">
-                        <option value=""></option>
-                        @foreach (ChatLieu item in lstCL)
-                        {
-                                <option value="@item.MaChatLieu">@item.TenChatLieu</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="TrangThai" class="control-label">Trạng thái:    </label>
+                        <div class="form-group text-center">
+                            @if (Model.UrlAvatar == null)
+                            {
+                                        <img class="img-account-profile" src="~/photoSP/default.png" alt="Product Image" />
+                            }
+                            else
+                            {
+                                        <img class="img-account-profile" src="~/photoSP/@Model.UrlAvatar" alt="Product Image" />
+                            }
+                        </div>
+
+                        <input type="file" class="form-control" name="imageFile" id="productImageFile" />
+
+                        <div class="form-group">
+                            <label asp-for="TenSP" class="control-label">Tên sản phẩm</label>
+                            <input asp-for="TenSP" id="tensp_inp" class="form-control" />
+                            <span asp-validation-for="TenSP" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Mota" class="control-label">Mô tả</label>
+                            <input asp-for="Mota" class="form-control" />
+                            <span asp-validation-for="Mota" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="MaThuongHieu" class="control-label">Thương hiệu</label>
+                            <select class="form-select" id="thuonghieu_in" asp-for="MaThuongHieu" aria-label="Default select example">
+                                <option value=""></option>
+                                @foreach (ThuongHieu item in lstTH)
+                                {
+                                            <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MaTheLoai" class="control-label">Thể loại</label>
+                            <select class="form-select" id="theloai_in" asp-for="MaTheLoai" aria-label="Default select example">
+                                <option value=""></option>
+                                @foreach (TheLoai item in lstTL)
+                                {
+                                            <option value="@item.MaTheLoai">@item.TenTheLoai</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MaChatLieu" class="control-label">Chất liệu</label>
+                            <select class="form-select" id="chatlieu_in" asp-for="MaChatLieu" aria-label="Default select example">
+                                <option value=""></option>
+                                @foreach (ChatLieu item in lstCL)
+                                {
+                                            <option value="@item.MaChatLieu">@item.TenChatLieu</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TrangThai" class="control-label">Trạng thái:</label>
                             @if (sp.TrangThai == 0)
                             {
-                                                    <span>Không hoạt động</span>
+                                        <span>Không hoạt động</span>
                             }
                             else if (sp.TrangThai == 1)
                             {
-                                                    <span>Hoạt động</span>
+                                        <span>Hoạt động</span>
                             }
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Sửa" class="btn btn-primary" />
-                    <a asp-action="AllSanPhamManager" class="btn btn-warning">Sản Phẩm</a>
-                </div>
-                </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" id="submitProductForm" class="btn btn-primary">Sửa</button>
+                            <a asp-action="AllSanPhamManager" class="btn btn-warning">Sản Phẩm</a>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 <h1>Chi tiết</h1>
 <table class="table">
     <thead>
@@ -183,10 +271,8 @@
             <th>STT</th>
             <th>Size</th>
             <th>Màu</th>
-            <th>Khuyến mại</th>
             <th>Ảnh</th>
             <th>Đơn giá</th>
-            <th>Giá bán</th>
             <th>Số lượng</th>
             <th>Trạng thái</th>
             <th></th>
@@ -198,64 +284,192 @@
         }
         @foreach (var item in ctsp)
         {
+                    <form id="updateChiTietSpForm-@item.SKU" asp-action="UpdateChiTietSp" asp-controller="ChiTietSP" method="post" enctype="multipart/form-data">
                         <tr>
                             <td>@i</td>
+                            <input name="SKU" type="hidden" value="@item.SKU">
+                            <input name="MaSp" type="hidden" value="@item.MaSp">
                             <td>
-                    @{
-                        var size = lstSZ.FirstOrDefault(th => th.MaSize == item.MaSize)?.TenSize ?? "Lỗi Hiển Thị";
-                    }
-                    @size
+                        @{
+                            var size = lstSZ.FirstOrDefault(th => th.MaSize == item.MaSize)?.TenSize ?? "Lỗi Hiển Thị";
+                        }
+                        @size
                             </td>
                             <td>
-                    @{
-                        var mau = lstms.FirstOrDefault(th => th.MaMau == item.MaMau)?.TenMau ?? "Lỗi Hiển Thị";
-                    }
-                    @mau
+                        @{
+                            var mau = lstms.FirstOrDefault(th => th.MaMau == item.MaMau)?.TenMau ?? "Lỗi Hiển Thị";
+                        }
+                        @mau
+                            </td>
+                            <td class="product-detail-row">
+                            @if (item.UrlAnhSpct == null)
+                            {
+                                                <img class="img-spdetai" src="~/photoSanPhamCT/default.png" alt="Product Detail Image" />
+                            }
+                            else
+                            {
+                                                <img class="img-spdetai" src="~/photoSanPhamCT/@item.UrlAnhSpct" alt="Product Detail Image" />
+                            }
+                                <input type="file" class="form-control" name="imagectspFile" id="productdetailImageFile" />
                             </td>
                             <td>
-                    @{
-                        var khuyenmai = lstkm.FirstOrDefault(th => th.MaKhuyenMai == item.MaKhuyenMai)?.TenKhuyenMai ?? "Hiện không có đợt giảm giá nào";
-                    }
-                    @khuyenmai
+                        @{
+                            var formattedDonGia = item.DonGia % 1 == 0 ? $"{item.DonGia:0}" : $"{item.DonGia:0.00}";
+                        }
+                                <input type="number" name="DonGia" id="dongia_in" class="form-control" value="@formattedDonGia" required min="0" max="900000000" onblur="checkDonGia(this)" />
                             </td>
                             <td>
-                                <img src="~/photoSanPhamCT/@item.UrlAnhSpct" alt="chi tiet sp Image" width="100" height="100" />
+                                    <input type="number" name="SoLuongTon" id="soluong_in" class="form-control" value="@item.SoLuongTon" required min="0" max="999" onblur="checkSoLuongTon(this)" />
                             </td>
-                            <td>@String.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.DonGia)</td>
-                            <td>@String.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.GiaBan)</td>
-                            <td>@item.SoLuongTon</td>
                             <td>
-                    @if (item.TrangThai == 0)
-                    {
-                                                <span>Không hoạt động</span>
-                    }
-                    else if (item.TrangThai == 1)
-                    {
-                                                <span>Hoạt động</span>
-                    }
+                        @if (item.TrangThai == 0)
+                        {
+                                            <span>Không hoạt động</span>
+                        }
+                        else if (item.TrangThai == 1)
+                        {
+                                            <span>Hoạt động</span>
+                        }
                             </td>
-                            <td style="text-align: center; margin-bottom: 20px">
-                                <a asp-action="UpdateChiTietSp" asp-controller="ChiTietSP" asp-area="Admin" class="btn btn-primary" asp-route-id="@item.SKU">Sửa</a>
+                            <td style="text-align: center;">
+                                <button type="button" class="btn btn-primary suact" data-sku="@item.SKU">Sửa</button>
                             </td>
                         </tr>
+                    </form>
             i++;
         }
     </tbody>
 </table>
+
+<!-- Modal confirm -->
+<div id="confirmModal" class="modal fade" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="editsp" style="display: none;">Bạn có chắc chắn muốn sửa sản phẩm này không?</p>
+                <p class="editct" style="display: none;">Bạn có chắc chắn muốn sửa chi tiết này không?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Không</button>
+                <button type="button" class="btn btn-primary" id="confirmSubmit">Có</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                $('#productImageFile').change(function (e) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $('.img-account-profile').attr('src', e.target.result);
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+            <script>
+                    function checkSoLuongTon(input) {
+                    if(input.value == ''){
+                        input.value = 1;
                     }
-                    reader.readAsDataURL(e.target.files[0]);
+                    else if (input.value > 999) {
+                        input.value = 999;
+                    } else if (input.value < 0) {
+                        input.value = 1;
+                    }
+                    }
+                    function checkDonGia(input) {
+                            if(input.value == ''){
+                                input.value = 1000;
+                            }
+                                else if (input.value > 900000000) {
+                                    input.value = 900000000;
+                            } else if (input.value < 0) {
+                                input.value = 1000;
+                            }
+                    }
+                $(document).ready(function () {
+                        $('#productImageFile').change(function (e) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('.img-account-profile').attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(e.target.files[0]);
+                    });
+                    $('input[type="file"][id="productdetailImageFile"]').change(function (e) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $(e.target).closest('tr').find('.img-spdetai').attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(e.target.files[0]);
+                    });
+
+                    var checktensp = @Html.Raw(Json.Serialize(existingProductNames));
+
+                    $('#submitProductForm').on('click', function () {
+                        var isValid = true;
+                        var tensp = $('#tensp_inp').val().trim();
+                        var tenspck = $('#tensp_inp').val().trim().toLowerCase();
+
+
+                        if ($('#tensp_inp').val().trim() === "") {
+                            isValid = false;
+                            alert('Vui lòng nhập tên sản phẩm.');
+                        }
+
+                        if (checktensp.includes(tenspck)) {
+                            alert('Tên sản phẩm đã tồn tại. Vui lòng chọn tên khác.');
+                            isValid = false;
+                        }
+
+                        if ($('#thuonghieu_in').val() === "") {
+                            isValid = false;
+                            alert('Vui lòng chọn thương hiệu.');
+                        }
+
+                        if ($('#theloai_in').val() === "") {
+                            isValid = false;
+                            alert('Vui lòng chọn thể loại.');
+                        }
+
+                        if ($('#chatlieu_in').val() === "") {
+                            isValid = false;
+                            alert('Vui lòng chọn chất liệu.');
+                        }
+
+                        if (isValid) {
+                            $('.editsp').show();
+                            $('.editct').hide();
+                            $('#confirmModal').modal('show');
+                        }
+                    });
+
+                        $('.suact').on('click', function () {
+                        var sku = $(this).data('sku');
+                        var form = $('#updateChiTietSpForm-' + sku);
+                        var isValid = true;
+
+                        form.find('input').each(function () {
+                            if ($(this).val().trim() === "") {
+                                isValid = false;
+                                alert('Vui lòng nhập đầy đủ thông tin chi tiết sản phẩm.');
+                            }
+                        });
+
+                        if (isValid) {
+                            $('.editsp').hide();
+                            $('.editct').show();
+                            $('#confirmModal').modal('show');
+                            $('#confirmSubmit').data('sku', sku);
+                        }
+                    });
+
+                    $('#confirmSubmit').on('click', function () {
+                        var sku = $(this).data('sku');
+                        if (sku) {
+                            $('#updateChiTietSpForm-' + sku).submit();
+                        } else {
+                            $('#updateProductForm').submit();
+                        }
+                    });
                 });
-            });
-        </script>
+            </script>
 }

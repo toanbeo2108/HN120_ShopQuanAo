@@ -41,6 +41,18 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View(lstBook);
         }
         [HttpGet]
+        public async Task<IActionResult> DSTheLoai()
+        {
+            var urlBook = $"https://localhost:7197/api/TheLoai/GetAllTheLoai";
+            //var httpClient = new HttpClient();
+            var responBook = await _httpClient.GetAsync(urlBook);
+            string apiDataBook = await responBook.Content.ReadAsStringAsync();
+            var lstTL = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataBook);
+
+            return Json(lstTL);
+        }
+
+        [HttpGet]
         public IActionResult CreateTheLoai()
         {
             return View();

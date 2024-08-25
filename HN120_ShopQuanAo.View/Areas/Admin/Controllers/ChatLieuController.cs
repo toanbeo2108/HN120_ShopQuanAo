@@ -43,6 +43,17 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             return View(lstBook);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DSChatLieu()
+        {
+            var urlBook = $"https://localhost:7197/api/ChatLieu/GetAllChatLieu";
+            var responBook = await _httpClient.GetAsync(urlBook);
+            string apiDataBook = await responBook.Content.ReadAsStringAsync();
+            var lstCL = JsonConvert.DeserializeObject<List<ChatLieu>>(apiDataBook);
+            return Json(lstCL);
+
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateChatLieu(string TenChatLieu)
         {

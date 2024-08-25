@@ -1,10 +1,13 @@
-﻿using HN120_ShopQuanAo.Data.Models;
+﻿using HN120_ShopQuanAo.API.Data;
+using HN120_ShopQuanAo.Data.Models;
 using HN120_ShopQuanAo.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using SendGrid;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Policy;
 using System.Text;
 
@@ -16,11 +19,13 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         private readonly ILogger<SanPhamController> _logger;
         IHttpClientFactory _httpClientFactory;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly AppDbContext _appDbContext;
 
         public SanPhamController(ILogger<SanPhamController> logger, IHttpClientFactory httpClientFactory, IWebHostEnvironment hostEnvironment)
         {
             _httpClient = new HttpClient();
             _logger = logger;
+            _appDbContext = new AppDbContext();
             _httpClientFactory = httpClientFactory;
             _hostEnvironment = hostEnvironment;
         }
@@ -120,7 +125,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             await LoadDataForViewBag();
             return PartialView("_SanPhamList", lstSP);
         }
-
+        
         [HttpGet]
         public async Task<IActionResult> CreateSanPham()
         {
@@ -129,41 +134,43 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSanPham(AddSpViewModel model, IFormFile imageSP, List<IFormFile> imagechitietsp)
+        public async Task<IActionResult> CreateSanPham(AddSpViewModel model, IFormFile imageSP, List<IFormFile> imagechitietsp, string confirm)
         {
-            // Xử lý ảnh đại diện sản phẩm
-            if (imageSP != null && imageSP.Length > 0)
-            {
-                model.UrlAvatar = await UploadImageAsync(imageSP, "photoSP");
-            }
-
-            // Xử lý lưu ảnh chi tiết sản phẩm
-            for (int i = 0; i < imagechitietsp.Count; i++)
-            {
-                var imageFile = imagechitietsp[i];
-                if (imageFile != null && imageFile.Length > 0)
-                {
-                    model.ChiTietSps[i].UrlAnhSpct = await UploadImageAsync(imageFile, "photoSanPhamCT");
-                }
-            }
             
-            // Gọi API để thêm sản phẩm và chi tiết sản phẩm
-            var httpClient = _httpClientFactory.CreateClient();
-            var url = "https://localhost:7197/api/SanPham/AddSpWithDetails";
-            var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(url, content);
+                // Xử lý ảnh đại diện sản phẩm
+                if (imageSP != null && imageSP.Length > 0)
+                {
+                    model.UrlAvatar = await UploadImageAsync(imageSP, "photoSP");
+                }
 
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("AllSanPhamManager", "SanPham", new { area = "Admin" });
-            }
+                // Xử lý lưu ảnh chi tiết sản phẩm
+                for (int i = 0; i < imagechitietsp.Count; i++)
+                {
+                    var imageFile = imagechitietsp[i];
+                    if (imageFile != null && imageFile.Length > 0)
+                    {
+                        model.ChiTietSps[i].UrlAnhSpct = await UploadImageAsync(imageFile, "photoSanPhamCT");
+                    }
+                }
 
+                // Gọi API để thêm sản phẩm và chi tiết sản phẩm
+                var httpClient = _httpClientFactory.CreateClient();
+                var url = "https://localhost:7197/api/SanPham/AddOrUpdateSpWithDetails";
+                var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync(url, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("AllSanPhamManager", "SanPham", new { area = "Admin" });
+                }
+            
 
             // Lấy lại dữ liệu cho ViewBag nếu ModelState không hợp lệ
             await LoadDataForViewBag();
 
             return View(model);
         }
+
 
         private async Task<string> UploadImageAsync(IFormFile imageFile, string folderName)
         {
@@ -181,19 +188,16 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
         private async Task LoadDataForViewBag()
         {
             var httpClient = _httpClientFactory.CreateClient();
-
             var urlTL = "https://localhost:7197/api/TheLoai/GetAllTheLoai";
             var responTL = await httpClient.GetAsync(urlTL);
             string apiDataTL = await responTL.Content.ReadAsStringAsync();
             var lstTL = JsonConvert.DeserializeObject<List<TheLoai>>(apiDataTL);
             ViewBag.lstTL = lstTL;
-
             var urlTH = "https://localhost:7197/api/ThuongHieu/GetAllThuongHieu";
             var responTH = await httpClient.GetAsync(urlTH);
             string apiDataTH = await responTH.Content.ReadAsStringAsync();
             var lstTH = JsonConvert.DeserializeObject<List<ThuongHieu>>(apiDataTH);
             ViewBag.lstTH = lstTH;
-
             var urlCL = "https://localhost:7197/api/ChatLieu/GetAllChatLieu";
             var responCL = await httpClient.GetAsync(urlCL);
             string apiDataCL = await responCL.Content.ReadAsStringAsync();
@@ -218,7 +222,13 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var lstSP = JsonConvert.DeserializeObject<List<SanPham>>(apiDataSP);
             ViewBag.lstSP = lstSP;
 
+
+
         }
+
+        
+        
+
 
 
         [HttpGet]
@@ -264,13 +274,6 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
             var lstsp = JsonConvert.DeserializeObject<List<SanPham>>(apiDatasp);
             var sp = lstsp.FirstOrDefault(x => x.MaSp == id);
             ViewBag.sp = sp;
-
-            var urlkm = "https://localhost:7197/api/KhuyenMai/GetAllKhuyenMai";
-            var responkm = await _httpClient.GetAsync(urlkm);
-            responkm.EnsureSuccessStatusCode();
-            string apiDatakm = await responkm.Content.ReadAsStringAsync();
-            var lstkm = JsonConvert.DeserializeObject<List<KhuyenMai>>(apiDatakm);
-            ViewBag.lstkm = lstkm;
 
             var urlctsp = $"https://localhost:7197/api/CTSanPham/GetAllCTSanPham";
             var responctsp = await _httpClient.GetAsync(urlctsp);

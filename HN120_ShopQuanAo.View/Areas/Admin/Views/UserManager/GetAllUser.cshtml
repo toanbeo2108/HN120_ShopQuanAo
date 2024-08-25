@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "GetAllUser";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    string ReturnUrl = ViewBag.ReturnUrl;
 
 }
 <style>
@@ -42,7 +43,7 @@
 
 <!-- Form hoặc nút lọc -->
 <div class="filter-form">
-    <a class="add-account-btn btn btn-primary" asp-controller="UserManager" asp-action="CreateAnAccount">+ Thêm mới tài khoản</a>
+    <a class="add-account-btn btn btn-primary" asp-controller="UserManager" asp-action="CreateUserAccount">+ Thêm mới tài khoản</a>
 </div>
 
 <table id="tble_ajax" class="table" enctype="multipart/form-data">
@@ -122,7 +123,7 @@
 
                 </td>
                 <td>
-                    @(items.Birthday.HasValue ? items.Birthday.Value.ToString("dd/MM/yyyy") : "N/A")
+                    @(items.Birthday.HasValue ? items.Birthday.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")
                 </td>
                 <td>
 
@@ -134,9 +135,13 @@
                     {
                         <span style="color:red">Đã khóa</span>
                     }
+                    else if (items.Status == -1)
+                    {
+                        <span style="color:violet">Chờ xác nhận</span>
+                    }
                 </td>
                 <td>
-                    <a asp-controller="UserManager" asp-action="Update" asp-route-id="@items.Id" class="btn btn-primary">
+                    <a asp-controller="UserManager" asp-action="Update" asp-route-id="@items.Id" asp-route-returnUrl="@ReturnUrl" class="btn btn-primary">
                         <i class="bi bi-gear-fill"></i>
                     </a>
                     @if (items.Status == 1)
