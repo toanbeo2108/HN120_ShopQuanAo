@@ -1,4 +1,5 @@
-﻿using HN120_ShopQuanAo.Data.Models;
+﻿using HN120_ShopQuanAo.API.Data;
+using HN120_ShopQuanAo.Data.Models;
 using HN120_ShopQuanAo.View.Areas.Customer.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -9,13 +10,15 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
     public class VoucherController : Controller
     {
         private HttpClient _httpClient;
+        private readonly AppDbContext _appDbContext;
         public VoucherController()
-        {
+        {   _appDbContext = new AppDbContext();
             _httpClient = new HttpClient();
         }
         [HttpGet]
         public async Task<IActionResult> khuyenmai()
         {
+            var maND = Request.Cookies["UserId"];
             try
             {
                 var urlBook = $"https://localhost:7197/GetAllVoucher";
@@ -47,6 +50,13 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
                             voucher.TrangThai = 2; // Voucher đã kết thúc
                         }
                     }
+
+
+                    var urlUVC = $"https://localhost:7197/api/Voucher_User/GetVoucher_UserbyUserId/{maND}";
+                    var responseUVC = await _httpClient.GetAsync(urlUVC);
+                    string apiurlUVC = await responseUVC.Content.ReadAsStringAsync();
+                    var lstUVC = JsonConvert.DeserializeObject<List<User_Voucher>>(apiurlUVC);
+                    ViewBag.lstUVC = lstUVC;
 
                     lstBook = lstBook.OrderByDescending(v => v.MaVoucher).ToList();
                     ViewBag.lstVoucher = lstBook;

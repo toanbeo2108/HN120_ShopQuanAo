@@ -13,7 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script src="~/js/locdetailnguoidung.js"></script>
+<script src="~/js/formatjs.js"></script>
 
 <div class="shopping_cart_area">
     <form action="#">
@@ -42,7 +42,7 @@
                                         <td class="product_name"><a href="#">@item.TenSP (@item.TenMau) (@item.TenSize)</a></td>
                                         <td name="tien" class="product-price">@item.DonGia</td>
                                         <td class="product_quantity"><input min="0" max="100" value="@item.SoLuong" type="number"></td>
-                                        <td name="tien" class="product-price">@item.ThanhTien</td>
+                                        <td name="tien" id="total" class="product-price">@item.ThanhTien</td>
                                     </tr>
                                     }
 
@@ -77,7 +77,7 @@
                             <a href="#">Update Tiền Ship</a>
                             <div class="cart_subtotal">
                                 <p>Tổng tiền cần trả</p>
-                                <p  class="cart_amount" name="tien">@tiencantra</p>
+                                <p id="total_amount" class="cart_amount" name="tien">@tiencantra</p>
                             </div>
                             @if (tienship > 0)
                             {
@@ -105,4 +105,5 @@
         text-decoration: none;
     }
 </style>
-<script src="~/js/formatjs.js"></script>
+<script src="~/js/locdetailnguoidung.js"></script>
+
