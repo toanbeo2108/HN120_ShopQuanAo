@@ -117,10 +117,40 @@ function parseMoneyToFloat(formattedAmount) {
 
 
 
+//document.addEventListener('input', function () {
+//    const quantityInputs = document.querySelectorAll('.quantity-input');
+    
+//});
 
     document.addEventListener('DOMContentLoaded', function () {
         // Lấy tất cả các ô input số lượng
         const quantityInputs = document.querySelectorAll('.quantity-input');
+        quantityInputs.forEach(input => {
+            input.addEventListener('input', function () {
+                // Lấy đơn giá từ thuộc tính data-don-gia
+
+                let value = input.value;
+                // Kiểm tra nếu giá trị rỗng hoặc không phải là số
+                console.log(value);
+                if (value === '' || isNaN(value)) {
+                    input.value = 1;
+                    location.reload();
+                } else {
+                    // Chuyển giá trị về dạng số nguyên để so sánh
+                    value = parseInt(value, 10);
+
+                    // Kiểm tra nếu giá trị nhỏ hơn 1
+                    if (value < 1) {
+                        input.value = 1;
+                    }
+
+                    // Kiểm tra nếu giá trị lớn hơn 100
+                    if (value > 100) {
+                        input.value = 100;
+                    }
+                }
+            });
+        });
         function calculateTotalAmount() {
             let totalAmountItem = 0;
             const totalCells = document.querySelectorAll('td[role="money"]');
@@ -136,6 +166,7 @@ function parseMoneyToFloat(formattedAmount) {
 
             // Cập nhật tổng tiền cần trả
             $('#amount_items').val(formatMoney(totalAmountItem)) ;
+            $('#total_amount').val(formatMoney(totalAmountItem)) ;
         }
         // gửi ajax về controller
         function sendQuantityToServer(maGHCT, quantity) {
@@ -153,10 +184,13 @@ function parseMoneyToFloat(formattedAmount) {
                 })
                 .then(data => {
                     if (data === true) {
-                       
-                    } else {
+
+                    } else if (quantity <= 1) {
                         console.error('Số lượng không được nhỏ hơn 1');
                         alert('Số lượng không được nhỏ hơn 1');
+                    }
+                    else {
+                        alert('Lỗi không thể thay đổi thông tin');
                     }
                 })
         }

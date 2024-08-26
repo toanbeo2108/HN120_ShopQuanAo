@@ -4,7 +4,7 @@
         notification = JSON.parse(notification);
         $.notify(notification.message, notification.type);
         localStorage.removeItem('notification');
-    } 
+    }
     var Parameter = {
         url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
         method: "GET",
@@ -14,6 +14,34 @@
     promise.then(function (result) {
         renderCity(result.data);
     });
+
+    $.get('/GetDiaChiTinhShip', function (re) {
+        if (re.status) {
+            GenDiaChiTinhShip(re.data)
+            loadTinhThanh()
+        }
+        else {
+            alert(re.message)
+        }
+    })
+
+    $('body').on('click', '#diachikhac', function () {
+
+        document.getElementById('city').innerHTML = '<option value="" selected>Chọn tỉnh thành</option>';
+        document.getElementById('district').innerHTML = '<option value="" selected>Chọn quận huyện</option>';
+        document.getElementById('ward').innerHTML = '<option value="" selected>Chọn phường xã</option>';
+        document.getElementById('street').value = '';
+        $('#btn_PhiShip').val(0);
+        var Parameter = {
+            url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
+            method: "GET",
+            responseType: "application/json",
+        };
+        var promise = axios(Parameter);
+        promise.then(function (result) {
+            renderCity(result.data);
+        });
+    })
 
     // lấy tiền ship gửi về controller
     $('#dat-hang').click(function (event) {
@@ -44,7 +72,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        type: 'GET',
+                        type: 'POST',
                         url: ' /Customer/CustomerHome/DatHang',
                         data: {
                             tienship: tienship,
@@ -67,18 +95,22 @@
                                 });
                             } else {
                                 Swal.fire(
+
                                     'Error!',
                                     'Đặt hàng thất bại, hãy kiểm tra lại thông tin',
                                     'error'
-                                );
-                            }
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            };
+
                         },
                         error: function (response) {
                             console.log("Set default AJAX error occurred");
-                         
+
                             Swal.fire(
                                 'Success!',
-                                'Đặt Hàng Thành Công, Hãy kiểm tra lại đơn hàng của bạn nhé',
+                                'Đặt hàng thất bại, hãy kiểm tra lại thông tin',
                                 'success',
                             ).then(() => {
                                 location.reload()
@@ -103,7 +135,7 @@
             location.reload(true);
 
         }
-        
+
     });
 
 
@@ -126,7 +158,7 @@
         }
     });
 
-    
+
 
 
 
@@ -296,12 +328,26 @@ function renderCity(data) {
             }
         }
     };
-    
+
 }
 function formatMoney(amount) {
     if (!isNaN(amount) && amount !== null && amount !== '') {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     } else {
         return amount;
+    }
+}
+
+function GenDiaChiTinhShip(data) {
+    if (data == null || data == undefined || data == '') {
+        $('#city').val('')
+        $('#district').val('');
+        $('#ward').val('');
+    }
+    else {
+        document.getElementById('city').innerHTML = '<option value="' + data.city + '">' + data.city + '</option>';
+        document.getElementById('district').innerHTML = '<option value="' + data.district + '">' + data.district + '</option>';
+        document.getElementById('ward').innerHTML = '<option value="' + data.ward + '">' + data.ward + '</option>';
+        document.getElementById('street').value = data.street;
     }
 }

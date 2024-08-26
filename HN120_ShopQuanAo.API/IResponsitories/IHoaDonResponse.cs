@@ -12,6 +12,6 @@ namespace HN120_ShopQuanAo.API.IResponsitories
         Task<bool> UpdateUser_Voucher(string user_voucherid);
         Task<bool> CreateUVC(string userid, string mavc);
         Task<bool> HuyDon(string maHD);
-        Task<bool> UpdateVoucherUserByUserIdMaVoucher(string userId,string mavc);
+        Task<bool> UpdateVoucherUserByUserIdMaVoucher(string userId,string? mavc);
     }
 }
