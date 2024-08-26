@@ -152,6 +152,97 @@
             .page-link:hover {
                 background-color: #e9ecef;
             }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                border-radius: 50%;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+            input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                border-radius: 50%;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+            input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+    </style>
     </style>
 </head>
 <body>
@@ -173,12 +264,11 @@
                 <i class="fa fa-filter"></i> Lọc
             </button>
         </div>
-
         <div class="input-group">
-            <input type="date" class="form-control" id="startDateFilter">
-            <input type="date" class="form-control" id="endDateFilter">
+            <input type="date" class="form-control" id="startDate" placeholder="Ngày bắt đầu">
+            <input type="date" class="form-control" id="endDate" placeholder="Ngày kết thúc">
             <button class="btn btn-outline-secondary" type="button" onclick="filterByDateRange()">
-                <i class="fa fa-calendar"></i> Lọc theo ngày
+                <i class="fa fa-filter"></i> Lọc theo ngày
             </button>
         </div>
 
@@ -252,7 +342,6 @@
                             <div style="color:@color">
                                 @(item.NgayKetThuc.HasValue ? item.NgayKetThuc.Value.ToString("dd/MM/yyyy hh:mm tt") : "N/A")
                             </div>
-
                         </td>
                         <td>
                             <div>@item.SoLuong</div>
@@ -286,11 +375,12 @@
                         </td>
                         <td>
                             @Html.ActionLink("Sửa", "UpdateVC", new { id = item.MaVoucher }, new { @class = "btn btn-success btn-sm" })
-                            @if (item.TrangThai == 1)
+                            @if (item.TrangThai == 1 || item.TrangThai == 3)
                             {
-                                <form method="post" asp-action="EndEarly" asp-controller="Voucher" asp-route-id="@item.MaVoucher" style="display:inline;">
-                                    <button type="submit" class="btn btn-warning btn-sm">Kết thúc </button>
-                                </form>
+                                <label class="switch">
+                                    <input type="checkbox" class="status-toggle" data-id="@item.MaVoucher" @(item.TrangThai == 1 ? "checked" : "")>
+                                    <span class="slider"></span>
+                                </label>
                             }
                         </td>
                     </tr>
@@ -299,53 +389,115 @@
         </tbody>
     </table>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <script>
+        // lọc mã
         function searchVoucher() {
-            var searchBox = document.getElementById('searchBox').value;
-            var rows = document.getElementById('voucherTableBody').getElementsByTagName('tr');
-            for (var i = 0; i < rows.length; i++) {
-                var cells = rows[i].getElementsByTagName('td');
-                var found = false;
-                for (var j = 0; j < cells.length; j++) {
-                    if (cells[j].innerText.includes(searchBox)) {
-                        found = true;
-                        break;
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchBox");
+            filter = input.value.toUpperCase().replace(/\s+/g, ' ').trim();
+            table = document.getElementById("voucherTableBody");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    txtValue = txtValue.toUpperCase().replace(/\s+/g, ' ').trim();
+                    if (txtValue.indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
                     }
                 }
-                rows[i].style.display = found ? '' : 'none';
             }
         }
 
+        // Lọc Trạng thái
         function filterByStatus() {
-            var statusFilter = document.getElementById('statusFilter').value;
-            var rows = document.getElementById('voucherTableBody').getElementsByTagName('tr');
-            for (var i = 0; i < rows.length; i++) {
-                var statusCell = rows[i].getElementsByTagName('td')[10];
-                rows[i].style.display = statusFilter === '' || statusCell.innerText.includes(statusFilter) ? '' : 'none';
-            }
-        }
+            var status = document.getElementById("statusFilter").value;
+            var table = document.getElementById("voucherTableBody");
+            var tr = table.getElementsByTagName("tr");
 
-        function filterByDateRange() {
-            var startDateFilter = document.getElementById('startDateFilter').value;
-            var endDateFilter = document.getElementById('endDateFilter').value;
-            var rows = document.getElementById('voucherTableBody').getElementsByTagName('tr');
-
-            for (var i = 0; i < rows.length; i++) {
-                var startDateCell = rows[i].getElementsByTagName('td')[6].innerText;
-                var endDateCell = rows[i].getElementsByTagName('td')[7].innerText;
-
-                if (startDateFilter && endDateFilter) {
-                    var startDate = new Date(startDateCell);
-                    var endDate = new Date(endDateCell);
-                    var filterStartDate = new Date(startDateFilter);
-                    var filterEndDate = new Date(endDateFilter);
-
-                    rows[i].style.display = (startDate >= filterStartDate && endDate <= filterEndDate) ? '' : 'none';
-                } else {
-                    rows[i].style.display = '';
+            for (var i = 0; i < tr.length; i++) {
+                var td = tr[i].getElementsByTagName("td")[10];
+                if (td) {
+                    var statusText = td.textContent.trim();
+                    if (status === "" ||
+                        (status === "SapDienRa" && statusText === "Sắp diễn ra") ||
+                        (status === "DangHoatDong" && statusText === "Đang hoạt động") ||
+                        (status === "DaKetThuc" && statusText === "Đã kết thúc") ||
+                        (status === "KetThucSom" && statusText === "Kết thúc sớm")) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
                 }
             }
         }
+        function filterByDateRange() {
+            var startDateInput = document.getElementById("startDate").value;
+            var endDateInput = document.getElementById("endDate").value;
+            var table = document.getElementById("voucherTableBody");
+            var tr = table.getElementsByTagName("tr");
+
+            var startDate = startDateInput ? new Date(startDateInput) : null;
+            var endDate = endDateInput ? new Date(endDateInput) : null;
+
+            for (var i = 0; i < tr.length; i++) {
+                var td = tr[i].getElementsByTagName("td")[6];
+                if (td) {
+                    var dateText = td.textContent.trim();
+                    var dateParts = dateText.split(" ");
+                    var dateStr = dateParts[0];
+                    var date = new Date(dateStr.split("/").reverse().join("-"));
+
+                    if ((!startDate || date >= startDate) && (!endDate || date <= endDate)) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        //Hàm load trạng thái
+        function checkAndReloadIfMinuteChanged() {
+            var currentDateTime = new Date();
+            var currentMinute = currentDateTime.getMinutes();
+
+            setTimeout(function () {
+                var newDateTime = new Date();
+                var newMinute = newDateTime.getMinutes();
+
+                if (newMinute !== currentMinute) {
+                    location.reload();
+                } else {
+                    checkAndReloadIfMinuteChanged();
+                }
+            }, 1000);
+        }
+        window.onload = function () {
+            checkAndReloadIfMinuteChanged();
+        };
+        // Icon can gat
+        $(document).ready(function () {
+            $('.status-toggle').change(function () {
+                var voucherId = $(this).data('id');
+                var isChecked = $(this).is(':checked');
+                $.ajax({
+                    url: '@Url.Action("ToggleVoucherStatus", "Voucher")',
+                    type: 'POST',
+                    data: { id: voucherId },
+                    success: function (response) {
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error updating voucher status:", error);
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
