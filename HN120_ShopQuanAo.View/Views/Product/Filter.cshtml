@@ -224,7 +224,7 @@
                     <div id="range-price" class="noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr"></div>
                 </div>
                 <div class="filter-price__value">
-                    <div id="smooth-steps-values">0đ - 1,000,000đ</div>
+                    <div id="smooth-steps-values">0đ - 900,000đ</div>
                 </div>
                 <input type="hidden" name="MinPrice" id="MinPrice" value="@Model.MinPrice" />
                 <input type="hidden" name="MaxPrice" id="MaxPrice" value="@Model.MaxPrice" />
@@ -307,11 +307,11 @@
         var maxPriceInput = document.getElementById('MaxPrice');
 
         noUiSlider.create(rangeSlider, {
-            start: [0, 1000000],
+            start: [0, 900000],
             connect: true,
             range: {
                 'min': 0,
-                'max': 1000000
+                'max': 900000
             },
             tooltips: [true, true],
             format: {
@@ -328,8 +328,8 @@
             valueDisplay.innerHTML = values.join(' - ');
 
             // Cập nhật giá trị cho các input ẩn dưới dạng decimal
-            var minPrice = parseFloat(rangeSlider.noUiSlider.get()[0]) * 1000000;
-            var maxPrice = parseFloat(rangeSlider.noUiSlider.get()[1]) * 1000000;
+            var minPrice = parseFloat(rangeSlider.noUiSlider.get()[0]) * 1000;
+            var maxPrice = parseFloat(rangeSlider.noUiSlider.get()[1]) * 1000;
 
             minPriceInput.value = minPrice.toFixed(2);
             maxPriceInput.value = maxPrice.toFixed(2);
