@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.css" />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
     .bodytable {
@@ -149,7 +149,7 @@
                     @if(item.TrangThai == 1)
                     {
                         <td>Chờ Xác Nhận</td>
-                        <td><a asp-action="HuyDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon" class="cancel-button">Hủy Đơn</a></td>
+                        <td><button data-id="@item.MaHoaDon" class="cancel-button">Hủy Đơn</button></td>
                         <td><a asp-action="XemChiTietHoaDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon"><i class="fa-solid fa-eye"></i></a></td>
                     }
                     @if (item.TrangThai == 2)
@@ -186,7 +186,7 @@
                     {
                         <td>Hủy</td>
                         <td></td>
-                        <td><a asp-action="XemChiTietHoaDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon"><i class="fa-solid fa-eye"></i></a></td>
+                        <td><a asp-action="XemChiTietHoaDon" asp-controller="HoaDonCustomer" asp-area="Customer" asp-route-maHD="@item.MaHoaDon" ><i class="fa-solid fa-eye"></i></a></td>
 
                     }
                    
@@ -195,32 +195,8 @@
         </tbody>
     </table>
 </div>
-<script>
-    $(document).ready(function(){
-        var moneyElements = document.getElementsByName('tien');
-
-        // Duyệt qua từng phần tử và format giá trị tiền tệ
-        $.each(moneyElements, function (index, element) {
-            var $element = $(element);
-            var amountText = $element.text().trim(); // Lấy số tiền từ văn bản và loại bỏ khoảng trắng
-
-            // Xử lý số tiền từ văn bản
-            var amountWithoutCommas = amountText.split(',')[0].replace(/,/g, ''); // Bỏ dấu phẩy và phần sau dấu phẩy
-            var amount = parseFloat(amountWithoutCommas);
-
-            // Định dạng số tiền và gán lại vào văn bản nếu số tiền hợp lệ
-            if (!isNaN(amount)) {
-                $element.text(formatMoney(amount));
-            }
-        });
-    });
-    function formatMoney(amount) {
-        if (!isNaN(amount) && amount !== null && amount !== '') {
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-        } else {
-            return amount;
-        }
-    }
+<script src="~/js/hoadonCustomer.js">
+    
 </script>
 <style>
     a {
