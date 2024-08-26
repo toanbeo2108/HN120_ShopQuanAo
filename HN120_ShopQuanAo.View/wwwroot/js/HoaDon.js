@@ -66,6 +66,11 @@ $(document).ready(function () {
             document.getElementById('sdtnhanhang_btn').value = sdtnhanhhang;
             document.getElementById('ngnhanhang_btn').value = ngnhanhang;
 
+            if ($('#search_khachhang_input').val() == '' || $('#search_khachhang_input').val() == undefined) {
+                $('#sdtnhanhang_btn').val('');
+                $('#ngnhanhang_btn').val('');
+                return;
+            }
             if ($('#search_khachhang_input').val() != '' || $('#search_khachhang_input').val() != undefined) {
 
                 document.getElementById('city').innerHTML = '<option value="' + tinhThanh + '">' + tinhThanh + '</option>';
@@ -92,6 +97,7 @@ $(document).ready(function () {
             $('.cell_tienphip').hide();
             $('#search_khachhang_input').val('');
             $('#btn_SoDienThoai_').val('');
+            $('#ngnhanhang_btn').val('');
             
             $('#btn_fullname').val('');
             
@@ -956,6 +962,7 @@ function addNewRow(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, ma
     quantityInput.id = "slm";
     quantityInput.value = "1";
     quantityInput.min = "1";
+   // quantityInput.m = "1";
     quantityInput.classList.add("form-control");
 
     // Sự kiện khi nhập trực tiếp vào ô input
@@ -966,7 +973,7 @@ function addNewRow(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, ma
             newValue = 1;
             quantityInput.value = 1;
         }
-
+        
         if (newValue > slton) {
             newValue = slton;
            
@@ -1018,12 +1025,17 @@ function addNewRow(sku, tenSp, giaBan, maSize, maSize_, maMau_, maMau, slton, ma
             slton = 0;
             return;
         }
-
+       
         var row2 = $("#sanpham_table tbody tr").filter(function () {
             return $(this).find("td:contains('" + sku + "')").length > 0;
         });
 
         if (row2.length > 0) {
+            if (newValue > 10) {
+                $.notify('Liên hệ với shop để được giá ưu đãi hơn!', 'error');
+                newValue = 10;
+                quantityInput.value = newValue;
+            }
             var soLuongKhaDung = row2.find('.so-luong-kha-dung').text();
             var oldValue = parseInt(quantityInput.getAttribute('data-old-value')) || 1;
             var total = parseInt(soLuongKhaDung.replace(/\D/g, '')) + oldValue - newValue;
