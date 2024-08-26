@@ -549,28 +549,26 @@
                     return true;
                 }
         $(document).ready(function () {
-                //var checktensp = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP).ToList()));
-                //                var notification = localStorage.getItem('notification');
-                //            if (notification) {
-                //                notification = JSON.parse(notification);
-                //                $.notify(notification.message, notification.type);
-                //                localStorage.removeItem('notification');
-                //            } 
-                $('#showConfirmModal').on('click', function() {
-                           //var tensp = $('#TenSP').val();
-                    if (validateorSanPham() && validateSanPhamCT()) {
-                    //if (checktensp.includes(tensp)) {
-                    //    $('.tentrue').hide();
-                    //    $('.tenfalse').show();
-                    //} else {
-                    //    $('.tentrue').show();
-                    //    $('.tenfalse').hide();
-                    //}
-                    $('#confirmModal').modal('show');
-                } else {
-                    alert('Vui lòng nhập đầy đủ thông tin sản phẩm và chi tiết sản phẩm.');
-                }
-                });
+                    var checktensp = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP.ToUpper()).ToList()));
+
+                                    var notification = localStorage.getItem('notification');
+                                if (notification) {
+                                    notification = JSON.parse(notification);
+                                    $.notify(notification.message, notification.type);
+                                    localStorage.removeItem('notification');
+                                } 
+                    $('#showConfirmModal').on('click', function() {
+                                   var tensp = $('#TenSP').val().trim().toUpperCase();
+                        if (validateorSanPham() && validateSanPhamCT()) {
+                        if (checktensp.includes(tensp)) {
+                            alert('Tên sp đã tồn tại vui lòng chọn tên khác');
+                        } else {
+                                $('#confirmModal').modal('show');
+                        }
+                    } else {
+                        alert('Vui lòng nhập đầy đủ thông tin sản phẩm và chi tiết sản phẩm.');
+                    }
+                    });
 
                 // Gửi form khi người dùng nhấn nút "Có"
                 $('#confirmSubmit').on('click', function() {

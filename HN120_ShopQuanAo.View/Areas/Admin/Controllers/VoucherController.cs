@@ -79,7 +79,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return View(new List<Voucher>());
             }
         }
-        
+
 
         public IActionResult CreateVC()
         {
@@ -334,7 +334,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> EndEarly(string id)
+        public async Task<IActionResult> ToggleVoucherStatus(string id)
         {
             try
             {
@@ -350,7 +350,19 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     return RedirectToAction("AllVoucherManager");
                 }
 
-                voucher.TrangThai = 3;
+                // Logic trạng thái mới
+                if (voucher.TrangThai == 0)
+                {
+                    voucher.TrangThai = 1;
+                }
+                else if (voucher.TrangThai == 1)
+                {
+                    voucher.TrangThai = 3;
+                }
+                else if (voucher.TrangThai == 3)
+                {
+                    voucher.TrangThai = 1;
+                }
 
                 var urlUpdate = $"https://localhost:7197/UpdateVCher/{voucher.MaVoucher}";
                 var content = new StringContent(JsonConvert.SerializeObject(voucher), Encoding.UTF8, "application/json");
@@ -362,7 +374,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 }
                 else
                 {
-                    TempData["success message"] = "Voucher đã được cập nhật thành 'Kết thúc sớm'.";
+                    TempData["success message"] = $"Voucher đã được cập nhật thành '{(voucher.TrangThai == 1 ? "Đang hoạt động" : "Kết thúc sớm")}'.";
                 }
 
                 return RedirectToAction("AllVoucherManager");
@@ -373,6 +385,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                 return RedirectToAction("AllVoucherManager");
             }
         }
+
         private async Task<bool> IsVoucherNameDuplicate(string voucherName, string currentVoucherId = null)
         {
             var url = $"https://localhost:7197/GetAllVoucher";
