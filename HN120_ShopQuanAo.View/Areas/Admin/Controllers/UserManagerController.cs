@@ -240,7 +240,7 @@ namespace HN120_ShopQuanAo.View.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tạo tài khoản: " + errorContent2;
                     return View(model);
                 }
-                return RedirectToAction("GetAllUser");
+                return RedirectToAction("GetAllEmployee");
             }
             catch (Exception ex)
             {

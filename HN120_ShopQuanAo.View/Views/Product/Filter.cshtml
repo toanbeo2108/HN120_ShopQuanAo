@@ -328,8 +328,8 @@
             valueDisplay.innerHTML = values.join(' - ');
 
             // Cập nhật giá trị cho các input ẩn dưới dạng decimal
-            var minPrice = parseFloat(rangeSlider.noUiSlider.get()[0]) * 1000;
-            var maxPrice = parseFloat(rangeSlider.noUiSlider.get()[1]) * 1000;
+            var minPrice = parseFloat(rangeSlider.noUiSlider.get()[0]) * 1000000;
+            var maxPrice = parseFloat(rangeSlider.noUiSlider.get()[1]) * 1000000;
 
             minPriceInput.value = minPrice.toFixed(2);
             maxPriceInput.value = maxPrice.toFixed(2);
