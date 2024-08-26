@@ -110,8 +110,8 @@
                                     <div class="main_menu d-none d-lg-block">
                                         <nav>
                                             <ul>
-                                                <li class="active">
-                                                    <a asp-action="Index" asp-controller="CustomerHome" asp-area="Customer">Home</a>
+                                                <li>
+                                                    <a asp-action="Index" asp-controller="Home">Home</a>
                                                     <div class="mega_menu jewelry">
                                                         <div class="mega_items jewelry">
                                                             <ul>
@@ -122,108 +122,31 @@
                                                     </div>
                                                 </li>
                                                 <li>
-                                                    <a asp-action="GianHangNguoiDung" asp-controller="CustomerHome" asp-area="Customer">shop</a>
+                                                    <a asp-action="Shop" asp-controller="Home">shop</a>
                                                     <div class="mega_menu jewelry">
                                                         <div class="mega_items jewelry">
-                                                            <ul>
-                                                                <li><a href="shop-list.html">shop list</a></li>
-                                                                <li><a href="shop-fullwidth.html">shop Full Width Grid</a></li>
-                                                                <li><a href="shop-fullwidth-list.html">shop Full Width list</a></li>
-                                                                <li><a href="shop-sidebar.html">shop Right Sidebar</a></li>
-                                                                <li><a href="shop-sidebar-list.html">shop list Right Sidebar</a></li>
-                                                                <li><a href="single-product.html">Product Details</a></li>
-                                                                <li><a href="single-product-sidebar.html">Product sidebar</a></li>
-                                                                <li><a href="single-product-video.html">Product Details video</a></li>
-                                                                <li><a href="single-product-gallery.html">Product Details Gallery</a></li>
-                                                            </ul>
                                                         </div>
                                                     </div>
                                                 </li>
-
                                                 <li>
-                                                    <a href="#">men</a>
+                                                    <a asp-controller="Product" asp-action="Filter">men</a>
+                                                    <div class="mega_menu">
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <a asp-action="ChinhSach" asp-controller="Home">Chính Sách</a>
                                                     <div class="mega_menu">
                                                         <div class="mega_top fix">
-                                                            <div class="mega_items">
-                                                                <h3><a href="#">Rings</a></h3>
-                                                                <ul>
-                                                                    <li><a href="#">Platinum Rings</a></li>
-                                                                    <li><a href="#">Gold Ring</a></li>
-                                                                    <li><a href="#">Silver Ring</a></li>
-                                                                    <li><a href="#">Tungsten Ring</a></li>
-                                                                    <li><a href="#">Sweets</a></li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="mega_items">
-                                                                <h3><a href="#">Bands</a></h3>
-                                                                <ul>
-                                                                    <li><a href="#">Platinum Bands</a></li>
-                                                                    <li><a href="#">Gold Bands</a></li>
-                                                                    <li><a href="#">Silver Bands</a></li>
-                                                                    <li><a href="#">Silver Bands</a></li>
-                                                                    <li><a href="#">Sweets</a></li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="mega_items">
-                                                                <a href="#"><img src="assets\img\banner\banner3.jpg" alt=""></a>
-                                                            </div>
                                                         </div>
-
                                                     </div>
                                                 </li>
                                                 <li>
-                                                    <a href="#">pages</a>
+                                                    <a asp-action="ChinhSach" asp-controller="Home">Page</a>
                                                     <div class="mega_menu">
                                                         <div class="mega_top fix">
-                                                            <div class="mega_items">
-                                                                <h3><a href="#">Column1</a></h3>
-                                                                <ul>
-                                                                    <li><a href="portfolio.html">Portfolio</a></li>
-                                                                    <li><a href="portfolio-details.html">single portfolio </a></li>
-                                                                    <li><a href="about.html">About Us </a></li>
-                                                                    <li><a href="about-2.html">About Us 2</a></li>
-                                                                    <li><a href="services.html">Service </a></li>
-                                                                    <li><a href="my-account.html">my account </a></li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="mega_items">
-                                                                <h3><a href="#">Column2</a></h3>
-                                                                <ul>
-                                                                    <li><a href="blog.html">Blog </a></li>
-                                                                    <li><a href="blog-details.html">Blog  Details </a></li>
-                                                                    <li><a href="blog-fullwidth.html">Blog FullWidth</a></li>
-                                                                    <li><a href="blog-sidebar.html">Blog  Sidebar</a></li>
-                                                                    <li><a href="faq.html">Frequently Questions</a></li>
-                                                                    <li><a href="404.html">404</a></li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="mega_items">
-                                                                <h3><a href="#">Column3</a></h3>
-                                                                <ul>
-                                                                    <li><a href="contact.html">Contact</a></li>
-                                                                    <li><a href="cart.html">cart</a></li>
-                                                                    <li><a href="checkout.html">Checkout  </a></li>
-                                                                    <li><a href="wishlist.html">Wishlist</a></li>
-                                                                    <li><a href="login.html">Login</a></li>
-                                                                </ul>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </li>
-
-                                                <li>
-                                                    <a href="blog.html">blog</a>
-                                                    <div class="mega_menu jewelry">
-                                                        <div class="mega_items jewelry">
-                                                            <ul>
-                                                                <li><a href="blog-details.html">blog details</a></li>
-                                                                <li><a href="blog-fullwidth.html">blog fullwidth</a></li>
-                                                                <li><a href="blog-sidebar.html">blog sidebar</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li><a href="contact.html">contact us</a></li>
 
                                             </ul>
                                         </nav>

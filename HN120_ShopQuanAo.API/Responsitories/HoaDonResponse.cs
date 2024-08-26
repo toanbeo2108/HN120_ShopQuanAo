@@ -100,7 +100,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
             return await _context.User_Voucher.Where(x => x.UserID == userid).ToListAsync();
         }
 
-        public async Task<bool> UpdateVoucherUserByUserIdMaVoucher(string userId, string mavc)
+        public async Task<bool> UpdateVoucherUserByUserIdMaVoucher(string userId, string? mavc)
         {
             var uvc = await _context.User_Voucher.FirstOrDefaultAsync(x => x.UserID == userId && x.MaVoucher == mavc);
             if(uvc != null)

@@ -30,6 +30,10 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             _logger = logger;
             _httpClient = new HttpClient();
         }
+        public IActionResult ChinhSachUser()
+        {
+            return View();
+        }
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -737,13 +741,17 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
        
         [HttpGet]
         [HttpPost]
-		public async Task<IActionResult> DatHang(decimal tienship, string tinh, string huyen, string xa, string cuthe, decimal tongtiendonhang,decimal tiengiam)
+		public async Task<IActionResult> DatHang(decimal? tienship, string tinh, string huyen, string xa, string cuthe, decimal tongtiendonhang,decimal tiengiam)
 		{
+            if(tinh == null || huyen == null || xa == null || tienship == null)
+            {
+                return Json(new { success = false });
 
-			if (tongtiendonhang == 0)
+            }
+            if (tongtiendonhang == 0)
 			{
-				return RedirectToAction("GianHangNguoiDung", "CustomerHome", new { areas = "Customer" });
-			}
+                return Json(new { success = false, message = "Đặt hàng không thành công" });
+            }
             var mavc = Request.Cookies["Mavc"];
 			//Lấy thông tin người dùng
 			var maND = Request.Cookies["UserId"];
@@ -753,19 +761,20 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
 			var nd = JsonConvert.DeserializeObject<User>(apidataND);
 			if (nd == null)
 			{
-				return BadRequest("Không tìm thấy thông tin của bạn, vui lòng đăng nhập lại");
-			}
+                return Json(new { success = false });
 
-			//var apiurlgethdbyuserid = $"https://localhost:7197/api/HoaDon/GetAllHDByUserId/UserId?UserId={maND}";
-			//var responsegethdbyuserid = await _httpClient.GetAsync(apiurlgethdbyuserid);
-			//string apidatahdbyuserid = await responsegethdbyuserid.Content.ReadAsStringAsync();
-			//var lstHDByUserId = JsonConvert.DeserializeObject<List<HoaDon>>(apidatahdbyuserid);
-			//if(lstHDByUserId == null)
-			//{
-			//    return BadRequest("Không tìm thấy thông tin người dùng");
-			//}
-			// lấy danh sách giỏ hàng
-			var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
+            }
+
+            //var apiurlgethdbyuserid = $"https://localhost:7197/api/HoaDon/GetAllHDByUserId/UserId?UserId={maND}";
+            //var responsegethdbyuserid = await _httpClient.GetAsync(apiurlgethdbyuserid);
+            //string apidatahdbyuserid = await responsegethdbyuserid.Content.ReadAsStringAsync();
+            //var lstHDByUserId = JsonConvert.DeserializeObject<List<HoaDon>>(apidatahdbyuserid);
+            //if(lstHDByUserId == null)
+            //{
+            //    return BadRequest("Không tìm thấy thông tin người dùng");
+            //}
+            // lấy danh sách giỏ hàng
+            var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
 			var responseListGHCB = await _httpClient.GetAsync(ApiurllstGioHangcuaban);
 			string apidataListGHCB = await responseListGHCB.Content.ReadAsStringAsync();
 			var ListGHCB = JsonConvert.DeserializeObject<List<GioHang>>(apidataListGHCB);
@@ -850,27 +859,77 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
 					var responseUpdateGH = await _httpClient.PutAsync(urlupdateGH, contentupdateGH);
 					if (responseUpdateGH.IsSuccessStatusCode)
 					{
-                        var urlupdateUVC = $"https://localhost:7197/api/Voucher_User/UpdateUVCByUserIdMavc/{maND}&{mavc}";
-                        var contentuvc = new StringContent("Cập nhật thành công");
-                        var responsesUVC = await _httpClient.PutAsync(urlupdateUVC, contentuvc);
-                        if (responsesUVC.IsSuccessStatusCode)
+                        if (Request.Cookies["Mavc"] != null)
                         {
-                            if (Request.Cookies["Mavc"] != null)
+                            var urlupdateUVC = $"https://localhost:7197/api/Voucher_User/UpdateUVCByUserIdMavc/{maND}&{mavc}";
+                            var contentuvc = new StringContent("Cập nhật thành công");
+                            var responsesUVC = await _httpClient.PutAsync(urlupdateUVC, contentuvc);
+                            if (responsesUVC.IsSuccessStatusCode)
                             {
                                 Response.Cookies.Delete("Mavc");
-                            }
-                            return RedirectToAction("GioHangCuaBan", "CustomerHome", new { areas = "Customer" });
+                                Response.Cookies.Delete("TienGiam");
+                                return Json(new { success = true });
 
+                            }
+                            
                         }
+                        return Json(new { success = true });
+
                     }
 				}
-               
 
 
-				return BadRequest("Đặt hàng không thành công,634");
+
+				return Json(new { success = false, message = "Đặt hàng không thành công" });
 			}
-			return BadRequest("Tạo hóa đơn sẵn không thành công, lỗi 636");
+			return Json(new { success = false, message = "Sai lè" });
 
+		}
+
+		[HttpGet, Route("GetDiaChiTinhShip")]
+		public async Task<IActionResult> LoadTinhThanhTinhShip()
+		{
+			// https://localhost:7197/api/UserAddress/GetByUserID?id=8c9f2d73-d457-42dc-930b-7d3158a2ad67
+			string _mess;
+			bool _stt;
+			object _data = null;
+			var maND = Request.Cookies["UserId"];
+
+			var url = $"https://localhost:7197/api/UserAddress/GetByUserID?id={maND}";
+			var respon = await _httpClient.GetAsync(url);
+			string apiData = await respon.Content.ReadAsStringAsync();
+			var List = JsonConvert.DeserializeObject<List<DeliveryAddress>>(apiData);
+			var ListUsers = List.FirstOrDefault(c => c.Status == 1);
+
+
+
+			if (respon.StatusCode == System.Net.HttpStatusCode.OK)
+			{
+				if (ListUsers == null)
+				{
+					_stt = false;
+					_mess = "Không tìn thấy";
+				}
+				else
+				{
+					_stt = true;
+					_mess = "";
+					_data = ListUsers;
+				}
+
+
+			}
+			else
+			{
+				_stt = false;
+				_mess = respon.ReasonPhrase + "";
+			}
+			return Json(new
+			{
+				status = _stt,
+				message = _mess,
+				data = _data
+			});
 		}
 	}
 }

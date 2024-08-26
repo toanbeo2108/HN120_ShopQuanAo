@@ -43,7 +43,7 @@
 										<td class="product_name"><a href="#">@item.TenSP (@item.TenMau) (@item.TenSize)</a></td>
 										<td name="tien" class="product-price">@item.DonGia</td>
 										<td class="product_quantity">
-											<input id="quantity-@item.MaGHCT.ToString().Substring(0, 8)" min="0" max="100" value="@item.SoLuong" type="number" class="quantity-input" data-don-gia="@item.DonGia">
+											<input id="quantity-@item.MaGHCT.ToString().Substring(0, 8)" min="1" max="100" value="@item.SoLuong" type="number" class="quantity-input" data-don-gia="@item.DonGia">
 										</td>
 										<td name="tien" role="money" id="total-@item.MaGHCT.ToString().Substring(0, 8)" class="product-price">@item.ThanhTien</td>
 
@@ -72,15 +72,10 @@
 							<div class="cart_subtotal">
 								<p>Tổng tiền hàng</p>
 								<strong><input id="amount_items" class="intput-tien" value="@tongtien" disabled name="tieninput" style="border:none" /></strong>
-							</div>
-							<div class="cart_subtotal ">
-								<p>Tiền ship</p>
-								<strong><input id="ship_amount" class="intput-tien" value="@tienship" disabled name="tieninput" style="border:none" /></strong>
-							</div>
-							<a href="#">Update Tiền Ship</a>
+							</div>						
 							<div class="cart_subtotal">
 								<p>Tổng tiền cần trả</p>
-								<strong><input id="total_amount" class="intput-tien" value="@tiencantra" disabled name="tieninput" style="border:none;color:red" /></strong>
+								<strong><input id="total_amount" class="intput-tien" value="@tongtien" disabled name="tieninput" style="border:none;color:red" /></strong>
 							</div>
 
 							<div class="checkout_btn">

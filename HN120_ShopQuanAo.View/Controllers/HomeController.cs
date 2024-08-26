@@ -24,7 +24,10 @@ namespace HN120_ShopQuanAo.View.Controllers
             _logger = logger;
             _httpClient = new HttpClient();
         }
-
+        public IActionResult ChinhSach()
+        {
+            return View();
+        }
         public IActionResult Index()
         {
             return View();
