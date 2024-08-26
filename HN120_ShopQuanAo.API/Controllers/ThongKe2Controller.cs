@@ -18,89 +18,90 @@ namespace HN120_ShopQuanAo.API.Controllers
             _context = context;
         }
 
-        [HttpGet("doanh-thu")]
-        public async Task<IActionResult> GetRevenue(DateTime? startDate, DateTime? endDate, int? year, int? month, int? day)
-        {
-            var validationResult = ValidateDateParameters(startDate, endDate, year, month, day);
-            if (validationResult != null)
-                return BadRequest(validationResult);
+		[HttpGet("doanh-thu")]
+		public async Task<IActionResult> GetRevenue(DateTime? startDate, DateTime? endDate, int? year, int? month, int? day)
+		{
+			var validationResult = ValidateDateParameters(startDate, endDate, year, month, day);
+			if (validationResult != null)
+				return BadRequest(validationResult);
 
-            var query = _context.HoaDon.AsQueryable();
-            query = DateFilterHelper.ApplyDateFilter(query, startDate, endDate, year, month, day);
-            var revenue = await query.SumAsync(hd => hd.TongGiaTriHangHoa ?? 0);
-            return Ok(revenue);
-        }
-        [HttpGet("doanh-thu-theo-ngay")]
-        public async Task<IActionResult> GetDailyRevenue(DateTime? fromDate, DateTime? toDate)
-        {
-            if (fromDate == null || toDate == null)
-            {
-                return BadRequest("fromDate and toDate are required.");
-            }
+			var query = _context.HoaDon.AsQueryable();
+			query = DateFilterHelper.ApplyDateFilter(query, startDate, endDate, year, month, day);
+			var revenue = await query.SumAsync(hd => hd.TongGiaTriHangHoa ?? 0);
+			return Ok(revenue);
+		}
 
-            toDate = toDate.Value.AddDays(1).AddTicks(-1);
+		[HttpGet("doanh-thu-theo-ngay")]
+		public async Task<IActionResult> GetDailyRevenue(DateTime? fromDate, DateTime? toDate)
+		{
+			if (fromDate == null || toDate == null)
+			{
+				return BadRequest("fromDate and toDate are required.");
+			}
 
-            var doanhThu = await _context.HoaDon
-                .Where(hd => hd.NgayTaoDon >= fromDate && hd.NgayTaoDon <= toDate)
-                .GroupBy(hd => hd.NgayTaoDon.Value.Date)
-                .Select(g => new
-                {
-                    Ngay = g.Key,
-                    TongDoanhThu = g.Sum(hd => hd.TongGiaTriHangHoa)
-                })
-                .ToListAsync();
+			toDate = toDate.Value.AddDays(1).AddTicks(-1);
 
-            var doanhThuDict = doanhThu.ToDictionary(dt => dt.Ngay, dt => dt.TongDoanhThu);
+			var doanhThu = await _context.HoaDon
+				.Where(hd => hd.NgayTaoDon >= fromDate && hd.NgayTaoDon <= toDate && hd.TrangThai != 6) // Exclude canceled invoices
+				.GroupBy(hd => hd.NgayTaoDon.Value.Date)
+				.Select(g => new
+				{
+					Ngay = g.Key,
+					TongDoanhThu = g.Sum(hd => hd.TongGiaTriHangHoa)
+				})
+				.ToListAsync();
 
-            var result = Enumerable.Range(0, (toDate.Value.Date - fromDate.Value.Date).Days + 1)
-                .Select(i => fromDate.Value.Date.AddDays(i))
-                .Select(date => new
-                {
-                    Ngay = date,
-                    TongDoanhThu = doanhThuDict.ContainsKey(date) ? doanhThuDict[date] : 0
-                })
-                .ToList();
+			var doanhThuDict = doanhThu.ToDictionary(dt => dt.Ngay, dt => dt.TongDoanhThu);
 
-            return Ok(result);
-        }
+			var result = Enumerable.Range(0, (toDate.Value.Date - fromDate.Value.Date).Days + 1)
+				.Select(i => fromDate.Value.Date.AddDays(i))
+				.Select(date => new
+				{
+					Ngay = date,
+					TongDoanhThu = doanhThuDict.ContainsKey(date) ? doanhThuDict[date] : 0
+				})
+				.ToList();
 
-        [HttpGet("doanh-thu-theo-thang")]
-        public async Task<IActionResult> GetMonthlyRevenue(DateTime? startDate, DateTime? endDate, int? year, int? month, int? day)
-        {
-            var validationResult = ValidateDateParameters(startDate, endDate, year, month, day);
-            if (validationResult != null)
-                return BadRequest(validationResult);
+			return Ok(result);
+		}
 
-            var query = _context.HoaDon.AsQueryable();
-            query = DateFilterHelper.ApplyDateFilter(query, startDate, endDate, year, month, day);
+		[HttpGet("doanh-thu-theo-thang")]
+		public async Task<IActionResult> GetMonthlyRevenue(DateTime? startDate, DateTime? endDate, int? year, int? month, int? day)
+		{
+			var validationResult = ValidateDateParameters(startDate, endDate, year, month, day);
+			if (validationResult != null)
+				return BadRequest(validationResult);
 
-            var doanhThu = await query
-                .GroupBy(hd => new { hd.NgayTaoDon.Value.Year, hd.NgayTaoDon.Value.Month })
-                .Select(g => new
-                {
-                    Nam = g.Key.Year,
-                    Thang = g.Key.Month,
-                    TongDoanhThu = g.Sum(hd => hd.TongGiaTriHangHoa ?? 0)
-                })
-                .ToListAsync();
+			var query = _context.HoaDon.AsQueryable();
+			query = DateFilterHelper.ApplyDateFilter(query, startDate, endDate, year, month, day);
 
-            var fromDate = startDate ?? new DateTime(year ?? 1, month ?? 1, 1);
-            var toDate = endDate ?? DateTime.Now;
+			var doanhThu = await query
+				.GroupBy(hd => new { hd.NgayTaoDon.Value.Year, hd.NgayTaoDon.Value.Month })
+				.Select(g => new
+				{
+					Nam = g.Key.Year,
+					Thang = g.Key.Month,
+					TongDoanhThu = g.Sum(hd => hd.TongGiaTriHangHoa ?? 0)
+				})
+				.ToListAsync();
 
-            var result = Enumerable.Range(0, (toDate.Year - fromDate.Year) * 12 + toDate.Month - fromDate.Month + 1)
-                .Select(i => fromDate.AddMonths(i))
-                .Select(date => new
-                {
-                    Nam = date.Year,
-                    Thang = date.Month,
-                    TongDoanhThu = doanhThu.FirstOrDefault(dt => dt.Nam == date.Year && dt.Thang == date.Month)?.TongDoanhThu ?? 0
-                })
-                .ToList();
+			var fromDate = startDate ?? new DateTime(year ?? 1, month ?? 1, 1);
+			var toDate = endDate ?? DateTime.Now;
 
-            return Ok(result);
-        }
+			var result = Enumerable.Range(0, (toDate.Year - fromDate.Year) * 12 + toDate.Month - fromDate.Month + 1)
+				.Select(i => fromDate.AddMonths(i))
+				.Select(date => new
+				{
+					Nam = date.Year,
+					Thang = date.Month,
+					TongDoanhThu = doanhThu.FirstOrDefault(dt => dt.Nam == date.Year && dt.Thang == date.Month)?.TongDoanhThu ?? 0
+				})
+				.ToList();
 
-        [HttpGet("doanh-thu-theo-nam")]
+			return Ok(result);
+		}
+
+		[HttpGet("doanh-thu-theo-nam")]
         public async Task<IActionResult> GetYearlyRevenue(DateTime? startDate, DateTime? endDate, int? year, int? month, int? day)
         {
             var validationResult = ValidateDateParameters(startDate, endDate, year, month, day);
@@ -356,61 +357,59 @@ namespace HN120_ShopQuanAo.API.Controllers
     // File path: Helpers/DateFilterHelper.cs
     public static class DateFilterHelper
     {
-        public static IQueryable<HoaDon> ApplyDateFilter(IQueryable<HoaDon> query, DateTime? startDate, DateTime? endDate, int? year, int? month, int? day)
-        {
-            if (startDate.HasValue && endDate.HasValue)
-            {
-                query = query.Where(hd => hd.NgayTaoDon >= startDate && hd.NgayTaoDon <= endDate);
-            }
-            else if (year.HasValue && month.HasValue && day.HasValue)
-            {
-                var date = new DateTime(year.Value, month.Value, day.Value);
-                query = query.Where(hd => hd.NgayTaoDon.Value.Date == date.Date);
-            }
-            else if (year.HasValue && month.HasValue)
-            {
-                query = query.Where(hd => hd.NgayTaoDon.Value.Year == year && hd.NgayTaoDon.Value.Month == month);
-            }
-            else if (year.HasValue)
-            {
-                query = query.Where(hd => hd.NgayTaoDon.Value.Year == year);
-            }
+		public static IQueryable<HoaDon> ApplyDateFilter(IQueryable<HoaDon> query, DateTime? startDate, DateTime? endDate, int? year, int? month, int? day)
+		{
+			query = query.Where(hd => hd.TrangThai != 6); // Exclude canceled invoices
 
-            return query;
-        }
+			if (startDate.HasValue && endDate.HasValue)
+			{
+				query = query.Where(hd => hd.NgayTaoDon >= startDate && hd.NgayTaoDon <= endDate);
+			}
+			else if (year.HasValue && month.HasValue && day.HasValue)
+			{
+				var date = new DateTime(year.Value, month.Value, day.Value);
+				query = query.Where(hd => hd.NgayTaoDon.Value.Date == date.Date);
+			}
+			else if (year.HasValue && month.HasValue)
+			{
+				query = query.Where(hd => hd.NgayTaoDon.Value.Year == year && hd.NgayTaoDon.Value.Month == month);
+			}
+			else if (year.HasValue)
+			{
+				query = query.Where(hd => hd.NgayTaoDon.Value.Year == year);
+			}
 
-        public static IQueryable<HoaDonChiTiet> ApplyDateFilter(
-        IQueryable<HoaDonChiTiet> query,
-        DateTime? startDate, DateTime? endDate, int? year, int? month, int? day)
-        {
-            if (startDate.HasValue && endDate.HasValue)
-            {
-                query = query.Where(hdct => hdct.HoaDon.NgayTaoDon >= startDate && hdct.HoaDon.NgayTaoDon <= endDate);
-                Console.WriteLine($"Filtered by date range: {startDate} - {endDate}");
-            }
-            else if (year.HasValue && month.HasValue && day.HasValue)
-            {
-                var date = new DateTime(year.Value, month.Value, day.Value);
-                query = query.Where(hdct => hdct.HoaDon.NgayTaoDon.Value.Date == date.Date);
-                Console.WriteLine($"Filtered by specific date: {date}");
-            }
-            else if (year.HasValue && month.HasValue)
-            {
-                query = query.Where(hdct => hdct.HoaDon.NgayTaoDon.Value.Year == year && hdct.HoaDon.NgayTaoDon.Value.Month == month);
-                Console.WriteLine($"Filtered by year and month: {year}-{month}");
-            }
-            else if (year.HasValue)
-            {
-                query = query.Where(hdct => hdct.HoaDon.NgayTaoDon.Value.Year == year);
-                Console.WriteLine($"Filtered by year: {year}");
-            }
+			return query;
+		}
 
-            // Print out the query for debugging purposes
-            Console.WriteLine($"Resulting query: {query.ToQueryString()}");
 
-            return query;
-        }
-    }
+		public static IQueryable<HoaDonChiTiet> ApplyDateFilter(
+		IQueryable<HoaDonChiTiet> query,
+		DateTime? startDate, DateTime? endDate, int? year, int? month, int? day)
+		{
+			query = query.Where(hdct => hdct.HoaDon.TrangThai != 6); // Exclude canceled invoices
+
+			if (startDate.HasValue && endDate.HasValue)
+			{
+				query = query.Where(hdct => hdct.HoaDon.NgayTaoDon >= startDate && hdct.HoaDon.NgayTaoDon <= endDate);
+			}
+			else if (year.HasValue && month.HasValue && day.HasValue)
+			{
+				var date = new DateTime(year.Value, month.Value, day.Value);
+				query = query.Where(hdct => hdct.HoaDon.NgayTaoDon.Value.Date == date.Date);
+			}
+			else if (year.HasValue && month.HasValue)
+			{
+				query = query.Where(hdct => hdct.HoaDon.NgayTaoDon.Value.Year == year && hdct.HoaDon.NgayTaoDon.Value.Month == month);
+			}
+			else if (year.HasValue)
+			{
+				query = query.Where(hdct => hdct.HoaDon.NgayTaoDon.Value.Year == year);
+			}
+
+			return query;
+		}
+	}
     public class TopSellingProductSimpleDto
     {
         public string SKU { get; set; }

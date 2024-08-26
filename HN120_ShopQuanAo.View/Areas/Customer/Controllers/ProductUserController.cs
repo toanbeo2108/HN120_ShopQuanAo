@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace HN120_ShopQuanAo.View.Controllers
+namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
 {
-    public class ProductController : Controller
+    public class ProductUserController : Controller
     {
         private readonly HttpClient _httpClient;
-
-        public ProductController(HttpClient httpClient)
+        public ProductUserController(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

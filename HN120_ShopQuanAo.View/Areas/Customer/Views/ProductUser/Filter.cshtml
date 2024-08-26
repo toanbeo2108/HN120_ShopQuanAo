@@ -179,8 +179,8 @@
                 border-color: #007bff;
             }
 </style>
-
 @{
+    Layout = "~/Areas/Customer/Views/Shared/_LayoutCartCustomer.cshtml";
     MinMaxPriceDto minMaxPrice = ViewBag.minMaxPrice;
 }
 
@@ -267,7 +267,7 @@
             <div class="product-grid">
                 @foreach (var product in Model.Products)
                 {
-                    <a asp-action="DetailSP" asp-controller="Home" asp-route-masp="@product.MaSp">
+                    <a asp-action="DetailSanPham" asp-controller="CustomerHome" asp-route-masp="@product.MaSp">
                         <div class="product-card">
                             <img src="~/photoSP/@product.UrlAvatar" alt="@product.TenSP" />
                             <h3>@product.TenSP</h3>
