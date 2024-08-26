@@ -110,7 +110,15 @@
                 <tr>
                     <td>@item.MaHoaDon</td>
                     <td>@item.NgayTaoDon</td>
-                    <td name="tien">@(item.TongGiaTriHangHoa - item.PhiShip)</td>
+                    @if(item.MaVoucher != null)
+                    {
+                        <td name="tien">@(item.TongGiaTriHangHoa + decimal.Parse(item.MaVoucher) - item.PhiShip)</td>
+                    }
+                    else
+                    {
+                        <td name="tien">@item.TongGiaTriHangHoa </td>
+
+                    }
                     @if(item.MaVoucher == null)
                     {
                         <td>0 đ</td>
@@ -135,7 +143,7 @@
                     }
                     else
                     {
-                        <td name="tien">@(item.TongGiaTriHangHoa - decimal.Parse(item.MaVoucher))</td>
+                        <td name="tien">@item.TongGiaTriHangHoa</td>
 
                     }
                     @if(item.TrangThai == 1)

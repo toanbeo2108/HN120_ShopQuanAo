@@ -1,10 +1,15 @@
 ﻿
 // Duyệt qua các ô chứa số tiền và định dạng
 $(document).ready(function () {
-    
 
+    var tongtien = $('#amount_items').val();
+    var tienship = $('#ship_amount').val();
+    var tongdon = $('#total_amount').val();
+    $('#amount_items').val(formatMoney(tongtien));
+    $('#ship_amount').val(formatMoney(tienship));
+    $('#total_amount').val(formatMoney(tongdon));
 
-    document.getElementById('updateCartButton').addEventListener('click', function () {
+    document.getElementById('updateCartButton').addEventListener('change', function () {
         // Create a new AJAX request
         var xhr = new XMLHttpRequest();
 
@@ -101,31 +106,61 @@ function formatMoney(amount) {
     }
 }
 // format lại về float
-function parseMoney(formattedAmount) {
-    // Loại bỏ ký tự không phải số (bao gồm cả ký hiệu tiền tệ và dấu phân cách hàng nghìn)
-    const numberString = formattedAmount.replace(/[^0-9.-]/g, '');
-    // Chuyển đổi chuỗi thành số thực
-    return parseFloat(numberString);
+function parseMoneyToFloat(formattedAmount) {
+    // Bỏ ký tự không phải số hoặc dấu thập phân (loại bỏ ₫ và dấu chấm ngăn cách hàng nghìn)
+    const cleanedString = formattedAmount.replace(/\./g, '').replace(/[^0-9,]/g, '');
+    // Đổi dấu phẩy (ngăn cách hàng thập phân) thành dấu chấm
+    const normalizedString = cleanedString.replace(',', '.');
+    // Chuyển chuỗi thành số thực (float)
+    return parseFloat(normalizedString);
 }
+
+
+
+
     document.addEventListener('DOMContentLoaded', function () {
         // Lấy tất cả các ô input số lượng
         const quantityInputs = document.querySelectorAll('.quantity-input');
         function calculateTotalAmount() {
-            let totalAmount = 0;
+            let totalAmountItem = 0;
             const totalCells = document.querySelectorAll('td[role="money"]');
 
             totalCells.forEach(cell => {
                 console.log(cell.textContent);
-                const amount = parseMoney(cell.textContent);
+                const amount = parseMoneyToFloat(cell.textContent);
+                console.log(amount);
                 if (!isNaN(amount)) {
-                    totalAmount += amount;
-                    console.log(totalAmount);
+                    totalAmountItem += amount;
                 }
             });
 
             // Cập nhật tổng tiền cần trả
-            document.getElementById('amount_items').textContent = totalAmount;
+            $('#amount_items').val(formatMoney(totalAmountItem)) ;
         }
+        // gửi ajax về controller
+        function sendQuantityToServer(maGHCT, quantity) {
+            fetch(`/api/GioHangChiTiet/UpdateGHCT/${maGHCT}?soluong=${quantity}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data === true) {
+                       
+                    } else {
+                        console.error('Số lượng không được nhỏ hơn 1');
+                        alert('Số lượng không được nhỏ hơn 1');
+                    }
+                })
+        }
+
         // Duyệt qua tất cả các ô input và lắng nghe sự kiện input
         quantityInputs.forEach(input => {
         input.addEventListener('input', function () {
@@ -138,6 +173,8 @@ function parseMoney(formattedAmount) {
             const totalCell = document.getElementById(totalCellId);
 
             // Kiểm tra nếu totalCell tồn tại
+            const productIdCell = this.closest('tr').querySelector('td');
+            const maGHCT = productIdCell.textContent.trim();
             if (totalCell) {
                 // Tính toán thành tiền mới và cập nhật
                 if (!isNaN(donGia) && !isNaN(quantity)) {
@@ -147,7 +184,8 @@ function parseMoney(formattedAmount) {
                     totalCell.textContent = '0 đ';
                 }
                 calculateTotalAmount(); // Cập nhật tổng tiền mỗi khi số lượng thay đổi
-
+                // gửi về  controller
+                sendQuantityToServer(maGHCT, quantity);
             } else {
                 console.error('Element with id ' + totalCellId + ' not found.');
             }
