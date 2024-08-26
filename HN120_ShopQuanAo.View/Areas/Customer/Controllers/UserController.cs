@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text;
 using HN120_ShopQuanAo.Data.ViewModels;
+using System.Web;
 
 namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
 {
@@ -50,12 +51,12 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             return View(user);
         }
 
-        [HttpPost]
         public async Task<IActionResult> Update(User user, IFormFile imageFile)
         {
             var token = Request.Cookies["Token"];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+            // Lấy thông tin người dùng hiện tại
             var userUrl = $"https://localhost:7197/api/User/GetUserById?id={user.Id}";
             var userResponse = await _httpClient.GetAsync(userUrl);
             if (!userResponse.IsSuccessStatusCode)
@@ -67,6 +68,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             string userData = await userResponse.Content.ReadAsStringAsync();
             var ExsitUser = JsonConvert.DeserializeObject<User>(userData);
 
+            // Cập nhật thông tin người dùng
             if (user.Birthday == null)
             {
                 user.Birthday = ExsitUser.Birthday;
@@ -80,20 +82,13 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
                     await imageFile.CopyToAsync(stream);
                 }
                 ExsitUser.Avatar = imageFile.FileName;
-                ExsitUser.Gender = user.Gender;
-                ExsitUser.Birthday = user.Birthday;
-                ExsitUser.FullName = user.FullName;
-                ExsitUser.PhoneNumber = user.PhoneNumber;
-                ExsitUser.Email = user.Email;
             }
-            else
-            {
-                ExsitUser.Gender = user.Gender;
-                ExsitUser.Birthday = user.Birthday;
-                ExsitUser.FullName = user.FullName;
-                ExsitUser.PhoneNumber = user.PhoneNumber;
-                ExsitUser.Email = user.Email;
-            }
+
+            ExsitUser.Gender = user.Gender;
+            ExsitUser.Birthday = user.Birthday;
+            ExsitUser.FullName = user.FullName;
+            ExsitUser.PhoneNumber = user.PhoneNumber;
+            ExsitUser.Email = user.Email;
 
             string apiURL = "https://localhost:7197/api/user/UpdateUser";
             var content = new StringContent(JsonConvert.SerializeObject(ExsitUser), Encoding.UTF8, "application/json");
@@ -101,12 +96,13 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                TempData["SuccessMessage"] = HttpUtility.HtmlDecode("Cập nhật tài khoản thành công!");
                 return RedirectToAction("Update", new { id = user.Id });
             }
             else
             {
                 string responseMessage = await response.Content.ReadAsStringAsync();
-                TempData["ErrorMessage"] = $"Lỗi cập nhật người dùng: {responseMessage}";
+                TempData["ErrorMessage"] = HttpUtility.HtmlDecode($"Lỗi cập nhật người dùng: {responseMessage}");
                 return RedirectToAction("Update", new { id = user.Id });
             }
         }

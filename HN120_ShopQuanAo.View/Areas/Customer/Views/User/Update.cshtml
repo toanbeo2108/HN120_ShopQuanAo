@@ -1,4 +1,5 @@
 ﻿@using HN120_ShopQuanAo.Data.Models;
+@using System.Web;
 @model HN120_ShopQuanAo.Data.Models.User
 
 @{
@@ -68,18 +69,27 @@
             background-color: #f0f0f0;
         }
 </style>
-
 @if (TempData["ErrorMessage"] != null)
 {
     <script>
-        console.log("TempData[ErrorMessage] is not null");
-        console.log("ErrorMessage: @TempData["ErrorMessage"]");
         document.addEventListener("DOMContentLoaded", function () {
-            console.log("Document loaded");
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "@TempData["ErrorMessage"]",
+                text: "@Html.Raw(HttpUtility.HtmlDecode(TempData["ErrorMessage"].ToString()))",
+            });
+        });
+    </script>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: "success",
+                title: "Thành công",
+                text: "@Html.Raw(HttpUtility.HtmlDecode(TempData["SuccessMessage"].ToString()))",
             });
         });
     </script>

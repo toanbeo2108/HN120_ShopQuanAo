@@ -4,6 +4,7 @@
     ViewData["Title"] = "Thêm địa chỉ mới";
     Layout = "~/Areas/Customer/Views/Shared/_LayoutCustomer.cshtml";
 }
+
 <style>
     .form-container {
         max-width: 600px;
@@ -56,21 +57,21 @@
         </div>
         <div class="form-group">
             <label for="City">Tỉnh/Thành phố</label>
-            <select class="form-control" asp-for="City" id="city" name="City" required>
+            <select class="form-control" asp-for="City" id="select-city" name="City" required>
                 <option value="" selected>Chọn tỉnh thành</option>
             </select>
             <span asp-validation-for="City" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label for="District">Quận/Huyện</label>
-            <select class="form-control" asp-for="District" id="district" name="District" required>
+            <select class="form-control" asp-for="District" id="select-district" name="District" required>
                 <option value="" selected>Chọn quận huyện</option>
             </select>
             <span asp-validation-for="District" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label for="Ward">Phường/Xã</label>
-            <select class="form-control" asp-for="Ward" id="ward" name="Ward" required>
+            <select class="form-control" asp-for="Ward" id="select-ward" name="Ward" required>
                 <option value="" selected>Chọn phường xã</option>
             </select>
             <span asp-validation-for="Ward" class="text-danger"></span>
@@ -86,52 +87,74 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-<script>
-    var notification = localStorage.getItem('notification');
-    if (notification) {
-        notification = JSON.parse(notification);
-        $.notify(notification.message, notification.type);
-        localStorage.removeItem('notification');
-    }
-
-    var citis = document.getElementById("city");
-    var districts = document.getElementById("district");
-    var wards = document.getElementById("ward");
-    var Parameter = {
-        url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
-        method: "GET",
-        responseType: "application/json",
-    };
-    var promise = axios(Parameter);
-    promise.then(function (result) {
-        renderCity(result.data);
-    });
-
-    function renderCity(data) {
-        for (const x of data) {
-            citis.options[citis.options.length] = new Option(x.Name, x.Name);
-        }
-        citis.onchange = function () {
-            districts.length = 1;
-            wards.length = 1;
-            if (this.value != "") {
-                const result = data.filter(n => n.Name === this.value);
-
-                for (const k of result[0].Districts) {
-                    districts.options[districts.options.length] = new Option(k.Name, k.Name);
-                }
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var notification = localStorage.getItem('notification');
+            if (notification) {
+                notification = JSON.parse(notification);
+                $.notify(notification.message, notification.type);
+                localStorage.removeItem('notification');
             }
-        };
-        districts.onchange = function () {
-            wards.length = 1;
-            const dataCity = data.filter((n) => n.Name === citis.value);
-            if (this.value != "") {
-                const dataWards = dataCity[0].Districts.filter(n => n.Name === this.value)[0].Wards;
 
-                for (const w of dataWards) {
-                    wards.options[wards.options.length] = new Option(w.Name, w.Name);
+            var citis = document.getElementById("select-city");
+            var districts = document.getElementById("select-district");
+            var wards = document.getElementById("select-ward");
+
+            var Parameter = {
+                url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
+                method: "GET",
+                responseType: "application/json",
+            };
+
+            axios(Parameter).then(function (result) {
+                if (result.data && result.data.length > 0) {
+                    console.log("API request was successful. Data received:");
+                    console.log(result.data);
+                    renderCity(result.data);
+                } else {
+                    console.error("API request succeeded but no data was returned.");
                 }
+            }).catch(function (error) {
+                console.error("API request failed with error:", error);
+            });
+
+            function renderCity(data) {
+                citis.length = 1;
+                districts.length = 1;
+                wards.length = 1;
+
+                data.forEach(function (city) {
+                    citis.options[citis.options.length] = new Option(city.Name, city.Id);
+                });
+
+                citis.onchange = function () {
+                    districts.length = 1;
+                    wards.length = 1;
+                    if (this.value !== "") {
+                        const selectedCity = data.find(n => n.Id === this.value);
+                        if (selectedCity) {
+                            selectedCity.Districts.forEach(function (district) {
+                                districts.options[districts.options.length] = new Option(district.Name, district.Id);
+                            });
+                        }
+                    }
+                };
+
+                districts.onchange = function () {
+                    wards.length = 1;
+                    if (this.value !== "") {
+                        const selectedCity = data.find(n => n.Id === citis.value);
+                        const selectedDistrict = selectedCity.Districts.find(n => n.Id === this.value);
+                        if (selectedDistrict) {
+                            selectedDistrict.Wards.forEach(function (ward) {
+                                wards.options[wards.options.length] = new Option(ward.Name, ward.Id);
+                            });
+                        }
+                    }
+                };
             }
-        };
-    }
-</script>
+        });
+    </script>
+}
