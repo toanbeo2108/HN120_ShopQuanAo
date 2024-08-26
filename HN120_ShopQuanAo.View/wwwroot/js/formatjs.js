@@ -2,7 +2,14 @@
 // Duyệt qua các ô chứa số tiền và định dạng
 $(document).ready(function () {
 
-    document.getElementById('updateCartButton').addEventListener('click', function () {
+    var tongtien = $('#amount_items').val();
+    var tienship = $('#ship_amount').val();
+    var tongdon = $('#total_amount').val();
+    $('#amount_items').val(formatMoney(tongtien));
+    $('#ship_amount').val(formatMoney(tienship));
+    $('#total_amount').val(formatMoney(tongdon));
+
+    document.getElementById('updateCartButton').addEventListener('change', function () {
         // Create a new AJAX request
         var xhr = new XMLHttpRequest();
 
@@ -37,56 +44,57 @@ $(document).ready(function () {
             $element.text(formatMoney(amount));
         }
     });
-    document.addEventListener("change", function () {
-        // Lấy tất cả các input số lượng sản phẩm
-        const quantityInputs = document.querySelectorAll('input[type="number"]');
 
-        quantityInputs.forEach(input => {
-            input.addEventListener('change', function () {
-                // Lấy số lượng mới và dòng chứa sản phẩm hiện tại
-                const newQuantity = this.value;
-                const row = this.closest('tr');
+    //document.addEventListener("change", function () {
+    //    // Lấy tất cả các input số lượng sản phẩm
+    //    const quantityInputs = document.querySelectorAll('input[type="number"]');
 
-                // Lấy giá bán và cột thành tiền tương ứng
-                const price = parseFloat(row.querySelector('.product-price[name="tien"]').innerText);
-                const totalElement = row.getElementById('total');
+    //    quantityInputs.forEach(input => {
+    //        input.addEventListener('change', function () {
+    //            // Lấy số lượng mới và dòng chứa sản phẩm hiện tại
+    //            const newQuantity = this.value;
+    //            const row = this.closest('tr');
+
+    //            // Lấy giá bán và cột thành tiền tương ứng
+    //            const price = parseFloat(row.querySelector('.product-price[name="tien"]').innerText);
+    //            const totalElement = row.getElementById('total');
              
-                // Tính thành tiền mới
-                const newTotal = newQuantity * price;
-                totalElement.innerText = newTotal.toLocaleString('vi-VN');
+    //            // Tính thành tiền mới
+    //            const newTotal = newQuantity * price;
+    //            totalElement.innerText = newTotal.toLocaleString('vi-VN');
 
-                // Gửi dữ liệu về server bằng AJAX
-                const productId = this.closest('a[asp-route-maSP]').getAttribute('asp-route-maSP');
+    //            // Gửi dữ liệu về server bằng AJAX
+    //            const productId = this.closest('a[asp-route-maSP]').getAttribute('asp-route-maSP');
 
-                fetch('/Customer/CustomerHome/UpdateCart', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: JSON.stringify({
-                        MaSP: productId,
-                        SoLuong: newQuantity,
-                        ThanhTien: newTotal
-                    })
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json();
-                        } else {
-                            throw new Error('Có lỗi xảy ra khi cập nhật giỏ hàng.');
-                        }
-                    })
-                    .then(data => {
-                        // Xử lý dữ liệu trả về từ server nếu cần
-                        console.log('Giỏ hàng đã được cập nhật:', data);
-                    })
-                    .catch(error => {
-                        console.error('Lỗi:', error);
-                    });
-            });
-        });
-    });
+    //            fetch('/Customer/CustomerHome/UpdateCart', {
+    //                method: 'POST',
+    //                headers: {
+    //                    'Content-Type': 'application/json',
+    //                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+    //                },
+    //                body: JSON.stringify({
+    //                    MaSP: productId,
+    //                    SoLuong: newQuantity,
+    //                    ThanhTien: newTotal
+    //                })
+    //            })
+    //                .then(response => {
+    //                    if (response.ok) {
+    //                        return response.json();
+    //                    } else {
+    //                        throw new Error('Có lỗi xảy ra khi cập nhật giỏ hàng.');
+    //                    }
+    //                })
+    //                .then(data => {
+    //                    // Xử lý dữ liệu trả về từ server nếu cần
+    //                    console.log('Giỏ hàng đã được cập nhật:', data);
+    //                })
+    //                .catch(error => {
+    //                    console.error('Lỗi:', error);
+    //                });
+    //        });
+    //    });
+    //});
 
 });
 
@@ -97,3 +105,90 @@ function formatMoney(amount) {
         return amount;
     }
 }
+// format lại về float
+function parseMoneyToFloat(formattedAmount) {
+    // Bỏ ký tự không phải số hoặc dấu thập phân (loại bỏ ₫ và dấu chấm ngăn cách hàng nghìn)
+    const cleanedString = formattedAmount.replace(/\./g, '').replace(/[^0-9,]/g, '');
+    // Đổi dấu phẩy (ngăn cách hàng thập phân) thành dấu chấm
+    const normalizedString = cleanedString.replace(',', '.');
+    // Chuyển chuỗi thành số thực (float)
+    return parseFloat(normalizedString);
+}
+
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Lấy tất cả các ô input số lượng
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        function calculateTotalAmount() {
+            let totalAmountItem = 0;
+            const totalCells = document.querySelectorAll('td[role="money"]');
+
+            totalCells.forEach(cell => {
+                console.log(cell.textContent);
+                const amount = parseMoneyToFloat(cell.textContent);
+                console.log(amount);
+                if (!isNaN(amount)) {
+                    totalAmountItem += amount;
+                }
+            });
+
+            // Cập nhật tổng tiền cần trả
+            $('#amount_items').val(formatMoney(totalAmountItem)) ;
+        }
+        // gửi ajax về controller
+        function sendQuantityToServer(maGHCT, quantity) {
+            fetch(`/api/GioHangChiTiet/UpdateGHCT/${maGHCT}?soluong=${quantity}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data === true) {
+                       
+                    } else {
+                        console.error('Số lượng không được nhỏ hơn 1');
+                        alert('Số lượng không được nhỏ hơn 1');
+                    }
+                })
+        }
+
+        // Duyệt qua tất cả các ô input và lắng nghe sự kiện input
+        quantityInputs.forEach(input => {
+        input.addEventListener('input', function () {
+            // Lấy đơn giá từ thuộc tính data-don-gia
+            const donGia = parseFloat(this.getAttribute('data-don-gia'));
+            // Lấy số lượng từ giá trị hiện tại của ô input
+            const quantity = parseInt(this.value);
+            // Xác định phần tử hiển thị thành tiền tương ứng
+            const totalCellId = 'total-' + this.id.split('-')[1];
+            const totalCell = document.getElementById(totalCellId);
+
+            // Kiểm tra nếu totalCell tồn tại
+            const productIdCell = this.closest('tr').querySelector('td');
+            const maGHCT = productIdCell.textContent.trim();
+            if (totalCell) {
+                // Tính toán thành tiền mới và cập nhật
+                if (!isNaN(donGia) && !isNaN(quantity)) {
+                    const thanhTien = donGia * quantity;
+                    totalCell.textContent = formatMoney(thanhTien);
+                } else {
+                    totalCell.textContent = '0 đ';
+                }
+                calculateTotalAmount(); // Cập nhật tổng tiền mỗi khi số lượng thay đổi
+                // gửi về  controller
+                sendQuantityToServer(maGHCT, quantity);
+            } else {
+                console.error('Element with id ' + totalCellId + ' not found.');
+            }
+        });
+        });
+    });

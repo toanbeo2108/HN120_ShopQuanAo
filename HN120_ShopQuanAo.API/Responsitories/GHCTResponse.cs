@@ -27,6 +27,7 @@ namespace HN120_ShopQuanAo.API.Responsitories
 
         public async Task<bool> UpdateGHCT(string MaGHCT, int? soluong)
         {
+            decimal? tongtien = 0;
             var ghct = await appContext.GioHangChiTiet.FirstOrDefaultAsync(x => x.MaGioHangChiTiet == MaGHCT);
             if(ghct == null)
             {
@@ -35,6 +36,21 @@ namespace HN120_ShopQuanAo.API.Responsitories
             ghct.SoLuong = soluong;
             ghct.ThanhTien = soluong * ghct.DonGia;
             appContext.GioHangChiTiet.Update(ghct);
+            await appContext.SaveChangesAsync();
+            var gh = await appContext.GioHang.FirstOrDefaultAsync(x => x.MaGioHang == ghct.MaGioHang);
+            if(gh == null)
+            {
+                return false;
+            }
+            var lstGHCT =  appContext.GioHangChiTiet.Where(x => x.MaGioHang == gh.MaGioHang).ToList();
+            foreach(var item in lstGHCT)
+            {
+                tongtien += item.ThanhTien;
+            }
+            gh.TongTien = tongtien;
+            gh.MoTa = gh.MoTa;
+            gh.TrangThai = gh.TrangThai;
+            appContext.GioHang.Update(gh);
             await appContext.SaveChangesAsync();
             return true;
         }

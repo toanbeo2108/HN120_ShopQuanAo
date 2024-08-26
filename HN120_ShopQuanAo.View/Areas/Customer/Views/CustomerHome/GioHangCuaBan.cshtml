@@ -2,11 +2,11 @@
 @using HN120_ShopQuanAo.View.Areas.Customer.Data;
 @model IEnumerable<HN120_ShopQuanAo.Data.Models.GioHangChiTiet>
 @{
-    Layout = "~/Areas/Customer/Views/Shared/_LayoutCartCustomer.cshtml";
-    List<GioHangChiTietView> ListGioHangChiTietCuaBan = ViewBag.JoinDataGH as List<GioHangChiTietView>;
-    decimal? tongtien = ViewBag.TongTien as decimal?;
-    decimal? tienship = ViewBag.TienShip as decimal?;
-    decimal? tiencantra = ViewBag.TìenCanTra as decimal?;
+	Layout = "~/Areas/Customer/Views/Shared/_LayoutCartCustomer.cshtml";
+	List<GioHangChiTietView> ListGioHangChiTietCuaBan = ViewBag.JoinDataGH as List<GioHangChiTietView>;
+	decimal? tongtien = ViewBag.TongTien as decimal?;
+	decimal? tienship = ViewBag.TienShip as decimal?;
+	decimal? tiencantra = ViewBag.TìenCanTra as decimal?;
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -16,94 +16,99 @@
 <script src="~/js/formatjs.js"></script>
 
 <div class="shopping_cart_area">
-    <form action="#">
-        <div class="row">
-            <div class="col-12">
-                <div class="table_desc">
-                    <div class="cart_page table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="product_remove">Xóa</th>
-                                    <th class="product_thumb">Ảnh</th>
-                                    <th class="product_name">Tên Sản Phẩm</th>
-                                    <th class="product-price">Giá Bán</th>
-                                    <th class="product_quantity">Số Lượng</th>
-                                    <th class="product_total">Thành Tiền</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               
-                                    @foreach(var item in ListGioHangChiTietCuaBan)
-                                    {
-                                         <tr>
-                                        <td class="product_remove"><a asp-action="XoaSPGioHang" asp-controller="CustomerHome" asp-area="Customer" asp-route-maSP="@item.MaGHCT"><i class="fa fa-trash-o"></i></a></td>
-                                        <td class="product_thumb"><a href="#"><img src="~/photoSanPhamCT/@item.UrlAnhSPCT" alt=""></a></td>
-                                        <td class="product_name"><a href="#">@item.TenSP (@item.TenMau) (@item.TenSize)</a></td>
-                                        <td name="tien" class="product-price">@item.DonGia</td>
-                                        <td class="product_quantity"><input min="0" max="100" value="@item.SoLuong" type="number"></td>
-                                        <td name="tien" id="total" class="product-price">@item.ThanhTien</td>
-                                    </tr>
-                                    }
+	<form action="#">
+		<div class="row">
+			<div class="col-12">
+				<div class="table_desc">
+					<div class="cart_page table-responsive">
+						<table>
+							<thead>
+								<tr>
+									<th class="product_remove">Xóa</th>
+									<th class="product_thumb">Ảnh</th>
+									<th class="product_name">Tên Sản Phẩm</th>
+									<th class="product-price">Giá Bán</th>
+									<th class="product_quantity">Số Lượng</th>
+									<th class="product_total">Thành Tiền</th>
+								</tr>
+							</thead>
+							<tbody>
 
-                               
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="cart_submit">
-                        <button id="updateCartButton">Cập nhật giỏ hàng</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--coupon code area start-->
-        <div class="coupon_area">
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="coupon_code">
-                        <h3>Cart Totals</h3>
-                        <div class="coupon_inner">
-                            <div class="cart_subtotal">
-                                <p>Tổng tiền hàng</p>
-                                <p class="cart_amount" name="tien">@tongtien</p>
-                            </div>
-                            <div class="cart_subtotal ">
-                                <p>Tiền ship</p>
-                                <p class="cart_amount" name="tien">@tienship</p>
-                            </div>
-                            <a href="#">Update Tiền Ship</a>
-                            <div class="cart_subtotal">
-                                <p>Tổng tiền cần trả</p>
-                                <p id="total_amount" class="cart_amount" name="tien">@tiencantra</p>
-                            </div>
-                            @if (tienship > 0)
-                            {
-                                <div class="checkout_btn">
-                                    <a href="#">Đặt Hàng</a>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="checkout_btn">
-                                    <a asp-action="Checkout" asp-controller="CustomerHome" asp-area="Customer">Thêm thông tin nhận hàng</a>
-                                </div>
-                            }
-                           
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--coupon code area end-->
-    </form>
+								@foreach (var item in ListGioHangChiTietCuaBan)
+								{
+									<tr>
+										<td class="hidden">@item.MaGHCT</td>
+										<td class="product_remove"><a asp-action="XoaSPGioHang" asp-controller="CustomerHome" asp-area="Customer" asp-route-maSP="@item.MaGHCT"><i class="fa fa-trash-o"></i></a></td>
+										<td class="product_thumb"><a href="#"><img src="~/photoSanPhamCT/@item.UrlAnhSPCT" alt=""></a></td>
+										<td class="product_name"><a href="#">@item.TenSP (@item.TenMau) (@item.TenSize)</a></td>
+										<td name="tien" class="product-price">@item.DonGia</td>
+										<td class="product_quantity">
+											<input id="quantity-@item.MaGHCT.ToString().Substring(0, 8)" min="0" max="100" value="@item.SoLuong" type="number" class="quantity-input" data-don-gia="@item.DonGia">
+										</td>
+										<td name="tien" role="money" id="total-@item.MaGHCT.ToString().Substring(0, 8)" class="product-price">@item.ThanhTien</td>
+
+									</tr>
+								}
+
+
+							</tbody>
+						</table>
+					</div>
+					<div class="cart_submit">
+						<button id="updateCartButton">Cập nhật giỏ hàng</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--coupon code area start-->
+		<div class="coupon_area">
+			<div class="row">
+				<div class="col-lg-6 col-md-6">
+				</div>
+				<div class="col-lg-6 col-md-6">
+					<div class="coupon_code">
+						<h3>Cart Totals</h3>
+						<div class="coupon_inner">
+							<div class="cart_subtotal">
+								<p>Tổng tiền hàng</p>
+								<strong><input id="amount_items" class="intput-tien" value="@tongtien" disabled name="tieninput" style="border:none" /></strong>
+							</div>
+							<div class="cart_subtotal ">
+								<p>Tiền ship</p>
+								<strong><input id="ship_amount" class="intput-tien" value="@tienship" disabled name="tieninput" style="border:none" /></strong>
+							</div>
+							<a href="#">Update Tiền Ship</a>
+							<div class="cart_subtotal">
+								<p>Tổng tiền cần trả</p>
+								<strong><input id="total_amount" class="intput-tien" value="@tiencantra" disabled name="tieninput" style="border:none;color:red" /></strong>
+							</div>
+
+							<div class="checkout_btn">
+								<a asp-action="Checkout" asp-controller="CustomerHome" asp-area="Customer">Thêm thông tin nhận hàng</a>
+							</div>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--coupon code area end-->
+	</form>
 </div>
 <style>
-    a {
-        text-decoration: none;
-    }
+	a {
+		text-decoration: none;
+	}
+
+	.intput-tien {
+		text-align: right;
+		font-weight: bold;
+		font-size: 18px;
+	}
+	.hidden{
+		display:none;
+	}
 </style>
 <script src="~/js/locdetailnguoidung.js"></script>
 

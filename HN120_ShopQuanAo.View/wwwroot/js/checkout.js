@@ -15,9 +15,9 @@
         renderCity(result.data);
     });
 
-
     // lấy tiền ship gửi về controller
-    $('body').on('click', '#dat-hang', function () {
+    $('#dat-hang').click(function (event) {
+        event.preventDefault();
         var tongtiendonhang = 0;
         var tienship = $('#btn_PhiShip').val().replace(/[^0-9]/g, '');;
         var tinh = $('#city').val();
@@ -33,36 +33,60 @@
         console.log(tongtiendonhang);
 
         if (tongtiendonhang != 0) {
-            $.ajax({
-                url: '/CustomerHome/DatHang',
-                type: 'POST',
-                data: {
-                    tienship: tienship,
-                    tinh: tinh,
-                    huyen: huyen,
-                    xa: xa,
-                    cuthe: cuthe,
-                    tongtiendonhang: tongtiendonhang,
-                    tiengiam: tiengiam
-                }
-
-                ,
-                success: function (response) {
-                    localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
-
-                    location.reload(true);
-
-                },
-                error: function (xhr, status, error) {
-                    localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thất bại', type: 'error' }));
-                    location.reload(true);
-
+            Swal.fire({
+                title: 'Bạn có đồng ý?',
+                text: "Bạn có thật sự muốn đặt mua đơn hàng này ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Đồng Ý'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'GET',
+                        url: ' /Customer/CustomerHome/DatHang',
+                        data: {
+                            tienship: tienship,
+                            tinh: tinh,
+                            huyen: huyen,
+                            xa: xa,
+                            cuthe: cuthe,
+                            tongtiendonhang: tongtiendonhang,
+                            tiengiam: parseFloat(tiengiam)
+                        },
+                        success: function (response) {
+                            console.log("Set default response received", response);
+                            if (response.success) {
+                                Swal.fire(
+                                    'Success!',
+                                    'Đặt Hàng Thành Công, Hãy kiểm tra lại đơn hàng của bạn nhé',
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    'Đặt hàng thất bại, hãy kiểm tra lại thông tin',
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function (response) {
+                            console.log("Set default AJAX error occurred");
+                         
+                            Swal.fire(
+                                'Success!',
+                                'Đặt Hàng Thành Công, Hãy kiểm tra lại đơn hàng của bạn nhé',
+                                'success',
+                            ).then(() => {
+                                location.reload()
+                            });
+                        }
+                    });
                 }
             });
-
-            localStorage.setItem('notification', JSON.stringify({ message: 'Thanh toán thành công', type: 'success' }));
-            location.reload(true);
-
         }
         else {
             $.ajax({
@@ -213,7 +237,7 @@
                     var tongtiendonhang = 0;
                     var tienship = $('#btn_PhiShip').val().replace(/[^0-9]/g, '');
                     var tongtienhang = $('#tong-tien-hang').text().replace(/[^0-9]/g, '');
-                    var tiengiam = $('#btn_giamgia').val().replace(/[^0-9]/g, '');
+                    var tiengiam = $('#btn_giamgia').val();
 
                     tongtiendonhang = parseFloat(tongtienhang) + parseFloat(tienship) - parseFloat(tiengiam);
                     $('#tong-don-hang').val(formatMoney(tongtiendonhang));
@@ -234,7 +258,9 @@
 
     $('#ward').change(function () {
         loadTinhThanh();
+        //var tiengiam = $('#btn_giamgia').val();
 
+        //$('#btn_giamgia').val(formatMoney(tiengiam));
 
     })
 

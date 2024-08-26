@@ -260,8 +260,66 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
 
 
         }
-        //Detail Sản phẩm
-        [HttpGet]
+
+		//[HttpPost]
+		//public async Task<IActionResult> UpdateCartChangeQuantity(string maGHCT, int quantity)
+		//{
+		//	var maND = Request.Cookies["UserId"];
+  //          decimal? tongtien = 0;
+
+		//	var ApiurllstGioHangcuaban = $"https://localhost:7197/api/GioHang/GetGHByUserId/{maND}";
+		//	var responseListGHCB = await _httpClient.GetAsync(ApiurllstGioHangcuaban);
+		//	string apidataListGHCB = await responseListGHCB.Content.ReadAsStringAsync();
+		//	var ListGHCB = JsonConvert.DeserializeObject<List<GioHang>>(apidataListGHCB);
+
+  //          //_logger.LogInformation(ListGHCB.ToString());
+		//	if (ListGHCB != null)
+		//	{
+		//		var Ghcb = ListGHCB.FirstOrDefault(x => x.TrangThai == 1);
+		//		if (Ghcb == null)
+		//		{
+		//			return BadRequest("Không có Mã ND nên Null là đúng");
+		//		}
+
+
+		//		var ApiurlGioHangcuaban = $"https://localhost:7197/api/GioHangChiTiet/GetGHCTByMaGH/{Ghcb.MaGioHang}";
+		//		var responseGHCB = await _httpClient.GetAsync(ApiurlGioHangcuaban);
+		//		string apidataGHCB = await responseGHCB.Content.ReadAsStringAsync();
+		//		var GHCB = JsonConvert.DeserializeObject<List<GioHangChiTiet>>(apidataGHCB);
+		//		if (GHCB == null)
+		//		{
+		//			return BadRequest("Không tìm thấy thông tin giỏ hàng");
+		//		}
+  //              foreach(var item in GHCB)
+  //              {
+  //                  tongtien += item.ThanhTien;
+  //              }
+		//		var urlGHCTUpdate = $"https://localhost:7197/api/GioHangChiTiet/UpdateGHCT/{maGHCT}?soluong={quantity}";
+		//		var contentUpdate = new StringContent("Update thành công");
+		//		var responseUpdate = await _httpClient.PutAsync(urlGHCTUpdate, contentUpdate);
+		//		if (!responseUpdate.IsSuccessStatusCode)
+		//		{
+  //                  return BadRequest("Không thể update số lượng của sản phẩm trong giỏ hàng");
+		//		}
+  //              else
+  //              {
+		//			// update thông tin giỏ hàng
+		//			var urlupdateGH = $"https://localhost:7197/api/GioHang/UpdateGH/{Ghcb.MaGioHang}?tongtien={tongtien}&trangthai=1";
+		//			var content = new StringContent("Cập nhật thành công");
+
+		//			var responseUpdateGH = await _httpClient.PutAsync(urlupdateGH, content);
+		//			if (responseUpdateGH.IsSuccessStatusCode)
+		//			{
+		//				return RedirectToAction("GioHangCuaBan", "CustomerHome", new { areas = "Customer" });
+
+		//			}
+		//		}
+
+		//	}
+  //          return RedirectToAction("GioHangCuaBan","CustomerHome",new  { Areas = "Customer" });
+		//}
+		//Detail Sản phẩm
+		[HttpGet]
         public async Task<IActionResult> DetailSanPham(string masp)
         {
             // lấy danh sách sản phẩm
@@ -472,6 +530,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> AppVC(string mavc)
         {
+            Response.Cookies.Append("Mavc", mavc);
             decimal? tongtien = 0;
             decimal? tiengiam = 0;
             var maND = Request.Cookies["UserId"];
@@ -533,6 +592,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
                     Response.Cookies.Append("TienGiam", tiengiam.ToString());
                 }
             }
+
             return RedirectToAction("Checkout","CustomerHome",new {areas = "Customer"});
         }
 
@@ -656,8 +716,9 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
                 var responseUVC = await _httpClient.GetAsync(urlUVC);
                 string apiurlUVC = await responseUVC.Content.ReadAsStringAsync();
                 var lstUVC = JsonConvert.DeserializeObject<List<User_Voucher>>(apiurlUVC);
+                var lstuvcthoaman = lstUVC.Where(x => x.TrangThai == 1);
                 var joinDataUVC = from vc in lstvcthoaman
-                                  join uvc in lstUVC on vc.MaVoucher equals uvc.MaVoucher
+                                  join uvc in lstuvcthoaman on vc.MaVoucher equals uvc.MaVoucher
                                   select new VoucherUserView
                                   {
                                       UserVoucherId = uvc.UserVoucherID,
@@ -673,33 +734,17 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             }
            return  View();
         }
-        //public async Task<IActionResult> Apdungvoucher(string mavoucher)
-        //{
-        //    var maND = Request.Cookies["UserId"];
-        //    var urlND = $"https://localhost:7197/api/User/GetUserById?id={maND}";
-        //    var responseND = await _httpClient.GetAsync(urlND);
-        //    string apidataND = await responseND.Content.ReadAsStringAsync();
-        //    var nd = JsonConvert.DeserializeObject<User>(apidataND);
-        //    if (nd == null)
-        //    {
-        //        return BadRequest("Không tìm thấy thông tin của bạn, vui lòng đăng nhập lại");
-        //    }
-
-
-        //}
-
-        //private dynamic GenerateRandomString(Random r, int v)
-        //{
-        //    throw new NotImplementedException();
-        //}
+       
+        [HttpGet]
         [HttpPost]
 		public async Task<IActionResult> DatHang(decimal tienship, string tinh, string huyen, string xa, string cuthe, decimal tongtiendonhang,decimal tiengiam)
 		{
+
 			if (tongtiendonhang == 0)
 			{
 				return RedirectToAction("GianHangNguoiDung", "CustomerHome", new { areas = "Customer" });
 			}
-
+            var mavc = Request.Cookies["Mavc"];
 			//Lấy thông tin người dùng
 			var maND = Request.Cookies["UserId"];
 			var urlND = $"https://localhost:7197/api/User/GetUserById?id={maND}";
@@ -805,9 +850,23 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
 					var responseUpdateGH = await _httpClient.PutAsync(urlupdateGH, contentupdateGH);
 					if (responseUpdateGH.IsSuccessStatusCode)
 					{
-						return RedirectToAction("GioHangCuaBan", "CustomerHome", new { areas = "Customer" });
-					}
+                        var urlupdateUVC = $"https://localhost:7197/api/Voucher_User/UpdateUVCByUserIdMavc/{maND}&{mavc}";
+                        var contentuvc = new StringContent("Cập nhật thành công");
+                        var responsesUVC = await _httpClient.PutAsync(urlupdateUVC, contentuvc);
+                        if (responsesUVC.IsSuccessStatusCode)
+                        {
+                            if (Request.Cookies["Mavc"] != null)
+                            {
+                                Response.Cookies.Delete("Mavc");
+                            }
+                            return RedirectToAction("GioHangCuaBan", "CustomerHome", new { areas = "Customer" });
+
+                        }
+                    }
 				}
+               
+
+
 				return BadRequest("Đặt hàng không thành công,634");
 			}
 			return BadRequest("Tạo hóa đơn sẵn không thành công, lỗi 636");
