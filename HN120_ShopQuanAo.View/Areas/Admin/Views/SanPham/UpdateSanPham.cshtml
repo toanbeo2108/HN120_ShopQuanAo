@@ -202,12 +202,12 @@
 
                         <div class="form-group">
                             <label asp-for="TenSP" class="control-label">Tên sản phẩm</label>
-                            <input asp-for="TenSP" id="tensp_inp" class="form-control" />
+                            <input asp-for="TenSP" id="tensp_inp" class="form-control" onblur="Checktensp()" />
                             <span asp-validation-for="TenSP" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Mota" class="control-label">Mô tả</label>
-                            <input asp-for="Mota" class="form-control" />
+                            <input asp-for="Mota" id="mota_inp" class="form-control" onblur="Checkmota()"/>
                             <span asp-validation-for="Mota" class="text-danger"></span>
                         </div>
                     </div>
@@ -386,6 +386,28 @@
                                 input.value = 1000;
                             }
                     }
+                        function Checktensp() {
+        var tenSP = document.getElementById('tensp_inp').value;
+        if (specialCharPattern.test(tenSP)) {
+            alert("Tên sản phẩm không được chứa ký tự đặc biệt!");
+            document.getElementById('tensp_inp').value = tenSP.replace(specialCharPattern, '');
+        }
+        if (tenSP.length > 50) {
+            alert("Tên sản phẩm không được vượt quá 50 ký tự!");
+            document.getElementById('tensp_inp').value = tenSP.substring(0, 50);
+        }
+    }
+        function Checkmota() {
+            var mota = document.getElementById('mota_inp').value;
+            if (specialCharPattern.test(mota)) {
+                    alert("Mô tả sản phẩm không được chứa ký tự đặc biệt!");
+                document.getElementById('mota_inp').value = mota.replace(specialCharPattern, '');
+            }
+            if (mota.length > 500) {
+                alert("Mô tả sản phẩm không được vượt quá 500 ký tự!");
+                document.getElementById('mota_inp').value = mota.substring(0, 500);
+            }
+        }
                 $(document).ready(function () {
                         $('#productImageFile').change(function (e) {
                         var reader = new FileReader();

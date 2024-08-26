@@ -15,6 +15,7 @@ namespace HN120_ShopQuanAo.Data.ViewModels
         public string MaTheLoai { get; set; }
         public string MaThuongHieu { get; set; }
         public string MaChatLieu { get; set; }
+        public string Mota { get; set; }
         public string UrlAvatar { get; set; } // URL ảnh đại diện
 
         public List<ChiTietSpInputModel> ChiTietSps { get; set; } = new List<ChiTietSpInputModel>();
