@@ -10,12 +10,6 @@
     <link rel="shortcut icon" type="image/x-icon" href="assets\img\favicon.png">
 
     <!-- all css here -->
-   @* <link rel="stylesheet" href="assets\css\bootstrap.min.css">
-    <link rel="stylesheet" href="assets\css\plugin.css">
-    <link rel="stylesheet" href="assets\css\bundle.css">
-    <link rel="stylesheet" href="assets\css\style.css">
-    <link rel="stylesheet" href="assets\css\responsive.css">
-    <script src="assets\js\vendor\modernizr-2.8.3.min.js"></script>*@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FBoiPoly Website bán quần áo nam</title>
@@ -33,6 +27,9 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
+    @{
+        var userId = Context.Request.Cookies["UserId"];
+    }
     <!-- Add your site or application content here -->
     <!--pos page start-->
     <div class="pos_page">
@@ -70,7 +67,7 @@
                                     <ul>
                                         <li><a href="contact.html" title="Contact">Contact</a></li>
                                         <li><a asp-action="HoaDonCuaToi" asp-controller="HoaDonCustomer" asp-area="Customer">Hóa đơn của tôi</a></li>
-                                        <li><a href="my-account.html" title="My account">My account</a></li>
+                                        <li><a asp-controller="User" asp-action="Update" asp-route-id="@userId" title="My account">My account</a></li>
                                         <li><a href="cart.html" title="My cart">My cart</a></li>
                                         <li class="nav-item dropdown">
                                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="border: none;">
@@ -98,9 +95,6 @@
                             </div>
                             <div class="col-lg-9 col-md-9">
                                 <div class="header_right_info">
-                                    
-                                    
-
                                 </div>
                             </div>
                         </div>

@@ -42,19 +42,25 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 }
 
                 // Thêm mới địa chỉ giao hàng vào cơ sở dữ liệu
-                var newAddress = new DeliveryAddress
+                var newAddress = new DeliveryAddress {};
+                // Tạo id địa chỉ mới bằng cách thêm 1 vào tổng số lượng Địa chỉ và thêm tiền tố "HD"
+                newAddress.DeliveryAddressID = "Dc" + newIdNumber;
+                newAddress.UserID = item.UserID;
+                newAddress.Consignee = item.Consignee;
+                newAddress.PhoneNumber = item.PhoneNumber;
+                newAddress.City = item.City;
+                newAddress.District = item.District;
+                newAddress.Ward = item.Ward;
+                newAddress.Street = item.Street;
+                if (item == null)
                 {
-                    // Tạo id địa chỉ mới bằng cách thêm 1 vào tổng số lượng Địa chỉ và thêm tiền tố "HD"
-                    DeliveryAddressID = "Dc" + newIdNumber,
-                    UserID = item.UserID,
-                    Consignee = item.Consignee,
-                    PhoneNumber = item.PhoneNumber,
-                    City = item.City,
-                    District = item.District,
-                    Ward = item.Ward,
-                    Street = item.Street,
-                    Status = 0,
-                };
+                    newAddress.Status = 0;
+                }
+                else
+                {
+                    newAddress.Status = item.Status;
+                }
+
 
                 _context.DeliveryAddress.Add(newAddress);
                 await _context.SaveChangesAsync();
