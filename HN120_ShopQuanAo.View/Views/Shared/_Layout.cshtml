@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/css/plugin.css">
     <link rel="stylesheet" href="/css/responsive.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.css">
      <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/css/toastr.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
@@ -81,7 +82,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-9 col-md-9">
-                                        <div class="header_right_info">
+                                        @* <div class="header_right_info">
                                             <div class="search_bar">
                                                 <form action="#">
                                                     <input placeholder="Search..." type="text">
@@ -95,7 +96,7 @@
                                                 
                                                 <!--mini cart end-->
                                             </div>
-                                        </div>
+                                        </div> *@
                                     </div>
                                 </div>
                             </div>
@@ -121,7 +122,7 @@
                                                                 </div>
                                                             </div>
                                                         </li>
-                                                        <li><a asp-action="Shop" asp-controller="Home">shop</a>
+                                                        <li><a asp-controller="Product" asp-action="Filter">shop</a>
                                                             <div class="mega_menu jewelry">
                                                                 <div class="mega_items jewelry">
                                                                     <ul>
@@ -506,7 +507,6 @@
         <!-- SweetAlert2 JS -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <!-- JS -->
-
         <script src="/js/vendor/jquery-1.12.0.min.js"></script>
         <script src="/js/notify.js"></script>
         <script src="/js/popper.js"></script>
@@ -514,7 +514,7 @@
         <script src="/js/ajax-mail.js"></script>
         <script src="/js/plugins.js"></script>
         <script src="/js/main.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
 </body>
 
 </html>
