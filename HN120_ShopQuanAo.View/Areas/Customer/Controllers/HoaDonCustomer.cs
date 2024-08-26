@@ -1,5 +1,6 @@
 ﻿using HN120_ShopQuanAo.Data.Models;
 using HN120_ShopQuanAo.View.Areas.Admin.Data;
+using HN120_ShopQuanAo.View.Areas.Customer.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -33,6 +34,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> XemChiTietHoaDon(string maHD)
         {
+            ViewBag.MaHD = maHD;
             string urlhoadon = $"https://localhost:7197/api/HoaDon/GetAllHoaDonMa/{maHD}";
             var responseListHDCB = await _httpClient.GetAsync(urlhoadon);
             string apidataHDCB = await responseListHDCB.Content.ReadAsStringAsync();
@@ -81,32 +83,29 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
 			string apidaVC = await responVC.Content.ReadAsStringAsync();
 			var lstVC = JsonConvert.DeserializeObject<List<Voucher>>(apidaVC);
 			ViewBag.lstVC = lstVC;
-			var joinedData = from sp in lstsp
-							 join ctsp in lstCTSP on sp.MaSp equals ctsp.MaSp
+            var joinedData = from sp in lstsp
+                             join ctsp in lstCTSP on sp.MaSp equals ctsp.MaSp
                              join cthd in lstSPDH on ctsp.SKU equals cthd.SKU
-							 join ms in lstMauSac on ctsp.MaMau equals ms.MaMau
-							 join sz in lstSize on ctsp.MaSize equals sz.MaSize
-							 select new ChiTietSPView
-							 {
+                             join ms in lstMauSac on ctsp.MaMau equals ms.MaMau
+                             join sz in lstSize on ctsp.MaSize equals sz.MaSize
+                             select new HDCTViewModels
+                             {
+                                 maHDCT = cthd.MaHoaDonChiTiet,
 								 MaSp = sp.MaSp,
 								 MaThuongHieu = sp.MaThuongHieu,
 								 MaTheLoai = sp.MaTheLoai,
-								 UrlAvatar = sp.UrlAvatar,
+								 UrlAvatar = ctsp.UrlAnhSpct,
 								 TenSP = sp.TenSP,
-								 Mota = sp.Mota,
-								 TongSoLuong = sp.TongSoLuong,
 								 SKU = ctsp.SKU,
+                                 SoLuong = cthd.SoLuongMua,
+                                 ThanhTien = cthd.DonGia * cthd.SoLuongMua,
 								 MaSize = ctsp.MaSize,
 								 MaMau = ctsp.MaMau,
 								 MaKhuyenMai = ctsp.MaKhuyenMai,
-								 // MaChatLieu = ctsp.MaChatLieu,
-								 UrlAnhSpct = ctsp.UrlAnhSpct,
-								 GiaBan = ctsp.GiaBan,
-								 SoLuongTon = ctsp.SoLuongTon,
 								 TrangThai = ctsp.TrangThai,
 								 TenMau = ms.TenMau,
 								 TenSize = sz.TenSize,
-								 Dongia = ctsp.DonGia
+								 Dongia = cthd.DonGia
 							 };
 			var litspctview = joinedData.ToList();
 			ViewBag.JoinedData = litspctview;
@@ -120,11 +119,11 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             var responseHuyDon = await _httpClient.PutAsync(urlhuydon, contentupdateHD);
             if (responseHuyDon.IsSuccessStatusCode)
             {
-                return RedirectToAction("HoaDonCuaToi", "HoaDonCustomer", new { areas = "Customer" });
+                return Json(new { success = true }); ;
             }
             else
             {
-                return BadRequest();
+                return Json(new { success = false, message = "Không thể hủy đơn do đơn hàng đã được thay đổi" });
             }
         }
         public IActionResult Index()
