@@ -18,6 +18,7 @@ namespace HN120_ShopQuanAo.View.Controllers
             // Lấy giá Min và Max từ API
             var PriceResponse = await _httpClient.GetStringAsync("https://localhost:7197/api/FilterSanPham/GetMinMaxPrice");
             var minMaxPrice = JsonConvert.DeserializeObject<MinMaxPriceDto>(PriceResponse);
+            ViewBag.minMaxPrice = minMaxPrice;
 
             // Lấy danh sách Thương hiệu
             var thuongHieuResponse = await _httpClient.GetStringAsync("https://localhost:7197/api/ThuongHieu/GetAllThuongHieu");

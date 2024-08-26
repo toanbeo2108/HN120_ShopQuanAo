@@ -83,20 +83,96 @@
         text-align: right;
     }
 
-    .pagination {
+    /* Định dạng thanh tìm kiếm */
+    .search-bar {
+        margin-bottom: 20px;
+        text-align: right;
+    }
+
+    #searchInput {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
+        }
+
+    /* Hiệu ứng khi không có sản phẩm phù hợp */
+    .no-products {
+        text-align: center;
+        font-size: 18px;
+        color: #ff0000;
         margin-top: 20px;
+    }
+
+    /* Tối ưu hóa giao diện cho thẻ sản phẩm */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .product-card {
+        border: 1px solid #ccc;
+        padding: 15px;
+        text-align: center;
+        background-color: #fff;
+        border-radius: 10px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+        .product-card h3 {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .product-card p {
+            font-size: 14px;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+    /* Cải thiện giao diện cho phân trang */
+    .pagination {
+        margin-top: 30px;
         text-align: center;
     }
 
         .pagination a {
             margin: 0 5px;
-            padding: 5px 10px;
-            color: #000;
+            padding: 8px 12px;
+            color: #007bff;
             text-decoration: none;
             border: 1px solid #ccc;
-            border-radius: 3px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+            .pagination a:hover,
             .pagination a.active {
                 background-color: #007bff;
                 color: #fff;
@@ -104,6 +180,9 @@
             }
 </style>
 
+@{
+    MinMaxPriceDto minMaxPrice = ViewBag.minMaxPrice;
+}
 
 <div class="filter-container">
     <div class="filter-sidebar">
@@ -140,6 +219,17 @@
                 <input type="hidden" name="MaChatLieu" id="MaChatLieu" value="" />
             </div>
             <div class="filter-section">
+                <label>Giá</label>
+                <div class="filter-price__range">
+                    <div id="range-price" class="noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr"></div>
+                </div>
+                <div class="filter-price__value">
+                    <div id="smooth-steps-values">0đ - 1,000,000đ</div>
+                </div>
+                <input type="hidden" name="MinPrice" id="MinPrice" value="@Model.MinPrice" />
+                <input type="hidden" name="MaxPrice" id="MaxPrice" value="@Model.MaxPrice" />
+            </div>
+            <div class="filter-section">
                 <label>Size</label>
                 <div class="filter-tags">
                     @foreach (var size in Model.Sizes)
@@ -159,40 +249,41 @@
                 </div>
                 <input type="hidden" name="MaMau" id="MaMau" value="" />
             </div>
-            <div class="filter-section">
-                <label>Khoảng giá</label>
-                <input type="number" name="MinPrice" placeholder="Từ" min="0" value="@Model.MinPrice" />
-                <input type="number" name="MaxPrice" placeholder="Đến" min="0" value="@Model.MaxPrice" />
-            </div>
             <button type="submit">Lọc sản phẩm</button>
         </form>
     </div>
     <div class="filter-products">
-        @* <div class="sorting">
-            <label>Sắp xếp theo:</label>
-            <select onchange="this.form.submit()" name="SortBy">
-                <option value="name_asc" @(Model.SortBy == "name_asc" ? "selected" : "")>Tên A-Z</option>
-                <option value="name_desc" @(Model.SortBy == "name_desc" ? "selected" : "")>Tên Z-A</option>
-                <option value="price_asc" @(Model.SortBy == "price_asc" ? "selected" : "")>Giá tăng dần</option>
-                <option value="price_desc" @(Model.SortBy == "price_desc" ? "selected" : "")>Giá giảm dần</option>
-            </select>
-        </div> *@
-        <div class="product-grid">
-            @foreach (var product in Model.Products)
-            {
-                <div class="product-card">
-                    <img src="~/photoSP/@product.UrlAvatar" alt="@product.TenSP" />
-                    <h3>@product.TenSP</h3>
-                    <p>@product.MinPrice.ToString("N0")đ</p>
-                </div>
-            }
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." />
         </div>
-        <div class="pagination">
-            @for (var i = 1; i <= Math.Ceiling((decimal)Model.TotalItems / Model.PageSize); i++)
-            {
-                <a href="@Url.Action("Filter", new { pageNumber = i })" class="@(i == Model.PageNumber ? "active" : "")">@i</a>
-            }
-        </div>
+        @if (Model.Products == null || !Model.Products.Any())
+        {
+            <div class="no-products">
+                <p>Không có sản phẩm phù hợp với bộ lọc của bạn.</p>
+            </div>
+        }
+        else
+        {
+            <div class="product-grid">
+                @foreach (var product in Model.Products)
+                {
+                    <a asp-action="DetailSP" asp-controller="Home" asp-route-masp="@product.MaSp">
+                        <div class="product-card">
+                            <img src="~/photoSP/@product.UrlAvatar" alt="@product.TenSP" />
+                            <h3>@product.TenSP</h3>
+                            <p>@product.MinPrice.ToString("N0")đ</p>
+                        </div>
+                    </a>
+                }
+            </div>
+
+            <div class="pagination">
+                @for (var i = 1; i <= Math.Ceiling((decimal)Model.TotalItems / Model.PageSize); i++)
+                {
+                    <a href="@Url.Action("Filter", new { pageNumber = i })" class="@(i == Model.PageNumber ? "active" : "")">@i</a>
+                }
+            </div>
+        }
     </div>
 </div>
 <script>
@@ -206,4 +297,63 @@
         // Update the hidden input value
         document.getElementById(inputId).value = element.dataset.value;
     }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var rangeSlider = document.getElementById('range-price');
+        var valueDisplay = document.getElementById('smooth-steps-values');
+        var minPriceInput = document.getElementById('MinPrice');
+        var maxPriceInput = document.getElementById('MaxPrice');
+
+        noUiSlider.create(rangeSlider, {
+            start: [0, 1000000],
+            connect: true,
+            range: {
+                'min': 0,
+                'max': 1000000
+            },
+            tooltips: [true, true],
+            format: {
+                to: function (value) {
+                    return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+                },
+                from: function (value) {
+                    return Number(value.replace(/[^0-9.-]+/g, ""));
+                }
+            }
+        });
+
+        rangeSlider.noUiSlider.on('update', function (values, handle) {
+            valueDisplay.innerHTML = values.join(' - ');
+
+            // Cập nhật giá trị cho các input ẩn dưới dạng decimal
+            var minPrice = parseFloat(rangeSlider.noUiSlider.get()[0]) * 1000;
+            var maxPrice = parseFloat(rangeSlider.noUiSlider.get()[1]) * 1000;
+
+            minPriceInput.value = minPrice.toFixed(2);
+            maxPriceInput.value = maxPrice.toFixed(2);
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var searchInput = document.getElementById('searchInput');
+        var productCards = document.querySelectorAll('.product-card');
+
+        searchInput.addEventListener('input', function () {
+            var filter = searchInput.value.toLowerCase();
+
+            productCards.forEach(function (card) {
+                var productName = card.querySelector('h3').textContent.toLowerCase();
+
+                // Kiểm tra nếu tên sản phẩm chứa từ khóa tìm kiếm
+                if (productName.includes(filter)) {
+                    card.style.display = ""; // Hiển thị sản phẩm
+                } else {
+                    card.style.display = "none"; // Ẩn sản phẩm không phù hợp
+                }
+            });
+        });
+    });
 </script>

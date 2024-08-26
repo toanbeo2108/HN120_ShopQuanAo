@@ -41,7 +41,13 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 if (filterDto.MaxPrice.HasValue)
                     chiTietSpQuery = chiTietSpQuery.Where(ct => ct.GiaBan <= filterDto.MaxPrice.Value);
 
-                // Lấy danh sách mã sản phẩm phù hợp với điều kiện giá
+                if (!string.IsNullOrEmpty(filterDto.MaSize))
+                    chiTietSpQuery = chiTietSpQuery.Where(ct => ct.MaSize == filterDto.MaSize);
+
+                if (!string.IsNullOrEmpty(filterDto.MaMau))
+                    chiTietSpQuery = chiTietSpQuery.Where(ct => ct.MaMau == filterDto.MaMau);
+
+                // Lấy danh sách mã sản phẩm phù hợp với điều kiện
                 var maSpList = chiTietSpQuery.Select(ct => ct.MaSp).Distinct().ToList();
 
                 // Lọc sản phẩm theo danh sách mã sản phẩm
