@@ -20,8 +20,9 @@ namespace HN120_ShopQuanAo.API.Responsitories
         {
             try
             {
-                // Truy vấn sản phẩm dựa trên các điều kiện lọc
-                var sanPhamQuery = _context.SanPham.AsQueryable();
+                // Truy vấn sản phẩm dựa trên các điều kiện lọc, bao gồm cả trạng thái
+                var sanPhamQuery = _context.SanPham.AsQueryable()
+                    .Where(sp => sp.TrangThai == 1);
 
                 if (!string.IsNullOrEmpty(filterDto.MaThuongHieu))
                     sanPhamQuery = sanPhamQuery.Where(sp => sp.MaThuongHieu == filterDto.MaThuongHieu);
@@ -41,7 +42,13 @@ namespace HN120_ShopQuanAo.API.Responsitories
                 if (filterDto.MaxPrice.HasValue)
                     chiTietSpQuery = chiTietSpQuery.Where(ct => ct.GiaBan <= filterDto.MaxPrice.Value);
 
-                // Lấy danh sách mã sản phẩm phù hợp với điều kiện giá
+                if (!string.IsNullOrEmpty(filterDto.MaSize))
+                    chiTietSpQuery = chiTietSpQuery.Where(ct => ct.MaSize == filterDto.MaSize);
+
+                if (!string.IsNullOrEmpty(filterDto.MaMau))
+                    chiTietSpQuery = chiTietSpQuery.Where(ct => ct.MaMau == filterDto.MaMau);
+
+                // Lấy danh sách mã sản phẩm phù hợp với điều kiện
                 var maSpList = chiTietSpQuery.Select(ct => ct.MaSp).Distinct().ToList();
 
                 // Lọc sản phẩm theo danh sách mã sản phẩm
@@ -137,8 +144,13 @@ namespace HN120_ShopQuanAo.API.Responsitories
         {
             try
             {
-                var minPrice = _context.ChiTietSp.Min(ct => ct.GiaBan);
-                var maxPrice = _context.ChiTietSp.Max(ct => ct.GiaBan);
+                var minPrice = _context.ChiTietSp
+                    .Where(ct => ct.SanPham.TrangThai == 1) // Filter by product status
+                    .Min(ct => ct.GiaBan);
+
+                var maxPrice = _context.ChiTietSp
+                    .Where(ct => ct.SanPham.TrangThai == 1) // Filter by product status
+                    .Max(ct => ct.GiaBan);
 
                 return new MinMaxPriceDto
                 {
