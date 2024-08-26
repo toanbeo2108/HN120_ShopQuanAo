@@ -24,8 +24,8 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Mã Thương Hiệu</th>
                 <th>Tên Thương Hiệu</th>
-                <th>Mô Tả</th>
                 <th>Trạng Thái</th>
                 <th>Hành Động</th>
             </tr>
@@ -34,12 +34,12 @@
             @foreach (var item in Model)
             {
                     <tr>
+
+                        <td>@item.MaThuongHieu</td>
                         <td>@item.TenThuongHieu</td>
-                        <td>@item.MoTa</td>
                         <td>@(item.TrangThai == 1 ? "Khả Dụng" : "Không Khả Dụng")</td>
                         <td>
 
-                                <a asp-action="UpdateThuongHieu" asp-route-id="@item.MaThuongHieu" class="btn btn-warning">Sửa</a> 
 
 
                         @if (item.TrangThai == 1)

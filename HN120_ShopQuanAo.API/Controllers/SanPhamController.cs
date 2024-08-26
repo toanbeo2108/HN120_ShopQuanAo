@@ -108,6 +108,7 @@ namespace HN120_ShopQuanAo.API.Controllers
                 MaTheLoai = model.MaTheLoai,
                 MaChatLieu = model.MaChatLieu,
                 UrlAvatar = model.UrlAvatar,
+                Mota = model.Mota,
                 NgayNhap = DateTime.Now,
                 TrangThai = 1
             };

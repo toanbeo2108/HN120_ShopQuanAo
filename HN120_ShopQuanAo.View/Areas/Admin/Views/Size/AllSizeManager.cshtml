@@ -40,7 +40,6 @@
                                     <td>
 
 
-                                                                <a asp-action="UpdateSize" asp-route-id="@item.MaSize" class="btn btn-warning">Cập Nhật</a>
                     @if (item.TrangThai == 1)
                     {
                                                                                         <form asp-action="UpdateStatusSizeKKD" method="post" style="display:inline;">
@@ -85,16 +84,33 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 <script>
 $(document).ready(function () {
+    var specialCharPattern = /[!#\$%\^\&*\)\(+=._-]+/g; // Biểu thức kiểm tra kí tự đặc biệt
 
-    // Hiển thị modal thêm chất liệu mới
+    // Hiển thị modal thêm size mới
     $('#btn_add').on('click', function () {
         setdata(null);
         $('#pp_modal').modal('show');
     });
 
-    // Lưu chất liệu mới
+    // Lưu size mới
     $('#btn_save').on('click', function () {
-        $.post('/Admin/Size/CreateSize', { TenSize: $('#name').val() }, function (response) {
+        var tenSize = $('#name').val().trim();
+        var checktenSize = tenSize.toUpperCase();
+
+        if (!tenSize) {
+            alert('Vui lòng nhập tên size.');
+            return;
+        }
+        if (specialCharPattern.test(tenSize)) {
+            alert('Tên size không được nhập kí tự đặc biệt.');
+            return;
+        }
+        if (tenSize.length > 50) {
+            alert('Tên size không được nhập quá 50 kí tự.');
+            return;
+        }
+
+        $.post('/Admin/Size/CreateSize', { TenSize: tenSize }, function (response) {
             if (response) {
                 alert("Thêm thành công!");
                 $('#pp_modal').modal('hide');
@@ -110,4 +126,5 @@ $(document).ready(function () {
 function setdata(data) {
     $('#name').val('');
 }
+
 </script>

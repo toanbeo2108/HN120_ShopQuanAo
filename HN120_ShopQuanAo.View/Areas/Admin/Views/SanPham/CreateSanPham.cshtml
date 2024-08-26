@@ -71,7 +71,7 @@
     .modal-content {
         padding: 1rem;
     }
-    
+
 </style>
 
 <h1>Thêm Sản Phẩm</h1>
@@ -90,7 +90,7 @@
             <!-- Bên phải -->
             <div class="form-group">
                 <label>Tên Sản Phẩm:</label>
-                <input class="form-control" id="TenSP" name="TenSP" />
+                <input class="form-control" id="TenSP" name="TenSP" onblur="Checktensp()"/>
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -101,7 +101,7 @@
                             <option value=""></option>
                                 @foreach (var item in lstTH)
                                 {
-                                    <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
+                                        <option value="@item.MaThuongHieu">@item.TenThuongHieu</option>
                                 }
                         </select>
                          <button type="button" class="btn btn-secondary btn-add" id="btn_addThuongHieu">+</button>
@@ -116,12 +116,12 @@
                             <option value=""></option>
                                 @foreach (var item in lstTL)
                                 {
-                                    <option value="@item.MaTheLoai">@item.TenTheLoai</option>
+                                        <option value="@item.MaTheLoai">@item.TenTheLoai</option>
                                 }
                         </select>
                         <button type="button" class="btn btn-secondary" id="btn_addTheLoai">+</button>
                         </div>
-                        
+
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -130,10 +130,10 @@
                         <div class="chontt">
                         <select class="form-select" id="MaChatLieu" name="MaChatLieu">
                             <option value=""></option>
-                            @foreach (var item in lstCL)
-                            {
-                                <option value="@item.MaChatLieu">@item.TenChatLieu</option>
-                            }
+                                @foreach (var item in lstCL)
+                                {
+                                    <option value="@item.MaChatLieu">@item.TenChatLieu</option>
+                                }
                         </select>
                         <button type="button" class="btn btn-secondary" id="btn_addChatLieu">+</button>
                     </div>
@@ -142,7 +142,7 @@
             </div>
             <div class="form-group">
                 <label>Mô Tả:</label>
-                <textarea class="form-control" id="Mota" name="Mota"></textarea>
+                <textarea class="form-control" id="Mota" name="Mota" onblur="Checkmota()"></textarea>
             </div>
         </div>
     </div>
@@ -176,10 +176,10 @@
                 <div class="modal-body">
                     @foreach (var mau in lstms)
                     {
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="color_@mau.MaMau" value="@mau.MaMau">
-                            <label class="form-check-label" for="color_@mau.MaMau">@mau.TenMau</label>
-                        </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="color_@mau.MaMau" value="@mau.MaMau">
+                                <label class="form-check-label" for="color_@mau.MaMau">@mau.TenMau</label>
+                            </div>
                     }
                 </div>
                 <div class="modal-footer">
@@ -200,10 +200,10 @@
                 <div class="modal-body">
                     @foreach (var size in lstSZ)
                     {
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="size_@size.MaSize" value="@size.MaSize">
-                            <label class="form-check-label" for="size_@size.MaSize">@size.TenSize</label>
-                        </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="size_@size.MaSize" value="@size.MaSize">
+                                <label class="form-check-label" for="size_@size.MaSize">@size.TenSize</label>
+                            </div>
                     }
                 </div>
                 <div class="modal-footer">
@@ -234,7 +234,7 @@
             <button type="button" class="btn btn-success" id="showConfirmModal">Lưu</button>
     </div>
 
-    
+
 </form>
 
 <div class="modal fade" id="thuongHieuModal" tabindex="-1" aria-labelledby="thuongHieuModalLabel" aria-hidden="true">
@@ -323,207 +323,90 @@
 
 
 @section Scripts {
-    <script>
+        <script>
 
-        function previewImage(event) {
-            var reader = new FileReader();
-            reader.onload = function () {
-                var output = document.getElementById('previewImg');
-                output.src = reader.result;
-                output.style.display = 'block';
-            }   
-            reader.readAsDataURL(event.target.files[0]);
-        }
-
-        function addColors() {
-            var selectedColorsContainer = document.getElementById('selectedColors');
-            var selectedColors = document.querySelectorAll("#colorModal input[type='checkbox']:checked");
-
-            selectedColors.forEach(color => {
-                if (!selectedColorsContainer.querySelector(`span[data-value='${color.value}']`)) {
-                    var tag = document.createElement('span');
-                    tag.className = 'badge-tag';
-                    tag.innerText = color.nextElementSibling.innerText;
-                    tag.dataset.value = color.value;
-                    tag.onclick = function () {
-                        this.remove();
-                        document.getElementById(`color_${color.value}`).checked = false;
-                        document.getElementById(`color_${color.value}`).nextElementSibling.classList.remove('selected');
-                    };
-                    selectedColorsContainer.appendChild(tag);
-                    document.getElementById(`color_${color.value}`).nextElementSibling.classList.add('selected');
-                }
-            });
-
-            $('#colorModal').modal('hide');
-        }
-
-        function addSizes() {
-            var selectedSizesContainer = document.getElementById('selectedSizes');
-            var selectedSizes = document.querySelectorAll("#sizeModal input[type='checkbox']:checked");
-
-            selectedSizes.forEach(size => {
-                if (!selectedSizesContainer.querySelector(`span[data-value='${size.value}']`)) {
-                    var tag = document.createElement('span');
-                    tag.className = 'badge-tag';
-                    tag.innerText = size.nextElementSibling.innerText;
-                    tag.dataset.value = size.value;
-                    tag.onclick = function () {
-                        this.remove();
-                        document.getElementById(`size_${size.value}`).checked = false;
-                        document.getElementById(`size_${size.value}`).nextElementSibling.classList.remove('selected');
-                    };
-                    selectedSizesContainer.appendChild(tag);
-                    document.getElementById(`size_${size.value}`).nextElementSibling.classList.add('selected');
-                }
-            });
-
-            $('#sizeModal').modal('hide');
-        }
-
-                  
-            function validateSanPham() {
-                var imageSP = document.getElementById('imageSP').value;
-                var tenSP = document.getElementById('TenSP').value;
-                var maThuongHieu = document.getElementById('MaThuongHieu').value;
-                var maTheLoai = document.getElementById('MaTheLoai').value;
-                var maChatLieu = document.getElementById('MaChatLieu').value;
-
-                if (!imageSP) {
-                    alert('Vui lòng chọn ảnh đại diện.');
-                    return false;
-                }
-                if (!tenSP.trim()) {
-                    alert('Vui lòng nhập tên sản phẩm.');
-                    return false;
-                }
-                
-                if (!maThuongHieu) {
-                    alert('Vui lòng chọn thương hiệu.');
-                    return false;
-                }
-                if (!maTheLoai) {
-                    alert('Vui lòng chọn thể loại.');
-                    return false;
-                }
-                if (!maChatLieu) {
-                    alert('Vui lòng chọn chất liệu.');
-                    return false;
-                }
-                return true;
+            function previewImage(event) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var output = document.getElementById('previewImg');
+                    output.src = reader.result;
+                    output.style.display = 'block';
+                }   
+                reader.readAsDataURL(event.target.files[0]);
             }
+                    
+    var specialCharPattern = /[!#\$%\^\&*\)\(+=._-]+/g;
 
-        function addChiTietSp() {
-            var sizeTags = document.querySelectorAll("#selectedSizes span");
-            var colorTags = document.querySelectorAll("#selectedColors span");
-            var container = document.querySelector("#chiTietSpContainer tbody");
-            var count = container.children.length;
+function Checktensp() {
+    var tenSP = document.getElementById('TenSP').value;
+    if (specialCharPattern.test(tenSP)) {
+        alert("Tên sản phẩm không được chứa ký tự đặc biệt!");
+        document.getElementById('TenSP').value = tenSP.replace(specialCharPattern, '');
+    }
+    if (tenSP.length > 50) {
+        alert("Tên sản phẩm không được vượt quá 50 ký tự!");
+        document.getElementById('TenSP').value = tenSP.substring(0, 50);
+    }
+}
+    function Checkmota() {
+        var mota = document.getElementById('Mota').value;
+        if (specialCharPattern.test(mota)) {
+                alert("Mô tả sản phẩm không được chứa ký tự đặc biệt!");
+            document.getElementById('Mota').value = mota.replace(specialCharPattern, '');
+        }
+        if (mota.length > 500) {
+            alert("Mô tả sản phẩm không được vượt quá 500 ký tự!");
+            document.getElementById('Mota').value = mota.substring(0, 500);
+        }
+    }
+            function addColors() {
+                var selectedColorsContainer = document.getElementById('selectedColors');
+                var selectedColors = document.querySelectorAll("#colorModal input[type='checkbox']:checked");
 
-                    if (!validateSanPham()) {
-                    event.preventDefault();
-                }
-                else{
-                        if (sizeTags.length > 0 && colorTags.length > 0) {
-                    document.getElementById("chiTietSpContainer").style.display = "block";
-                }
-                }
-                   
-                
-            
-
-            sizeTags.forEach(sizeTag => {
-                var size = sizeTag.dataset.value;
-                var sizeText = sizeTag.innerText;
-
-                colorTags.forEach(colorTag => {
-                    var color = colorTag.dataset.value;
-                    var colorText = colorTag.innerText;
-
-                    var existingRow = Array.from(container.children).find(row => {
-                        var existingSize = row.querySelector(`input[name*='MaSize'][value='${size}']`);
-                        var existingColor = row.querySelector(`input[name*='MaMau'][value='${color}']`);
-                        return existingSize && existingColor;
-                    });
-
-                    if (!existingRow) {
-                        var newChiTietSpRow = document.createElement("tr");
-                        newChiTietSpRow.innerHTML = `
-                                    <td>
-                                        <input type="hidden" name="ChiTietSps[${count}].MaSize" value="${size}" />
-                                        ${sizeText}
-                                    </td>
-                                    <td>
-                                        <input type="hidden" name="ChiTietSps[${count}].MaMau" value="${color}" />
-                                        ${colorText}
-                                    </td>
-                                        <td>
-                                       <div class="price-container">
-                                            <input type="number" class="form-control" id="dgctsp" name="ChiTietSps[${count}].DonGia" required min="0" max="900000000" onblur="checkDonGia(this)" />
-                                    </div>
-                                </td>
-                                <td>
-                                        <input type="number" class="form-control" id="soluongctsp" name="ChiTietSps[${count}].SoLuongTon" required min="0" max="999" onblur="checkSoLuongTon(this)" />
-                                </td>
-                                    <td>
-                                            <input type="file" class="form-control" id="anhctsp" name="imagechitietsp" required/>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger" onclick="removeRow(this)">Xóa</button>
-                                    </td>
-                                `;
-                        container.appendChild(newChiTietSpRow);
-                        count++;
+                selectedColors.forEach(color => {
+                    if (!selectedColorsContainer.querySelector(`span[data-value='${color.value}']`)) {
+                        var tag = document.createElement('span');
+                        tag.className = 'badge-tag';
+                        tag.innerText = color.nextElementSibling.innerText;
+                        tag.dataset.value = color.value;
+                        tag.onclick = function () {
+                            this.remove();
+                            document.getElementById(`color_${color.value}`).checked = false;
+                            document.getElementById(`color_${color.value}`).nextElementSibling.classList.remove('selected');
+                        };
+                        selectedColorsContainer.appendChild(tag);
+                        document.getElementById(`color_${color.value}`).nextElementSibling.classList.add('selected');
                     }
                 });
-            });
-                
-        }
-                function checkDonGia(input) {
-                if(input.value == ''){
-                        input.value = 1000;
+
+                $('#colorModal').modal('hide');
+            }
+
+            function addSizes() {
+                var selectedSizesContainer = document.getElementById('selectedSizes');
+                var selectedSizes = document.querySelectorAll("#sizeModal input[type='checkbox']:checked");
+
+                selectedSizes.forEach(size => {
+                    if (!selectedSizesContainer.querySelector(`span[data-value='${size.value}']`)) {
+                        var tag = document.createElement('span');
+                        tag.className = 'badge-tag';
+                        tag.innerText = size.nextElementSibling.innerText;
+                        tag.dataset.value = size.value;
+                        tag.onclick = function () {
+                            this.remove();
+                            document.getElementById(`size_${size.value}`).checked = false;
+                            document.getElementById(`size_${size.value}`).nextElementSibling.classList.remove('selected');
+                        };
+                        selectedSizesContainer.appendChild(tag);
+                        document.getElementById(`size_${size.value}`).nextElementSibling.classList.add('selected');
                     }
-                    else if (input.value > 900000000) {
-                    input.value = 900000000;
-                } else if (input.value < 0) {
-                    input.value = 1000;
-                }
+                });
+
+                $('#sizeModal').modal('hide');
             }
 
-            function checkSoLuongTon(input) {
-                if(input.value == ''){
-                        input.value = 1;
-                    }
-                    else if (input.value > 999) {
-                    input.value = 999;
-                } else if (input.value < 0) {
-                    input.value = 1;
-                }
-            }
-        function removeRow(button) {
-            var row = button.closest("tr");
-            row.parentNode.removeChild(row);
-        }
 
-                 function validateSanPhamCT() {
-            var rows = document.querySelectorAll("#chiTietSpContainer tbody tr");
-            for (var i = 0; i < rows.length; i++) {
-                var gia = rows[i].querySelector("input[name*='DonGia']").value;
-                var soluong = rows[i].querySelector("input[name*='SoLuongTon']").value;
-                var anhctsp = rows[i].querySelector("input[type='file']").value;
-
-                if (!gia.trim()) {
-                    return false;
-                }
-                if (!soluong.trim()) {
-                    return false;
-                }
-                if (!anhctsp) {
-                    return false;
-                }
-            }
-            return true;
-        }
-            function validateorSanPham() {
+                function validateSanPham() {
                     var imageSP = document.getElementById('imageSP').value;
                     var tenSP = document.getElementById('TenSP').value;
                     var maThuongHieu = document.getElementById('MaThuongHieu').value;
@@ -531,206 +414,371 @@
                     var maChatLieu = document.getElementById('MaChatLieu').value;
 
                     if (!imageSP) {
+                        alert('Vui lòng chọn ảnh đại diện.');
                         return false;
                     }
                     if (!tenSP.trim()) {
+                        alert('Vui lòng nhập tên sản phẩm.');
                         return false;
                     }
 
                     if (!maThuongHieu) {
+                        alert('Vui lòng chọn thương hiệu.');
                         return false;
                     }
                     if (!maTheLoai) {
+                        alert('Vui lòng chọn thể loại.');
                         return false;
                     }
                     if (!maChatLieu) {
+                        alert('Vui lòng chọn chất liệu.');
                         return false;
                     }
                     return true;
                 }
-        $(document).ready(function () {
-                    var checktensp = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP.ToUpper()).ToList()));
 
-                                    var notification = localStorage.getItem('notification');
-                                if (notification) {
-                                    notification = JSON.parse(notification);
-                                    $.notify(notification.message, notification.type);
-                                    localStorage.removeItem('notification');
-                                } 
-                    $('#showConfirmModal').on('click', function() {
-                                   var tensp = $('#TenSP').val().trim().toUpperCase();
-                        if (validateorSanPham() && validateSanPhamCT()) {
-                        if (checktensp.includes(tensp)) {
-                            alert('Tên sp đã tồn tại vui lòng chọn tên khác');
-                        } else {
-                                $('#confirmModal').modal('show');
+            function addChiTietSp() {
+                var sizeTags = document.querySelectorAll("#selectedSizes span");
+                var colorTags = document.querySelectorAll("#selectedColors span");
+                var container = document.querySelector("#chiTietSpContainer tbody");
+                var count = container.children.length;
+
+                        if (!validateSanPham()) {
+                        event.preventDefault();
+                    }
+                    else{
+                            if (sizeTags.length > 0 && colorTags.length > 0) {
+                        document.getElementById("chiTietSpContainer").style.display = "block";
+                    }
+                    }
+
+
+
+
+                sizeTags.forEach(sizeTag => {
+                    var size = sizeTag.dataset.value;
+                    var sizeText = sizeTag.innerText;
+
+                    colorTags.forEach(colorTag => {
+                        var color = colorTag.dataset.value;
+                        var colorText = colorTag.innerText;
+
+                        var existingRow = Array.from(container.children).find(row => {
+                            var existingSize = row.querySelector(`input[name*='MaSize'][value='${size}']`);
+                            var existingColor = row.querySelector(`input[name*='MaMau'][value='${color}']`);
+                            return existingSize && existingColor;
+                        });
+
+                        if (!existingRow) {
+                            var newChiTietSpRow = document.createElement("tr");
+                            newChiTietSpRow.innerHTML = `
+                                        <td>
+                                            <input type="hidden" name="ChiTietSps[${count}].MaSize" value="${size}" />
+                                            ${sizeText}
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="ChiTietSps[${count}].MaMau" value="${color}" />
+                                            ${colorText}
+                                        </td>
+                                            <td>
+                                           <div class="price-container">
+                                                <input type="number" class="form-control" id="dgctsp" name="ChiTietSps[${count}].DonGia" required min="0" max="900000000" onblur="checkDonGia(this)" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                            <input type="number" class="form-control" id="soluongctsp" name="ChiTietSps[${count}].SoLuongTon" required min="0" max="999" onblur="checkSoLuongTon(this)" />
+                                    </td>
+                                        <td>
+                                                <input type="file" class="form-control" id="anhctsp" name="imagechitietsp" required/>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger" onclick="removeRow(this)">Xóa</button>
+                                        </td>
+                                    `;
+                            container.appendChild(newChiTietSpRow);
+                            count++;
                         }
-                    } else {
-                        alert('Vui lòng nhập đầy đủ thông tin sản phẩm và chi tiết sản phẩm.');
-                    }
                     });
-
-                // Gửi form khi người dùng nhấn nút "Có"
-                $('#confirmSubmit').on('click', function() {
-                        $('#createProductForm').submit();
                 });
-                var checktenth = @Html.Raw(Json.Serialize(lstTH.Select(p => p.TenThuongHieu.ToUpper()).ToList()));
-                var checktentl = @Html.Raw(Json.Serialize(lstTL.Select(p => p.TenTheLoai.ToUpper()).ToList())); 
-                var checktencl = @Html.Raw(Json.Serialize(lstCL.Select(p => p.TenChatLieu.ToUpper()).ToList()));
 
-        function addThuongHieu() {
-            var tenThuongHieu = $('#TenThuongHieu').val().trim();
-            var checktenThuongHieu = $('#TenThuongHieu').val().trim().toUpperCase();
-            if (!checktenThuongHieu) {
-                alert('Vui lòng nhập tên thương hiệu.');
-                return;
             }
-            if (checktenth.includes(checktenThuongHieu)) {
-                alert('Tên thương hiệu đã tồn tại.');
-
-                return;
-            }
-            $.post('/Admin/ThuongHieu/CreateThuongHieu', { TenThuongHieu: tenThuongHieu }, function(response) {
-                if (response) {
-                    $('#thuongHieuModal').modal('hide');
-                        $('#TenThuongHieu').val('');
-                    checktenth.push(tenThuongHieu);
-                    getDanhSachThuongHieu(); 
-                      $.notify('Thêm thương hiệu thành công!', 'success');
-                } else {
-                    alert("Thêm thất bại. Vui lòng thử lại.");
+                    function checkDonGia(input) {
+                    if(input.value == ''){
+                            input.value = 1000;
+                        }
+                        else if (input.value > 900000000) {
+                        input.value = 900000000;
+                    } else if (input.value < 0) {
+                        input.value = 1000;
+                    }
                 }
-            }).fail(function() {
-                alert("Có lỗi xảy ra. Vui lòng thử lại.");
-            });
-        }
 
-        function getDanhSachThuongHieu() {
-            $.ajax({
-                        url: '/Admin/ThuongHieu/DSThuongHieu', // Đường dẫn API lấy danh sách thương hiệub
-                type: 'GET',
-                success: function(data) {
-                    var select = $('#MaThuongHieu');
-                    select.empty(); // Xóa các tùy chọn hiện tại
-                    select.append('<option value=""></option>'); // Thêm tùy chọn mặc định
+                function checkSoLuongTon(input) {
+                    if(input.value == ''){
+                            input.value = 1;
+                        }
+                        else if (input.value > 999) {
+                        input.value = 999;
+                    } else if (input.value < 0) {
+                        input.value = 1;
+                    }
+                }
+            function removeRow(button) {
+                var row = button.closest("tr");
+                row.parentNode.removeChild(row);
+            }
 
-                    data.forEach(function(thuongHieu) {
-                        select.append('<option value="' + thuongHieu.maThuongHieu + '">' + thuongHieu.tenThuongHieu + '</option>');
+                     function validateSanPhamCT() {
+                var rows = document.querySelectorAll("#chiTietSpContainer tbody tr");
+                for (var i = 0; i < rows.length; i++) {
+                    var gia = rows[i].querySelector("input[name*='DonGia']").value;
+                    var soluong = rows[i].querySelector("input[name*='SoLuongTon']").value;
+                    var anhctsp = rows[i].querySelector("input[type='file']").value;
+
+                    if (!gia.trim()) {
+                        return false;
+                    }
+                    if (!soluong.trim()) {
+                        return false;
+                    }
+                    if (!anhctsp) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+                function validateorSanPham() {
+                        var imageSP = document.getElementById('imageSP').value;
+                        var tenSP = document.getElementById('TenSP').value;
+                        var maThuongHieu = document.getElementById('MaThuongHieu').value;
+                        var maTheLoai = document.getElementById('MaTheLoai').value;
+                        var maChatLieu = document.getElementById('MaChatLieu').value;
+
+                        if (!imageSP) {
+                            return false;
+                        }
+                        if (!tenSP.trim()) {
+                            return false;
+                        }
+
+                        if (!maThuongHieu) {
+                            return false;
+                        }
+                        if (!maTheLoai) {
+                            return false;
+                        }
+                        if (!maChatLieu) {
+                            return false;
+                        }
+                        return true;
+                    }
+            $(document).ready(function () {
+                        var checktensp = @Html.Raw(Json.Serialize(lstSP.Select(p => p.TenSP.ToUpper()).ToList()));
+
+                                        var notification = localStorage.getItem('notification');
+                                    if (notification) {
+                                        notification = JSON.parse(notification);
+                                        $.notify(notification.message, notification.type);
+                                        localStorage.removeItem('notification');
+                                    } 
+                        $('#showConfirmModal').on('click', function() {
+                                       var tensp = $('#TenSP').val().trim().toUpperCase();
+                            if (validateorSanPham() && validateSanPhamCT()) {
+                            if (checktensp.includes(tensp)) {
+                                alert('Tên sp đã tồn tại vui lòng chọn tên khác');
+                            } else {
+                                    $('#confirmModal').modal('show');
+                            }
+                        } else {
+                            alert('Vui lòng nhập đầy đủ thông tin sản phẩm và chi tiết sản phẩm.');
+                        }
+                        });
+
+                    // Gửi form khi người dùng nhấn nút "Có"
+                    $('#confirmSubmit').on('click', function() {
+                            $('#createProductForm').submit();
                     });
-                },
-                error: function() {
-                    alert('Đã xảy ra lỗi khi lấy danh sách thương hiệu.');
-                }
-            });
-        }
+                    var checktenth = @Html.Raw(Json.Serialize(lstTH.Select(p => p.TenThuongHieu.ToUpper()).ToList()));
+                    var checktentl = @Html.Raw(Json.Serialize(lstTL.Select(p => p.TenTheLoai.ToUpper()).ToList())); 
+                    var checktencl = @Html.Raw(Json.Serialize(lstCL.Select(p => p.TenChatLieu.ToUpper()).ToList()));
 
-
-                function addTheLoai() {
-                    var tenTheLoai = $('#TenTheLoai').val().trim();
-                    var checktenTheLoai = $('#TenTheLoai').val().trim().toUpperCase();
-                    if (!checktenTheLoai) {
-                        alert('Vui lòng nhập tên thể loại.');
-                        return;
-                    }
-                    if (checktentl.includes(checktenTheLoai)) {
-                    alert('Tên thể loại đã tồn tại.');
+            function addThuongHieu() {
+                var tenThuongHieu = $('#TenThuongHieu').val().trim();
+                var checktenThuongHieu = $('#TenThuongHieu').val().trim().toUpperCase();
+                if (!checktenThuongHieu) {
+                    alert('Vui lòng nhập tên thương hiệu.');
                     return;
-                    }
-                    $.post('/Admin/TheLoai/CreateTheLoai', { TenTheLoai: tenTheLoai }, function (response) {
-                            if (response) {
+                }
+                if(specialCharPattern.test(tenThuongHieu)){
+                    alert('Tên thương hiệu không được nhập kí tự đặc biệt.');
+                    return;
+                }
+                if (tenThuongHieu.length > 50) {
+                    alert('Tên thương hiệu không được nhập quá 50 kí tự.');
+                    return;
+                }
+                if (checktenth.includes(checktenThuongHieu)) {
+                    alert('Tên thương hiệu đã tồn tại.');
 
-                            $('#theLoaiModal').modal('hide');
-                            $('#TenTheLoai').val('');
-                            checktentl.push(tenTheLoai);
-                                getDanhSachTheLoai();
-                          $.notify('Thêm thể loại thành công!', 'success');
-
+                    return;
+                }
+                $.post('/Admin/ThuongHieu/CreateThuongHieu', { TenThuongHieu: tenThuongHieu }, function(response) {
+                    if (response) {
+                        $('#thuongHieuModal').modal('hide');
+                            $('#TenThuongHieu').val('');
+                        checktenth.push(tenThuongHieu);
+                        getDanhSachThuongHieu(); 
+                          $.notify('Thêm thương hiệu thành công!', 'success');
                     } else {
                         alert("Thêm thất bại. Vui lòng thử lại.");
                     }
                 }).fail(function() {
                     alert("Có lỗi xảy ra. Vui lòng thử lại.");
                 });
-                }
-                    function getDanhSachTheLoai() {
+            }
+
+            function getDanhSachThuongHieu() {
                 $.ajax({
-                    url: '/Admin/TheLoai/DSTheLoai', 
+                            url: '/Admin/ThuongHieu/DSThuongHieu', // Đường dẫn API lấy danh sách thương hiệub
                     type: 'GET',
                     success: function(data) {
-                            var select = $('#MaTheLoai');
-                        select.empty(); 
-                        select.append('<option value=""></option>');
-                        
+                        var select = $('#MaThuongHieu');
+                        select.empty(); // Xóa các tùy chọn hiện tại
+                        select.append('<option value=""></option>'); // Thêm tùy chọn mặc định
+
                         data.forEach(function(thuongHieu) {
-                        select.append('<option value="' + thuongHieu.maTheLoai + '">' + thuongHieu.tenTheLoai + '</option>');
+                            select.append('<option value="' + thuongHieu.maThuongHieu + '">' + thuongHieu.tenThuongHieu + '</option>');
                         });
                     },
                     error: function() {
-                        alert('Đã xảy ra lỗi khi lấy danh sách thể loại.');
+                        alert('Đã xảy ra lỗi khi lấy danh sách thương hiệu.');
                     }
                 });
             }
 
-                function addChatLieu() {
-                    var tenChatLieu = $('#TenChatLieu').val().trim();
-                    var checktenChatLieu = $('#TenChatLieu').val().trim().toUpperCase();
-                    if (!checktenChatLieu) {
-                        alert('Vui lòng nhập tên chất liệu.');
-                        return;
-                    }
-                    if (checktencl.includes(checktenChatLieu)) {
-                    alert('Tên chất liệu đã tồn tại.');
-                    return;
-                    }
-                    $.post('/Admin/ChatLieu/CreateChatLieu', { TenChatLieu: tenChatLieu }, function (response) {
-                        if (response) {
-                            $('#chatLieuModal').modal('hide');
-                                $('#TenChatLieu').val('');
-                                    checktentl.push(tenChatLieu);
-                                        getDanhSachChatLieu();
-                              $.notify('Thêm chất liệu thành công!', 'success');
+
+                    function addTheLoai() {
+                        var tenTheLoai = $('#TenTheLoai').val().trim();
+                        var checktenTheLoai = $('#TenTheLoai').val().trim().toUpperCase();
+                        if (!checktenTheLoai) {
+                            alert('Vui lòng nhập tên thể loại.');
+                            return;
+                        }
+                            if(specialCharPattern.test(tenTheLoai)){
+                                alert('Tên thể loại không được nhập kí tự đặc biệt.');
+                            return;
+                        }
+                            if (tenTheLoai.length > 50) {
+                                alert('Tên thể loại không được nhập quá 50 kí tự.');
+                            return;
+                        }
+                        if (checktentl.includes(checktenTheLoai)) {
+                            alert('Tên thể loại đã tồn tại.');
+                            return;
+                        }
+                        $.post('/Admin/TheLoai/CreateTheLoai', { TenTheLoai: tenTheLoai }, function (response) {
+                                if (response) {
+
+                                $('#theLoaiModal').modal('hide');
+                                $('#TenTheLoai').val('');
+                                checktentl.push(tenTheLoai);
+                                    getDanhSachTheLoai();
+                              $.notify('Thêm thể loại thành công!', 'success');
 
                         } else {
                             alert("Thêm thất bại. Vui lòng thử lại.");
                         }
+                    }).fail(function() {
+                        alert("Có lỗi xảy ra. Vui lòng thử lại.");
                     });
-                }
-                 function getDanhSachChatLieu() {
+                    }
+                        function getDanhSachTheLoai() {
                     $.ajax({
-                                        url: '/Admin/ChatLieu/DSChatLieu', // Đường dẫn API lấy danh sách thương hiệub
+                        url: '/Admin/TheLoai/DSTheLoai', 
                         type: 'GET',
                         success: function(data) {
-                                var select = $('#MaChatLieu');
-                            select.empty(); // Xóa các tùy chọn hiện tại
-                            select.append('<option value=""></option>'); // Thêm tùy chọn mặc định
+                                var select = $('#MaTheLoai');
+                            select.empty(); 
+                            select.append('<option value=""></option>');
 
-                                data.forEach(function(thuongHieu) {
-                                    select.append('<option value="' + thuongHieu.maChatLieu + '">' + thuongHieu.tenChatLieu + '</option>');
+                            data.forEach(function(thuongHieu) {
+                            select.append('<option value="' + thuongHieu.maTheLoai + '">' + thuongHieu.tenTheLoai + '</option>');
                             });
                         },
                         error: function() {
-                            alert('Đã xảy ra lỗi khi lấy danh sách chất liệu.');
+                            alert('Đã xảy ra lỗi khi lấy danh sách thể loại.');
                         }
                     });
                 }
 
+                    function addChatLieu() {
+                        var tenChatLieu = $('#TenChatLieu').val().trim();
+                        var checktenChatLieu = $('#TenChatLieu').val().trim().toUpperCase();
+                        if (!checktenChatLieu) {
+                            alert('Vui lòng nhập tên chất liệu.');
+                            return;
+                        }
+                            if(specialCharPattern.test(tenChatLieu)){
+                                alert('Tên chất liệu không được nhập kí tự đặc biệt.');
+                            return;
+                        }
+                                if (tenChatLieu.length > 50) {
+                                    alert('Tên chất liệu không được nhập quá 50 kí tự.');
+                            return;
+                        }
+                        if (checktencl.includes(checktenChatLieu)) {
+                        alert('Tên chất liệu đã tồn tại.');
+                        return;
+                        }
+                        $.post('/Admin/ChatLieu/CreateChatLieu', { TenChatLieu: tenChatLieu }, function (response) {
+                            if (response) {
+                                $('#chatLieuModal').modal('hide');
+                                    $('#TenChatLieu').val('');
+                                        checktentl.push(tenChatLieu);
+                                            getDanhSachChatLieu();
+                                  $.notify('Thêm chất liệu thành công!', 'success');
 
-                $('#btn_addThuongHieu').click(function () {
-                    $('#thuongHieuModal').modal('show');
-                });
+                            } else {
+                                alert("Thêm thất bại. Vui lòng thử lại.");
+                            }
+                        });
+                    }
+                     function getDanhSachChatLieu() {
+                        $.ajax({
+                                            url: '/Admin/ChatLieu/DSChatLieu', // Đường dẫn API lấy danh sách thương hiệub
+                            type: 'GET',
+                            success: function(data) {
+                                    var select = $('#MaChatLieu');
+                                select.empty(); // Xóa các tùy chọn hiện tại
+                                select.append('<option value=""></option>'); // Thêm tùy chọn mặc định
 
-                $('#btn_addTheLoai').click(function () {
-                    $('#theLoaiModal').modal('show');
-                });
+                                    data.forEach(function(thuongHieu) {
+                                        select.append('<option value="' + thuongHieu.maChatLieu + '">' + thuongHieu.tenChatLieu + '</option>');
+                                });
+                            },
+                            error: function() {
+                                alert('Đã xảy ra lỗi khi lấy danh sách chất liệu.');
+                            }
+                        });
+                    }
 
-                $('#btn_addChatLieu').click(function () {
-                    $('#chatLieuModal').modal('show');
-                });
 
-                window.addThuongHieu = addThuongHieu;
-                window.addTheLoai = addTheLoai;
-                window.addChatLieu = addChatLieu;
-        });
-            
-    </script>
+                    $('#btn_addThuongHieu').click(function () {
+                        $('#thuongHieuModal').modal('show');
+                    });
+
+                    $('#btn_addTheLoai').click(function () {
+                        $('#theLoaiModal').modal('show');
+                    });
+
+                    $('#btn_addChatLieu').click(function () {
+                        $('#chatLieuModal').modal('show');
+                    });
+
+                    window.addThuongHieu = addThuongHieu;
+                    window.addTheLoai = addTheLoai;
+                    window.addChatLieu = addChatLieu;
+            });
+
+        </script>
 }
