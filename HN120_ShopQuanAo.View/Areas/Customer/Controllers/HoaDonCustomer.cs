@@ -24,6 +24,7 @@ namespace HN120_ShopQuanAo.View.Areas.Customer.Controllers
             {
                 return BadRequest("Dữ liệu của bạn không hoàn chỉnh hoặc đã bị xóa");
             }
+            lstHDCB = lstHDCB.OrderByDescending(x => x.NgayTaoDon).ToList();
             ViewBag.lstHDCB = lstHDCB;
             return View();
 
