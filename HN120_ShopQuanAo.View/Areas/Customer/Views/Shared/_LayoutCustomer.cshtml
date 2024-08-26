@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,10 +12,8 @@
 	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/css/toastr.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
-	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-		  integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-		  type="text/css">
+	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" type="text/css">
 	@RenderSection("Styles", required: false)
 </head>
 <style>
@@ -620,7 +617,7 @@
 					<!-- SweetAlert2 JS -->
 					<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 					<!-- JS -->
-
+					<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 					<script src="/js/vendor/jquery-1.12.0.min.js"></script>
 					<script src="/js/notify.js"></script>
 					<script src="/js/popper.js"></script>
@@ -628,6 +625,9 @@
 					<script src="/js/ajax-mail.js"></script>
 					<script src="/js/plugins.js"></script>
 					<script src="/js/main.js"></script>
+
+					<!-- Place for page-specific scripts -->
+					@RenderSection("Scripts", required: false)
 
 </body>
 
