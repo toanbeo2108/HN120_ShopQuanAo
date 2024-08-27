@@ -254,8 +254,6 @@ $(document).ready(function () {
         });
         $('#btn_trangthai').val(4)
         $('#pop_huydon').modal('show');
-
-
         //updateHoaDon(4);
         //AddLichsuhoadon(4);
     })
@@ -315,7 +313,7 @@ $(document).ready(function () {
             var data = {
                 LichSuHoaDonID: date,
                 MaHoaDon: $('#btn_mahoadonls').val(),
-                UserID: $('#btn_nhanvien').val(),
+                UserID: $('#btnnguoitacdong').val(),
                 NgayTaoDon: $('#btn_ngaytao').val(),
                 NgayThayDoi: $('#btn_ngaythaydoils').val(),
                 TongGiaTri: parseFloat(tongtienhoadon),
