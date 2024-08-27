@@ -262,7 +262,7 @@
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
                 var tenSp = row.querySelector('[data-sdt]').getAttribute('data-sdt').toUpperCase().trim();
-                var tenkh = row.querySelector('[data-tenkh]').getAttribute('data-tenkh').toUpperCase().trim();
+                var tenkh = row.getElementsByTagName("td")[4].textContent.toUpperCase().trim();
                 if ((tenSp.includes(searchInput)) || (tenkh.includes(searchInput))) {
                     row.style.display = "";
                 } else {
