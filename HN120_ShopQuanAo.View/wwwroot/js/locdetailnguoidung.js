@@ -34,7 +34,9 @@
         var dongia_ = parseFloat(dongia);
         var sl_ = parseInt(sl);
         var thanhtien = dongia_ * sl_;
-
+        if (sl_ <=0) {
+            return;
+        }
         var ghct = {
             MaGioHang: magh,
             SKU: sku,

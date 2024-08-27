@@ -17,12 +17,12 @@
     }
 
     .filter-section {
-        margin-bottom: 15px;
+        margin-bottom: 15px !important;
     }
 
         .filter-section label {
-            display: block;
-            margin-bottom: 5px;
+            display: block !important;
+            margin-bottom: 5px !important;
         }
 
     .filter-tags {
@@ -46,14 +46,14 @@
         }
 
     .filter-section input[type="number"] {
-        width: calc(50% - 10px);
-        margin-right: 10px;
+        width: calc(50% - 10px) !important;
+        margin-right: 10px !important;
     }
 
     .product-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 15px !important;
     }
 
     .product-card {
@@ -286,6 +286,7 @@
         }
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
 <script>
     function selectTag(element, inputId) {
         // Remove 'selected' class from all tags in the same section
